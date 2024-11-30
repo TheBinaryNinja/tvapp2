@@ -12,18 +12,6 @@ for i in ${active_confs}; do
     fi
 done
 
-if [ -n "${active_confs_changed}" ]; then
-    echo "**** The following active confs have different version dates than the samples that are shipped. ****"
-    echo "**** This may be due to user customization or an update to the samples. ****"
-    echo "**** You should compare the following files to the samples in the same folder and update them. ****"
-    echo "**** Use the link at the top of the file to view the changelog. ****"
-    echo "┌────────────┬────────────┬────────────────────────────────────────────────────────────────────────┐"
-    echo "│  old date  │  new date  │ path                                                                   │"
-    echo "├────────────┼────────────┼────────────────────────────────────────────────────────────────────────┤"
-    echo -e "${active_confs_changed%%\\n}"
-    echo "└────────────┴────────────┴────────────────────────────────────────────────────────────────────────┘"
-fi
-
 # detect site-confs with wrong extension
 site_confs_wrong_ext=$(find /config/nginx/site-confs/ -type f -not -name "*.conf" -not -name "*.conf.sample" 2>/dev/null)
 
