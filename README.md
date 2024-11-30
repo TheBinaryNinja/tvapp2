@@ -97,6 +97,23 @@ services:
 
 <br />
 
+> [!CAUTION]  
+> Do **not** add quotation marks to `CRON_TIME` environment variable
+>
+> ✔️ Correct
+> ```yml
+> environment:
+>    - CRON_TIME=*/60 * * * *
+> ```
+>
+> ❌ Incorrect
+> ```yml
+> environment:
+>    - CRON_TIME="*/60 * * * *"
+> ```
+
+<br />
+
 ---
 
 <br />
