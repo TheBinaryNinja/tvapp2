@@ -14,8 +14,8 @@ FROM ghcr.io/linuxserver/baseimage-alpine:3.20
 ARG BUILD_DATE
 ARG VERSION
 ARG NGINX_VERSION
-ARG REFRESH
-ENV REFRESH="0/15 * * * *"
+ARG CRON_TIME
+ENV CRON_TIME="0/60 * * * *"
 
 ENV URL_XML="https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml"
 ENV URL_XML_GZ="https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz"

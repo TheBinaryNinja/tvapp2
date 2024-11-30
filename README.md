@@ -84,7 +84,7 @@ services:
             - PUID=${PUID:-1000}
             - PGID=${PGID:-1000}
             - TZ=${SERVER_TIMEZONE}
-            - CRON_TIME=*/1 * * * *
+            - CRON_TIME=*/60 * * * *
 ```
 
 <br />

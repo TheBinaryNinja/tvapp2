@@ -19,7 +19,7 @@ set -f
 #   *  *  *  *  *
 # #
 
-ARG_CRON_TIME=$(echo ${REFRESH})
+ARG_CRON_TIME=$(echo ${CRON_TIME})
 
 if [ -z "${ARG_CRON_TIME}" ]; then
     ARG_CRON_TIME="0/60 * * * *"
