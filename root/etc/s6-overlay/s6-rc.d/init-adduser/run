@@ -1,0 +1,37 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+PUID=${PUID:-911}
+PGID=${PGID:-911}
+
+if [[ -z ${AETHERX_READ_ONLY_FS} ]] && [[ -z ${AETHERX_NON_ROOT_USER} ]]; then
+    groupmod -o -g "$PGID" abc
+    usermod -o -u "$PUID" abc
+fi
+
+if { [[ -z ${AETHERX_READ_ONLY_FS} ]] && [[ -z ${AETHERX_NON_ROOT_USER} ]]; } || [[ ! ${LSIO_FIRST_PARTY} = "true" ]]; then
+    cat /etc/s6-overlay/s6-rc.d/init-adduser/branding
+else
+    cat /run/branding
+fi
+
+if [[ -z ${AETHERX_NON_ROOT_USER} ]]; then
+echo "
+        User ID ........... $(id -u abc)
+        Group ID .......... $(id -g abc)"
+else
+echo "
+        User ID ........... $(stat /run -c %u)
+        Group ID .......... $(stat /run -c %g)"
+fi
+echo "
+        Port HTTP ......... $(echo $PORT_HTTP)
+        Port HTTPS ........ $(echo $PORT_HTTPS)"
+
+echo '───────────────────────────────────────────────────────────────'
+
+if [[ -z ${AETHERX_READ_ONLY_FS} ]] && [[ -z ${AETHERX_NON_ROOT_USER} ]]; then
+    lsiown abc:abc /app
+    lsiown abc:abc /config
+    lsiown abc:abc /defaults
+fi

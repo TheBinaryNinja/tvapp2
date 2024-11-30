@@ -1,0 +1,9 @@
+/*!
+ * This file is part of the nginx-fancyindex-flat-theme (licensed under the GPL
+ * license) and uses Twitter Bootstrap (v4) (licensed under the MIT license).
+ *
+ * Copyright (C)
+ *  2018-2024 Alexander Haase <ahaase@alexhaase.de>
+ *
+ * See the LICENSE file for details.
+ */body{background-color:#f8f9fa;padding-bottom:20px}@media (prefers-color-scheme:dark){body{background-color:#343a40;color:#fff}}.breadcrumb{background-color:transparent;padding-left:35px}.breadcrumb .breadcrumb-item a{color:#4caf50}html{position:relative;min-height:100%}.footer{position:absolute;bottom:0;width:100%;margin-bottom:0}.footer a,.footer a:focus,.footer a:hover{color:#4caf50}.header{background-color:#4caf50;color:#fff;min-height:24px}.header .navbar-brand{padding:0 8px;font-size:16px;line-height:24px;height:24px}#list a,#list a:focus,#list a:hover{color:#000}#list colgroup{display:none}#list .filename{word-break:break-all;white-space:normal}@media (prefers-color-scheme:dark){#list a,#list a:focus,#list a:hover{color:#fff}}

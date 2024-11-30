@@ -1,0 +1,9 @@
+───────────────────────────────────────────────────────────────
+                  TheTvApp Docker Container
+───────────────────────────────────────────────────────────────
+  This container automatically downloads the m3u8 and xml
+  guide data from
+        - https://github.com/dtankdempse/thetvapp-m3u
+
+  Once the data is downloaded, you can access the files from
+  the container's webserver.
