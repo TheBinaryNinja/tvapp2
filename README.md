@@ -40,7 +40,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 - [About](#about)
 - [Install](#install)
   - [Docker Compose](#docker-compose)
-- [Environment Variables \& Volumes](#environment-variables--volumes)
+- [Env Variables \& Volumes](#env-variables--volumes)
   - [Environment Variables](#environment-variables)
   - [Volumes](#volumes)
 - [Build](#build)
@@ -60,10 +60,13 @@ Once the container is started up, an initial grab will be done immediately. Afte
 
 The fetched .m3u8 and .xml files are then placed in a self-hosted nginx webserver which allows you to add the direct links directly into applications such as Jellyfin without having to go back and update the files on your own.
 
+<br />
+
 Container supports the following:
 - Automatically grabs .m3u8 and .xml files when container started up
 - Every 60 minutes, a new copy of the .m3u8 and .xml files will be fetched
 - Supports both ports `80` and `443`
+- Self-signed SSL certificates (optional)
 - Mountable volume to control Nginx webserver files
 
 <br />
@@ -98,7 +101,7 @@ services:
 <br />
 
 > [!CAUTION]  
-> Do **not** add quotation marks to `CRON_TIME` environment variable
+> Do **not** add `"` quotation marks to `CRON_TIME` environment variable. Automated timer will not function if you do.
 >
 > ✔️ Correct
 > ```yml
@@ -118,7 +121,7 @@ services:
 
 <br />
 
-## Environment Variables & Volumes
+## Env Variables & Volumes
 You can utilize the following environment variables with this container:
 
 <br />
