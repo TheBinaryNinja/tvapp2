@@ -27,8 +27,6 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 [![Size][github-size-img]][github-size-img]
 [![Last Commit][github-commit-img]][github-commit-img]
 [![Contributors][contribs-all-img]](#contributors-)
-
-[![Built with Material for MkDocs](https://img.shields.io/badge/Powered_by_Material_for_MkDocs-526CFE?style=for-the-badge&logo=MaterialForMkDocs&logoColor=white)](https://aetherinox.github.io/thetvapp-docker/)
 <!-- prettier-ignore-end -->
 
 </div>
@@ -42,8 +40,12 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 - [About](#about)
 - [Install](#install)
   - [Docker Compose](#docker-compose)
+- [Environment Variables \& Volumes](#environment-variables--volumes)
+  - [Environment Variables](#environment-variables)
+  - [Volumes](#volumes)
+- [Build](#build)
+- [Shell / Bash](#shell--bash)
 - [Contributors ✨](#contributors-)
-
 
 <br />
 
@@ -57,6 +59,12 @@ This container allows you to automatically fetch the latest `.m3u8` playlist, an
 Once the container is started up, an initial grab will be done immediately. After that initial grab, the container will periodically grab new copies of the files every X hours, which can be adjusted by modifying the docker environment variables.
 
 The fetched .m3u8 and .xml files are then placed in a self-hosted nginx webserver which allows you to add the direct links directly into applications such as Jellyfin without having to go back and update the files on your own.
+
+Container supports the following:
+- Automatically grabs .m3u8 and .xml files when container started up
+- Every 60 minutes, a new copy of the .m3u8 and .xml files will be fetched
+- Supports both ports `80` and `443`
+- Mountable volume to control Nginx webserver files
 
 <br />
 
@@ -85,6 +93,70 @@ services:
             - PGID=${PGID:-1000}
             - TZ=${SERVER_TIMEZONE}
             - CRON_TIME=*/60 * * * *
+```
+
+<br />
+
+---
+
+<br />
+
+## Environment Variables & Volumes
+You can utilize the following environment variables with this container:
+
+<br />
+
+### Environment Variables
+The following env variables can be modified before spinning up this container:
+
+<br />
+
+| Env Var | Default | Description |
+| --- | --- | --- |
+| `PORT_HTTP` | 80 | Defines the HTTP port to run on |
+| `PORT_HTTPS` | 443 | Defines the HTTPS port to run on |
+| `CRON_TIME` | 0/60 * * * * | Determines how often the .m3u8 and .xml guide files are updated |
+| `URL_XML` | https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml | URL to fetch `.xml` file |
+| `URL_XML_GZ` | https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz | URL to fetch `.xml.gz` file |
+| `URL_M3U` | https://thetvapp-m3u.data-search.workers.dev/playlist | URL to fetch `.m3u8` file |
+
+<br />
+
+### Volumes
+The following volumes can be mounted with this container:
+
+<br />
+
+| Volume | Description |
+| --- | --- |
+| `./thetvapp:/config` | Path which stores downloaded `.m3u8`, `.xml`, nginx configs, and optional SSL certificate/keys |
+
+
+<br />
+
+---
+
+<br />
+
+## Build
+You can build your own copy of the image by running the following:
+
+```shell
+git clone https://github.com/Aetherinox/thetvapp-docker.git .
+docker build -t thetvapp .
+```
+
+<br />
+
+---
+
+<br />
+
+## Shell / Bash
+You can access the docker container's shell by running:
+
+```shell
+docker exec -it thetvapp ash
 ```
 
 <br />
