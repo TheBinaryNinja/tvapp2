@@ -39,6 +39,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 
 - [About](#about)
 - [Install](#install)
+  - [Docker Run](#docker-run)
   - [Docker Compose](#docker-compose)
   - [Traefik](#traefik)
     - [Dynamic.yml](#dynamicyml)
@@ -74,6 +75,8 @@ Container supports the following:
 - Supports both ports `80` and `443`
 - Self-signed SSL certificates (optional)
 - Mountable volume to control Nginx webserver files
+- Customizable URLs via env var should the m3u8 and xml links change
+- Integrated nginx hosted file browser for viewing all downloaded files, along with date and file size
 
 <br />
 
@@ -83,6 +86,15 @@ Container supports the following:
 
 ## Install
 Instructions on using this container
+
+<br />
+
+### Docker Run
+If you want to bring the docker container up quickly, use the following command:
+
+```shell
+docker run -d --restart=unless-stopped -e CRON_TIME=*/60 * * * * -p 443:443 --name thetvapp -v ${PWD}/thetvapp:/config ghcr.io/aetherinox/thetvapp-docker:latest
+```
 
 <br />
 
@@ -318,7 +330,7 @@ Save the files and then give Traefik and your TheTvApp containers a restart.
 <br />
 
 ## Env Variables & Volumes
-You can utilize the following environment variables with this container:
+This section outlines that environment variables can be specified, and which volumes you can mount when the container is started.
 
 <br />
 
