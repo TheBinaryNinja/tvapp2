@@ -131,13 +131,12 @@ jobs:
               id: task_release_gh_meta
               uses: docker/metadata-action@v5
               with:
-                  flavor: |
-                      latest=false
+                flavor: |
+                latest=false
                   images: |
                       ghcr.io/Aetherinox/thetvapp-docker
                   tags: |
-                      type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
-                      type=ref,event=tag
+                      type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
 
             # #
             #   Release > Github > Debug
