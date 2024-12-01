@@ -23,8 +23,10 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 
 <!-- prettier-ignore-start -->
 [![Version][github-version-img]][github-version-uri]
-[![Build Status][github-build-img]][github-build-uri]
+[![Docker Version][dockerhub-version-img]][dockerhub-version-uri]
 [![Downloads][github-downloads-img]][github-downloads-uri]
+[![Docker Pulls][dockerhub-pulls-img]][dockerhub-pulls-uri]
+[![Build Status][github-build-img]][github-build-uri]
 [![Size][github-size-img]][github-size-img]
 [![Last Commit][github-commit-img]][github-commit-img]
 [![Contributors][contribs-all-img]](#contributors-)
@@ -529,6 +531,14 @@ The following people have helped get this project going:
 <!-- BADGE > GITHUB > COMMIT -->
   [github-commit-img]: https://img.shields.io/github/last-commit/Aetherinox/thetvapp-docker?logo=conventionalcommits&logoColor=FFFFFF&label=Last%20Commit&color=313131
   [github-commit-uri]: https://github.com/Aetherinox/thetvapp-docker/commits/main/
+
+<!-- BADGE > DOCKER HUB > VERSION -->
+  [dockerhub-version-img]: https://img.shields.io/docker/v/aetherinox/thetvapp/latest?logo=docker&logoColor=FFFFFF&label=Docker%20Version&color=ba5225
+  [dockerhub-version-uri]: https://hub.docker.com/repository/docker/aetherinox/thetvapp/general
+
+<!-- BADGE > DOCKER HUB > PULLS -->
+  [dockerhub-pulls-img]: https://img.shields.io/docker/pulls/aetherinox/thetvapp?logo=docker&logoColor=FFFFFF&label=Docker%20Pulls&color=af9a00
+  [dockerhub-pulls-uri]: https://hub.docker.com/repository/docker/aetherinox/thetvapp/general
 
 <!-- prettier-ignore-end -->
 <!-- markdownlint-restore -->
