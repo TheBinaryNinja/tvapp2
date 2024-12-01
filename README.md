@@ -42,6 +42,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 
 - [About](#about)
 - [Docker Images](#docker-images)
+- [Docker Tags](#docker-tags)
 - [Install](#install)
   - [Docker Run](#docker-run)
   - [Docker Compose](#docker-compose)
@@ -100,6 +101,23 @@ Use any of the following images in your `docker-compose.yml` or `run` command:
 | --- | --- | --- |
 | `Docker Hub` | [![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri] | `aetherinox/thetvapp:latest` |
 | `Github` | [![Github Version][github-version-ftb-img]][github-version-ftb-uri] | `ghcr.io/aetherinox/thetvapp-docker:latest` |
+
+<br />
+
+---
+
+<br />
+
+## Docker Tags
+This repo includes a few different versions of the TheAppTV docker image.
+
+<br />
+
+| Tag | Description |
+| --- | --- |
+| `:latest` | Latest version of the image. Includes only Nginx - no PHP |
+| `:1.x.x` | Specified version which contains Nginx only - no PHP |
+| `:1.x.x-php` | Contains both Nginx and PHP. |
 
 <br />
 

@@ -52,6 +52,10 @@ env:
 
 # #
 #   jobs
+#
+#   The way pushed docker containers on Github work, the most recent image built goes at the top.
+#   We will use the order below which builds the :latest image last so that it appears at the very
+#   top of the packages page.
 # #
 
 jobs:
@@ -157,7 +161,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_gh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
@@ -268,7 +272,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_dh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
@@ -379,7 +383,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_gh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
@@ -489,7 +493,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_dh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
