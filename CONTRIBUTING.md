@@ -256,9 +256,9 @@ At the top of any new file introduced, please add the following header:
 When calling environment variables, you should use `UPPERCASE`:
 
 ```bash
-ARG_CRON_TIME=$(echo ${CRON_TIME})
-if [ -z "${ARG_CRON_TIME}" ]; then
-    ARG_CRON_TIME="0/60 * * * *"
+arg_cron=$(echo ${CRON_TIME})
+if [ -z "${arg_cron}" ]; then
+    arg_cron="0/60 * * * *"
 fi
 ```
 
