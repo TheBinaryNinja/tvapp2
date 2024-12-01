@@ -144,12 +144,12 @@ jobs:
             - name: "🪪 Debug › Print"
               id: task_release_gh_print
               run: |
-                echo "registry ............. Github"
-                echo "github.actor.......... ${{ github.actor }}"
-                echo "github.ref ........... ${{ github.ref }}"
-                echo "github.event_name .... ${{ github.event_name }}"
-                echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
-                echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
+                  echo "registry ............. Github"
+                  echo "github.actor.......... ${{ github.actor }}"
+                  echo "github.ref ........... ${{ github.ref }}"
+                  echo "github.event_name .... ${{ github.event_name }}"
+                  echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
+                  echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
 
             # #
             #   Release > Github > Build and Push
@@ -158,7 +158,7 @@ jobs:
             - name: "📦 Build and push"
               id: task_release_gh_push
               uses: docker/build-push-action@v3
-              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
                   file: Dockerfile
@@ -267,7 +267,7 @@ jobs:
             - name: "📦 Build and push"
               id: task_release_dh_push
               uses: docker/build-push-action@v3
-              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
                   file: Dockerfile
