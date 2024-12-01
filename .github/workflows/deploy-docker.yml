@@ -108,7 +108,7 @@ jobs:
 
             - name: "🔨 Docker meta"
               id: task_release_gh_meta
-              uses: docker/metadata-action@v3
+              uses: docker/metadata-action@v5
               with:
                   images: |
                       ghcr.io/Aetherinox/thetvapp-docker
@@ -201,7 +201,7 @@ jobs:
 
             - name: "🔨 Docker meta"
               id: task_release_dh_meta
-              uses: docker/metadata-action@v3
+              uses: docker/metadata-action@v5
               with:
                   images: |
                       aetherinox/thetvapp
