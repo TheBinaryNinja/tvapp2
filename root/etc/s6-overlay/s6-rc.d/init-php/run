@@ -7,7 +7,9 @@ if [[ ! -f /config/log/php/error.log ]]; then
 fi
 
 # set default timezone
-printf "date.timezone = %s\\n" "${TZ:-UTC}" >/etc/php83/conf.d/30_timezone.ini
+if [[ -f /etc/php83/conf.d/30_timezone.ini ]]; then
+    printf "date.timezone = %s\\n" "${TZ:-UTC}" >/etc/php83/conf.d/30_timezone.ini
+fi
 
 # create local php.ini if it doesn't exist, set local timezone
 if [[ ! -f /config/php/php-local.ini ]]; then
@@ -17,7 +19,10 @@ fi
 # symlink user php-local.ini to image
 rm -rf /etc/php83/conf.d/php-local.ini
 rm -rf /etc/php83/conf.d/zzz_php-local.ini
-ln -s /config/php/php-local.ini /etc/php83/conf.d/zzz_php-local.ini
+
+if [[ -f /config/php/php-local.ini ]] && [ -d /etc/php83/conf.d ]; then
+    ln -s /config/php/php-local.ini /etc/php83/conf.d/zzz_php-local.ini
+fi
 
 # create override for www.conf if it doesn't exist
 if [[ ! -f /config/php/www2.conf ]]; then
@@ -25,4 +30,6 @@ if [[ ! -f /config/php/www2.conf ]]; then
 fi
 
 # copy user www2.conf to image
-cp /config/php/www2.conf /etc/php83/php-fpm.d/www2.conf
+if [[ -f /config/php/www2.conf ]] && [ -d /etc/php83/conf.d ]; then
+    cp /config/php/www2.conf /etc/php83/php-fpm.d/www2.conf
+fi

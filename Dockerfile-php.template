@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # #
-#   @file           Dockerfile
+#   @file           Dockerfile.IncPhp
 #   @about          This docker file installs:
 #                       - nginx
 #                       - php-fpm
@@ -64,6 +64,10 @@ RUN \
       openssl \
       apache2-utils \
       nginx \
+      php83 \
+      php83-fileinfo \
+      php83-fpm \
+      php83-mbstring \
       nginx==${NGINX_VERSION} \
       nginx-mod-http-fancyindex==${NGINX_VERSION} && \
   echo "**** Install Build Packages ****" && \
@@ -79,6 +83,18 @@ RUN \
   rm -f /etc/nginx/http.d/default.conf && \
   rm -f /etc/nginx/conf.d/stream.conf && \
   rm -f /config/www/index.html && \
+  echo "**** Check PHP version and symlink ****" && \
+  if [ "$(readlink /usr/bin/php)" != "php83" ]; then \
+      rm -rf /usr/bin/php && \
+      ln -s /usr/bin/php83 /usr/bin/php; \
+  fi && \
+  echo "**** Configure PHP ****" && \
+  sed -i "s#;error_log = log/php83/error.log.*#error_log = /config/log/php/error.log#g" \
+      /etc/php83/php-fpm.conf && \
+  sed -i "s#user = nobody.*#user = abc#g" \
+      /etc/php83/php-fpm.d/www.conf && \
+  sed -i "s#group = nobody.*#group = abc#g" \
+      /etc/php83/php-fpm.d/www.conf && \
   echo "**** Setup Logrotate ****" && \
   sed -i "s#/var/log/messages {}.*# #g" \
       /etc/logrotate.conf && \

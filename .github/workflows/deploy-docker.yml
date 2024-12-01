@@ -13,7 +13,28 @@ run-name: "⚙️ Deploy › Docker"
 # #
 
 on:
+
+    # #
+    #   Trigger > Workflow Dispatch
+    # #
+
     workflow_dispatch:
+        inputs:
+
+            # #
+            #   true:     runs all actions, even ones not scheduled
+            #   false:    only scheduled tasks will run
+            # #
+
+            PRINT_ONLY:
+              description:  "📑 Print Debugs Only"
+              required:     true
+              default:      false
+              type:         boolean
+
+    # #
+    #   Trigger > Push
+    # #
 
     push:
         tags:
@@ -117,14 +138,30 @@ jobs:
                       type=ref,event=tag
 
             # #
+            #   Release > Github > Debug
+            # #
+
+            - name: "🪪 Debug › Print"
+              id: task_release_gh_print
+              run: |
+                echo "registry ............. github"
+                echo "github.actor.......... ${{ github.actor }}"
+                echo "github.ref ........... ${{ github.ref }}"
+                echo "github.event_name .... ${{ github.event_name }}"
+                echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
+                echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
+
+            # #
             #   Release > Github > Build and Push
             # #
 
             - name: "📦 Build and push"
               id: task_release_gh_push
               uses: docker/build-push-action@v3
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
               with:
                   context: .
+                  file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: ${{ steps.task_release_gh_meta.outputs.tags }}
@@ -210,14 +247,30 @@ jobs:
                       type=ref,event=tag
 
             # #
+            #   Release > Dockerhub > Debug
+            # #
+
+            - name: "🪪 Debug › Print"
+              id: task_release_dh_print
+              run: |
+                  echo "registry ............. dockerhub"
+                  echo "github.actor.......... ${{ github.actor }}"
+                  echo "github.ref ........... ${{ github.ref }}"
+                  echo "github.event_name .... ${{ github.event_name }}"
+                  echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
+                  echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
+
+            # #
             #   Release > Dockerhub > Build and Push
             # #
 
             - name: "📦 Build and push"
               id: task_release_dh_push
               uses: docker/build-push-action@v3
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
               with:
                   context: .
+                  file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: ${{ steps.task_release_dh_meta.outputs.tags }}
