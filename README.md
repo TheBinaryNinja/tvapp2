@@ -40,6 +40,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 - [About](#about)
 - [Install](#install)
   - [Docker Compose](#docker-compose)
+  - [Traefik](#traefik)
 - [Env Variables \& Volumes](#env-variables--volumes)
   - [Environment Variables](#environment-variables)
   - [Volumes](#volumes)
@@ -94,7 +95,7 @@ services:
         environment:
             - PUID=1000
             - PGID=1000
-            - TZ=America/Los_Angeles
+            - TZ=Etc/UTC
             - CRON_TIME=*/60 * * * *
 ```
 
@@ -117,6 +118,94 @@ services:
 
 <br />
 
+### Traefik
+You can put this container behind Traefik if you want to use a reverse proxy and let Traefik handle the SSL certificate.
+
+Open the Traefik dynamic file and add the following:
+
+```yml
+http:
+    middlewares:
+        https-redirect:
+            redirectScheme:
+                scheme: "https"
+                permanent: true
+
+    routers:
+        thetvapp-http:
+            service: thetvapp
+            rule: Host(`domain.localhost`) || Host(`thetvapp.domain.com`)
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        thetvapp-https:
+            service: thetvapp
+            rule: Host(`domain.localhost`) || Host(`thetvapp.domain.com`)
+            entryPoints:
+                - https
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.com"
+                      sans:
+                          - "*.domain.com"
+
+    services:
+        thetvapp:
+            loadBalancer:
+                servers:
+                    - url: "https://thetvapp:443"
+```
+
+Open your Traefik `static.yml` file and add your `certResolver` from above. We are going to use Cloudflare in this exmaple, you can use whatever from the list at:
+- https://doc.traefik.io/traefik/https/acme/#providers
+
+<br />
+
+```yml
+certificatesResolvers:
+    cloudflare:
+        acme:
+            email: youremail@address.com
+            storage: /cloudflare/acme.json
+            keyType: EC256
+            preferredChain: 'ISRG Root X1'
+            dnsChallenge:
+                provider: cloudflare
+                delayBeforeCheck: 15
+                resolvers:
+                    - "1.1.1.1:53"
+                    - "1.0.0.1:53"
+                disablePropagationCheck: true
+```
+
+<br />
+
+Once you pick the DNS / SSL provider you want to use, you need to see if that provider has any special environment variables that must be set. The [Providers Page](https://doc.traefik.io/traefik/https/acme/#providers) lists all providers and also what env variables need set for each one.
+
+<br />
+
+In our example using Cloudflare, we must set:
+- `CF_API_EMAIL`
+- `CF_API_KEY`
+
+<br />
+
+In docker, create a `.env` environment file in the same folder where your thetvapp `docker-compose.yml` file is located, and add the following:
+
+```yml
+CF_API_EMAIL=yourcloudflare@email.com
+CF_API_KEY=Your-Cloudflare-API-Key
+```
+
+<br />
+
+Save the files and then give Traefik and your TheTvApp containers a restart.
+
+<br />
+
 ---
 
 <br />
@@ -133,12 +222,23 @@ The following env variables can be modified before spinning up this container:
 
 | Env Var | Default | Description |
 | --- | --- | --- |
+| `PUID` | 1000 | User ID running the container |
+| `PGID` | 1000 | Group ID running the container |
+| `TZ` | Etc/UTC | Timezone |
 | `PORT_HTTP` | 80 | Defines the HTTP port to run on |
 | `PORT_HTTPS` | 443 | Defines the HTTPS port to run on |
 | `CRON_TIME` | 0/60 * * * * | Determines how often the .m3u8 and .xml guide files are updated |
 | `URL_XML` | https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml | URL to fetch `.xml` file |
 | `URL_XML_GZ` | https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz | URL to fetch `.xml.gz` file |
 | `URL_M3U` | https://thetvapp-m3u.data-search.workers.dev/playlist | URL to fetch `.m3u8` file |
+
+<br />
+
+Please note that you can change the URLs for the files fetched from the internet, but it is highly advised to not do this unless you know for sure that the location paths have changed. To change the URLs to the `m3u8`, `.xml`, and `.xml.gz`; change the following environment variables:
+
+- `URL_XML=https://url/to/file.xml`
+- `URL_XML_GZ=https://url/to/file.xml.gz`
+- `URL_M3U=https://url/to/file.m3u8`
 
 <br />
 
