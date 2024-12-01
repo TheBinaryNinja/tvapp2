@@ -55,6 +55,8 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
   - [Environment Variables](#environment-variables)
   - [Volumes](#volumes)
 - [Build](#build)
+  - [Troubleshooting](#troubleshooting)
+    - [Permission Denied](#permission-denied)
 - [Shell / Bash](#shell--bash)
 - [Logs](#logs)
 - [Contributors ✨](#contributors-)
@@ -416,7 +418,46 @@ You can build your own copy of the image by running the following:
 
 ```shell
 git clone https://github.com/Aetherinox/thetvapp-docker.git .
-docker build -t thetvapp .
+docker build -t thetvapp:latest thetvapp:1.0.0 .
+```
+
+<br />
+
+### Troubleshooting
+These are issues you may experience when building and deploying your own custom image.
+
+<br />
+
+#### Permission Denied
+
+```console
+Failed to open apk database: Permission denied
+unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied
+unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied
+```
+
+<br />
+
+If you receive any type of `permission denied` error when running your custom image, you must ensure that certain files have executable `+x` (or `0755`) permissions. Once you fix the file permissions, re-build the image. A full list of files requiring increased permissions are listed below:
+
+```shell
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-adduser/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-crontab-config/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-custom-files/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-envfile/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-folders/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-keygen/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-migrations/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-nginx/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-permissions/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-php/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-samples/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-version-checks/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-cron/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-nginx/run
+sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
+sudo chmod +x /run.sh
+sudo chmod +x /download.sh
 ```
 
 <br />
