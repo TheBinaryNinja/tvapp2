@@ -42,6 +42,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 
 - [About](#about)
 - [Install](#install)
+  - [Images](#images)
   - [Docker Run](#docker-run)
   - [Docker Compose](#docker-compose)
   - [Traefik](#traefik)
@@ -89,6 +90,16 @@ Container supports the following:
 
 ## Install
 Instructions on using this container
+
+<br />
+
+### Images
+Use any of the following images in your `docker-compose.yml` or `run` command:
+
+| Service | Version | Image Link |
+| --- | --- | --- |
+| Docker Hub | [![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri] | `aetherinox/thetvapp:latest` |
+| Github | [![Github Version][github-version-ftb-img]][github-version-ftb-uri] | `ghcr.io/aetherinox/thetvapp-docker:latest` |
 
 <br />
 
@@ -480,6 +491,10 @@ The following people have helped get this project going:
   [github-version-img]: https://img.shields.io/github/v/tag/Aetherinox/thetvapp-docker?logo=GitHub&label=Version&color=ba5225
   [github-version-uri]: https://github.com/Aetherinox/thetvapp-docker/releases
 
+<!-- BADGE > VERSION > GITHUB (For the Badge) -->
+  [github-version-ftb-img]: https://img.shields.io/github/v/tag/Aetherinox/thetvapp-docker?style=for-the-badge&logo=github&logoColor=FFFFFF&logoSize=34&label=%20&color=ba5225
+  [github-version-ftb-uri]: https://github.com/Aetherinox/thetvapp-docker/releases
+
 <!-- BADGE > VERSION > NPMJS -->
   [npm-version-img]: https://img.shields.io/npm/v/thetvapp-docker?logo=npm&label=Version&color=ba5225
   [npm-version-uri]: https://npmjs.com/package/thetvapp-docker
@@ -536,9 +551,14 @@ The following people have helped get this project going:
   [dockerhub-version-img]: https://img.shields.io/docker/v/aetherinox/thetvapp/latest?logo=docker&logoColor=FFFFFF&label=Docker%20Version&color=ba5225
   [dockerhub-version-uri]: https://hub.docker.com/repository/docker/aetherinox/thetvapp/general
 
+<!-- BADGE > DOCKER HUB > VERSION (For the Badge) -->
+  [dockerhub-version-ftb-img]: https://img.shields.io/docker/v/aetherinox/thetvapp/latest?style=for-the-badge&logo=docker&logoColor=FFFFFF&logoSize=34&label=%20&color=ba5225
+  [dockerhub-version-ftb-uri]: https://hub.docker.com/repository/docker/aetherinox/thetvapp/tags
+
 <!-- BADGE > DOCKER HUB > PULLS -->
   [dockerhub-pulls-img]: https://img.shields.io/docker/pulls/aetherinox/thetvapp?logo=docker&logoColor=FFFFFF&label=Docker%20Pulls&color=af9a00
   [dockerhub-pulls-uri]: https://hub.docker.com/repository/docker/aetherinox/thetvapp/general
+
 
 <!-- prettier-ignore-end -->
 <!-- markdownlint-restore -->
