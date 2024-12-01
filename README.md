@@ -56,6 +56,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
   - [Volumes](#volumes)
 - [Build](#build)
 - [Shell / Bash](#shell--bash)
+- [Logs](#logs)
 - [Contributors ✨](#contributors-)
 
 <br />
@@ -429,6 +430,49 @@ You can access the docker container's shell by running:
 
 ```shell
 docker exec -it thetvapp ash
+```
+
+<br />
+
+---
+
+<br />
+
+## Logs
+This image spits out detailed information about its current progress. You can either use `docker logs` or a 3rd party app such as [Portainer](https://portainer.io/) to view the logs.
+
+<br />
+
+```shell
+───────────────────────────────────────────────────────────────
+                  TheTvApp Docker Container
+───────────────────────────────────────────────────────────────
+
+  This container automatically downloads the m3u8 and xml guide
+  data from
+        - https://github.com/dtankdempse/thetvapp-m3u
+
+  Once the data is downloaded, you can access the files from
+  the container's webserver.
+
+        User ID ........... 1000
+        Group ID .......... 1000
+        Port HTTP ......... 80
+        Port HTTPS ........ 443
+
+───────────────────────────────────────────────────────────────
+
+ SSL          : Using existing keys found in /config/keys
+ Loader       : No custom files found, skipping...
+ Core         : Completed loading container
+ Config       : Setting task to run */60 * * * *
+                Setting timezone Etc/UTC
+
+ Start        : Downloading latest thetvapp m3u + xml
+                Getting thetvapp.xml › https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml
+                Getting thetvapp.xml.gz › https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz
+                Getting thetvapp.m3u8 › https://thetvapp-m3u.data-search.workers.dev/playlist
+ End          : Finished update at 12-01-2024 15:00:00
 ```
 
 <br />
