@@ -131,11 +131,13 @@ jobs:
               id: task_release_gh_meta
               uses: docker/metadata-action@v5
               with:
+                  flavor: |
+                      latest=false
                   images: |
-                      ghcr.io/Aetherinox/thetvapp-docker
+                      aetherinox/thetvapp
                   tags: |
-                      type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
-                      type=ref,event=tag
+                      type=raw,value=latest,enable=false
+                      type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
 
             # #
             #   Release > Github > Debug
@@ -158,7 +160,7 @@ jobs:
             - name: "📦 Build and push"
               id: task_release_gh_push
               uses: docker/build-push-action@v3
-              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
                   file: Dockerfile-php.template
@@ -269,7 +271,7 @@ jobs:
             - name: "📦 Build and push"
               id: task_release_dh_push
               uses: docker/build-push-action@v3
-              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
                   file: Dockerfile-php.template
