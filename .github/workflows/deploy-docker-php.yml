@@ -240,12 +240,13 @@ jobs:
               id: task_release_dh_meta
               uses: docker/metadata-action@v5
               with:
+                  flavor: |
+                      latest=false
                   images: |
                       aetherinox/thetvapp
                   tags: |
                       type=raw,value=latest,enable=false
                       type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
-                      type=ref,event=tag
 
             # #
             #   Release > Dockerhub > Debug
