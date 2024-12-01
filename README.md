@@ -98,8 +98,8 @@ Use any of the following images in your `docker-compose.yml` or `run` command:
 
 | Service | Version | Image Link |
 | --- | --- | --- |
-| `Docker Hub` | <small>[![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri]</small> | `aetherinox/thetvapp:latest` |
-| `Github` | <small>[![Github Version][github-version-ftb-img]][github-version-ftb-uri]</small> | `ghcr.io/aetherinox/thetvapp-docker:latest` |
+| `Docker Hub` | [![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri] | `aetherinox/thetvapp:latest` |
+| `Github` | [![Github Version][github-version-ftb-img]][github-version-ftb-uri] | `ghcr.io/aetherinox/thetvapp-docker:latest` |
 
 <br />
 
@@ -365,15 +365,15 @@ The following env variables can be modified before spinning up this container:
 
 | Env Var | Default | Description |
 | --- | --- | --- |
-| <small>`PUID`</small> | <small>1000</small> | <small>User ID running the container</small> |
-| <small>`PGID`</small> | <small>1000</small> | <small>Group ID running the container</small> |
-| <small>`TZ`</small> | <small>Etc/UTC</small> | <small>Timezone</small> |
-| <small>`PORT_HTTP`</small> | <small>80</small> | <small>Defines the HTTP port to run on</small> |
-| <small>`PORT_HTTPS`</small> | <small>443</small> | <small>Defines the HTTPS port to run on</small> |
-| <small>`CRON_TIME`</small> | <small>0/60 * * * *</small> | <small>Determines how often the .m3u8 and .xml guide files are updated</small> |
-| <small>`URL_XML`</small> | <small>https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml</small> | <small>URL to fetch `.xml` file</small> |
-| <small>`URL_XML_GZ`</small> | <small>https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz</small> | <small>URL to fetch `.xml.gz` file</small> |
-| <small>`URL_M3U`</small> | <small>https://thetvapp-m3u.data-search.workers.dev/playlist</small> | <small>URL to fetch `.m3u8` file</small> |
+| `PUID` | 1000 | <sub>User ID running the container</sub> |
+| `PGID` | 1000 | <sub>Group ID running the container</sub> |
+| `TZ` | Etc/UTC | <sub>Timezone</sub> |
+| `PORT_HTTP` | 80 | <sub>Defines the HTTP port to run on</sub> |
+| `PORT_HTTPS` | 443 | <sub>Defines the HTTPS port to run on</sub> |
+| `CRON_TIME` | 0/60 * * * * | <sub>Determines how often the .m3u8 and .xml guide files are updated</sub> |
+| `URL_XML` | <sub>https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml</sub> | <sub>URL to fetch `.xml` file</sub> |
+| `URL_XML_GZ` | <sub>https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz</sub> | <sub>URL to fetch `.xml.gz` file</sub> |
+| `URL_M3U` | <sub>https://thetvapp-m3u.data-search.workers.dev/playlist</sub> | <sub>URL to fetch `.m3u8` file</sub> |
 
 <br />
 
@@ -392,7 +392,7 @@ The following volumes can be mounted with this container:
 
 | Volume | Description |
 | --- | --- |
-| <small>`./thetvapp:/config`</small> | Path which stores downloaded `.m3u8`, `.xml`, nginx configs, and optional SSL certificate/keys |
+| `./thetvapp:/config` | <sub>Path which stores downloaded `.m3u8`, `.xml`, nginx configs, and optional SSL certificate/keys</sub> |
 
 <br />
 
@@ -401,11 +401,11 @@ By mounting the volume above, you should now have access to the following folder
 
 | Folder | Description |
 | --- | --- |
-| <small>`📁 keys`</small> | <small>Responsible for storing your ssl certificate `cert.crt` + key `cert.key`</small> |
-| <small>`📁 log`</small> | <small>All nginx and php logs</small> |
-| <small>`📁 nginx`</small> | <small>Contains `nginx.conf`, `resolver.conf`, `ssl.conf`, `site-confs`</small> |
-| <small>`📁 php`</small> | <small>Contains `php-local.ini`, `www2.conf`</small> |
-| <small>`📁 www`</small> | <small>Folder where downloaded `.m3u8`, `.xml`, and `.xml.gz` will be downloaded to</small> |
+| `📁 keys` | <sub>Responsible for storing your ssl certificate `cert.crt` + key `cert.key`</sub> |
+| `📁 log` | <sub>All nginx and php logs</sub> |
+| `📁 nginx` | <sub>Contains `nginx.conf`, `resolver.conf`, `ssl.conf`, `site-confs`</sub> |
+| `📁 php` | <sub>Contains `php-local.ini`, `www2.conf`</sub> |
+| `📁 www` | <sub>Folder where downloaded `.m3u8`, `.xml`, and `.xml.gz` will be downloaded to</sub> |
 
 <br />
 
