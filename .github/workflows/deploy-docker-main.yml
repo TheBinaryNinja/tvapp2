@@ -1,0 +1,277 @@
+# #
+#   @type               github workflow
+#   @desc               deploys docker container
+#   @author             Aetherinox
+#   @url                https://github.com/Aetherinox
+# #
+
+name: "⚙️ Deploy › Docker › Main"
+run-name: "⚙️ Deploy › Docker › Main"
+
+# #
+#   triggers
+# #
+
+on:
+
+    # #
+    #   Trigger > Workflow Dispatch
+    # #
+
+    workflow_dispatch:
+        inputs:
+
+            # #
+            #   true:     runs all actions, even ones not scheduled
+            #   false:    only scheduled tasks will run
+            # #
+
+            PRINT_ONLY:
+              description:  "📑 Print Debugs Only"
+              required:     true
+              default:      false
+              type:         boolean
+
+    # #
+    #   Trigger > Push
+    # #
+
+    push:
+        tags:
+            - '*'
+
+# #
+#   environment variables
+# #
+
+env:
+    BOT_NAME_1:           AdminServ
+    BOT_NAME_2:           AdminServX
+    BOT_NAME_3:           EuropaServ
+    BOT_NAME_DEPENDABOT:  dependabot[bot]
+
+# #
+#   jobs
+# #
+
+jobs:
+
+
+    # #
+    #   Job > Docker Release > Github
+    # #
+
+    docker-release-github:
+        name: >-
+          📦 Release › Github
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+            attestations: write
+            id-token: write
+        steps:
+
+            # #
+            #   Release > Github > Start
+            # #
+
+            - name: "✅ Start"
+              id: task_release_gh_start
+              run: |
+                echo "Starting Github docker release"
+
+            # #
+            #   Release > Github > Checkout
+            # #
+
+            - name: "☑️ Checkout"
+              id: task_release_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Release > Github > QEMU
+            # #
+
+            - name: "⚙️ Set up QEMU"
+              id: task_release_gh_qemu
+              uses: docker/setup-qemu-action@v3
+
+            # #
+            #   Release > Github > Setup BuildX
+            # #
+
+            - name: "⚙️ Setup Buildx"
+              id: task_release_gh_buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  version: latest
+                  driver-opts: 'image=moby/buildkit:v0.10.5'
+
+            # #
+            #   Release > Github > Registry Login
+            # #
+
+            - name: "⚙️ Login to DockerHub"
+              id: task_release_gh_registry
+              if: github.event_name != 'pull_request'
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.SELF_TOKEN_CL }}
+
+            # #
+            #   Release > Github > Meta
+            # #
+
+            - name: "🔨 Docker meta"
+              id: task_release_gh_meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      ghcr.io/Aetherinox/thetvapp-docker
+                  tags: |
+                      type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
+                      type=ref,event=tag
+
+            # #
+            #   Release > Github > Debug
+            # #
+
+            - name: "🪪 Debug › Print"
+              id: task_release_gh_print
+              run: |
+                echo "registry ............. Github"
+                echo "github.actor.......... ${{ github.actor }}"
+                echo "github.ref ........... ${{ github.ref }}"
+                echo "github.event_name .... ${{ github.event_name }}"
+                echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
+                echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
+
+            # #
+            #   Release > Github > Build and Push
+            # #
+
+            - name: "📦 Build and push"
+              id: task_release_gh_push
+              uses: docker/build-push-action@v3
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/amd64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+
+    # #
+    #   Job > Docker Release > Github
+    # #
+
+    docker-release-dockerhub:
+        name: >-
+          📦 Release › Dockerhub
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+            attestations: write
+            id-token: write
+        steps:
+
+            # #
+            #   Release > Dockerhub > Start
+            # #
+
+            - name: "✅ Start"
+              id: task_release_dh_start
+              run: |
+                echo "Starting Github docker release"
+
+            # #
+            #   Release > Dockerhub > Checkout
+            # #
+
+            - name: "☑️ Checkout"
+              id: task_release_dh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Release > Dockerhub > QEMU
+            # #
+
+            - name: "⚙️ Set up QEMU"
+              id: task_release_dh_qemu
+              uses: docker/setup-qemu-action@v3
+
+            # #
+            #   Release > Dockerhub > Setup BuildX
+            # #
+
+            - name: "⚙️ Setup Buildx"
+              id: task_release_dh_buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  version: latest
+                  driver-opts: 'image=moby/buildkit:v0.10.5'
+
+            # #
+            #   Release > Dockerhub > Registry Login
+            # #
+
+            - name: "⚙️ Login to DockerHub"
+              id: task_release_dh_registry
+              if: github.event_name != 'pull_request'
+              uses: docker/login-action@v3
+              with:
+                  username: aetherinox
+                  password: ${{ secrets.SELF_DOCKERHUB_TOKEN }}
+
+            # #
+            #   Release > Dockerhub > Meta
+            # #
+
+            - name: "🔨 Docker meta"
+              id: task_release_dh_meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      aetherinox/thetvapp
+                  tags: |
+                      type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
+                      type=ref,event=tag
+
+            # #
+            #   Release > Dockerhub > Debug
+            # #
+
+            - name: "🪪 Debug › Print"
+              id: task_release_dh_print
+              run: |
+                  echo "registry ............. Dockerhub"
+                  echo "github.actor.......... ${{ github.actor }}"
+                  echo "github.ref ........... ${{ github.ref }}"
+                  echo "github.event_name .... ${{ github.event_name }}"
+                  echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
+                  echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
+
+            # #
+            #   Release > Dockerhub > Build and Push
+            # #
+
+            - name: "📦 Build and push"
+              id: task_release_dh_push
+              uses: docker/build-push-action@v3
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/amd64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_dh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_dh_meta.outputs.labels }}
