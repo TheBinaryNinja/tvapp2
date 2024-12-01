@@ -131,6 +131,8 @@ jobs:
               id: task_release_gh_meta
               uses: docker/metadata-action@v5
               with:
+                  flavor: |
+                      latest=false
                   images: |
                       ghcr.io/Aetherinox/thetvapp-docker
                   tags: |
