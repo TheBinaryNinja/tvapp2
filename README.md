@@ -98,8 +98,8 @@ Use any of the following images in your `docker-compose.yml` or `run` command:
 
 | Service | Version | Image Link |
 | --- | --- | --- |
-| `Docker Hub` | [![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri] | `aetherinox/thetvapp:latest` |
-| `Github` | [![Github Version][github-version-ftb-img]][github-version-ftb-uri] | `ghcr.io/aetherinox/thetvapp-docker:latest` |
+| `Docker Hub` | <small>[![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri]</small> | `aetherinox/thetvapp:latest` |
+| `Github` | <small>[![Github Version][github-version-ftb-img]][github-version-ftb-uri]</small> | `ghcr.io/aetherinox/thetvapp-docker:latest` |
 
 <br />
 
@@ -365,15 +365,15 @@ The following env variables can be modified before spinning up this container:
 
 | Env Var | Default | Description |
 | --- | --- | --- |
-| `PUID` | 1000 | User ID running the container |
-| `PGID` | 1000 | Group ID running the container |
-| `TZ` | Etc/UTC | Timezone |
-| `PORT_HTTP` | 80 | Defines the HTTP port to run on |
-| `PORT_HTTPS` | 443 | Defines the HTTPS port to run on |
-| `CRON_TIME` | 0/60 * * * * | Determines how often the .m3u8 and .xml guide files are updated |
-| `URL_XML` | https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml | URL to fetch `.xml` file |
-| `URL_XML_GZ` | https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz | URL to fetch `.xml.gz` file |
-| `URL_M3U` | https://thetvapp-m3u.data-search.workers.dev/playlist | URL to fetch `.m3u8` file |
+| <small>`PUID`</small> | <small>1000</small> | <small>User ID running the container</small> |
+| <small>`PGID`</small> | <small>1000</small> | <small>Group ID running the container</small> |
+| <small>`TZ`</small> | <small>Etc/UTC</small> | <small>Timezone</small> |
+| <small>`PORT_HTTP`</small> | <small>80</small> | <small>Defines the HTTP port to run on</small> |
+| <small>`PORT_HTTPS`</small> | <small>443</small> | <small>Defines the HTTPS port to run on</small> |
+| <small>`CRON_TIME`</small> | <small>0/60 * * * *</small> | <small>Determines how often the .m3u8 and .xml guide files are updated</small> |
+| <small>`URL_XML`</small> | <small>https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml</small> | <small>URL to fetch `.xml` file</small> |
+| <small>`URL_XML_GZ`</small> | <small>https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml.gz</small> | <small>URL to fetch `.xml.gz` file</small> |
+| <small>`URL_M3U`</small> | <small>https://thetvapp-m3u.data-search.workers.dev/playlist</small> | <small>URL to fetch `.m3u8` file</small> |
 
 <br />
 
@@ -392,7 +392,7 @@ The following volumes can be mounted with this container:
 
 | Volume | Description |
 | --- | --- |
-| `./thetvapp:/config` | Path which stores downloaded `.m3u8`, `.xml`, nginx configs, and optional SSL certificate/keys |
+| <small>`./thetvapp:/config`</small> | Path which stores downloaded `.m3u8`, `.xml`, nginx configs, and optional SSL certificate/keys |
 
 <br />
 
@@ -401,11 +401,11 @@ By mounting the volume above, you should now have access to the following folder
 
 | Folder | Description |
 | --- | --- |
-| 📁 keys | Responsible for storing your ssl certificate `cert.crt` + key `cert.key` |
-| 📁 log | All nginx and php logs |
-| 📁 nginx | Contains `nginx.conf`, `resolver.conf`, `ssl.conf`, `site-confs` |
-| 📁 php | Contains `php-local.ini`, `www2.conf` |
-| 📁 www | Folder where downloaded `.m3u8`, `.xml`, and `.xml.gz` will be downloaded to |
+| <small>`📁 keys`</small> | <small>Responsible for storing your ssl certificate `cert.crt` + key `cert.key`</small> |
+| <small>`📁 log`</small> | <small>All nginx and php logs</small> |
+| <small>`📁 nginx`</small> | <small>Contains `nginx.conf`, `resolver.conf`, `ssl.conf`, `site-confs`</small> |
+| <small>`📁 php`</small> | <small>Contains `php-local.ini`, `www2.conf`</small> |
+| <small>`📁 www`</small> | <small>Folder where downloaded `.m3u8`, `.xml`, and `.xml.gz` will be downloaded to</small> |
 
 <br />
 
@@ -438,7 +438,7 @@ unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied
 
 <br />
 
-If you receive any type of `permission denied` error when running your custom image, you must ensure that certain files have executable `+x` (or `0755`) permissions. Once you fix the file permissions, re-build the image. A full list of files requiring increased permissions are listed below:
+If you receive any type of `permission denied` error when running your custom image, you must ensure that certain files have executable `+x` (or `0755`) permissions. Once you fix the file permissions, re-build the image. A full list of files requiring elevated permissions are listed below:
 
 ```shell
 sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-adduser/run
