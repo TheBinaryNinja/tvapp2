@@ -366,7 +366,7 @@ When writing your code, set your IDE to utilize **spaces**, with a configured si
   [contribs-all-uri]: https://github.com/all-contributors/all-contributors
 
 <!-- BADGE > GITHUB > BUILD > NPM -->
-  [github-build-img]: https://img.shields.io/github/actions/workflow/status/Aetherinox/thetvapp-docker/npm-release.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
+  [github-build-img]: https://img.shields.io/github/actions/workflow/status/Aetherinox/thetvapp-docker/deploy-docker.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
   [github-build-uri]: https://github.com/Aetherinox/thetvapp-docker/actions/workflows/deploy-docker.yml
 
 <!-- BADGE > GITHUB > BUILD > Pypi -->

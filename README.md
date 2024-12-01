@@ -23,6 +23,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 
 <!-- prettier-ignore-start -->
 [![Version][github-version-img]][github-version-uri]
+[![Build Status][github-build-img]][github-build-uri]
 [![Downloads][github-downloads-img]][github-downloads-uri]
 [![Size][github-size-img]][github-size-img]
 [![Last Commit][github-commit-img]][github-commit-img]
@@ -514,8 +515,8 @@ The following people have helped get this project going:
   [contribs-all-uri]: https://github.com/all-contributors/all-contributors
 
 <!-- BADGE > GITHUB > BUILD > NPM -->
-  [github-build-img]: https://img.shields.io/github/actions/workflow/status/Aetherinox/thetvapp-docker/npm-release.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
-  [github-build-uri]: https://github.com/Aetherinox/thetvapp-docker/actions/workflows/npm-release.yml
+  [github-build-img]: https://img.shields.io/github/actions/workflow/status/Aetherinox/thetvapp-docker/deploy-docker.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
+  [github-build-uri]: https://github.com/Aetherinox/thetvapp-docker/actions/workflows/deploy-docker.yml
 
 <!-- BADGE > GITHUB > BUILD > Pypi -->
   [github-build-pypi-img]: https://img.shields.io/github/actions/workflow/status/Aetherinox/thetvapp-docker/release-pypi.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
