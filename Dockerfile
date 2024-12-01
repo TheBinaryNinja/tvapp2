@@ -8,6 +8,21 @@
 FROM ghcr.io/linuxserver/baseimage-alpine:3.20
 
 # #
+#   Set Labels
+# #
+
+LABEL maintainer="Aetherinox"
+LABEL org.opencontainers.image.authors="Aetherinox"
+LABEL org.opencontainers.image.vendor="Aetherinox"
+LABEL org.opencontainers.image.title="TheTVApp Grabber"
+LABEL org.opencontainers.image.description="thetvapp image by Aetherinox"
+LABEL org.opencontainers.image.source="https://github.com/Aetherinox/thetvapp-docker"
+LABEL org.opencontainers.image.documentation="https://github.com/Aetherinox/thetvapp-docker"
+LABEL org.opencontainers.image.url="https://github.com/Aetherinox/thetvapp-docker"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL build_version="1.0.0"
+
+# #
 #   Set Args
 # #
 
@@ -24,12 +39,6 @@ ENV FILE_NAME="thetvapp"
 
 ENV PORT_HTTP=80
 ENV PORT_HTTPS=443
-
-# #
-#   Set Labels
-# #
-
-LABEL maintainer="Aetherinox"
 
 # #
 #   Install
