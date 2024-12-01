@@ -157,7 +157,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_gh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
@@ -268,7 +268,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_dh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
@@ -379,7 +379,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_gh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
@@ -489,7 +489,7 @@ jobs:
 
             - name: "📦 Build and push"
               id: task_release_dh_push
-              uses: docker/build-push-action@v3
+              uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
               with:
                   context: .
