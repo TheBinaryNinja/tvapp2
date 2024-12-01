@@ -204,7 +204,7 @@ jobs:
               uses: docker/metadata-action@v3
               with:
                   images: |
-                      aetherinox/thetvapp-docker
+                      aetherinox/thetvapp
                   tags: |
                       type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
                       type=ref,event=tag
