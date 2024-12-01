@@ -39,100 +39,6 @@ jobs:
     #   Job > Docker Release > Github
     # #
 
-    docker-release-github:
-        name: >-
-          📦 Release › Github
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
-            attestations: write
-            id-token: write
-        steps:
-
-            # #
-            #   Release > Github > Start
-            # #
-
-            - name: "✅ Start"
-              id: task_release_gh_start
-              run: |
-                echo "Starting Github docker release"
-
-            # #
-            #   Release > Github > Checkout
-            # #
-
-            - name: "☑️ Checkout"
-              id: task_release_gh_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            # #
-            #   Release > Github > QEMU
-            # #
-
-            - name: "⚙️ Set up QEMU"
-              id: task_release_gh_qemu
-              uses: docker/setup-qemu-action@v3
-
-            # #
-            #   Release > Github > Setup BuildX
-            # #
-
-            - name: "⚙️ Setup Buildx"
-              id: task_release_gh_buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  version: latest
-                  driver-opts: 'image=moby/buildkit:v0.10.5'
-
-            # #
-            #   Release > Github > Registry Login
-            # #
-
-            - name: "⚙️ Login to DockerHub"
-              id: task_release_gh_registry
-              if: github.event_name != 'pull_request'
-              uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.SELF_TOKEN_CL }}
-
-            # #
-            #   Release > Github > Meta
-            # #
-
-            - name: "🔨 Docker meta"
-              id: task_release_gh_meta
-              uses: docker/metadata-action@v3
-              with:
-                  images: |
-                      ghcr.io/Aetherinox/thetvapp-docker
-                  tags: |
-                      type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
-                      type=ref,event=tag
-
-            # #
-            #   Release > Github > Build and Push
-            # #
-
-            - name: "📦 Build and push"
-              id: task_release_gh_push
-              uses: docker/build-push-action@v3
-              with:
-                  context: .
-                  platforms: linux/amd64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
-
-    # #
-    #   Job > Docker Release > Github
-    # #
-
     docker-release-dockerhub:
         name: >-
           📦 Release › Dockerhub
@@ -191,7 +97,6 @@ jobs:
               if: github.event_name != 'pull_request'
               uses: docker/login-action@v3
               with:
-                  registry: registry.docker.com
                   username: aetherinox
                   password: ${{ secrets.SELF_DOCKERHUB_TOKEN }}
 
