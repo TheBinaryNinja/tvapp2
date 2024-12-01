@@ -87,14 +87,14 @@ Create a new `docker-compose.yml` with the following:
 services:
     thetvapp:
         container_name: thetvapp
-        image: thetvapp:latest
+        image: ghcr.io/aetherinox/thetvapp-docker:latest
         restart: unless-stopped
         volumes:
             - ./thetvapp:/config
         environment:
-            - PUID=${PUID:-1000}
-            - PGID=${PGID:-1000}
-            - TZ=${SERVER_TIMEZONE}
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
             - CRON_TIME=*/60 * * * *
 ```
 
