@@ -131,12 +131,12 @@ jobs:
               id: task_release_gh_meta
               uses: docker/metadata-action@v5
               with:
-                  flavor: |
-                      latest=false
                   images: |
                       ghcr.io/Aetherinox/thetvapp-docker
                   tags: |
                       type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
+                  flavor: |
+                      latest=false
 
             # #
             #   Release > Github > Debug
@@ -167,3 +167,114 @@ jobs:
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: ${{ steps.task_release_gh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+
+    # #
+    #   Job > Docker Release > Github
+    # #
+
+    docker-release-dockerhub:
+        name: >-
+          📦 Release › Dockerhub
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+            attestations: write
+            id-token: write
+        steps:
+
+            # #
+            #   Release > Dockerhub > Start
+            # #
+
+            - name: "✅ Start"
+              id: task_release_dh_start
+              run: |
+                echo "Starting Github docker release"
+
+            # #
+            #   Release > Dockerhub > Checkout
+            # #
+
+            - name: "☑️ Checkout"
+              id: task_release_dh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Release > Dockerhub > QEMU
+            # #
+
+            - name: "⚙️ Set up QEMU"
+              id: task_release_dh_qemu
+              uses: docker/setup-qemu-action@v3
+
+            # #
+            #   Release > Dockerhub > Setup BuildX
+            # #
+
+            - name: "⚙️ Setup Buildx"
+              id: task_release_dh_buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  version: latest
+                  driver-opts: 'image=moby/buildkit:v0.10.5'
+
+            # #
+            #   Release > Dockerhub > Registry Login
+            # #
+
+            - name: "⚙️ Login to DockerHub"
+              id: task_release_dh_registry
+              if: github.event_name != 'pull_request'
+              uses: docker/login-action@v3
+              with:
+                  username: aetherinox
+                  password: ${{ secrets.SELF_DOCKERHUB_TOKEN }}
+
+            # #
+            #   Release > Dockerhub > Meta
+            # #
+
+            - name: "🔨 Docker meta"
+              id: task_release_dh_meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      aetherinox/thetvapp
+                  tags: |
+                      type=raw,value=latest,enable=false
+                      type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
+                  flavor: |
+                      latest=false
+
+            # #
+            #   Release > Dockerhub > Debug
+            # #
+
+            - name: "🪪 Debug › Print"
+              id: task_release_dh_print
+              run: |
+                  echo "registry ............. Dockerhub"
+                  echo "github.actor.......... ${{ github.actor }}"
+                  echo "github.ref ........... ${{ github.ref }}"
+                  echo "github.event_name .... ${{ github.event_name }}"
+                  echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
+                  echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
+
+            # #
+            #   Release > Dockerhub > Build and Push
+            # #
+
+            - name: "📦 Build and push"
+              id: task_release_dh_push
+              uses: docker/build-push-action@v3
+              if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile-php.template
+                  platforms: linux/amd64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_dh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_dh_meta.outputs.labels }}
