@@ -1,0 +1,83 @@
+# #
+#   @type               github workflow
+#   @desc               deploys docker container
+#   @author             Aetherinox
+#   @url                https://github.com/Aetherinox
+# #
+
+name: "⚙️ Deploy › Docker"
+run-name: "⚙️ Deploy › Docker"
+
+# #
+#   triggers
+# #
+
+on:
+    workflow_dispatch:
+
+    push:
+        branches:
+            - 'main'
+        tags:
+            - '*'
+
+# #
+#   environment variables
+# #
+
+env:
+    BOT_NAME_1:           AdminServ
+    BOT_NAME_2:           AdminServX
+    BOT_NAME_3:           EuropaServ
+    BOT_NAME_DEPENDABOT:  dependabot[bot]
+
+# #
+#   jobs
+# #
+
+jobs:
+    docker-release:
+        name: "Push Release"
+        runs-on: ubuntu-latest
+        permissions: write-all
+        steps:
+
+              - name: "☑️ Checkout"
+                uses: actions/checkout@v4
+                id: task_release_checkout
+                with:
+                    fetch-depth: 0
+
+              - name: "⚙️ Set up QEMU"
+                uses: docker/setup-qemu-action@v3
+
+              - name: "⚙️ Set up Docker Buildx"
+                id: buildx
+                uses: docker/setup-buildx-action@v3
+
+              - name: "⚙️ Login to DockerHub"
+                if: github.event_name != 'pull_request'
+                uses: docker/login-action@v3
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.actor }}
+                    password: ${{ secrets.SELF_TOKEN_CL }}
+
+              - name: "🔨 Docker meta"
+                id: meta
+                uses: docker/metadata-action@v3
+                with:
+                    images: |
+                        ghcr.io/Aetherinox/thetvapp-docker
+                    tags: |
+                        type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
+                        type=ref,event=tag
+
+              - name: "📦 Build and push"
+                uses: docker/build-push-action@v3
+                with:
+                    context: .
+                    platforms: linux/amd64
+                    push: ${{ github.event_name != 'pull_request' }}
+                    tags: ${{ steps.meta.outputs.tags }}
+                    labels: ${{ steps.meta.outputs.labels }}
