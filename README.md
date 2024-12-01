@@ -373,12 +373,6 @@ The following volumes can be mounted with this container:
 <br />
 
 By mounting the volume above, you should now have access to the following folders:
-- 📁 keys
-- 📁 log
-- 📁 nginx
-- 📁 php
-- 📁 www
-
 <br />
 
 | Folder | Description |
