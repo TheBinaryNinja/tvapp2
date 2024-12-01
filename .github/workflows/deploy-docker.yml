@@ -192,7 +192,7 @@ jobs:
               uses: docker/login-action@v3
               with:
                   registry: registry.docker.com
-                  username: ${{ secrets.SELF_DOCKERHUB_USER }}
+                  username: aetherinox
                   password: ${{ secrets.SELF_DOCKERHUB_TOKEN }}
 
             # #
@@ -204,7 +204,7 @@ jobs:
               uses: docker/metadata-action@v3
               with:
                   images: |
-                      Aetherinox/thetvapp-docker
+                      aetherinox/thetvapp-docker
                   tags: |
                       type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
                       type=ref,event=tag
