@@ -16,8 +16,6 @@ on:
     workflow_dispatch:
 
     push:
-        branches:
-            - 'main'
         tags:
             - '*'
 
@@ -39,7 +37,11 @@ jobs:
     docker-release:
         name: "Push Release"
         runs-on: ubuntu-latest
-        permissions: write-all
+        permissions:
+            contents: read
+            packages: write
+            attestations: write
+            id-token: write
         steps:
 
               - name: "☑️ Checkout"
