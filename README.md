@@ -370,6 +370,24 @@ The following volumes can be mounted with this container:
 | --- | --- |
 | `./thetvapp:/config` | Path which stores downloaded `.m3u8`, `.xml`, nginx configs, and optional SSL certificate/keys |
 
+<br />
+
+By mounting the volume above, you should now have access to the following folders:
+- 📁 keys
+- 📁 log
+- 📁 nginx
+- 📁 php
+- 📁 www
+
+<br />
+
+| Folder | Description |
+| --- | --- |
+| 📁 keys | Responsible for storing your ssl certificate `cert.crt` + key `cert.key` |
+| 📁 log | All nginx and php logs |
+| 📁 nginx | Contains `nginx.conf`, `resolver.conf`, `ssl.conf`, `site-confs` |
+| 📁 php | Contains `php-local.ini`, `www2.conf` |
+| 📁 www | Folder where downloaded `.m3u8`, `.xml`, and `.xml.gz` will be downloaded to |
 
 <br />
 

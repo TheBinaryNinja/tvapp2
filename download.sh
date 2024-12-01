@@ -1,7 +1,14 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
-DATE=$(date '+%m-%d-%Y %H:%M:%S')
+# #
+#   @project        thetvapp-docker
+#   @about          download script for fetching m3u8 and xml
+#   @file           /download.sh
+#   @repo           https://github.com/Aetherinox/thetvapp-docker
+# #
+
+DATE=$(TZ=${TZ} date '+%m-%d-%Y %H:%M:%S')
 
 # #
 #   Run Download

@@ -8,7 +8,7 @@
 #   @repo           https://github.com/Aetherinox/thetvapp-docker
 # #
 
-SUBJECT="/C=US/ST=CA/L=NA/O=thetvapp-docker/OU=Aetherinox TheTvApp/CN=*"
+SUBJECT="/C=NA/ST=NA/L=NA/O=thetvapp-docker/OU=Aetherinox TheTvApp/CN=*"
 if [[ -f /config/keys/cert.key && -f /config/keys/cert.crt ]]; then
     echo -e " SSL          : Using existing keys found in /config/keys"
 else
