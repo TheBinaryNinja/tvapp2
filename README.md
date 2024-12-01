@@ -41,8 +41,8 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 <br />
 
 - [About](#about)
+- [Docker Images](#docker-images)
 - [Install](#install)
-  - [Images](#images)
   - [Docker Run](#docker-run)
   - [Docker Compose](#docker-compose)
   - [Traefik](#traefik)
@@ -88,18 +88,24 @@ Container supports the following:
 
 <br />
 
-## Install
-Instructions on using this container
+## Docker Images
+Use any of the following images in your `docker-compose.yml` or `run` command:
 
 <br />
 
-### Images
-Use any of the following images in your `docker-compose.yml` or `run` command:
-
 | Service | Version | Image Link |
 | --- | --- | --- |
-| Docker Hub | [![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri] | `aetherinox/thetvapp:latest` |
-| Github | [![Github Version][github-version-ftb-img]][github-version-ftb-uri] | `ghcr.io/aetherinox/thetvapp-docker:latest` |
+| `Docker Hub` | [![Docker Version][dockerhub-version-ftb-img]][dockerhub-version-ftb-uri] | `aetherinox/thetvapp:latest` |
+| `Github` | [![Github Version][github-version-ftb-img]][github-version-ftb-uri] | `ghcr.io/aetherinox/thetvapp-docker:latest` |
+
+<br />
+
+---
+
+<br />
+
+## Install
+Instructions on using this container
 
 <br />
 
@@ -119,7 +125,8 @@ Create a new `docker-compose.yml` with the following:
 services:
     thetvapp:
         container_name: thetvapp
-        image: ghcr.io/aetherinox/thetvapp-docker:latest
+        image: ghcr.io/aetherinox/thetvapp-docker:latest    # Github image
+      # image: aetherinox/thetvapp:latest                   # Dockerhub image
         restart: unless-stopped
         volumes:
             - ./thetvapp:/config
