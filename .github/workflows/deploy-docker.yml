@@ -148,6 +148,7 @@ jobs:
                   images: |
                       ghcr.io/Aetherinox/thetvapp-docker
                   tags: |
+                      type=raw,value=latest,enable=false
                       type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
                       type=ref,event=tag
 
