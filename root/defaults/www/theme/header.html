@@ -2,34 +2,37 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>File Browser</title>
+    <title>TheTvApp for Docker</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.10.0/css/lightbox.min.css">
-  <link rel="stylesheet" href="/theme/theme.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.10.0/css/lightbox.min.css">
+    <link rel="stylesheet" href="/theme/css/ui.min.css">
+    <link rel="stylesheet" href="/theme/theme.css">
 
-  <script type="text/javascript" src="/theme/js/breadcrumbs.js"></script>
-  <script type="text/javascript" src="/theme/js/list.js"></script>
+    <script type="text/javascript" src="/theme/js/interface.min.js"></script>
+    <script type="text/javascript" src="/theme/js/breadcrumbs.js"></script>
+    <script type="text/javascript" src="/theme/js/fileicons.js"></script>
 </head>
 
 <body>
-  <div class="header">
-    <nav class="navbar sticky-top container">
-      <div class="navbar-brand">
-        <i class="fa fa-fw fa-files-o" aria-hidden="true"></i>
-        File Browser
-      </div>
-    </nav>
-  </div>
+    <div class="header">
+        <nav class="navbar sticky-top container">
+            <div class="navbar-brand">
+                <i class="fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
+                <a href="https://github.com/Aetherinox/thetvapp-docker">TheTvApp for Docker</a>
+            </div>
+        </nav>
+    </div>
 
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb" id="breadcrumbs"/>
-    </nav>
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" id="breadcrumbs"/>
+        </nav>
 
-    <div class="row">
-      <div class="col">
+      <div class="row">
+          <div class="col">
+            <div class="about">This page displays your most recent copies of TheTvApp's <code>.m3u8</code> playlist and <code>.xml</code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within your IPTV apps such as Jellyfin. The <code>.m3u8</code> and <code>.m3u8.gz</code> are identical guide lists, but the <code>.xml.gz</code> is compressed and will import into your IPTV application much faster.</div>

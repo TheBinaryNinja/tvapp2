@@ -526,7 +526,7 @@ Then navigate to the newly mounted folder and add your `📄 cert.crt` and `🔑
 <br />
 
 > [!NOTE]
-> If is recommended if you are generating your own SSL certificate and keys, you use a minimum of:
+> If you are generating your own certificate and key, we recommend a minimum of:
 > - RSA: `2048 bits`
 > - ECC: `256 bits`
 > - ECDSA: `P-384 or P-521`
