@@ -59,6 +59,7 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
   - [Troubleshooting](#troubleshooting)
     - [Permission Denied](#permission-denied)
 - [Shell / Bash](#shell--bash)
+- [SSL Certificates](#ssl-certificates)
 - [Logs](#logs)
 - [Contributors ✨](#contributors-)
 
@@ -490,6 +491,45 @@ You can access the docker container's shell by running:
 ```shell
 docker exec -it thetvapp ash
 ```
+
+<br />
+
+---
+
+<br />
+
+## SSL Certificates
+This docker image automatically generates an SSL certificate when the nginx server is brought online. 
+
+<br />
+
+<p align="center"><img style="width: 85%;text-align: center;border: 1px solid #353535;" src="docs/img/002.png"></p>
+
+<br />
+
+You may opt to either use the generated self-signed certificate, or you can add your own. If you decide to use your own self-signed certificate, ensure you have mounted the `/config` volume in your `docker-compose.yml`:
+
+```yml
+services:
+    thetvapp:
+        container_name: thetvapp
+        image: ghcr.io/aetherinox/thetvapp-docker:latest    # Github image
+        restart: unless-stopped
+        volumes:
+            - ./thetvapp:/config
+```
+
+<br />
+
+Then navigate to the newly mounted folder and add your `📄 cert.crt` and `🔑 cert.key` files to the `📁 /thetvapp/keys/*` folder.
+
+<br />
+
+> [!NOTE]
+> If is recommended if you are generating your own SSL certificate and keys, you use a minimum of:
+> - RSA: `2048 bits`
+> - ECC: `256 bits`
+> - ECDSA: `P-384 or P-521`
 
 <br />
 
