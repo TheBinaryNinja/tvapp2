@@ -114,11 +114,11 @@ This repo includes a few different versions of the TheAppTV docker image.
 
 <br />
 
-| Tag | Description |
-| --- | --- |
-| `:latest` | Latest version of the image. Includes only Nginx - no PHP |
-| `:1.x.x` | Specified version which contains Nginx only - no PHP |
-| `:1.x.x-php` | Contains both Nginx and PHP. |
+| Tag | Includes Nginx | Includes PHP 8 | Description |
+| --- | --- | --- | --- |
+| `:latest` | ✅ | ❌ | Latest version of the image |
+| `:1.x.x` | ✅ | ❌ | Pull a specific version |
+| `:1.x.x-php` | ✅ | ✅ | Contains both Nginx and PHP; larger image size |
 
 <br />
 
@@ -180,6 +180,13 @@ services:
 
 ### Traefik
 You can put this container behind Traefik if you want to use a reverse proxy and let Traefik handle the SSL certificate.
+
+<br />
+
+> [!NOTE]
+> These steps are **optional**. 
+> 
+> If you do not use Traefik, you can skip this section of steps. This is only for users who wish to put this container behind Traefik.
 
 <br />
 
