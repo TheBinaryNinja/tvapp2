@@ -114,6 +114,14 @@ This repo includes a few different versions of the TheAppTV docker image.
 
 <br />
 
+We release two versions, one docker image with just Nginx, and one with Nginx and PHP. The version that includes PHP is completely optional, and is only needed if you wish to develop your own enhancements for this image.
+
+<br />
+
+The image that comes with Nginx and PHP is slightly larger (roughly `20MB` + more).
+
+<br />
+
 | Tag | Includes Nginx | Includes PHP 8 | Description |
 | --- | --- | --- | --- |
 | `:latest` | ✅ | ❌ | Latest version of the image |
