@@ -14,6 +14,13 @@
             "avatar_url": "https://avatars.githubusercontent.com/u/118329232?v=4",
             "profile": "https://gitlab.com/Aetherinox",
             "contributions": ["code", "projectManagement"]
+        },
+        {
+            "login": "dtankdempse",
+            "name": "dtankdempse",
+            "avatar_url": "https://avatars.githubusercontent.com/u/175421607?v=4",
+            "profile": "https://gitlab.com/dtankdempse",
+            "contributions": ["tools"]
         }
     ],
     "contributorsPerLine": 7,
