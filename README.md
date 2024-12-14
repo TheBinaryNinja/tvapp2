@@ -4,6 +4,12 @@
 
 <br />
 
+> [!NOTE]  
+> Currently, the files are not updated with the latest tokens. The developer [https://github.com/dtankdempse/](https://github.com/dtankdempse/) is currently migrating to an alternative solution.
+> Stay tuned.
+
+<br />
+
 Docker image which automatically fetches the M3U playlist and EPG (XML) guide data for TheTvApp. Can be loaded into IPTV applications such as Jellyfin.
 
 Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-m3u](https://github.com/dtankdempse/thetvapp-m3u)
