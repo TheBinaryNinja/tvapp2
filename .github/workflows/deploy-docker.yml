@@ -21,6 +21,18 @@ on:
     workflow_dispatch:
         inputs:
 
+            IMAGE_NAME:
+                description:  "📦 Image Name"
+                required:     true
+                default:      'thetvapp-docker'
+                type:         string
+
+            IMAGE_AUTHOR:
+                description:  "📦 Image Author"
+                required:     true
+                default:      'aetherinox'
+                type:         string
+
             # #
             #   true:     runs all actions, even ones not scheduled
             #   false:    only scheduled tasks will run
@@ -45,11 +57,11 @@ on:
 # #
 
 env:
-    BOT_NAME_1:           AdminServ
-    BOT_NAME_2:           AdminServX
-    BOT_NAME_3:           EuropaServ
+    IMAGE_NAME:           alpine-base
+    IMAGE_AUTHOR:         Aetherinox
+    BOT_NAME_1:           EuropaServ
     BOT_NAME_DEPENDABOT:  dependabot[bot]
-
+    
 # #
 #   jobs
 #
@@ -117,7 +129,7 @@ jobs:
             #   Release > Github > Registry Login
             # #
 
-            - name: "⚙️ Login to DockerHub"
+            - name: "⚙️ Login to Github"
               id: task_release_gh_registry
               if: github.event_name != 'pull_request'
               uses: docker/login-action@v3
@@ -135,7 +147,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ghcr.io/Aetherinox/thetvapp-docker
+                      ghcr.io/${{ inputs.IMAGE_AUTHOR || env.IMAGE_AUTHOR }}/docker-${{ inputs.IMAGE_NAME || env.IMAGE_NAME }}
                   tags: |
                       type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
                   flavor: |
@@ -193,7 +205,7 @@ jobs:
             - name: "✅ Start"
               id: task_release_dh_start
               run: |
-                echo "Starting Github docker release"
+                echo "Starting Dockerhub Release"
 
             # #
             #   Release > Dockerhub > Checkout
@@ -233,7 +245,7 @@ jobs:
               if: github.event_name != 'pull_request'
               uses: docker/login-action@v3
               with:
-                  username: aetherinox
+                  username: ${{ inputs.IMAGE_AUTHOR || env.IMAGE_AUTHOR }}
                   password: ${{ secrets.SELF_DOCKERHUB_TOKEN }}
 
             # #
@@ -245,7 +257,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      aetherinox/thetvapp
+                      ${{ inputs.IMAGE_AUTHOR || env.IMAGE_AUTHOR }}/${{ inputs.IMAGE_NAME || env.IMAGE_NAME }}
                   tags: |
                       type=raw,value=latest,enable=false
                       type=ref,enable=true,priority=600,prefix=,suffix=-php,event=tag
@@ -340,7 +352,7 @@ jobs:
             #   Release > Github > Registry Login
             # #
 
-            - name: "⚙️ Login to DockerHub"
+            - name: "⚙️ Login to Github"
               id: task_release_gh_registry
               if: github.event_name != 'pull_request'
               uses: docker/login-action@v3
@@ -358,7 +370,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ghcr.io/Aetherinox/thetvapp-docker
+                      ghcr.io/${{ inputs.IMAGE_AUTHOR || env.IMAGE_AUTHOR }}/docker-${{ inputs.IMAGE_NAME || env.IMAGE_NAME }}
                   tags: |
                       type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
                       type=ref,event=tag
@@ -456,7 +468,7 @@ jobs:
               if: github.event_name != 'pull_request'
               uses: docker/login-action@v3
               with:
-                  username: aetherinox
+                  username: ${{ inputs.IMAGE_AUTHOR || env.IMAGE_AUTHOR }}
                   password: ${{ secrets.SELF_DOCKERHUB_TOKEN }}
 
             # #
@@ -468,7 +480,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      aetherinox/thetvapp
+                      ${{ inputs.IMAGE_AUTHOR || env.IMAGE_AUTHOR }}/${{ inputs.IMAGE_NAME || env.IMAGE_NAME }}
                   tags: |
                       type=raw,value=latest,enable=${{ endsWith(github.ref, 'main') }}
                       type=ref,event=tag
@@ -491,7 +503,7 @@ jobs:
             #   Release > Dockerhub > Build and Push
             # #
 
-            - name: "📦 Build and push"
+            - name: "📦 Build & Push"
               id: task_release_dh_push
               uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.PRINT_ONLY == 'false' ) || ( github.event_name == 'push' )
