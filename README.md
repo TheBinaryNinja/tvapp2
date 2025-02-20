@@ -47,8 +47,8 @@
   - [docker-compose.yml](#docker-composeyml)
 - [Extra Notes](#extra-notes)
   - [Custom Docker Image Scripts](#custom-docker-image-scripts)
-- [Dedication](#dedication)
-- [Contributors ✨](#contributors-)
+- [🏆 Dedication](#-dedication)
+- [✨ Contributors](#-contributors)
 
 <br />
 
@@ -522,9 +522,23 @@ The `🔀 iflip721/tvapp2` image already contains a custom script called `📄 /
 
 <br />
 
-## Dedication
+## 🏆 Dedication
 
-This repository and this project serves in memory of the developer [dtankdemp](https://hub.docker.com/r/dtankdemp). His work lives on in this project, and while a lot of it has changed, it all started because of him.
+This repository and this project serves in memory of the developer [dtankdempse](https://hub.docker.com/r/dtankdemp). His work lives on in this project, and while a lot of it has changed, it all started because of him.
+
+<br />
+
+<div align="center">
+    <table>
+        <tbody>
+            <tr>
+                <td align="center" valign="top"><a href="https://github.com/dtankdempse">
+                    <img src="https://avatars.githubusercontent.com/u/175421607?v=4?s=40" width="80px;" alt="dtankdempse"/><br /><sub><b>dtankdempse</b></sub></a><br /><a href="https://github.com/iFlip721/tvapp2/commits?author=dtankdempse" title="Code">💻</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <br />
 
@@ -532,7 +546,7 @@ This repository and this project serves in memory of the developer [dtankdemp](h
 
 <br />
 
-## Contributors ✨
+## ✨ Contributors
 We are always looking for contributors. If you feel that you can provide something useful to Gistr, then we'd love to review your suggestion. Before submitting your contribution, please review the following resources:
 
 - [Pull Request Procedure](.github/PULL_REQUEST_TEMPLATE.md)
@@ -565,13 +579,13 @@ The following people have helped get this project going:
 <table>
     <tbody>
         <tr>
-            <td align="center" valign="top"><a href="https://gitlab.com/Aetherinox">
+            <td align="center" valign="top"><a href="https://github.com/Aetherinox">
                 <img src="https://avatars.githubusercontent.com/u/118329232?v=4?s=40" width="80px;" alt="Aetherinox"/><br /><sub><b>Aetherinox</b></sub></a><br /><a href="https://github.com/iFlip721/tvapp2/commits?author=Aetherinox" title="Code">💻</a>
             </td>
-            <td align="center" valign="top"><a href="https://gitlab.com/iFlip721">
+            <td align="center" valign="top"><a href="https://github.com/iFlip721">
                 <img src="https://avatars.githubusercontent.com/u/28721588?v=4" width="80px;" alt="iFlip721"/><br /><sub><b>iFlip721</b></sub></a><br /><a href="https://github.com/iFlip721/tvapp2/commits?author=iFlip721" title="Code">💻</a>
             </td>
-            <td align="center" valign="top"><a href="https://gitlab.com/Nvmdfth">
+            <td align="center" valign="top"><a href="https://github.com/Nvmdfth">
                 <img src="https://avatars.githubusercontent.com/u/32874812?v=4" width="80px;" alt="Nvmdfth"/><br /><sub><b>Optx</b></sub></a><br /><a href="https://github.com/iFlip721/tvapp2/commits?author=Nvmdfth" title="Code">💻</a>
             </td>
         </tr>
