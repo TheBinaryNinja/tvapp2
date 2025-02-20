@@ -133,7 +133,7 @@ subgraph GRAPH_TVAPP ["Build tvapp2:latest"]
      Dockerfile.aarch64**`"]
     obj_step12["`&gt; docker build &bsol;
     --build-arg VERSION=1.0.0 &bsol;
-    --build-arg BUILD_DATE=20250218 &bsol;
+    --build-arg BUILDDATE=20250225 &bsol;
     -t tvapp:latest &bsol;
     -t tvapp:1.0.0-amd64 &bsol;
     -f Dockerfile . &bsol;`"]
@@ -155,7 +155,7 @@ direction TB
      Dockerfile.aarch64**`"]
     obj_step22["`&gt; docker build &bsol;
     --build-arg VERSION=3.20 &bsol;
-    --build-arg BUILD_DATE=20250218 &bsol;
+    --build-arg BUILDDATE=20250225 &bsol;
     -t docker-alpine-base:latest &bsol;
     -t docker-alpine-base:3.20-amd64 &bsol;
     -f Dockerfile . &bsol;`"]
