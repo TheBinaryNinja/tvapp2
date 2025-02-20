@@ -128,7 +128,7 @@ flowchart TB
 
 subgraph GRAPH_TVAPP ["Build thetvapp:latest"]
     direction TB
-    obj_step10["`&gt; git clone https://git.binaryninja.net/pub_projects/tvapp2.git`"]
+    obj_step10["`&gt; git clone git.binaryninja.net/pub_projects/tvapp2.git`"]
     obj_step11["`**Dockerfile
      Dockerfile.aarch64**`"]
     obj_step12["`&gt; docker build &bsol;
@@ -150,7 +150,7 @@ style GRAPH_TVAPP text-align:center,stroke-width:1px,stroke:transparent,fill:tra
 
 subgraph GRAPH_ALPINE["Build alpine-base:latest Image"]
 direction TB
-    obj_step20["`&gt; git clone &#45;b docker/alpine-base github.com/Aetherinox/docker-base-alpine.git`"]
+    obj_step20["`&gt; git clone -b docker/alpine-base github.com/Aetherinox/docker-base-alpine.git`"]
     obj_step21["`**Dockerfile
      Dockerfile.aarch64**`"]
     obj_step22["`&gt; docker build &bsol;
