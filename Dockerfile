@@ -46,7 +46,7 @@ LABEL org.opencontainers.image.repo.3="https://git.binaryninja.net/pub_projects/
 LABEL org.opencontainers.image.documentation="https://git.binaryninja.net/pub_projects/tvapp2/wiki"
 LABEL org.opencontainers.image.url="https://git.binaryninja.net/pub_projects/tvapp2/packages"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL build_version="TvApp2 v${VERSION} build-date: ${BUILDDATE}"
+LABEL build_version="TVApp2 v${VERSION} build-date: ${BUILDDATE}"
 
 # #
 #   Set Env Var
