@@ -10,5 +10,5 @@
         postrotate
                 s6-svc -1 /run/service/svc-nginx
         endscript
-        su abc abc
+        su dockerx dockerx
 }

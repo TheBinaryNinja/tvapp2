@@ -1,8 +1,15 @@
 # #
 #   @type               github workflow
 #   @desc               cleans up the list of deployments in the environment history
+#                       edit the 'environment:' to determine which deployment to keep clean
+#                           - can be ran manually
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
+#
+#   @secrets            secrets.SELF_TOKEN_CL                                                 Github Access Token (Classic)
+#                       secrets.DISCORD_WEBHOOK_CHAN_TVAPP2_WORKFLOWS                         Discord Webbhook URL; right-click on channel, click "Integrations"
+# #
+
 # #
 
 name: "⚙️ Deploy › Clean"
@@ -14,15 +21,40 @@ run-name: "⚙️ Deploy › Clean"
 
 on:
     workflow_dispatch:
+        inputs:
+
+            # #
+            #   Deployment Environment Name
+            #
+            #   this is the name of the deployment item
+            # #
+
+            DEPLOYMENT_ENV:
+                description:  '📦 Deployment Environment'
+                required:     true
+                default:      'orion'
+                type:         string
+
+            # #
+            #   Delay
+            #
+            #   Milliseconds to wait between cleaning up each action in history. Avoids secondary rate limit. Default: 500
+            # #
+
+            DEPLOYMENT_DELAY:
+                description:  '🕛 Delete Delay'
+                required:     true
+                default:      '1000'
+                type:         string
 
 # #
 #   environment variables
 # #
 
 env:
-    BOT_NAME_1:           AdminServ
-    BOT_NAME_2:           AdminServX
-    BOT_NAME_3:           EuropaServ
+    DEPLOYMENT_ENV:       ${{ github.event.inputs.DEPLOYMENT_ENV || 'orion' }}
+    DEPLOYMENT_DELAY:     ${{ github.event.inputs.DEPLOYMENT_DELAY || '1000' }}
+    BOT_NAME_1:           EuropaServ
     BOT_NAME_DEPENDABOT:  dependabot[bot]
     LABELS_JSON: |
       [
@@ -94,13 +126,126 @@ jobs:
     cleanup:
         runs-on: ubuntu-latest
         permissions: write-all
-  
+
         steps:
+
+            # #
+            #   Cleanup › Set Env Variables
+            # #
+
+            - name: >-
+                🕛 Get Timestamp
+              id: task_cleanup_set_timestamp
+              run: |
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+            # #
+            #   Release › Github › Checkout › Arm64
+            # #
+
+            - name: >-
+                ✅ Checkout
+              id: task_cleanup_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Cleanup › Start
+            # #
+
             - name: >-
                 ⚙️ Deployments › Clean
+              id: task_cleanup_start
               uses: Aetherinox/delete-deploy-env-action@v3
               with:
                   token: ${{ secrets.SELF_TOKEN_CL }}
-                  environment: orion
+                  environment: '${{ env.DEPLOYMENT_ENV }}'
                   onlyRemoveDeployments: true
-                  delay: "1000"
+                  delay: "${{ env.DEPLOYMENT_DELAY }}"
+
+            # #
+            #   Cleanup › Get Weekly Commits
+            # #
+
+            - name: >-
+                🕛 Get Weekly Commit List
+              id: task_cleanup_set_weekly_commit_list
+              run: |
+                  echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
+                  git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
+                  echo 'EOF' >> $GITHUB_ENV
+
+            # #
+            #   Cleanup › Notify Github › Success
+            # #
+
+            - name: >-
+                🔔 Send Discord Webhook Message (Success)
+              id: task_cleanup_notify_discord_success
+              uses: tsickert/discord-webhook@v6.0.0
+              if: success()
+              with:
+                  username: 'Io'
+                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_TVAPP2_WORKFLOWS }}
+                  embed-title: "**Deployment Cleanup Workflow Ran**"
+                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
+                  embed-description: |
+                      ## 📦 Deployment Cleanup  ${{ job.status == 'success' && '✅' || '❌' }}
+
+                      A **successful** deployment cleanup was triggered on your repository. The history for this environment has been wiped
+                      and will no longer list previous deployments you've made.
+
+                      - Environment: `${{ env.DEPLOYMENT_ENV }}`
+                      - Cleanup Delay: `${{ env.DEPLOYMENT_DELAY }}`
+                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Triggered By: ${{ github.actor }}
+                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
+
+                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
+                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
+                  embed-timestamp: "${{ env.NOW_LONG }}"
+                  embed-author-name: "${{steps.embed.outputs.EMBED_AUTHOR_NAME}}"
+                  embed-author-url: "${{ github.event.release.author.html_url }}"
+                  embed-author-icon-url: "${{ github.event.release.author.avatar_url }}"
+
+            # #
+            #   Cleanup › Notify Github › Failure
+            # #
+
+            - name: >-
+                🔔 Send Discord Webhook Message (Failure)
+              id: task_cleanup_notify_discord_failure
+              uses: tsickert/discord-webhook@v6.0.0
+              if: failure()
+              with:
+                  username: 'Io'
+                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_TVAPP2_WORKFLOWS }}
+                  embed-title: "**Deployment Cleanup Workflow Ran**"
+                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
+                  embed-description: |
+                      ## 📦 Deployment Cleanup  ${{ job.status == 'success' && '✅' || '❌' }}
+
+                      A **failed** deployment cleanup was triggered on your repository. Since the action failed; no entries of your repo's
+                      deployment history have been removed.
+
+                      - Environment: `${{ env.DEPLOYMENT_ENV }}`
+                      - Cleanup Delay: `${{ env.DEPLOYMENT_DELAY }}`
+                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Triggered By: ${{ github.actor }}
+                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
+
+                  embed-color: ${{ env.STATUS == 'success' && '5763719' || '15418782' }}
+                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
+                  embed-timestamp: "${{ env.NOW_LONG }}"
+                  embed-author-name: "${{steps.embed.outputs.EMBED_AUTHOR_NAME}}"
+                  embed-author-url: "${{ github.event.release.author.html_url }}"
+                  embed-author-icon-url: "${{ github.event.release.author.avatar_url }}"
+

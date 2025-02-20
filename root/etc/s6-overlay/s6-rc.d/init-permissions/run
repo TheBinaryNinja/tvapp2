@@ -2,17 +2,17 @@
 # shellcheck shell=bash
 
 # permissions
-lsiown -R abc:abc \
+aetherxown -R dockerx:dockerx \
     /var/lib/nginx \
     /var/tmp/nginx
 
-lsiown -R abc:abc \
+aetherxown -R dockerx:dockerx \
     /config/keys \
     /config/log \
     /config/nginx \
     /config/php
 
-lsiown abc:abc \
+aetherxown dockerx:dockerx \
     /config/www
 
 chmod -R g+w \

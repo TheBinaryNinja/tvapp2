@@ -1,9 +1,19 @@
-───────────────────────────────────────────────────────────────
-                  TheTvApp Docker Container
-───────────────────────────────────────────────────────────────
-  This container automatically downloads the m3u8 and xml
-  guide data from
-        - https://github.com/dtankdempse/thetvapp-m3u
+──────────────────────────────────────────────────────────────────────────────────────────
+                                TVApp2 Docker Image                               
+──────────────────────────────────────────────────────────────────────────────────────────
+  The TvApp2 image allows you to fetch m3u playlist and EPG data for numerous
+  IPTV services online. 
 
-  Once the data is downloaded, you can access the files from
-  the container's webserver.
+  Once the files are fetched by the image, you can visit the self-hosted webpage,
+  copy the links to the m3u and EPG files; and add them to your favorite IPTV app
+  such as Jellyfin, Plex, or Emby.
+
+  For more information about this project; visit the links below:
+
+        TVApp2 Repo             https://git.binaryninja.net/pub_projects/tvapp2
+        Base Alpine Image       https://github.com/Aetherinox/docker-base-alpine
+
+  If you are making this container available on a public-facing domain,
+  please consider using Traefik and Authentik to protect this container from
+  outside access. Your M3U and EPG files will be available for the public to
+  download and use.

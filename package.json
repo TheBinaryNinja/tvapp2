@@ -1,0 +1,71 @@
+{
+    "name": "tvapp2",
+    "version": "1.0.0",
+    "description": "This package allows you to generate M3U playlists and EPG guides from various online IPTV services.",
+    "author": "Aetherinox",
+    "license": "MIT",
+    "main": "index.js",
+    "build": {
+        "appId": "com.tvapp2.id"
+    },
+    "bugs": {
+        "url": "https://github.com/iFlip721/tvapp2/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/iFlip721/tvapp2.git"
+    },
+    "contributors": [
+        {
+            "name": "Aetherinox",
+            "email": "118329232+Aetherinox@users.noreply.github.com",
+            "url": "https://github.com/Aetherinox"
+        },
+        {
+            "name": "iFlip721",
+            "email": "161414668+iFlip721@users.noreply.github.com",
+            "url": "https://github.com/iFlip721"
+        },
+        {
+            "name": "Optx",
+            "email": "161414668+Optx@users.noreply.github.com",
+            "url": "https://github.com/Nvmdfth"
+        },
+        {
+            "name": "EuropaServ",
+            "email": "161414668+EuropaServ@users.noreply.github.com",
+            "url": "https://github.com/EuropaServ"
+        }
+    ],
+      "scripts": {
+          "start": "node index.js",
+          "docker:build:amd64": "docker build --network=host --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version -t tvapp2:$npm_config_version-amd64 -f Dockerfile .",
+          "docker:build:arm64": "docker build --network=host --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:$npm_config_version-arm64 -f Dockerfile.aarch64 .",
+          "docker:buildx:amd64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --no-cache --pull --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version --platform=linux/amd64 --output type=docker --output type=docker .",
+          "docker:buildx:arm64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --no-cache --pull --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version --platform=linux/arm64 --output type=docker --output type=docker .",
+          "env-version": "node -p require('./package.json').version;",
+          "contrib:add": "all-contributors add",
+          "contrib:generate": "all-contributors generate"
+    },
+    "keywords": [
+        "nodejs",
+        "playlist",
+        "m3u",
+        "thetvapp",
+        "token",
+        "iptv"
+    ],
+    "dependencies": {
+        "user-agents": "^1.0.0"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "files": [
+      "root",
+      "LICENSE",
+      "README.md",
+      "index.js",
+      "manifest.json"
+  ]
+}

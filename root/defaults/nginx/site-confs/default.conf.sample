@@ -1,9 +1,10 @@
 # #
-#   @project        thetvapp-docker
-#   @about          Nginx site-configs default configuration file
-#   @file           /root/defaults/nginx/site-confs/default.conf
-#   @repo           https://github.com/Aetherinox/thetvapp-docker
-#   @generated      2024-11-30
+#   @project        tvapp2
+#   @usage          docker image which allows you to download a m3u playlist and EPG guide data for the
+#                   IPTV service TheTvApp.
+#   @file           nginx.conf.sample
+#   @repo           https://github.com/Aetherinox/docker-base-alpine
+#                   https://git.binaryninja.net/pub_projects/tvapp2
 # #
 
 server
@@ -29,39 +30,35 @@ server
     location /
     {
         # enable for basic auth
-        # auth_basic                    "Restricted";
-        # auth_basic_user_file          /config/nginx/.htpasswd;
+        #auth_basic                 "Restricted";
+        #auth_basic_user_file       /config/nginx/.htpasswd;
 
         # index > fancy
-        fancyindex                      on;
-        fancyindex_header               "/theme/header.html";
-        fancyindex_footer               "/theme/footer.html";
-        fancyindex_ignore               "theme";
-        fancyindex_time_format          "%m-%d-%Y %l:%M:%S %P";
-        fancyindex_directories_first    on;
-        fancyindex_localtime            on;
-        fancyindex_name_length          255;
-        fancyindex_show_path            off;
-        fancyindex_show_dotfiles        off;
-        fancyindex_hide_symlinks        on;
-        fancyindex_hide_parent_dir      on;
-        fancyindex_default_sort         name;
+        fancyindex                  on;
+        fancyindex_header           "/theme/header.html";
+        fancyindex_footer           "/theme/footer.html";
+        fancyindex_ignore           "theme";
+        fancyindex_time_format      "%m-%d-%Y %T";
+        fancyindex_name_length      255;
+        fancyindex_show_dotfiles    off;
+        fancyindex_hide_symlinks    on;
+        fancyindex_default_sort     name;
 
         # index > auto
-    	autoindex_exact_size            off;
-    	autoindex_format                html;
-    	autoindex_localtime             on;
+    	autoindex_exact_size        off;
+    	autoindex_format            html;
+    	autoindex_localtime         on;
 
-        gzip                            on;
-        gzip_vary                       on;
-        gzip_types                      text/css text/javascript text/xml application/atom+xml application/rss+xml text/markdown text/mathml text/plain text/vnd.sun.j2me.app-descriptor text/vnd.wap.wml text/x-component application/json application/xhtml+xml application/xspf+xml font/woff font/woff2 image/avif image/bmp image/png image/svg+xml image/tiff image/vnd.wap.wbmp image/webp image/x-icon image/x-jng audio/midi audio/mpeg audio/ogg audio/x-m4a audio/x-realaudio;
-        gzip_proxied                    any;
-        gzip_comp_level                 1;
-        gzip_http_version               1.0;
-        gunzip                          on;
-        gzip_static                     on;
+        gzip on;
+        gzip_vary on;
+        gzip_types text/css text/javascript text/xml application/atom+xml application/rss+xml text/markdown text/mathml text/plain text/vnd.sun.j2me.app-descriptor text/vnd.wap.wml text/x-component application/json application/xhtml+xml application/xspf+xml font/woff font/woff2 image/avif image/bmp image/png image/svg+xml image/tiff image/vnd.wap.wbmp image/webp image/x-icon image/x-jng audio/midi audio/mpeg audio/ogg audio/x-m4a audio/x-realaudio;
+        gzip_proxied any;
+        gzip_comp_level 1;
+        gzip_http_version 1.0;
+        gunzip on;
+        gzip_static on;
 
-        try_files                       $uri $uri/ /index.html /index.htm /index.php$is_args$args;
+        try_files $uri $uri/ /index.html /index.htm /index.php$is_args$args;
     }
 
     location ~ ^(.+\.php)(.*)$

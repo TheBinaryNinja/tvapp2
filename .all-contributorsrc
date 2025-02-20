@@ -1,5 +1,5 @@
 {
-    "projectName": "thetvapp-docker",
+    "projectName": "tvapp2",
     "projectOwner": "Aetherinox",
     "repoType": "github",
     "repoHost": "https://github.com",
@@ -12,15 +12,22 @@
             "login": "Aetherinox",
             "name": "Aetherinox",
             "avatar_url": "https://avatars.githubusercontent.com/u/118329232?v=4",
-            "profile": "https://gitlab.com/Aetherinox",
-            "contributions": ["code", "projectManagement"]
+            "profile": "https://github.com/Aetherinox",
+            "contributions": ["code"]
         },
         {
-            "login": "dtankdempse",
-            "name": "dtankdempse",
-            "avatar_url": "https://avatars.githubusercontent.com/u/175421607?v=4",
-            "profile": "https://gitlab.com/dtankdempse",
-            "contributions": ["tools"]
+            "login": "iFlip721",
+            "name": "iFlip721",
+            "avatar_url": "https://avatars.githubusercontent.com/u/28721588?v=4",
+            "profile": "https://github.com/iFlip721",
+            "contributions": ["code"]
+        },
+        {
+            "login": "Optx",
+            "name": "Optx",
+            "avatar_url": "https://avatars.githubusercontent.com/u/32874812?v=4",
+            "profile": "https://github.com/Nvmdfth",
+            "contributions": ["code"]
         }
     ],
     "contributorsPerLine": 7,

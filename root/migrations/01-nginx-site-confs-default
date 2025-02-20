@@ -17,4 +17,4 @@ migrate() {
 }
 
 # rename default to default.conf
-migrate "/config/nginx/site-confs/default" "/config/nginx/site-confs/default.conf"
+# migrate "/config/nginx/site-confs/default" "/config/nginx/site-confs/default.conf"

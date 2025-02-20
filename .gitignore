@@ -1,64 +1,73 @@
 # #
-#    Windows image file caches
+#   Binaries
 # #
 
-Thumbs.db
-ehthumbs.db
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
 # #
-#    Folder config file
+#   TVApp2 Specific
 # #
 
-Desktop.ini
+*.dat
+*.xml
+*.txt
 
 # #
-#    Recycle Bin used on file shares
+#   Test binary
+#   build with `go test -c`
 # #
 
-$RECYCLE.BIN/
+*.test
 
 # #
-#    Windows Installer files
+#   Output for go coverage tool, specifically when used with LiteIDE
 # #
 
-*.cab
-*.msi
-*.msm
-*.msp
+*.out
 
 # #
-#    Windows shortcuts
+#   Dependency directories (remove the comment below to include it)
+#   vendor/
 # #
 
-*.lnk
-
 # #
-#    Operating System Files
+#   Go workspace file
 # #
 
-.DS_Store
-.AppleDouble
-.LSOverride
+go.work
 
 # #
-#    Thumbnails
+#   Mac
 # #
 
-._*
+.DS_STORE
 
 # #
-#    Other
+#   Visual Studio Code
 # #
 
-.Spotlight-V100
-.Trashes
+.vscode/
 
 # #
-#    Directories potentially created on remote AFP share
+#   Temp folders
 # #
 
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
+.temp/
+temp/
+work/
+
+# #
+#   Python Cache
+# #
+
+__pycache__/
+
+# #
+#   logs
+# #
+
+.log

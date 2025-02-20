@@ -2,27 +2,10 @@
 # shellcheck shell=bash
 
 # #
-#   @project        thetvapp-docker
-#   @about          Manages sample files such as nginx
-#   @file           /root/etc/s6-overlay/s6-rc.d/init-samples/run
-#   @repo           https://github.com/Aetherinox/thetvapp-docker
+#   @project        tvapp2
+#   @usage          docker image which allows you to download a m3u playlist and EPG guide data for the
+#                   IPTV service TheTvApp.
+#   @file           nginx.conf.sample
+#   @repo           https://github.com/Aetherinox/docker-base-alpine
+#                   https://git.binaryninja.net/pub_projects/tvapp2
 # #
-
-# remove old samples
-find /config/nginx/ \
-    -name "*.conf.sample" \
-    -type f \
-    -delete
-
-# copy new samples
-find /defaults/nginx/ \
-    -maxdepth 3 \
-    -name "*.conf.sample" \
-    -type f \
-    -exec cp "{}" /config/nginx/ \;
-
-find /defaults/nginx/site-confs/ \
-    -maxdepth 1 \
-    -name "*.conf.sample" \
-    -type f \
-    -exec cp "{}" /config/nginx/site-confs/ \;

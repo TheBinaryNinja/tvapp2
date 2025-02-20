@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# #
+#   @project        tvapp2
+#   @usage          docker image which allows you to download a m3u playlist and EPG guide data for the
+#                   IPTV service TheTvApp.
+#   @file           plugins
+#   @repo           https://github.com/Aetherinox/docker-base-alpine
+#                   https://git.binaryninja.net/pub_projects/tvapp2
+# #
+
+PLUGINS_PATH="/config/www/plugins"
+
+# #
+#   Plugins > Start
+# #
+
+echo -e " Loader       : Checking tvapp2-plugins"

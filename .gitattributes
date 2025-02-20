@@ -1,17 +1,32 @@
-# Auto detect text files and perform LF normalization
+# #
+#   @file           .gitattritutes
+#   @author         Aetherinox      https://github.com/Aetherinox
+#                                   https://git.binaryninja.net/Aetherinox
+# #
+
+# #
+#   Auto detect text files and set LF
+# #
+
 * text=auto
 
-# Custom for Visual Studio
+# #
+#   Visual Studio
+# #
+
 *.cs     diff=csharp
 
-# Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
+# #
+#   msysgit
+# #
+
+*.doc   diff=astextplain
+*.DOC   diff=astextplain
+*.docx  diff=astextplain
+*.DOCX  diff=astextplain
+*.dot   diff=astextplain
+*.DOT   diff=astextplain
+*.pdf   diff=astextplain
+*.PDF   diff=astextplain
+*.rtf   diff=astextplain
+*.RTF   diff=astextplain
