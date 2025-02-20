@@ -1,16 +1,19 @@
 ──────────────────────────────────────────────────────────────────────────────────────────
-                                TVApp2 Docker Image                               
+                                TVApp2 Docker Image
 ──────────────────────────────────────────────────────────────────────────────────────────
   The TvApp2 image allows you to fetch m3u playlist and EPG data for numerous
-  IPTV services online. 
+  IPTV services online.
 
   Once the files are fetched by the image, you can visit the self-hosted webpage,
   copy the links to the m3u and EPG files; and add them to your favorite IPTV app
   such as Jellyfin, Plex, or Emby.
 
-  For more information about this project; visit the links below:
+  For more information about this project; visit the links below. This app is
+  served on multiple repositories as backup. Use any of the repo links below:
 
-        TVApp2 Repo             https://git.binaryninja.net/pub_projects/tvapp2
+        TVApp2 Repo 1           https://github.com/iFlip721/tvapp2
+        TVApp2 Repo 2           https://github.com/Aetherinox/tvapp2
+        TVApp2 Repo 3           https://git.binaryninja.net/pub_projects/tvapp2
         Base Alpine Image       https://github.com/Aetherinox/docker-base-alpine
 
   If you are making this container available on a public-facing domain,

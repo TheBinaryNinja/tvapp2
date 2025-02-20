@@ -4,6 +4,9 @@
 PUID=${PUID:-911}
 PGID=${PGID:-911}
 
+IP_GATEWAY=$(/sbin/ip route|awk '/default/ { print $3 }')
+IP_CONTAINER=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+
 if [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
     groupmod -o -g "$PGID" dockerx
     usermod -o -u "$PUID" dockerx
@@ -21,7 +24,9 @@ echo "        User:Group              $(id -u dockerx):$(id -g dockerx)"
 else
 echo "        User:Group              $(stat /run -c %u):$(stat /run -c %g)"
 fi
-echo "        (Ports) HTTP/HTTPS      $(echo $PORT_HTTP)"
+echo "        Port(s)                 $(echo $PORT_HTTP)"
+echo "        Gateway                 $(echo $IP_GATEWAY)"
+echo "        Web Server              $(echo $IP_CONTAINER:$PORT_HTTP)"
 echo ""
 echo '──────────────────────────────────────────────────────────────────────────────────────────'
 
