@@ -56,7 +56,8 @@
         "iptv"
     ],
     "dependencies": {
-        "user-agents": "^1.0.0"
+        "playwright": "^1.49.1",
+        "user-agents": "^1.1.388"
     },
     "engines": {
         "node": ">=20"
