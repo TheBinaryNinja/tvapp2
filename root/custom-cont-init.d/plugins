@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # #
-#   @project        tvapp2
-#   @usage          docker image which allows you to download a m3u playlist and EPG guide data for the
-#                   IPTV service TheTvApp.
+#   @project        TVApp2
+#   @usage          Automatic m3u and xml guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
 #   @file           plugins
-#   @repo           https://github.com/Aetherinox/docker-base-alpine
-#                   https://git.binaryninja.net/pub_projects/tvapp2
+#   @repo.1         https://github.com/iFlip721/tvapp2
+#   @repo.2         https://github.com/Aetherinox/tvapp2
+#   @repo.3         https://git.binaryninja.net/pub_projects/tvapp2
+#   @repo.alpine    https://github.com/Aetherinox/docker-base-alpine
 # #
 
 PLUGINS_PATH="/config/www/plugins"
