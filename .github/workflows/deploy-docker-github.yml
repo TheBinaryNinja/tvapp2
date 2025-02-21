@@ -51,7 +51,7 @@ on:
             IMAGE_AUTHOR:
                 description:  '🪪 Image Author'
                 required:     true
-                default:      'BinaryNinja'
+                default:      'TheBinaryNinja'
                 type:         string
 
             # #
@@ -75,7 +75,7 @@ on:
             IMAGE_GHCR_USERNAME:
                 description:    '🪪 ghcr.io Username'
                 required:       true
-                default:        'BinaryNinja'
+                default:        'TheBinaryNinja'
                 type:           string
 
             # #
