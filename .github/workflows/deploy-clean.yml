@@ -206,16 +206,21 @@ jobs:
                       - Environment: `${{ env.DEPLOYMENT_ENV }}`
                       - Cleanup Delay: `${{ env.DEPLOYMENT_DELAY }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
-                      - Triggered By: `${{ github.actor }}`
                       - Runner: `${{ runner.name }}`
+                      - Triggered By: `${{ github.actor }}`
                       - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
                   embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.event.release.author.name }}"
-                  embed-author-url: "${{ github.event.release.author.html_url }}"
-                  embed-author-icon-url: "${{ github.event.release.author.avatar_url }}"
+                # embed-author-name: "${{ github.actor }}"
+                # embed-author-url: "${{ github.event.html_url }}"
+                # embed-author-icon-url: "${{ github.actor.avatar_url }}"
+                # embed-author-icon-url: "${{ github.event.org.avatar_url }}"
+                # embed-author-icon-url: "${{ github.actor.avatar_url }}"
+                  embed-author-icon-url: ${{ github.event.workflow_run.actor.avatar_url }}
+                  embed-author-name: ${{ github.event.workflow_run.actor.login }}
+                  embed-author-url: ${{ github.event.workflow_run.actor.html_url }}
 
             # #
             #   Cleanup › Notify Github › Failure
@@ -242,6 +247,7 @@ jobs:
                       - Environment: `${{ env.DEPLOYMENT_ENV }}`
                       - Cleanup Delay: `${{ env.DEPLOYMENT_DELAY }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
                       - Triggered By: `${{ github.actor }}`
                       - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
