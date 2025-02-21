@@ -7,7 +7,7 @@
 #   @secrets            secrets.ADMINSERV_GPG_KEY_ASC                               gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
 #                       secrets.ADMINSERV_GPG_PASSPHRASE                            gpg private key passphrase
 #                       secrets.IMAGE_GHCR_TOKEN                                    github personal access token (classic) with package:write permission
-#                       secrets.DISCORD_WEBHOOK_CHAN_TVAPP2_RELEASES                Discord webhook to report releases from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         Discord webhook to report releases from github to discord
 # #
 
 name: "📦 Deploy › Docker › Github"
@@ -399,7 +399,7 @@ jobs:
               with:
                   username: 'Io'
                   avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_TVAPP2_RELEASES }}
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
                   embed-title: "📦 **Deploy › Docker › Github Workflow Ran**"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
@@ -636,7 +636,7 @@ jobs:
               with:
                   username: 'Io'
                   avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_TVAPP2_RELEASES }}
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
                   embed-title: "📦 **Deploy › Docker › Github Workflow Ran**"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
