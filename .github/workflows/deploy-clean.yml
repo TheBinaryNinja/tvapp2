@@ -198,7 +198,7 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 Deployment Cleanup  ${{ job.status == 'success' && '✅' || '❌' }}
+                      ## 📦 ᲼Deployment Cleanup ᲼${{ job.status == 'success' && '✅' || '❌' }}
 
                       A **successful** deployment cleanup was triggered on your repository. The history for this environment has been wiped
                       and will no longer list previous deployments you've made.
@@ -234,7 +234,7 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 Deployment Cleanup  ${{ job.status == 'success' && '✅' || '❌' }}
+                      ## 📦 ᲼Deployment Cleanup ᲼${{ job.status == 'success' && '✅' || '❌' }}
 
                       A **failed** deployment cleanup was triggered on your repository. Since the action failed; no entries of your repo's
                       deployment history have been removed.
