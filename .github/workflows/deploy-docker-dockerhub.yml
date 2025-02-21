@@ -70,12 +70,13 @@ on:
             #   Image Dockerhub username
             #
             #   this is the user to sign into Dockerhub as.
+            #   this username MUST be lowercase or you will get `unauthorized: incorrect username or password`
             # #
 
             IMAGE_DOCKERHUB_USERNAME:
                 description:    '🪪 Dockerhub Username'
                 required:       true
-                default:        'TheBinaryNinja'
+                default:        'thebinaryninja'
                 type:           string
 
             # #
@@ -114,9 +115,9 @@ on:
 
 env:
     IMAGE_NAME:                 ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_AUTHOR:               ${{ github.event.inputs.IMAGE_AUTHOR || 'TheBinaryNinja' }}
+    IMAGE_AUTHOR:               ${{ github.event.inputs.IMAGE_AUTHOR || 'thebinaryninja' }}
     IMAGE_VERSION:              ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
-    IMAGE_DOCKERHUB_USERNAME:   ${{ github.event.inputs.IMAGE_DOCKERHUB_USERNAME || 'TheBinaryNinja' }}
+    IMAGE_DOCKERHUB_USERNAME:   ${{ github.event.inputs.IMAGE_DOCKERHUB_USERNAME || 'thebinaryninja' }}
     BOT_NAME_1:                 EuropaServ
     BOT_NAME_DEPENDABOT:        dependabot[bot]
 
@@ -417,6 +418,7 @@ jobs:
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
@@ -661,6 +663,7 @@ jobs:
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
