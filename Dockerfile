@@ -37,16 +37,16 @@ ARG VERSION
 LABEL maintainer="aetherinox, iFlip721"
 LABEL org.opencontainers.image.authors="aetherinox, iFlip721"
 LABEL org.opencontainers.image.vendor="BinaryNinja"
-LABEL org.opencontainers.image.title="TvApp m3u playlist and EPG guide downloader"
+LABEL org.opencontainers.image.title="TVApp2"
 LABEL org.opencontainers.image.description="Automatic m3u and xml guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client."
 LABEL org.opencontainers.image.source="https://git.binaryninja.net/pub_projects/tvapp2"
 LABEL org.opencontainers.image.repo.1="https://github.com/iFlip721/tvapp2"
 LABEL org.opencontainers.image.repo.2="https://github.com/Aetherinox/tvapp2"
 LABEL org.opencontainers.image.repo.3="https://git.binaryninja.net/pub_projects/tvapp2"
 LABEL org.opencontainers.image.documentation="https://git.binaryninja.net/pub_projects/tvapp2/wiki"
-LABEL org.opencontainers.image.url="https://git.binaryninja.net/pub_projects/tvapp2/packages"
+LABEL org.opencontainers.image.url="https://github.com/Aetherinox/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL build_version="TVApp2 v${VERSION} build-date: ${BUILDDATE}"
+LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
 
 # #
 #   Set Env Var
