@@ -8,7 +8,7 @@
 #   @repo           https://github.com/iFlip721/tvapp2
 #                   https://github.com/aetherinox/tvapp2
 #                   https://github.com/aetherinox/docker-base-alpine
-#                   https://git.binaryninja.net/pub_projects/tvapp2
+#                   https://git.binaryninja.net/BinaryNinja/tvapp2
 #
 #   you can build your own image by running
 #       amd64       docker build --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .

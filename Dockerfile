@@ -8,7 +8,7 @@
 #   @repo           https://github.com/iFlip721/tvapp2
 #                   https://github.com/aetherinox/tvapp2
 #                   https://github.com/aetherinox/docker-base-alpine
-#                   https://git.binaryninja.net/pub_projects/tvapp2
+#                   https://git.binaryninja.net/BinaryNinja/tvapp2
 #
 #   you can build your own image by running
 #       amd64       docker build --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
@@ -39,11 +39,11 @@ LABEL org.opencontainers.image.authors="aetherinox, iFlip721"
 LABEL org.opencontainers.image.vendor="BinaryNinja"
 LABEL org.opencontainers.image.title="TVApp2"
 LABEL org.opencontainers.image.description="Automatic m3u and xml guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client."
-LABEL org.opencontainers.image.source="https://git.binaryninja.net/pub_projects/tvapp2"
+LABEL org.opencontainers.image.source="https://git.binaryninja.net/BinaryNinja/tvapp2"
 LABEL org.opencontainers.image.repo.1="https://github.com/iFlip721/tvapp2"
 LABEL org.opencontainers.image.repo.2="https://github.com/Aetherinox/tvapp2"
-LABEL org.opencontainers.image.repo.3="https://git.binaryninja.net/pub_projects/tvapp2"
-LABEL org.opencontainers.image.documentation="https://git.binaryninja.net/pub_projects/tvapp2/wiki"
+LABEL org.opencontainers.image.repo.3="https://git.binaryninja.net/BinaryNinja/tvapp2"
+LABEL org.opencontainers.image.documentation="https://git.binaryninja.net/BinaryNinja/tvapp2/wiki"
 LABEL org.opencontainers.image.url="https://github.com/Aetherinox/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
@@ -54,7 +54,7 @@ LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
 
 ENV TZ="Etc/UTC"
 ENV URL_REPO_BASE="https://github.com/aetherinox/alpine-base/pkgs/container/alpine-base"
-ENV URL_REPO_APP="https://git.binaryninja.net/pub_projects/tvapp2"
+ENV URL_REPO_APP="https://git.binaryninja.net/BinaryNinja/tvapp2"
 ENV FILE_NAME="index.html"
 ENV PORT_HTTP=4124
 ENV NODE_VERSION=18.20.5

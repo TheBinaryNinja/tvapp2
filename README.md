@@ -73,7 +73,7 @@ This project contains several repositories which all share the same code; use th
 
 - [https://github.com/iFlip721/tvapp2](https://github.com/iFlip721/tvapp2)
 - [https://github.com/Aetherinox/tvapp2](https://github.com/Aetherinox/tvapp2)
-- [https://git.binaryninja.net/pub_projects/tvapp2](https://git.binaryninja.net/pub_projects/tvapp2)
+- [https://git.binaryninja.net/BinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)
 
 <br />
 
@@ -81,8 +81,8 @@ This project contains several repositories which all share the same code; use th
 
 <br />
 
-- TVApp2 makes fetch request to [tvapp2-externals](https://git.binaryninja.net/pub_projects/tvapp2-externals 'tvapp2-externals') making updates to external formats agnostic to pushing a new container image.
-- TVApp2 makes fetch request to [XMLTV-EPG](https://git.binaryninja.net/pub_projects/XMLTV-EPG 'XMLTV-EPG') making updates to EPG data based on customized channel ids. Channel ids are specific to each EPG record which makes obfuscating channel ids difficult.
+- TVApp2 makes fetch request to [tvapp2-externals](https://git.binaryninja.net/BinaryNinja/tvapp2-externals 'tvapp2-externals') making updates to external formats agnostic to pushing a new container image.
+- TVApp2 makes fetch request to [XMLTV-EPG](https://git.binaryninja.net/BinaryNinja/XMLTV-EPG 'XMLTV-EPG') making updates to EPG data based on customized channel ids. Channel ids are specific to each EPG record which makes obfuscating channel ids difficult.
 
 <br />
 
@@ -128,7 +128,7 @@ flowchart TB
 
 subgraph GRAPH_TVAPP ["Build tvapp2:latest"]
     direction TB
-    obj_step10["`&gt; git clone git.binaryninja.net/pub_projects/tvapp2.git`"]
+    obj_step10["`&gt; git clone git.binaryninja.net/BinaryNinja/tvapp2.git`"]
     obj_step11["`**Dockerfile
      Dockerfile.aarch64**`"]
     obj_step12["`&gt; docker build &bsol;
@@ -212,7 +212,7 @@ Prior to building the  docker image, you **must** ensure the sections below are 
 
 You cannot utilize Windows' `Carriage Return Line Feed`. All files must be converted to Unix' `Line Feed`.  This can be done with **[Visual Studio Code](https://code.visualstudio.com/)**. OR; you can run the Linux terminal command `dos2unix` to convert these files.
 
-If you cloned the files from the official repository **[iflip721/tvapp2](https://git.binaryninja.net/pub_projects/tvapp2)** and have not edited them, then you should not need to do this step.
+If you cloned the files from the official repository **[iflip721/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** and have not edited them, then you should not need to do this step.
 
 <br />
 
@@ -265,7 +265,7 @@ sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
 <br />
 
 ### Build `tvapp` Image
-After completing the items above, you can now build the **[iflip721/tvapp2](https://git.binaryninja.net/pub_projects/tvapp2)** image. You can now build the TvApp2 docker image. Pick your platform below and run the associated command. Most people will want to use [amd64](#amd64).
+After completing the items above, you can now build the **[iflip721/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image. You can now build the TvApp2 docker image. Pick your platform below and run the associated command. Most people will want to use [amd64](#amd64).
 
 <br />
 
@@ -314,7 +314,7 @@ All of the needed Docker files already exist in the repository. To get started, 
 mkdir tvapp2 && cd tvapp2
 
 # to clone from our gitea website
-git clone https://git.binaryninja.net/pub_projects/tvapp2.git ./
+git clone https://git.binaryninja.net/BinaryNinja/tvapp2.git ./
 
 # to clone from our github website
 git clone https://github.com/iFlip721/tvapp2.git ./
