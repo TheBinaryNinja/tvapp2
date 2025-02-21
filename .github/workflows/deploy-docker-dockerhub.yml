@@ -6,7 +6,7 @@
 #                       upload this workflow to both the `main` branch of the tvapp2 repository
 #   @secrets            secrets.ADMINSERV_GPG_KEY_ASC                               gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
 #                       secrets.ADMINSERV_GPG_PASSPHRASE                            gpg private key passphrase
-#                       secrets.IMAGE_GHCR_TOKEN                                    github personal access token (classic) with package:write permission
+#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     github personal access token (classic) with package:write permission
 #                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         Discord webhook to report releases from github to discord
 # #
 
@@ -315,7 +315,7 @@ jobs:
               uses: docker/login-action@v3
               with:
                   username: ${{ env.IMAGE_DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.IMAGE_DOCKERHUB_TOKEN }}
+                  password: ${{ secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN }}
 
             # #
             #   Release › Dockerhub › Meta › Arm64
@@ -556,7 +556,7 @@ jobs:
               uses: docker/login-action@v3
               with:
                   username: ${{ env.IMAGE_DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.IMAGE_DOCKERHUB_TOKEN }}
+                  password: ${{ secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN }}
 
             # #
             #   Release › Dockerhub › Meta › Amd64
