@@ -51,7 +51,7 @@ on:
             IMAGE_AUTHOR:
                 description:  '🪪 Image Author'
                 required:     true
-                default:      'Aetherinox'
+                default:      'BinaryNinja'
                 type:         string
 
             # #
@@ -114,7 +114,7 @@ on:
 
 env:
     IMAGE_NAME:           ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_AUTHOR:         ${{ github.event.inputs.IMAGE_AUTHOR || 'Aetherinox' }}
+    IMAGE_AUTHOR:         ${{ github.event.inputs.IMAGE_AUTHOR || 'BinaryNinja' }}
     IMAGE_VERSION:        ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
     IMAGE_GHCR_USERNAME:  ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'Aetherinox' }}
     BOT_NAME_1:           EuropaServ
