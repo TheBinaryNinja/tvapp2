@@ -207,6 +207,7 @@ jobs:
                       - Cleanup Delay: `${{ env.DEPLOYMENT_DELAY }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Triggered By: `${{ github.actor }}`
+                      - Runner: `${{ runner.name }}`
                       - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
