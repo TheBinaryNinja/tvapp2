@@ -215,7 +215,7 @@ jobs:
                   embed-timestamp: "${{ env.NOW_LONG }}"
                   embed-author-name: "${{ github.actor }}"
                   embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-author-icon-url: "${{ github.event.org.avatar_url }}"
+                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
                 # embed-author-icon-url: "${{ github.actor.avatar_url }}"
                 # embed-author-icon-url: ${{ github.event.workflow_run.actor.avatar_url }}
                 # embed-author-name: ${{ github.event.workflow_run.actor.login }}
