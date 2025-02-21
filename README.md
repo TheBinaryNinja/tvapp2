@@ -666,7 +666,7 @@ Want to help but can't write code?
 
 <br />
 
-![Alt](https://repobeats.axiom.co/api/embed/16789a0ce9d38f369b00eb5c337fc8eb72110f4b.svg "Analytics image")
+![Alt](https://repobeats.axiom.co/api/embed/fb7e11f0bc61b125f923a0ee3eb0bd8aba79b8d5.svg "Repobeats analytics image")
 
 <br />
 
