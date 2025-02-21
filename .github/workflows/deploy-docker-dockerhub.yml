@@ -405,7 +405,7 @@ jobs:
                   username: 'Io'
                   avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
                   webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
-                  embed-title: "📦 **Deploy › Docker › Github Workflow Ran**"
+                  embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
@@ -419,7 +419,9 @@ jobs:
                       - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
                       - Triggered By: `${{ github.actor }}`
+                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
                       ### Tags
                       -# This docker image will use the following tags:
@@ -437,9 +439,9 @@ jobs:
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
                   embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.event.release.author.name }}"
-                  embed-author-url: "${{ github.event.release.author.html_url }}"
-                  embed-author-icon-url: "${{ github.event.release.author.avatar_url }}"
+                  embed-author-name: "${{ github.repository_owner }}"
+                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
 
     # #
     #   Job › Docker Release › Dockerhub › Amd64
@@ -647,7 +649,7 @@ jobs:
                   username: 'Io'
                   avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
                   webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
-                  embed-title: "📦 **Deploy › Docker › Github Workflow Ran**"
+                  embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
@@ -661,7 +663,9 @@ jobs:
                       - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
                       - Triggered By: `${{ github.actor }}`
+                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
                       ### Tags
                       -# This docker image will use the following tags:
@@ -679,6 +683,6 @@ jobs:
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
                   embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.event.release.author.name }}"
-                  embed-author-url: "${{ github.event.release.author.html_url }}"
-                  embed-author-icon-url: "${{ github.event.release.author.avatar_url }}"
+                  embed-author-name: "${{ github.repository_owner }}"
+                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"

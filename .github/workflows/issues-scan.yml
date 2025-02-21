@@ -824,7 +824,7 @@ jobs:
                   username: 'Io'
                   avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
                   webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS }}
-                  embed-title: "🎫 **Issues › Scan Workflow Ran**"
+                  embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_960_720.png'
                   embed-description: |
@@ -835,6 +835,7 @@ jobs:
                       The PR will be assigned tags depending on the outcome of the code scan. If issues are detected in the code, a list of each file and issue will be posted in the PR.
 
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
                       - Triggered By: `${{ github.actor }}`
                       - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
@@ -874,7 +875,7 @@ jobs:
                   username: 'Io'
                   avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
                   webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS }}
-                  embed-title: "**Issues › Scan Workflow Ran**"
+                  embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://cdn.pixabay.com/photo/2022/01/30/13/33/github-6980894_960_720.png'
                   embed-description: |
@@ -885,6 +886,7 @@ jobs:
                       The PR will be assigned tags depending on the outcome of the code scan. If issues are detected in the code, a list of each file and issue will be posted in the PR.
 
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
                       - Triggered By: `${{ github.actor }}`
                       - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
