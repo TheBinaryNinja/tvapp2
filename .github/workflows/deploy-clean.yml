@@ -213,13 +213,9 @@ jobs:
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
                   embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.actor }}"
+                  embed-author-name: "${{ github.repository_owner }}"
                   embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
-                # embed-author-icon-url: "${{ github.actor.avatar_url }}"
-                # embed-author-icon-url: ${{ github.event.workflow_run.actor.avatar_url }}
-                # embed-author-name: ${{ github.event.workflow_run.actor.login }}
-                # embed-author-url: ${{ github.event.workflow_run.actor.html_url }}
 
             # #
             #   Cleanup › Notify Github › Failure
@@ -250,10 +246,10 @@ jobs:
                       - Triggered By: `${{ github.actor }}`
                       - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
 
-                  embed-color: ${{ env.STATUS == 'success' && '5763719' || '15418782' }}
+                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
                   embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{steps.embed.outputs.EMBED_AUTHOR_NAME}}"
-                  embed-author-url: "${{ github.event.release.author.html_url }}"
-                  embed-author-icon-url: "${{ github.event.release.author.avatar_url }}"
+                  embed-author-name: "${{ github.repository_owner }}"
+                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
 
