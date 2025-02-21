@@ -211,7 +211,7 @@ Prior to building the  docker image, you **must** ensure the sections below are 
 
 You cannot utilize Windows' `Carriage Return Line Feed`. All files must be converted to Unix' `Line Feed`.  This can be done with **[Visual Studio Code](https://code.visualstudio.com/)**. OR; you can run the Linux terminal command `dos2unix` to convert these files.
 
-If you cloned the files from the official repository **[iflip721/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** and have not edited them, then you should not need to do this step.
+If you cloned the files from the official repository **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** and have not edited them, then you should not need to do this step.
 
 <br />
 
@@ -264,7 +264,7 @@ sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
 <br />
 
 ### Build `tvapp` Image
-After completing the items above, you can now build the **[iflip721/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image. You can now build the TvApp2 docker image. Pick your platform below and run the associated command. Most people will want to use [amd64](#amd64).
+After completing the items above, you can now build the **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image. You can now build the TvApp2 docker image. Pick your platform below and run the associated command. Most people will want to use [amd64](#amd64).
 
 <br />
 
@@ -504,7 +504,7 @@ To use the new TVApp2 image, you can either call it with the `docker run` comman
 ### docker run
 If you want to use the tvapp docker image in the `docker run` command, execute the following:
 ```shell ignore
-docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/tvapp:/config ghcr.io/iflip721/tvapp2:latest
+docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/tvapp:/config ghcr.io/TheBinaryNinja/tvapp2:latest
 ```
 
 <br />
@@ -530,8 +530,8 @@ Add the following to your `docker-compose.yml`:
 services:
     tvapp:
         container_name: tvapp2
-        image: ghcr.io/iflip721/tvapp2:latest       # Github image
-      # image: iflip721/tvapp:latest                # Dockerhub image
+        image: ghcr.io/TheBinaryNinja/tvapp2:latest    # Github image
+      # image: TheBinaryNinja/tvapp:latest             # Dockerhub image
         restart: unless-stopped
         volumes:
             - ./tvapp:/config
@@ -574,7 +574,7 @@ The following are other things to take into consideration when creating the TVAp
 
 These instructions are for **Advanced Users Only**
 
-The `🔀 iflip721/tvapp2` image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `/root` folder
+The `🔀 TheBinaryNinja/tvapp2` image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `/root` folder
 
 ```shell
 mkdir -p /root/custom-cont-init.d/
@@ -621,7 +621,7 @@ services:
 
 <br />
 
-The `🔀 iflip721/tvapp2` image already contains a custom script called `📄 /root/custom-cont-init.d/plugins`. Do **NOT** edit this script. It is what automatically downloads the official TVApp2 plugins and adds them to the container.
+The `🔀 TheBinaryNinja/tvapp2` image already contains a custom script called `📄 /root/custom-cont-init.d/plugins`. Do **NOT** edit this script. It is what automatically downloads the official TVApp2 plugins and adds them to the container.
 
 <br />
 
