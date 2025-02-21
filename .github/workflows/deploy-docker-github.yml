@@ -3,7 +3,7 @@
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
 #   @usage              deploys docker container to github and send message to discord
-#                       upload this workflow to both the `main` branch of the tvapp repository
+#                       upload this workflow to both the `main` branch of the tvapp2 repository
 #   @secrets            secrets.ADMINSERV_GPG_KEY_ASC                               gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
 #                       secrets.ADMINSERV_GPG_PASSPHRASE                            gpg private key passphrase
 #                       secrets.IMAGE_GHCR_TOKEN                                    github personal access token (classic) with package:write permission
@@ -225,7 +225,7 @@ jobs:
                   echo "Starting Github Docker arm64"
 
             # #
-            #   Release › Get Timestamp
+            #   Release › Github › Get Timestamp
             # #
 
             - name: '🕛 Get Timestamp'
@@ -379,7 +379,7 @@ jobs:
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
 
             # #
-            #   Release › Get Weekly Commits
+            #   Release › Github › Get Weekly Commits
             # #
 
             - name: '🕛 Get Weekly Commit List'
@@ -390,10 +390,11 @@ jobs:
                   echo 'EOF' >> $GITHUB_ENV
 
             # #
-            #   Release › Notify Github
+            #   Release › Github › Notify Github
             # #
 
             - name: '🔔 Send Discord Webhook Message'
+              id: task_release_notifications_discord_send
               uses: tsickert/discord-webhook@v6.0.0
               if: success()
               with:
@@ -616,7 +617,7 @@ jobs:
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
 
             # #
-            #   Release › Get Weekly Commits
+            #   Release › Github › Get Weekly Commits
             # #
 
             - name: '🕛 Get Weekly Commit List'
@@ -627,7 +628,7 @@ jobs:
                   echo 'EOF' >> $GITHUB_ENV
 
             # #
-            #   Release › Notify Github
+            #   Release › Github › Notify Github
             # #
 
             - name: '🔔 Send Discord Webhook Message'

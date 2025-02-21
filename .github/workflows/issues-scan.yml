@@ -55,7 +55,7 @@ env:
             { "name": "Status 𐄂 Accepted",            "color": "2e7539", "description": "This pull request has been accepted" },
             { "name": "Status 𐄂 Autoclosed",          "color": "3E0915", "description": "Originally stale and was autoclosed for no activity" },
             { "name": "Status 𐄂 Denied",              "color": "ba4058", "description": "Pull request has been denied" },
-            { "name": "Status 𐄂 Locked",              "color": "550F45", "description": "Automatically locked by AdminServ for a prolonged period of inactivity" },
+            { "name": "Status 𐄂 Locked",              "color": "550F45", "description": "Automatically locked by EuropaServ for a prolonged period of inactivity" },
             { "name": "Status 𐄂 Need Info",           "color": "2E3C4C", "description": "Not enough information to resolve" },
             { "name": "Status 𐄂 No Action",           "color": "030406", "description": "Closed without any action being taken" },
             { "name": "Status 𐄂 Pending",             "color": "984b12", "description": "Pending pull request" },
