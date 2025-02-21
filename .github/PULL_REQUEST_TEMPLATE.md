@@ -44,7 +44,7 @@
 ### Before You Submit
 <small>Please ensure you check the following items to indicate that you've read this section and completed each task</small>
 
-- [ ] My code follows the [Contribution Guidelines](https://github.com/https://github.com/BinaryNinja/tvapp2/blob/main/CONTRIBUTING.md)
+- [ ] My code follows the [Contribution Guidelines](https://github.com/https://github.com/TheBinaryNinja/tvapp2/blob/main/CONTRIBUTING.md)
 - [ ] I give expressed consent for my work to be used in this repo
 - [ ] I have tested my work and it functions as intended
 - [ ] I have included documentation if the change requires such

@@ -71,7 +71,7 @@
 
 This project contains several repositories which all share the same code; use them as backups:
 
-- [https://github.com/BinaryNinja/tvapp2](https://github.com/BinaryNinja/tvapp2)
+- [https://github.com/TheBinaryNinja/tvapp2](https://github.com/TheBinaryNinja/tvapp2)
 - [https://git.binaryninja.net/BinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)
 
 <br />
@@ -316,7 +316,7 @@ mkdir tvapp2 && cd tvapp2
 git clone https://git.binaryninja.net/BinaryNinja/tvapp2.git ./
 
 # to clone from our github website
-git clone https://github.com/BinaryNinja/tvapp2.git ./
+git clone https://github.com/TheBinaryNinja/tvapp2.git ./
 ```
 
 <br />
@@ -640,7 +640,7 @@ This repository and this project serves in memory of the developer [dtankdempse]
         <tbody>
             <tr>
                 <td align="center" valign="top"><a href="https://github.com/dtankdempse">
-                    <img src="https://avatars.githubusercontent.com/u/175421607?v=4?s=40" width="80px;" alt="dtankdempse"/><br /><sub><b>dtankdempse</b></sub></a><br /><a href="https://github.com/BinaryNinja/tvapp2/commits?author=dtankdempse" title="Code">💻</a>
+                    <img src="https://avatars.githubusercontent.com/u/175421607?v=4?s=40" width="80px;" alt="dtankdempse"/><br /><sub><b>dtankdempse</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=dtankdempse" title="Code">💻</a>
                 </td>
             </tr>
         </tbody>
@@ -662,7 +662,7 @@ We are always looking for contributors. If you feel that you can provide somethi
 <br />
 
 Want to help but can't write code?
-- Review [active questions by our community](https://github.com/BinaryNinja/tvapp2/labels/help%20wanted) and answer the ones you know.
+- Review [active questions by our community](https://github.com/TheBinaryNinja/tvapp2/labels/help%20wanted) and answer the ones you know.
 
 <br />
 
@@ -687,13 +687,13 @@ The following people have helped get this project going:
     <tbody>
         <tr>
             <td align="center" valign="top"><a href="https://github.com/Aetherinox">
-                <img src="https://avatars.githubusercontent.com/u/118329232?v=4?s=40" width="80px;" alt="Aetherinox"/><br /><sub><b>Aetherinox</b></sub></a><br /><a href="https://github.com/BinaryNinja/tvapp2/commits?author=Aetherinox" title="Code">💻</a>
+                <img src="https://avatars.githubusercontent.com/u/118329232?v=4?s=40" width="80px;" alt="Aetherinox"/><br /><sub><b>Aetherinox</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=Aetherinox" title="Code">💻</a>
             </td>
             <td align="center" valign="top"><a href="https://github.com/iFlip721">
-                <img src="https://avatars.githubusercontent.com/u/28721588?v=4" width="80px;" alt="iFlip721"/><br /><sub><b>iFlip721</b></sub></a><br /><a href="https://github.com/BinaryNinja/tvapp2/commits?author=iFlip721" title="Code">💻</a>
+                <img src="https://avatars.githubusercontent.com/u/28721588?v=4" width="80px;" alt="iFlip721"/><br /><sub><b>iFlip721</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=iFlip721" title="Code">💻</a>
             </td>
             <td align="center" valign="top"><a href="https://github.com/Nvmdfth">
-                <img src="https://avatars.githubusercontent.com/u/32874812?v=4" width="80px;" alt="Nvmdfth"/><br /><sub><b>Optx</b></sub></a><br /><a href="https://github.com/BinaryNinja/tvapp2/commits?author=Nvmdfth" title="Code">💻</a>
+                <img src="https://avatars.githubusercontent.com/u/32874812?v=4" width="80px;" alt="Nvmdfth"/><br /><sub><b>Optx</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=Nvmdfth" title="Code">💻</a>
             </td>
         </tr>
     </tbody>
@@ -712,37 +712,37 @@ The following people have helped get this project going:
   [general-npmtrends-uri]: http://npmtrends.com/csf-firewall
 
 <!-- BADGE > VERSION > GITHUB -->
-  [github-version-img]: https://img.shields.io/github/v/tag/BinaryNinja/tvapp2?logo=GitHub&label=Version&color=ba5225
-  [github-version-uri]: https://github.com/BinaryNinja/tvapp2/releases
+  [github-version-img]: https://img.shields.io/github/v/tag/TheBinaryNinja/tvapp2?logo=GitHub&label=Version&color=ba5225
+  [github-version-uri]: https://github.com/TheBinaryNinja/tvapp2/releases
 
 <!-- BADGE > LICENSE > MIT -->
   [license-mit-img]: https://img.shields.io/badge/MIT-FFF?logo=creativecommons&logoColor=FFFFFF&label=License&color=9d29a0
-  [license-mit-uri]: https://github.com/BinaryNinja/tvapp2/blob/main/LICENSE
+  [license-mit-uri]: https://github.com/TheBinaryNinja/tvapp2/blob/main/LICENSE
 
 <!-- BADGE > GITHUB > DOWNLOAD COUNT -->
-  [github-downloads-img]: https://img.shields.io/github/downloads/BinaryNinja/tvapp2/total?logo=github&logoColor=FFFFFF&label=Downloads&color=376892
-  [github-downloads-uri]: https://github.com/BinaryNinja/tvapp2/releases
+  [github-downloads-img]: https://img.shields.io/github/downloads/TheBinaryNinja/tvapp2/total?logo=github&logoColor=FFFFFF&label=Downloads&color=376892
+  [github-downloads-uri]: https://github.com/TheBinaryNinja/tvapp2/releases
 
 <!-- BADGE > GITHUB > DOWNLOAD SIZE -->
-  [github-size-img]: https://img.shields.io/github/repo-size/BinaryNinja/tvapp2?logo=github&label=Size&color=59702a
-  [github-size-uri]: https://github.com/BinaryNinja/tvapp2/releases
+  [github-size-img]: https://img.shields.io/github/repo-size/TheBinaryNinja/tvapp2?logo=github&label=Size&color=59702a
+  [github-size-uri]: https://github.com/TheBinaryNinja/tvapp2/releases
 
 <!-- BADGE > ALL CONTRIBUTORS -->
-  [contribs-all-img]: https://img.shields.io/github/all-contributors/BinaryNinja/tvapp2?logo=contributorcovenant&color=de1f6f&label=contributors
+  [contribs-all-img]: https://img.shields.io/github/all-contributors/TheBinaryNinja/tvapp2?logo=contributorcovenant&color=de1f6f&label=contributors
   [contribs-all-uri]: https://github.com/all-contributors/all-contributors
 
 <!-- BADGE > GITHUB > BUILD > NPM -->
-  [github-build-img]: https://img.shields.io/github/actions/workflow/status/BinaryNinja/tvapp2/npm-release.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
-  [github-build-uri]: https://github.com/BinaryNinja/tvapp2/actions/workflows/npm-release.yml
+  [github-build-img]: https://img.shields.io/github/actions/workflow/status/TheBinaryNinja/tvapp2/npm-release.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
+  [github-build-uri]: https://github.com/TheBinaryNinja/tvapp2/actions/workflows/npm-release.yml
 
 <!-- BADGE > GITHUB > BUILD > Pypi -->
-  [github-build-pypi-img]: https://img.shields.io/github/actions/workflow/status/BinaryNinja/tvapp2/release-pypi.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
-  [github-build-pypi-uri]: https://github.com/BinaryNinja/tvapp2/actions/workflows/pypi-release.yml
+  [github-build-pypi-img]: https://img.shields.io/github/actions/workflow/status/TheBinaryNinja/tvapp2/release-pypi.yml?logo=github&logoColor=FFFFFF&label=Build&color=%23278b30
+  [github-build-pypi-uri]: https://github.com/TheBinaryNinja/tvapp2/actions/workflows/pypi-release.yml
 
 <!-- BADGE > GITHUB > TESTS -->
-  [github-tests-img]: https://img.shields.io/github/actions/workflow/status/BinaryNinja/tvapp2/npm-tests.yml?logo=github&label=Tests&color=2c6488
-  [github-tests-uri]: https://github.com/BinaryNinja/tvapp2/actions/workflows/npm-tests.yml
+  [github-tests-img]: https://img.shields.io/github/actions/workflow/status/TheBinaryNinja/tvapp2/npm-tests.yml?logo=github&label=Tests&color=2c6488
+  [github-tests-uri]: https://github.com/TheBinaryNinja/tvapp2/actions/workflows/npm-tests.yml
 
 <!-- BADGE > GITHUB > COMMIT -->
-  [github-commit-img]: https://img.shields.io/github/last-commit/BinaryNinja/tvapp2?logo=conventionalcommits&logoColor=FFFFFF&label=Last%20Commit&color=313131
-  [github-commit-uri]: https://github.com/BinaryNinja/tvapp2/commits/main/
+  [github-commit-img]: https://img.shields.io/github/last-commit/TheBinaryNinja/tvapp2?logo=conventionalcommits&logoColor=FFFFFF&label=Last%20Commit&color=313131
+  [github-commit-uri]: https://github.com/TheBinaryNinja/tvapp2/commits/main/

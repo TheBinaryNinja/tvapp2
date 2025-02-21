@@ -5,7 +5,7 @@
 #   @usage          docker image which allows you to download a m3u playlist and EPG guide data from
 #                   multiple IPTV services.
 #   @file           docker-entrypoint.sh
-#   @repo           https://github.com/BinaryNinja/tvapp2
+#   @repo           https://github.com/TheBinaryNinja/tvapp2
 #                   https://git.binaryninja.net/BinaryNinja/tvapp2
 #                   https://github.com/aetherinox/docker-base-alpine
 #

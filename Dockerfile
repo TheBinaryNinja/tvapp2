@@ -5,7 +5,7 @@
 #   @usage          docker image which allows you to download a m3u playlist and EPG guide data from
 #                   multiple IPTV services.
 #   @file           Dockerfile
-#   @repo           https://github.com/BinaryNinja/tvapp2
+#   @repo           https://github.com/TheBinaryNinja/tvapp2
 #                   https://git.binaryninja.net/BinaryNinja/tvapp2
 #                   https://github.com/aetherinox/docker-base-alpine
 #
@@ -38,16 +38,16 @@ LABEL org.opencontainers.image.authors="aetherinox, iFlip721"
 LABEL org.opencontainers.image.vendor="BinaryNinja"
 LABEL org.opencontainers.image.title="TVApp2"
 LABEL org.opencontainers.image.description="Automatic m3u and xml guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client."
-LABEL org.opencontainers.image.source="https://github.com/BinaryNinja/tvapp2"
-LABEL org.opencontainers.image.repo.1="https://github.com/BinaryNinja/tvapp2"
+LABEL org.opencontainers.image.source="https://github.com/TheBinaryNinja/tvapp2"
+LABEL org.opencontainers.image.repo.1="https://github.com/TheBinaryNinja/tvapp2"
 LABEL org.opencontainers.image.repo.2="https://git.binaryninja.net/BinaryNinja/tvapp2"
 LABEL org.opencontainers.image.repo.3="https://github.com/aetherinox/docker-base-alpine"
 LABEL org.opencontainers.image.documentation="https://github.com/TheBinaryNinja/tvapp2/wiki"
-LABEL org.opencontainers.image.url="https://github.com/BinaryNinja/tvapp2/pkgs/container/tvapp2"
+LABEL org.opencontainers.image.url="https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
 
-#   @repo.1         https://github.com/BinaryNinja/tvapp2
+#   @repo.1         https://github.com/TheBinaryNinja/tvapp2
 #   @repo.2         https://git.binaryninja.net/BinaryNinja/tvapp2
 #   @repo.3         https://github.com/aetherinox/docker-base-alpine
 

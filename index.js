@@ -81,7 +81,7 @@ async function downloadFile(url, filePath) {
     const isHttps = new URL(url).protocol === 'https:';
     const httpModule = isHttps ? require('https') : require('http');
     const file = fs.createWriteStream(filePath);
-    
+
     httpModule
       .get(url, (response) => {
         if (response.statusCode !== 200) {

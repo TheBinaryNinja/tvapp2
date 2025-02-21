@@ -9,11 +9,11 @@
         "appId": "com.tvapp2.id"
     },
     "bugs": {
-        "url": "https://github.com/BinaryNinja/tvapp2/issues"
+        "url": "https://github.com/TheBinaryNinja/tvapp2/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/BinaryNinja/tvapp2.git"
+        "url": "https://github.com/TheBinaryNinja/tvapp2.git"
     },
     "contributors": [
         {
