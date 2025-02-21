@@ -4,11 +4,10 @@
 #   @project        TVApp2
 #   @usage          docker image which allows you to download a m3u playlist and EPG guide data from
 #                   multiple IPTV services.
-#   @file           Dockerfile
-#   @repo           https://github.com/iFlip721/tvapp2
-#                   https://github.com/aetherinox/tvapp2
-#                   https://github.com/aetherinox/docker-base-alpine
+#   @file           docker-entrypoint.sh
+#   @repo           https://github.com/BinaryNinja/tvapp2
 #                   https://git.binaryninja.net/BinaryNinja/tvapp2
+#                   https://github.com/aetherinox/docker-base-alpine
 #
 #   you can build your own image by running
 #       amd64       docker build --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .

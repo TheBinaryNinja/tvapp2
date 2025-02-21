@@ -2,10 +2,9 @@
 #   @project        TVApp2
 #   @usage          Automatic m3u and xml guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
 #   @file           nginx.conf.sample
-#   @repo.1         https://github.com/iFlip721/tvapp2
-#   @repo.2         https://github.com/Aetherinox/tvapp2
-#   @repo.3         https://git.binaryninja.net/BinaryNinja/tvapp2
-#   @repo.alpine    https://github.com/Aetherinox/docker-base-alpine
+#   @repo.1         https://github.com/BinaryNinja/tvapp2
+#   @repo.2         https://git.binaryninja.net/BinaryNinja/tvapp2
+#   @repo.3         https://github.com/aetherinox/docker-base-alpine
 # #
 
 user dockerx;
