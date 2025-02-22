@@ -194,7 +194,7 @@ jobs:
             📦 Release › Create Tag
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
-        timeout-minutes: 10
+        timeout-minutes: 4
         permissions:
             contents: write
             packages: write

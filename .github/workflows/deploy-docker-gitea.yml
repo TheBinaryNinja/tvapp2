@@ -137,8 +137,9 @@ jobs:
     job-docker-release-tags-create:
         name: >-
             📦 Release › Create Tag
-        runs-on: ubuntu-latest
-        timeout-minutes: 5
+      # runs-on: ubuntu-latest
+        runs-on: apollo-x64
+        timeout-minutes: 4
         permissions:
             contents: write
             packages: write
@@ -207,7 +208,8 @@ jobs:
     job-docker-release-gitea-arm64:
         name: >-
             📦 Release › Gitea › Arm64
-        runs-on: ubuntu-latest
+      # runs-on: ubuntu-latest
+        runs-on: apollo-x64
         timeout-minutes: 10
         needs: [ job-docker-release-tags-create ]
         permissions:
@@ -449,7 +451,8 @@ jobs:
     job-docker-release-gitea-amd64:
         name: >-
             📦 Release › Gitea › Amd64
-        runs-on: ubuntu-latest
+      # runs-on: ubuntu-latest
+        runs-on: apollo-x64
         timeout-minutes: 10
         permissions:
             contents: write
