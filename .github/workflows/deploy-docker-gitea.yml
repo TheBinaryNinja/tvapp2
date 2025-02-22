@@ -204,7 +204,7 @@ jobs:
     #   Job › Docker Release › Gitea › Arm64
     # #
 
-    job-docker-release-github-arm64:
+    job-docker-release-gitea-arm64:
         name: >-
             📦 Release › Gitea › Arm64
         runs-on: ubuntu-latest
@@ -446,7 +446,7 @@ jobs:
     #   Job › Docker Release › Gitea › Amd64
     # #
 
-    job-docker-release-github-amd64:
+    job-docker-release-gitea-amd64:
         name: >-
             📦 Release › Gitea › Amd64
         runs-on: ubuntu-latest
@@ -456,7 +456,7 @@ jobs:
             packages: write
             attestations: write
             id-token: write
-        needs: [ job-docker-release-tags-create, job-docker-release-github-arm64 ]
+        needs: [ job-docker-release-tags-create, job-docker-release-gitea-arm64 ]
         steps:
 
             # #
