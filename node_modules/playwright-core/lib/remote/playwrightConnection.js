@@ -43,7 +43,7 @@ class PlaywrightConnection {
     this._ws = ws;
     this._preLaunched = preLaunched;
     this._options = options;
-    options.launchOptions = filterLaunchOptions(options.launchOptions);
+    options.launchOptions = filterLaunchOptions(options.launchOptions, options.allowFSPaths);
     if (clientType === 'reuse-browser' || clientType === 'pre-launched-browser-or-android') (0, _utils.assert)(preLaunched.playwright);
     if (clientType === 'pre-launched-browser-or-android') (0, _utils.assert)(preLaunched.browser || preLaunched.androidDevice);
     this._onClose = onClose;
@@ -248,7 +248,7 @@ function launchOptionsHash(options) {
   for (const key of optionsThatAllowBrowserReuse) delete copy[key];
   return JSON.stringify(copy);
 }
-function filterLaunchOptions(options) {
+function filterLaunchOptions(options, allowFSPaths) {
   return {
     channel: options.channel,
     args: options.args,
@@ -260,7 +260,8 @@ function filterLaunchOptions(options) {
     chromiumSandbox: options.chromiumSandbox,
     firefoxUserPrefs: options.firefoxUserPrefs,
     slowMo: options.slowMo,
-    executablePath: (0, _utils.isUnderTest)() ? options.executablePath : undefined
+    executablePath: (0, _utils.isUnderTest)() || allowFSPaths ? options.executablePath : undefined,
+    downloadsPath: allowFSPaths ? options.downloadsPath : undefined
   };
 }
 const defaultLaunchOptions = {

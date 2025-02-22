@@ -26,6 +26,7 @@ var _debugLogger = require("./debugLogger");
 let lastConnectionId = 0;
 const kConnectionSymbol = Symbol('kConnection');
 const perMessageDeflate = exports.perMessageDeflate = {
+  serverNoContextTakeover: true,
   zlibDeflateOptions: {
     level: 3
   },

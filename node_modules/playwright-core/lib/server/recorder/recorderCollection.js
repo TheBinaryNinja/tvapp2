@@ -7,7 +7,6 @@ exports.RecorderCollection = void 0;
 var _events = require("events");
 var _time = require("../../utils/time");
 var _recorderUtils = require("./recorderUtils");
-var _errors = require("../errors");
 var _recorderRunner = require("./recorderRunner");
 var _debug = require("../../utils/debug");
 /**
@@ -42,8 +41,8 @@ class RecorderCollection extends _events.EventEmitter {
     this._enabled = enabled;
   }
   async performAction(actionInContext) {
-    await this._addAction(actionInContext, async callMetadata => {
-      await (0, _recorderRunner.performAction)(callMetadata, this._pageAliases, actionInContext);
+    await this._addAction(actionInContext, async () => {
+      await (0, _recorderRunner.performAction)(this._pageAliases, actionInContext);
     });
   }
   addRecordedAction(actionInContext) {
@@ -61,21 +60,10 @@ class RecorderCollection extends _events.EventEmitter {
       this._fireChange();
       return;
     }
-    const {
-      callMetadata,
-      mainFrame
-    } = (0, _recorderUtils.callMetadataForAction)(this._pageAliases, actionInContext);
-    await mainFrame.instrumentation.onBeforeCall(mainFrame, callMetadata);
     this._actions.push(actionInContext);
     this._fireChange();
-    const error = await (callback === null || callback === void 0 ? void 0 : callback(callMetadata).catch(e => e));
-    callMetadata.endTime = (0, _time.monotonicTime)();
-    actionInContext.endTime = callMetadata.endTime;
-    callMetadata.error = error ? (0, _errors.serializeError)(error) : undefined;
-    // Do not wait for onAfterCall so that performAction returned immediately after the action.
-    mainFrame.instrumentation.onAfterCall(mainFrame, callMetadata).then(() => {
-      this._fireChange();
-    }).catch(() => {});
+    await (callback === null || callback === void 0 ? void 0 : callback().catch());
+    actionInContext.endTime = (0, _time.monotonicTime)();
   }
   signal(pageAlias, frame, signal) {
     if (!this._enabled) return;
@@ -84,7 +72,7 @@ class RecorderCollection extends _events.EventEmitter {
       const lastAction = this._actions[this._actions.length - 1];
       const signalThreshold = (0, _debug.isUnderTest)() ? 500 : 5000;
       let generateGoto = false;
-      if (!lastAction) generateGoto = true;else if (lastAction.action.name !== 'click' && lastAction.action.name !== 'press') generateGoto = true;else if (timestamp - lastAction.startTime > signalThreshold) generateGoto = true;
+      if (!lastAction) generateGoto = true;else if (lastAction.action.name !== 'click' && lastAction.action.name !== 'press' && lastAction.action.name !== 'fill') generateGoto = true;else if (timestamp - lastAction.startTime > signalThreshold) generateGoto = true;
       if (generateGoto) {
         this.addRecordedAction({
           frame: {

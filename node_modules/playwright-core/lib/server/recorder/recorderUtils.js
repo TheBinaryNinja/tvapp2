@@ -3,13 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.callMetadataForAction = callMetadataForAction;
+exports.buildFullSelector = buildFullSelector;
 exports.collapseActions = collapseActions;
 exports.frameForAction = frameForAction;
 exports.mainFrameForAction = mainFrameForAction;
 exports.metadataToCallLog = metadataToCallLog;
-var _utils = require("../../utils");
-var _recorderUtils = require("../../utils/isomorphic/recorderUtils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -26,6 +24,9 @@ var _recorderUtils = require("../../utils/isomorphic/recorderUtils");
  * limitations under the License.
  */
 
+function buildFullSelector(framePath, selector) {
+  return [...framePath, selector].join(' >> internal:control=enter-frame >> ');
+}
 function metadataToCallLog(metadata, status) {
   var _metadata$params, _metadata$params2, _metadata$error;
   let title = metadata.apiName || metadata.method;
@@ -64,35 +65,10 @@ async function frameForAction(pageAliases, actionInContext, action) {
   const pageAlias = actionInContext.frame.pageAlias;
   const page = (_find2 = [...pageAliases.entries()].find(([, alias]) => pageAlias === alias)) === null || _find2 === void 0 ? void 0 : _find2[0];
   if (!page) throw new Error('Internal error: page not found');
-  const fullSelector = (0, _recorderUtils.buildFullSelector)(actionInContext.frame.framePath, action.selector);
+  const fullSelector = buildFullSelector(actionInContext.frame.framePath, action.selector);
   const result = await page.mainFrame().selectors.resolveFrameForSelector(fullSelector);
   if (!result) throw new Error('Internal error: frame not found');
   return result.frame;
-}
-function callMetadataForAction(pageAliases, actionInContext) {
-  const mainFrame = mainFrameForAction(pageAliases, actionInContext);
-  const {
-    method,
-    apiName,
-    params
-  } = (0, _recorderUtils.traceParamsForAction)(actionInContext);
-  const callMetadata = {
-    id: `call@${(0, _utils.createGuid)()}`,
-    apiName,
-    objectId: mainFrame.guid,
-    pageId: mainFrame._page.guid,
-    frameId: mainFrame.guid,
-    startTime: actionInContext.startTime,
-    endTime: 0,
-    type: 'Frame',
-    method,
-    params,
-    log: []
-  };
-  return {
-    callMetadata,
-    mainFrame
-  };
 }
 function collapseActions(actions) {
   const result = [];

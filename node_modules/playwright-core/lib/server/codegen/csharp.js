@@ -151,7 +151,12 @@ class CSharpLanguageGenerator {
       using var playwright = await Playwright.CreateAsync();
       await using var browser = await playwright.${toPascal(options.browserName)}.LaunchAsync(${formatObject(options.launchOptions, '    ', 'BrowserTypeLaunchOptions')});
       var context = await browser.NewContextAsync(${formatContextOptions(options.contextOptions, options.deviceName)});`);
-    if (options.contextOptions.recordHar) formatter.add(`      await context.RouteFromHARAsync(${quote(options.contextOptions.recordHar.path)});`);
+    if (options.contextOptions.recordHar) {
+      const url = options.contextOptions.recordHar.urlFilter;
+      formatter.add(`      await context.RouteFromHARAsync(${quote(options.contextOptions.recordHar.path)}${url ? `, ${formatObject({
+        url
+      }, '    ', 'BrowserContextRouteFromHAROptions')}` : ''});`);
+    }
     formatter.newLine();
     return formatter.format();
   }
@@ -176,7 +181,12 @@ class CSharpLanguageGenerator {
     formatter.add(`    [${this._mode === 'nunit' ? 'Test' : 'TestMethod'}]
     public async Task MyTest()
     {`);
-    if (options.contextOptions.recordHar) formatter.add(`    await context.RouteFromHARAsync(${quote(options.contextOptions.recordHar.path)});`);
+    if (options.contextOptions.recordHar) {
+      const url = options.contextOptions.recordHar.urlFilter;
+      formatter.add(`    await Context.RouteFromHARAsync(${quote(options.contextOptions.recordHar.path)}${url ? `, ${formatObject({
+        url
+      }, '    ', 'BrowserContextRouteFromHAROptions')}` : ''});`);
+    }
     return formatter.format();
   }
   generateFooter(saveStorage) {

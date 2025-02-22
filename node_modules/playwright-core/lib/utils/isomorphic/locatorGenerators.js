@@ -25,7 +25,7 @@ var _selectorParser = require("./selectorParser");
  */
 
 function asLocator(lang, selector, isFrameLocator = false) {
-  return asLocators(lang, selector, isFrameLocator)[0];
+  return asLocators(lang, selector, isFrameLocator, 1)[0];
 }
 function asLocators(lang, selector, isFrameLocator = false, maxOutputSize = 20, preferredQuote) {
   try {
@@ -235,7 +235,7 @@ function combineTokens(factory, tokens, maxOutputSize) {
   const visit = index => {
     if (index === tokens.length) {
       result.push(factory.chainLocators(currentTokens));
-      return currentTokens.length < maxOutputSize;
+      return result.length < maxOutputSize;
     }
     for (const taken of tokens[index]) {
       currentTokens[index] = taken;

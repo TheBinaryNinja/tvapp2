@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.compareBuffersOrStrings = compareBuffersOrStrings;
 exports.getComparator = getComparator;
 var _utilsBundle = require("../utilsBundle");
 var _pixelmatch = _interopRequireDefault(require("../third_party/pixelmatch"));
@@ -111,19 +112,24 @@ function compareText(actual, expectedBuffer) {
   if (typeof actual !== 'string') return {
     errorMessage: 'Actual result should be a string'
   };
-  const expected = expectedBuffer.toString('utf-8');
+  let expected = expectedBuffer.toString('utf-8');
   if (expected === actual) return null;
-  const diffs = _utilsBundle.diff.diffChars(expected, actual);
-  return {
-    errorMessage: diff_prettyTerminal(diffs)
-  };
-}
-function diff_prettyTerminal(diffs) {
-  const result = diffs.map(part => {
-    const text = part.value;
-    if (part.added) return _utilsBundle.colors.green(text);else if (part.removed) return _utilsBundle.colors.reset(_utilsBundle.colors.strikethrough(_utilsBundle.colors.red(text)));else return text;
+  // Eliminate '\\ No newline at end of file'
+  if (!actual.endsWith('\n')) actual += '\n';
+  if (!expected.endsWith('\n')) expected += '\n';
+  const lines = _utilsBundle.diff.createPatch('file', expected, actual, undefined, undefined, {
+    context: 5
+  }).split('\n');
+  const coloredLines = lines.slice(4).map(line => {
+    if (line.startsWith('-')) return _utilsBundle.colors.red(line);
+    if (line.startsWith('+')) return _utilsBundle.colors.green(line);
+    if (line.startsWith('@@')) return _utilsBundle.colors.dim(line);
+    return line;
   });
-  return result.join('');
+  const errorMessage = coloredLines.join('\n');
+  return {
+    errorMessage
+  };
 }
 function resizeImage(image, size) {
   if (image.width === size.width && image.height === size.height) return image;

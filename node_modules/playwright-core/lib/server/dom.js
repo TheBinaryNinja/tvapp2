@@ -7,6 +7,7 @@ exports.NonRecoverableDOMError = exports.FrameExecutionContext = exports.Element
 exports.assertDone = assertDone;
 exports.isNonRecoverableDOMError = isNonRecoverableDOMError;
 exports.kUnableToAdoptErrorMessage = void 0;
+exports.throwElementIsNotAttached = throwElementIsNotAttached;
 exports.throwRetargetableDOMError = throwRetargetableDOMError;
 var _fs = _interopRequireDefault(require("fs"));
 var injectedScriptSource = _interopRequireWildcard(require("../generated/injectedScriptSource"));
@@ -711,7 +712,8 @@ class ElementHandle extends js.JSHandle {
   async _setChecked(progress, state, options) {
     const isChecked = async () => {
       const result = await this.evaluateInUtility(([injected, node]) => injected.elementState(node, 'checked'), {});
-      return throwRetargetableDOMError(result);
+      if (result === 'error:notconnected' || result.received === 'error:notconnected') throwElementIsNotAttached();
+      return result.matches;
     };
     await this._markAsTargetElement(progress.metadata);
     if ((await isChecked()) === state) return 'done';
@@ -837,8 +839,11 @@ class ElementHandle extends js.JSHandle {
 }
 exports.ElementHandle = ElementHandle;
 function throwRetargetableDOMError(result) {
-  if (result === 'error:notconnected') throw new Error('Element is not attached to the DOM');
+  if (result === 'error:notconnected') throwElementIsNotAttached();
   return result;
+}
+function throwElementIsNotAttached() {
+  throw new Error('Element is not attached to the DOM');
 }
 function assertDone(result) {
   // This function converts 'done' to void and ensures typescript catches unhandled errors.

@@ -107,7 +107,7 @@ class SocksProxyConnection {
     };
   }
   async connect() {
-    if (this.socksProxy.proxyAgentFromOptions) this.target = await this.socksProxy.proxyAgentFromOptions.connect(new _events.EventEmitter(), {
+    if (this.socksProxy.proxyAgentFromOptions) this.target = await this.socksProxy.proxyAgentFromOptions.callback(new _events.EventEmitter(), {
       host: rewriteToLocalhostIfNeeded(this.host),
       port: this.port,
       secureEndpoint: false

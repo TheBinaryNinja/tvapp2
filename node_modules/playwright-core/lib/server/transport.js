@@ -25,6 +25,7 @@ var _happyEyeballs = require("../utils/happy-eyeballs");
  */
 
 const perMessageDeflate = exports.perMessageDeflate = {
+  clientNoContextTakeover: true,
   zlibDeflateOptions: {
     level: 3
   },

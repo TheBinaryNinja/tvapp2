@@ -47,7 +47,7 @@ function httpRequest(params, onResponse, onError) {
   const timeout = (_params$timeout = params.timeout) !== null && _params$timeout !== void 0 ? _params$timeout : NET_DEFAULT_TIMEOUT;
   const proxyURL = (0, _utilsBundle.getProxyForUrl)(params.url);
   if (proxyURL) {
-    const parsedProxyURL = new URL(proxyURL);
+    const parsedProxyURL = _url.default.parse(proxyURL);
     if (params.url.startsWith('http:')) {
       options = {
         path: parsedUrl.href,

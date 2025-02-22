@@ -35,7 +35,7 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
  */
 
 class ContextRecorder extends _events.EventEmitter {
-  constructor(codegenMode, context, params, delegate) {
+  constructor(context, params, delegate) {
     super();
     this._collection = void 0;
     this._pageAliases = new Map();
@@ -49,8 +49,6 @@ class ContextRecorder extends _events.EventEmitter {
     this._throttledOutputFile = null;
     this._orderedLanguages = [];
     this._listeners = [];
-    this._codegenMode = void 0;
-    this._codegenMode = codegenMode;
     this._context = context;
     this._params = params;
     this._delegate = delegate;
@@ -112,7 +110,7 @@ class ContextRecorder extends _events.EventEmitter {
       var _this$_throttledOutpu3;
       (_this$_throttledOutpu3 = this._throttledOutputFile) === null || _this$_throttledOutpu3 === void 0 || _this$_throttledOutpu3.flush();
     }));
-    this.setEnabled(true);
+    this.setEnabled(params.mode === 'recording');
   }
   setOutput(codegenId, outputFile) {
     var _this$_collection;
@@ -145,14 +143,6 @@ class ContextRecorder extends _events.EventEmitter {
   }
   setEnabled(enabled) {
     this._collection.setEnabled(enabled);
-    if (this._codegenMode === 'trace-events') {
-      if (enabled) this._context.tracing.startChunk({
-        name: 'trace',
-        title: 'trace'
-      }).catch(() => {});else this._context.tracing.stopChunk({
-        mode: 'discard'
-      }).catch(() => {});
-    }
   }
   dispose() {
     _utils.eventsHelper.removeEventListeners(this._listeners);
@@ -197,6 +187,9 @@ class ContextRecorder extends _events.EventEmitter {
     if (this._params.mode === 'recording') {
       for (const page of this._context.pages()) this._onFrameNavigated(page.mainFrame(), page);
     }
+  }
+  runTask(task) {
+    // TODO: implement
   }
   _describeMainFrame(page) {
     return {
@@ -289,9 +282,7 @@ async function generateFrameSelectorInParent(parent, frame) {
         return injected.generateSelectorSimple(element);
       }, frameElement);
       return selector;
-    } catch (e) {
-      return e.toString();
-    }
+    } catch (e) {}
   }, (0, _utils.monotonicTime)() + 2000);
   if (!result.timedOut && result.result) return result.result;
   if (frame.name()) return `iframe[name=${(0, _utils.quoteCSSAttributeValue)(frame.name())}]`;

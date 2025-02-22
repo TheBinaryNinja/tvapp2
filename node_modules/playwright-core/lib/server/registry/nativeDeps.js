@@ -129,7 +129,7 @@ const deps = exports.deps = {
     tools: ['xvfb', 'fonts-noto-color-emoji', 'fonts-unifont', 'libfontconfig1', 'libfreetype6', 'xfonts-cyrillic', 'xfonts-scalable', 'fonts-liberation', 'fonts-ipafont-gothic', 'fonts-wqy-zenhei', 'fonts-tlwg-loma-otf', 'fonts-freefont-ttf'],
     chromium: ['libasound2', 'libatk-bridge2.0-0', 'libatk1.0-0', 'libatspi2.0-0', 'libcairo2', 'libcups2', 'libdbus-1-3', 'libdrm2', 'libgbm1', 'libglib2.0-0', 'libnspr4', 'libnss3', 'libpango-1.0-0', 'libwayland-client0', 'libx11-6', 'libxcb1', 'libxcomposite1', 'libxdamage1', 'libxext6', 'libxfixes3', 'libxkbcommon0', 'libxrandr2'],
     firefox: ['ffmpeg', 'libasound2', 'libatk1.0-0', 'libcairo-gobject2', 'libcairo2', 'libdbus-1-3', 'libdbus-glib-1-2', 'libfontconfig1', 'libfreetype6', 'libgdk-pixbuf-2.0-0', 'libglib2.0-0', 'libgtk-3-0', 'libpango-1.0-0', 'libpangocairo-1.0-0', 'libx11-6', 'libx11-xcb1', 'libxcb-shm0', 'libxcb1', 'libxcomposite1', 'libxcursor1', 'libxdamage1', 'libxext6', 'libxfixes3', 'libxi6', 'libxrandr2', 'libxrender1', 'libxtst6'],
-    webkit: ['libsoup-3.0-0', 'libenchant-2-2', 'gstreamer1.0-libav', 'gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base', 'gstreamer1.0-plugins-good', 'libicu70', 'libatk-bridge2.0-0', 'libatk1.0-0', 'libcairo2', 'libdbus-1-3', 'libdrm2', 'libegl1', 'libepoxy0', 'libevdev2', 'libffi7', 'libfontconfig1', 'libfreetype6', 'libgbm1', 'libgdk-pixbuf-2.0-0', 'libgles2', 'libglib2.0-0', 'libglx0', 'libgstreamer-gl1.0-0', 'libgstreamer-plugins-base1.0-0', 'libgstreamer1.0-0', 'libgtk-3-0', 'libgudev-1.0-0', 'libharfbuzz-icu0', 'libharfbuzz0b', 'libhyphen0', 'libjpeg-turbo8', 'liblcms2-2', 'libmanette-0.2-0', 'libnotify4', 'libopengl0', 'libopenjp2-7', 'libopus0', 'libpango-1.0-0', 'libpng16-16', 'libproxy1v5', 'libsecret-1-0', 'libwayland-client0', 'libwayland-egl1', 'libwayland-server0', 'libwebpdemux2', 'libwoff1', 'libx11-6', 'libxcomposite1', 'libxdamage1', 'libxkbcommon0', 'libxml2', 'libxslt1.1', 'libx264-163', 'libatomic1', 'libevent-2.1-7', 'libavif13'],
+    webkit: ['libsoup-3.0-0', 'libenchant-2-2', 'gstreamer1.0-libav', 'gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base', 'gstreamer1.0-plugins-good', 'libicu70', 'libatk-bridge2.0-0', 'libatk1.0-0', 'libcairo2', 'libdbus-1-3', 'libdrm2', 'libegl1', 'libepoxy0', 'libevdev2', 'libffi7', 'libfontconfig1', 'libfreetype6', 'libgbm1', 'libgdk-pixbuf-2.0-0', 'libgles2', 'libglib2.0-0', 'libglx0', 'libgstreamer-gl1.0-0', 'libgstreamer-plugins-base1.0-0', 'libgstreamer1.0-0', 'libgtk-4-1', 'libgudev-1.0-0', 'libharfbuzz-icu0', 'libharfbuzz0b', 'libhyphen0', 'libjpeg-turbo8', 'liblcms2-2', 'libmanette-0.2-0', 'libnotify4', 'libopengl0', 'libopenjp2-7', 'libopus0', 'libpango-1.0-0', 'libpng16-16', 'libproxy1v5', 'libsecret-1-0', 'libwayland-client0', 'libwayland-egl1', 'libwayland-server0', 'libwebpdemux2', 'libwoff1', 'libx11-6', 'libxcomposite1', 'libxdamage1', 'libxkbcommon0', 'libxml2', 'libxslt1.1', 'libx264-163', 'libatomic1', 'libevent-2.1-7', 'libavif13'],
     lib2package: {
       'libavif.so.13': 'libavif13',
       'libsoup-3.0.so.0': 'libsoup-3.0-0',
@@ -169,6 +169,7 @@ const deps = exports.deps = {
       'libgsttag-1.0.so.0': 'libgstreamer-plugins-base1.0-0',
       'libgstvideo-1.0.so.0': 'libgstreamer-plugins-base1.0-0',
       'libgtk-3.so.0': 'libgtk-3-0',
+      'libgtk-4.so.1': 'libgtk-4-1',
       'libgudev-1.0.so.0': 'libgudev-1.0-0',
       'libharfbuzz-icu.so.0': 'libharfbuzz-icu0',
       'libharfbuzz.so.0': 'libharfbuzz0b',
@@ -225,7 +226,7 @@ const deps = exports.deps = {
     tools: ['xvfb', 'fonts-noto-color-emoji', 'fonts-unifont', 'libfontconfig1', 'libfreetype6', 'xfonts-cyrillic', 'xfonts-scalable', 'fonts-liberation', 'fonts-ipafont-gothic', 'fonts-wqy-zenhei', 'fonts-tlwg-loma-otf', 'fonts-freefont-ttf'],
     chromium: ['libasound2t64', 'libatk-bridge2.0-0t64', 'libatk1.0-0t64', 'libatspi2.0-0t64', 'libcairo2', 'libcups2t64', 'libdbus-1-3', 'libdrm2', 'libgbm1', 'libglib2.0-0t64', 'libnspr4', 'libnss3', 'libpango-1.0-0', 'libx11-6', 'libxcb1', 'libxcomposite1', 'libxdamage1', 'libxext6', 'libxfixes3', 'libxkbcommon0', 'libxrandr2'],
     firefox: ['libasound2t64', 'libatk1.0-0t64', 'libcairo-gobject2', 'libcairo2', 'libdbus-1-3', 'libfontconfig1', 'libfreetype6', 'libgdk-pixbuf-2.0-0', 'libglib2.0-0t64', 'libgtk-3-0t64', 'libpango-1.0-0', 'libpangocairo-1.0-0', 'libx11-6', 'libx11-xcb1', 'libxcb-shm0', 'libxcb1', 'libxcomposite1', 'libxcursor1', 'libxdamage1', 'libxext6', 'libxfixes3', 'libxi6', 'libxrandr2', 'libxrender1'],
-    webkit: ['gstreamer1.0-libav', 'gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base', 'gstreamer1.0-plugins-good', 'libicu74', 'libatomic1', 'libatk-bridge2.0-0t64', 'libatk1.0-0t64', 'libcairo-gobject2', 'libcairo2', 'libdbus-1-3', 'libdrm2', 'libenchant-2-2', 'libepoxy0', 'libevent-2.1-7t64', 'libflite1', 'libfontconfig1', 'libfreetype6', 'libgbm1', 'libgdk-pixbuf-2.0-0', 'libgles2', 'libglib2.0-0t64', 'libgstreamer-gl1.0-0', 'libgstreamer-plugins-bad1.0-0', 'libgstreamer-plugins-base1.0-0', 'libgstreamer1.0-0', 'libgtk-3-0t64', 'libharfbuzz-icu0', 'libharfbuzz0b', 'libhyphen0', 'libicu74', 'libjpeg-turbo8', 'liblcms2-2', 'libmanette-0.2-0', 'libopus0', 'libpango-1.0-0', 'libpangocairo-1.0-0', 'libpng16-16t64', 'libsecret-1-0', 'libvpx9', 'libwayland-client0', 'libwayland-egl1', 'libwayland-server0', 'libwebp7', 'libwebpdemux2', 'libwoff1', 'libx11-6', 'libxkbcommon0', 'libxml2', 'libxslt1.1', 'libx264-164', 'libavif16'],
+    webkit: ['gstreamer1.0-libav', 'gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base', 'gstreamer1.0-plugins-good', 'libicu74', 'libatomic1', 'libatk-bridge2.0-0t64', 'libatk1.0-0t64', 'libcairo-gobject2', 'libcairo2', 'libdbus-1-3', 'libdrm2', 'libenchant-2-2', 'libepoxy0', 'libevent-2.1-7t64', 'libflite1', 'libfontconfig1', 'libfreetype6', 'libgbm1', 'libgdk-pixbuf-2.0-0', 'libgles2', 'libglib2.0-0t64', 'libgstreamer-gl1.0-0', 'libgstreamer-plugins-bad1.0-0', 'libgstreamer-plugins-base1.0-0', 'libgstreamer1.0-0', 'libgtk-4-1', 'libharfbuzz-icu0', 'libharfbuzz0b', 'libhyphen0', 'libicu74', 'libjpeg-turbo8', 'liblcms2-2', 'libmanette-0.2-0', 'libopus0', 'libpango-1.0-0', 'libpangocairo-1.0-0', 'libpng16-16t64', 'libsecret-1-0', 'libvpx9', 'libwayland-client0', 'libwayland-egl1', 'libwayland-server0', 'libwebp7', 'libwebpdemux2', 'libwoff1', 'libx11-6', 'libxkbcommon0', 'libxml2', 'libxslt1.1', 'libx264-164', 'libavif16'],
     lib2package: {
       'libavif.so.16': 'libavif16',
       'libasound.so.2': 'libasound2t64',
@@ -276,6 +277,7 @@ const deps = exports.deps = {
       'libgsttag-1.0.so.0': 'libgstreamer-plugins-base1.0-0',
       'libgstvideo-1.0.so.0': 'libgstreamer-plugins-base1.0-0',
       'libgtk-3.so.0': 'libgtk-3-0t64',
+      'libgtk-4.so.1': 'libgtk-4-1',
       'libharfbuzz-icu.so.0': 'libharfbuzz-icu0',
       'libharfbuzz.so.0': 'libharfbuzz0b',
       'libhyphen.so.0': 'libhyphen0',
@@ -414,7 +416,7 @@ const deps = exports.deps = {
     tools: ['xvfb', 'fonts-noto-color-emoji', 'fonts-unifont', 'libfontconfig1', 'libfreetype6', 'xfonts-scalable', 'fonts-liberation', 'fonts-ipafont-gothic', 'fonts-wqy-zenhei', 'fonts-tlwg-loma-otf', 'fonts-freefont-ttf'],
     chromium: ['libasound2', 'libatk-bridge2.0-0', 'libatk1.0-0', 'libatspi2.0-0', 'libcairo2', 'libcups2', 'libdbus-1-3', 'libdrm2', 'libgbm1', 'libglib2.0-0', 'libnspr4', 'libnss3', 'libpango-1.0-0', 'libx11-6', 'libxcb1', 'libxcomposite1', 'libxdamage1', 'libxext6', 'libxfixes3', 'libxkbcommon0', 'libxrandr2'],
     firefox: ['libasound2', 'libatk1.0-0', 'libcairo-gobject2', 'libcairo2', 'libdbus-1-3', 'libdbus-glib-1-2', 'libfontconfig1', 'libfreetype6', 'libgdk-pixbuf-2.0-0', 'libglib2.0-0', 'libgtk-3-0', 'libharfbuzz0b', 'libpango-1.0-0', 'libpangocairo-1.0-0', 'libx11-6', 'libx11-xcb1', 'libxcb-shm0', 'libxcb1', 'libxcomposite1', 'libxcursor1', 'libxdamage1', 'libxext6', 'libxfixes3', 'libxi6', 'libxrandr2', 'libxrender1', 'libxtst6'],
-    webkit: ['libsoup-3.0-0', 'gstreamer1.0-libav', 'gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base', 'gstreamer1.0-plugins-good', 'libatk-bridge2.0-0', 'libatk1.0-0', 'libcairo2', 'libdbus-1-3', 'libdrm2', 'libegl1', 'libenchant-2-2', 'libepoxy0', 'libevdev2', 'libfontconfig1', 'libfreetype6', 'libgbm1', 'libgdk-pixbuf-2.0-0', 'libgles2', 'libglib2.0-0', 'libglx0', 'libgstreamer-gl1.0-0', 'libgstreamer-plugins-base1.0-0', 'libgstreamer1.0-0', 'libgtk-3-0', 'libgudev-1.0-0', 'libharfbuzz-icu0', 'libharfbuzz0b', 'libhyphen0', 'libicu72', 'libjpeg62-turbo', 'liblcms2-2', 'libmanette-0.2-0', 'libnotify4', 'libopengl0', 'libopenjp2-7', 'libopus0', 'libpango-1.0-0', 'libpng16-16', 'libproxy1v5', 'libsecret-1-0', 'libwayland-client0', 'libwayland-egl1', 'libwayland-server0', 'libwebp7', 'libwebpdemux2', 'libwoff1', 'libx11-6', 'libxcomposite1', 'libxdamage1', 'libxkbcommon0', 'libxml2', 'libxslt1.1', 'libatomic1', 'libevent-2.1-7', 'libavif15'],
+    webkit: ['libsoup-3.0-0', 'gstreamer1.0-libav', 'gstreamer1.0-plugins-bad', 'gstreamer1.0-plugins-base', 'gstreamer1.0-plugins-good', 'libatk-bridge2.0-0', 'libatk1.0-0', 'libcairo2', 'libdbus-1-3', 'libdrm2', 'libegl1', 'libenchant-2-2', 'libepoxy0', 'libevdev2', 'libfontconfig1', 'libfreetype6', 'libgbm1', 'libgdk-pixbuf-2.0-0', 'libgles2', 'libglib2.0-0', 'libglx0', 'libgstreamer-gl1.0-0', 'libgstreamer-plugins-base1.0-0', 'libgstreamer1.0-0', 'libgtk-4-1', 'libgudev-1.0-0', 'libharfbuzz-icu0', 'libharfbuzz0b', 'libhyphen0', 'libicu72', 'libjpeg62-turbo', 'liblcms2-2', 'libmanette-0.2-0', 'libnotify4', 'libopengl0', 'libopenjp2-7', 'libopus0', 'libpango-1.0-0', 'libpng16-16', 'libproxy1v5', 'libsecret-1-0', 'libwayland-client0', 'libwayland-egl1', 'libwayland-server0', 'libwebp7', 'libwebpdemux2', 'libwoff1', 'libx11-6', 'libxcomposite1', 'libxdamage1', 'libxkbcommon0', 'libxml2', 'libxslt1.1', 'libatomic1', 'libevent-2.1-7', 'libavif15'],
     lib2package: {
       'libavif.so.15': 'libavif15',
       'libsoup-3.0.so.0': 'libsoup-3.0-0',
@@ -442,7 +444,8 @@ const deps = exports.deps = {
       'libXext.so.6': 'libxext6',
       'libXfixes.so.3': 'libxfixes3',
       'libxkbcommon.so.0': 'libxkbcommon0',
-      'libXrandr.so.2': 'libxrandr2'
+      'libXrandr.so.2': 'libxrandr2',
+      'libgtk-4.so.1': 'libgtk-4-1'
     }
   }
 };

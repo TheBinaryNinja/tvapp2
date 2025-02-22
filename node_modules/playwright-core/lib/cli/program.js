@@ -16,7 +16,6 @@ var _utilsBundle = require("../utilsBundle");
 var _driver = require("./driver");
 var _traceViewer = require("../server/trace/viewer/traceViewer");
 var playwright = _interopRequireWildcard(require("../.."));
-var _child_process = require("child_process");
 var _utils = require("../utils");
 var _server = require("../server");
 var _errors = require("../client/errors");
@@ -56,7 +55,7 @@ Examples:
 
   $ open
   $ open -b webkit https://example.com`);
-commandWithOpenOptions('codegen [url]', 'open page and generate code for user actions', [['-o, --output <file name>', 'saves the generated script to a file'], ['--target <language>', `language to generate, one of javascript, playwright-test, python, python-async, python-pytest, csharp, csharp-mstest, csharp-nunit, java, java-junit`, codegenId()], ['--save-trace <filename>', 'record a trace for the session and save it to a file'], ['--test-id-attribute <attributeName>', 'use the specified attribute to generate data test ID selectors']]).action(function (url, options) {
+commandWithOpenOptions('codegen [url]', 'open page and generate code for user actions', [['-o, --output <file name>', 'saves the generated script to a file'], ['--target <language>', `language to generate, one of javascript, playwright-test, python, python-async, python-pytest, csharp, csharp-mstest, csharp-nunit, java, java-junit`, codegenId()], ['--test-id-attribute <attributeName>', 'use the specified attribute to generate data test ID selectors']]).action(function (url, options) {
   codegen(options, url).catch(logErrorAndExit);
 }).addHelpText('afterAll', `
 Examples:
@@ -64,21 +63,6 @@ Examples:
   $ codegen
   $ codegen --target=python
   $ codegen -b webkit https://example.com`);
-_utilsBundle.program.command('debug <app> [args...]', {
-  hidden: true
-}).description('run command in debug mode: disable timeout, open inspector').allowUnknownOption(true).action(function (app, options) {
-  (0, _child_process.spawn)(app, options, {
-    env: {
-      ...process.env,
-      PWDEBUG: '1'
-    },
-    stdio: 'inherit'
-  });
-}).addHelpText('afterAll', `
-Examples:
-
-  $ debug node test.js
-  $ debug npm run test`);
 function suggestedBrowsersToInstall() {
   return _server.registry.executables().filter(e => e.installType !== 'none' && e.type !== 'tool').map(e => e.name).join(', ');
 }
@@ -105,6 +89,7 @@ function checkBrowsersToInstall(args, options) {
       handleArgument(arg);
     }
   }
+  if (process.platform === 'win32') executables.push(_server.registry.findExecutable('winldd'));
   if (faultyArguments.length) throw new Error(`Invalid installation targets: ${faultyArguments.map(name => `'${name}'`).join(', ')}. Expecting one of: ${suggestedBrowsersToInstall()}`);
   return executables;
 }
@@ -221,9 +206,7 @@ _utilsBundle.program.command('run-driver', {
 }).action(function (options) {
   (0, _driver.runDriver)();
 });
-_utilsBundle.program.command('run-server', {
-  hidden: true
-}).option('--port <port>', 'Server port').option('--host <host>', 'Server host').option('--path <path>', 'Endpoint Path', '/').option('--max-clients <maxClients>', 'Maximum clients').option('--mode <mode>', 'Server mode, either "default" or "extension"').action(function (options) {
+_utilsBundle.program.command('run-server').option('--port <port>', 'Server port').option('--host <host>', 'Server host').option('--path <path>', 'Endpoint Path', '/').option('--max-clients <maxClients>', 'Maximum clients').option('--mode <mode>', 'Server mode, either "default" or "extension"').action(function (options) {
   (0, _driver.runServer)({
     port: options.port ? +options.port : undefined,
     host: options.host,
@@ -317,13 +300,14 @@ async function launchContext(options, extraOptions) {
   // Viewport size
   if (options.viewportSize) {
     try {
-      const [width, height] = options.viewportSize.split(',').map(n => parseInt(n, 10));
+      const [width, height] = options.viewportSize.split(',').map(n => +n);
+      if (isNaN(width) || isNaN(height)) throw new Error('bad values');
       contextOptions.viewport = {
         width,
         height
       };
     } catch (e) {
-      throw new Error('Invalid viewport size format: use "width, height", for example --viewport-size=800,600');
+      throw new Error('Invalid viewport size format: use "width,height", for example --viewport-size="800,600"');
     }
   }
 
@@ -383,9 +367,6 @@ async function launchContext(options, extraOptions) {
     // a temporary page and we call closeBrowser again when that page closes.
     if (closingBrowser) return;
     closingBrowser = true;
-    if (options.saveTrace) await context.tracing.stop({
-      path: options.saveTrace
-    });
     if (options.saveStorage) await context.storageState({
       path: options.saveStorage
     }).catch(e => null);
@@ -408,10 +389,6 @@ async function launchContext(options, extraOptions) {
   const timeout = options.timeout ? parseInt(options.timeout, 10) : 0;
   context.setDefaultTimeout(timeout);
   context.setDefaultNavigationTimeout(timeout);
-  if (options.saveTrace) await context.tracing.start({
-    screenshots: true,
-    snapshots: true
-  });
 
   // Omit options that we add automatically for presentation purpose.
   delete launchOptions.headless;
@@ -486,7 +463,6 @@ async function codegen(options, url) {
     device: options.device,
     saveStorage: options.saveStorage,
     mode: 'recording',
-    codegenMode: process.env.PW_RECORDER_IS_TRACE_VIEWER ? 'trace-events' : 'actions',
     testIdAttributeName,
     outputFile: outputFile ? _path.default.resolve(outputFile) : undefined,
     handleSIGINT: false

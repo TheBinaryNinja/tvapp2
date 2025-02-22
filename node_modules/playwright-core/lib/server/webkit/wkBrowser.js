@@ -108,13 +108,13 @@ class WKBrowser extends _browser.Browser {
     // abort navigation that is still running. We should be able to fix this by
     // instrumenting policy decision start/proceed/cancel.
     page._page._frameManager.frameAbortedNavigation(payload.frameId, 'Download is starting');
-    let originPage = page._initializedPage;
+    let originPage = page._page.initializedOrUndefined();
     // If it's a new window download, report it on the opener page.
     if (!originPage) {
       // Resume the page creation with an error. The page will automatically close right
       // after the download begins.
       page._firstNonInitialNavigationCommittedReject(new Error('Starting new page download'));
-      if (page._opener) originPage = page._opener._initializedPage;
+      if (page._opener) originPage = page._opener._page.initializedOrUndefined();
     }
     if (!originPage) return;
     this._downloadCreated(originPage, payload.uuid, payload.url);
@@ -209,17 +209,17 @@ class WKBrowserContext extends _browserContext.BrowserContext {
   _wkPages() {
     return Array.from(this._browser._wkPages.values()).filter(wkPage => wkPage._browserContext === this);
   }
-  pages() {
-    return this._wkPages().map(wkPage => wkPage._initializedPage).filter(pageOrNull => !!pageOrNull);
+  possiblyUninitializedPages() {
+    return this._wkPages().map(wkPage => wkPage._page);
   }
-  async newPageDelegate() {
+  async doCreateNewPage() {
     (0, _browserContext.assertBrowserContextIsNotOwned)(this);
     const {
       pageProxyId
     } = await this._browser._browserSession.send('Playwright.createPage', {
       browserContextId: this._browserContextId
     });
-    return this._browser._wkPages.get(pageProxyId);
+    return this._browser._wkPages.get(pageProxyId)._page;
   }
   async doGetCookies(urls) {
     const {

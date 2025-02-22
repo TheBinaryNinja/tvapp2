@@ -10,7 +10,8 @@ var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
 var _jsHandleDispatcher = require("./jsHandleDispatcher");
 var _networkDispatchers = require("./networkDispatchers");
 var _utils = require("../../utils");
-var _ariaSnapshot = require("../ariaSnapshot");
+var _ariaSnapshot = require("../../utils/isomorphic/ariaSnapshot");
+var _utilsBundle = require("../../utilsBundle");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -276,7 +277,7 @@ class FrameDispatcher extends _dispatcher.Dispatcher {
   async expect(params, metadata) {
     metadata.potentiallyClosesScope = true;
     let expectedValue = params.expectedValue ? (0, _jsHandleDispatcher.parseArgument)(params.expectedValue) : undefined;
-    if (params.expression === 'to.match.aria' && expectedValue) expectedValue = (0, _ariaSnapshot.parseAriaSnapshot)(expectedValue);
+    if (params.expression === 'to.match.aria' && expectedValue) expectedValue = (0, _ariaSnapshot.parseAriaSnapshotUnsafe)(_utilsBundle.yaml, expectedValue);
     const result = await this._frame.expect(metadata, params.selector, {
       ...params,
       expectedValue

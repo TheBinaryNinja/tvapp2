@@ -83,7 +83,8 @@ class PlaywrightServer {
         return new _playwrightConnection.PlaywrightConnection(semaphore.acquire(), clientType, ws, {
           socksProxyPattern: proxyValue,
           browserName,
-          launchOptions
+          launchOptions,
+          allowFSPaths: this._options.mode === 'extension'
         }, {
           playwright: this._preLaunchedPlaywright,
           browser: this._options.preLaunchedBrowser,

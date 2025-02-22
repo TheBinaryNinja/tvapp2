@@ -410,7 +410,8 @@ _validatorPrimitives.scheme.RecorderSource = (0, _validatorPrimitives.tObject)({
 _validatorPrimitives.scheme.DebugControllerInitializer = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
 _validatorPrimitives.scheme.DebugControllerInspectRequestedEvent = (0, _validatorPrimitives.tObject)({
   selector: _validatorPrimitives.tString,
-  locator: _validatorPrimitives.tString
+  locator: _validatorPrimitives.tString,
+  ariaSnapshot: _validatorPrimitives.tString
 });
 _validatorPrimitives.scheme.DebugControllerSetModeRequestedEvent = (0, _validatorPrimitives.tObject)({
   mode: _validatorPrimitives.tString
@@ -995,7 +996,6 @@ _validatorPrimitives.scheme.BrowserContextPauseResult = (0, _validatorPrimitives
 _validatorPrimitives.scheme.BrowserContextEnableRecorderParams = (0, _validatorPrimitives.tObject)({
   language: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   mode: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['inspecting', 'recording'])),
-  codegenMode: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['actions', 'trace-events'])),
   pauseOnNextStatement: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBoolean),
   testIdAttributeName: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   launchOptions: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tAny),

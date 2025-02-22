@@ -134,7 +134,7 @@ class CRBrowser extends _browser.Browser {
     return this.options.name === 'clank';
   }
   async _waitForAllPagesToBeInitialized() {
-    await Promise.all([...this._crPages.values()].map(page => page.pageOrError()));
+    await Promise.all([...this._crPages.values()].map(crPage => crPage._page.waitForInitializedOrError()));
   }
   _onAttachedToTarget({
     targetInfo,
@@ -239,9 +239,9 @@ class CRBrowser extends _browser.Browser {
       return;
     }
     page.willBeginDownload();
-    let originPage = page._initializedPage;
+    let originPage = page._page.initializedOrUndefined();
     // If it's a new window download, report it on the opener page.
-    if (!originPage && page._opener) originPage = page._opener._initializedPage;
+    if (!originPage && page._opener) originPage = page._opener._page.initializedOrUndefined();
     if (!originPage) return;
     this._downloadCreated(originPage, payload.guid, payload.url, payload.suggestedFilename);
   }
@@ -312,10 +312,10 @@ class CRBrowserContext extends _browserContext.BrowserContext {
   _crPages() {
     return [...this._browser._crPages.values()].filter(crPage => crPage._browserContext === this);
   }
-  pages() {
-    return this._crPages().map(crPage => crPage._initializedPage).filter(Boolean);
+  possiblyUninitializedPages() {
+    return this._crPages().map(crPage => crPage._page);
   }
-  async newPageDelegate() {
+  async doCreateNewPage() {
     (0, _browserContext.assertBrowserContextIsNotOwned)(this);
     const oldKeys = this._browser.isClank() ? new Set(this._browser._crPages.keys()) : undefined;
     let {
@@ -338,7 +338,7 @@ class CRBrowserContext extends _browserContext.BrowserContext {
       (0, _utils.assert)(newKeys.size === 1);
       [targetId] = [...newKeys];
     }
-    return this._browser._crPages.get(targetId);
+    return this._browser._crPages.get(targetId)._page;
   }
   async doGetCookies(urls) {
     const {
@@ -372,7 +372,7 @@ class CRBrowserContext extends _browserContext.BrowserContext {
     });
   }
   async doGrantPermissions(origin, permissions) {
-    const webPermissionToProtocol = new Map([['geolocation', 'geolocation'], ['midi', 'midi'], ['notifications', 'notifications'], ['camera', 'videoCapture'], ['microphone', 'audioCapture'], ['background-sync', 'backgroundSync'], ['ambient-light-sensor', 'sensors'], ['accelerometer', 'sensors'], ['gyroscope', 'sensors'], ['magnetometer', 'sensors'], ['accessibility-events', 'accessibilityEvents'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-write', 'clipboardSanitizedWrite'], ['payment-handler', 'paymentHandler'],
+    const webPermissionToProtocol = new Map([['geolocation', 'geolocation'], ['midi', 'midi'], ['notifications', 'notifications'], ['camera', 'videoCapture'], ['microphone', 'audioCapture'], ['background-sync', 'backgroundSync'], ['ambient-light-sensor', 'sensors'], ['accelerometer', 'sensors'], ['gyroscope', 'sensors'], ['magnetometer', 'sensors'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-write', 'clipboardSanitizedWrite'], ['payment-handler', 'paymentHandler'],
     // chrome-specific permissions we have.
     ['midi-sysex', 'midiSysex'], ['storage-access', 'storageAccess']]);
     const filtered = permissions.map(permission => {
@@ -466,7 +466,7 @@ class CRBrowserContext extends _browserContext.BrowserContext {
     // When persistent context is closed, we do not necessary get Target.detachedFromTarget
     // for all the background pages.
     for (const [targetId, backgroundPage] of this._browser._backgroundPages.entries()) {
-      if (backgroundPage._browserContext === this && backgroundPage._initializedPage) {
+      if (backgroundPage._browserContext === this && backgroundPage._page.initializedOrUndefined()) {
         backgroundPage.didClose();
         this._browser._backgroundPages.delete(targetId);
       }
@@ -487,7 +487,7 @@ class CRBrowserContext extends _browserContext.BrowserContext {
   backgroundPages() {
     const result = [];
     for (const backgroundPage of this._browser._backgroundPages.values()) {
-      if (backgroundPage._browserContext === this && backgroundPage._initializedPage) result.push(backgroundPage._initializedPage);
+      if (backgroundPage._browserContext === this && backgroundPage._page.initializedOrUndefined()) result.push(backgroundPage._page);
     }
     return result;
   }

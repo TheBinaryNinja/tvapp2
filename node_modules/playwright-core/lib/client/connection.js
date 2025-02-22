@@ -76,9 +76,9 @@ class Connection extends _events.EventEmitter {
     this.toImpl = void 0;
     this._tracingCount = 0;
     this._instrumentation = void 0;
-    this._rootObject = new Root(this);
-    this._localUtils = localUtils;
     this._instrumentation = instrumentation || (0, _clientInstrumentation.createInstrumentation)();
+    this._localUtils = localUtils;
+    this._rootObject = new Root(this);
   }
   markAsRemote() {
     this._isRemote = true;
@@ -140,7 +140,7 @@ class Connection extends _events.EventEmitter {
     }).catch(() => {});
     // We need to exit zones before calling into the server, otherwise
     // when we receive events from the server, we would be in an API zone.
-    _utils.zones.exitZones(() => this.onmessage({
+    _utils.zones.empty().run(() => this.onmessage({
       ...message,
       metadata
     }));

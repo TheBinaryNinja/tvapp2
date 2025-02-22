@@ -7,8 +7,8 @@ exports.performAction = performAction;
 exports.toClickOptions = toClickOptions;
 var _utils = require("../../utils");
 var _language = require("../codegen/language");
+var _instrumentation = require("../instrumentation");
 var _recorderUtils = require("./recorderUtils");
-var _recorderUtils2 = require("../../utils/isomorphic/recorderUtils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -25,7 +25,8 @@ var _recorderUtils2 = require("../../utils/isomorphic/recorderUtils");
  * limitations under the License.
  */
 
-async function performAction(callMetadata, pageAliases, actionInContext) {
+async function performAction(pageAliases, actionInContext) {
+  const callMetadata = (0, _instrumentation.serverSideCallMetadata)();
   const mainFrame = (0, _recorderUtils.mainFrameForAction)(pageAliases, actionInContext);
   const {
     action
@@ -42,7 +43,7 @@ async function performAction(callMetadata, pageAliases, actionInContext) {
     await mainFrame._page.close(callMetadata);
     return;
   }
-  const selector = (0, _recorderUtils2.buildFullSelector)(actionInContext.frame.framePath, action.selector);
+  const selector = (0, _recorderUtils.buildFullSelector)(actionInContext.frame.framePath, action.selector);
   if (action.name === 'click') {
     const options = toClickOptions(action);
     await mainFrame.click(callMetadata, selector, {
@@ -105,6 +106,9 @@ async function performAction(callMetadata, pageAliases, actionInContext) {
     await mainFrame.expect(callMetadata, selector, {
       selector,
       expression: 'to.be.checked',
+      expectedValue: {
+        checked: action.checked
+      },
       isNot: !action.checked,
       timeout: kActionTimeout
     });

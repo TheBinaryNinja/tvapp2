@@ -48,13 +48,19 @@ class RawKeyboardImpl {
     // remove the trailing : to match the Chromium command names.
     return commands.map(c => c.substring(0, c.length - 1));
   }
-  async keydown(modifiers, code, keyCode, keyCodeWithoutLocation, key, location, autoRepeat, text) {
+  async keydown(modifiers, keyName, description, autoRepeat) {
+    const {
+      code,
+      key,
+      location,
+      text
+    } = description;
     if (code === 'Escape' && (await this._dragManger.cancelDrag())) return;
     const commands = this._commandsForCode(code, modifiers);
     await this._client.send('Input.dispatchKeyEvent', {
       type: text ? 'keyDown' : 'rawKeyDown',
       modifiers: (0, _crProtocolHelper.toModifiersMask)(modifiers),
-      windowsVirtualKeyCode: keyCodeWithoutLocation,
+      windowsVirtualKeyCode: description.keyCodeWithoutLocation,
       code,
       commands,
       key,
@@ -65,12 +71,17 @@ class RawKeyboardImpl {
       isKeypad: location === input.keypadLocation
     });
   }
-  async keyup(modifiers, code, keyCode, keyCodeWithoutLocation, key, location) {
+  async keyup(modifiers, keyName, description) {
+    const {
+      code,
+      key,
+      location
+    } = description;
     await this._client.send('Input.dispatchKeyEvent', {
       type: 'keyUp',
       modifiers: (0, _crProtocolHelper.toModifiersMask)(modifiers),
       key,
-      windowsVirtualKeyCode: keyCodeWithoutLocation,
+      windowsVirtualKeyCode: description.keyCodeWithoutLocation,
       code,
       location
     });

@@ -15,7 +15,6 @@ var _ffInput = require("./ffInput");
 var _ffNetworkManager = require("./ffNetworkManager");
 var _stackTrace = require("../../utils/stackTrace");
 var _debugLogger = require("../../utils/debugLogger");
-var _manualPromise = require("../../utils/manualPromise");
 var _browserContext = require("../browserContext");
 var _errors = require("../errors");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
@@ -48,9 +47,7 @@ class FFPage {
     this._page = void 0;
     this._networkManager = void 0;
     this._browserContext = void 0;
-    this._pagePromise = new _manualPromise.ManualPromise();
-    this._initializedPage = null;
-    this._initializationFailed = false;
+    this._reportedAsNew = false;
     this._opener = void 0;
     this._contextIdToContext = void 0;
     this._eventListeners = void 0;
@@ -70,34 +67,22 @@ class FFPage {
     this._page.on(_page.Page.Events.FrameDetached, frame => this._removeContextsForFrame(frame));
     // TODO: remove Page.willOpenNewWindowAsynchronously from the protocol.
     this._eventListeners = [_eventsHelper.eventsHelper.addEventListener(this._session, 'Page.eventFired', this._onEventFired.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.frameAttached', this._onFrameAttached.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.frameDetached', this._onFrameDetached.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.navigationAborted', this._onNavigationAborted.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.navigationCommitted', this._onNavigationCommitted.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.navigationStarted', this._onNavigationStarted.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.sameDocumentNavigation', this._onSameDocumentNavigation.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Runtime.executionContextCreated', this._onExecutionContextCreated.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Runtime.executionContextDestroyed', this._onExecutionContextDestroyed.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Runtime.executionContextsCleared', this._onExecutionContextsCleared.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.linkClicked', event => this._onLinkClicked(event.phase)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.uncaughtError', this._onUncaughtError.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Runtime.console', this._onConsole.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.dialogOpened', this._onDialogOpened.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.bindingCalled', this._onBindingCalled.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.fileChooserOpened', this._onFileChooserOpened.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.workerCreated', this._onWorkerCreated.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.workerDestroyed', this._onWorkerDestroyed.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.dispatchMessageFromWorker', this._onDispatchMessageFromWorker.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.crashed', this._onCrashed.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.videoRecordingStarted', this._onVideoRecordingStarted.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.webSocketCreated', this._onWebSocketCreated.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.webSocketClosed', this._onWebSocketClosed.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.webSocketFrameReceived', this._onWebSocketFrameReceived.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.webSocketFrameSent', this._onWebSocketFrameSent.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._session, 'Page.screencastFrame', this._onScreencastFrame.bind(this))];
-    this._session.once('Page.ready', async () => {
-      await this._page.initOpener(this._opener);
-      if (this._initializationFailed) return;
-      // Note: it is important to call |reportAsNew| before resolving pageOrError promise,
-      // so that anyone who awaits pageOrError got a ready and reported page.
-      this._initializedPage = this._page;
-      this._page.reportAsNew();
-      this._pagePromise.resolve(this._page);
+    this._session.once('Page.ready', () => {
+      var _this$_opener;
+      if (this._reportedAsNew) return;
+      this._reportedAsNew = true;
+      this._page.reportAsNew((_this$_opener = this._opener) === null || _this$_opener === void 0 ? void 0 : _this$_opener._page);
     });
     // Ideally, we somehow ensure that utility world is created before Page.ready arrives, but currently it is racy.
     // Therefore, we can end up with an initialized page without utility world, although very unlikely.
     this.addInitScript(new _page.InitScript('', true), UTILITY_WORLD_NAME).catch(e => this._markAsError(e));
   }
-  potentiallyUninitializedPage() {
-    return this._page;
-  }
   async _markAsError(error) {
-    // Same error may be report twice: channer disconnected and session.send fails.
-    if (this._initializationFailed) return;
-    this._initializationFailed = true;
-    if (!this._initializedPage) {
-      await this._page.initOpener(this._opener);
-      this._page.reportAsNew(error);
-      this._pagePromise.resolve(error);
-    }
-  }
-  async pageOrError() {
-    return this._pagePromise;
+    var _this$_opener2;
+    // Same error may be reported twice: channel disconnected and session.send fails.
+    if (this._reportedAsNew) return;
+    this._reportedAsNew = true;
+    this._page.reportAsNew((_this$_opener2 = this._opener) === null || _this$_opener2 === void 0 ? void 0 : _this$_opener2._page, error);
   }
   _onWebSocketCreated(event) {
     this._page._frameManager.onWebSocketCreated(webSocketId(event.frameId, event.wsid), event.requestURL);
@@ -213,7 +198,7 @@ class FFPage {
     }, params.defaultValue));
   }
   async _onBindingCalled(event) {
-    const pageOrError = await this.pageOrError();
+    const pageOrError = await this._page.waitForInitializedOrError();
     if (!(pageOrError instanceof Error)) {
       const context = this._contextIdToContext.get(event.executionContextId);
       if (context) await this._page._onBindingCalled(event.payload, context);
@@ -286,7 +271,7 @@ class FFPage {
     this._page._didCrash();
   }
   _onVideoRecordingStarted(event) {
-    this._browserContext._browser._videoStarted(this._browserContext, event.screencastId, event.file, this.pageOrError());
+    this._browserContext._browser._videoStarted(this._browserContext, event.screencastId, event.file, this._page.waitForInitializedOrError());
   }
   didClose() {
     this._markAsError(new _errors.TargetClosedError());

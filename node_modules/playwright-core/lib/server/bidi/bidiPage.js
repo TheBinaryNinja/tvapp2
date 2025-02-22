@@ -41,7 +41,6 @@ class BidiPage {
     this.rawKeyboard = void 0;
     this.rawTouchscreen = void 0;
     this._page = void 0;
-    this._pagePromise = void 0;
     this._session = void 0;
     this._opener = void 0;
     this._realmToContext = void 0;
@@ -49,7 +48,6 @@ class BidiPage {
     this._browserContext = void 0;
     this._networkManager = void 0;
     this._pdf = void 0;
-    this._initializedPage = null;
     this._initScriptIds = [];
     this._session = bidiSession;
     this._opener = opener;
@@ -65,15 +63,13 @@ class BidiPage {
     this._sessionListeners = [_eventsHelper.eventsHelper.addEventListener(bidiSession, 'script.realmCreated', this._onRealmCreated.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'script.message', this._onScriptMessage.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.contextDestroyed', this._onBrowsingContextDestroyed.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.navigationStarted', this._onNavigationStarted.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.navigationAborted', this._onNavigationAborted.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.navigationFailed', this._onNavigationFailed.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.fragmentNavigated', this._onFragmentNavigated.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.domContentLoaded', this._onDomContentLoaded.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.load', this._onLoad.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'browsingContext.userPromptOpened', this._onUserPromptOpened.bind(this)), _eventsHelper.eventsHelper.addEventListener(bidiSession, 'log.entryAdded', this._onLogEntryAdded.bind(this))];
 
     // Initialize main frame.
-    this._pagePromise = this._initialize().finally(async () => {
-      await this._page.initOpener(this._opener);
-    }).then(() => {
-      this._initializedPage = this._page;
-      this._page.reportAsNew();
-      return this._page;
-    }).catch(e => {
-      this._page.reportAsNew(e);
-      return e;
+    // TODO: Wait for first execution context to be created and maybe about:blank navigated.
+    this._initialize().then(() => {
+      var _this$_opener;
+      return this._page.reportAsNew((_this$_opener = this._opener) === null || _this$_opener === void 0 ? void 0 : _this$_opener._page);
+    }, error => {
+      var _this$_opener2;
+      return this._page.reportAsNew((_this$_opener2 = this._opener) === null || _this$_opener2 === void 0 ? void 0 : _this$_opener2._page, error);
     });
   }
   async _initialize() {
@@ -84,17 +80,10 @@ class BidiPage {
   async _addAllInitScripts() {
     return Promise.all(this._page.allInitScripts().map(initScript => this.addInitScript(initScript)));
   }
-  potentiallyUninitializedPage() {
-    return this._page;
-  }
   didClose() {
     this._session.dispose();
     _eventsHelper.eventsHelper.removeEventListeners(this._sessionListeners);
     this._page._didClose();
-  }
-  async pageOrError() {
-    // TODO: Wait for first execution context to be created and maybe about:blank navigated.
-    return this._pagePromise;
   }
   _onFrameAttached(frameId, parentFrameId) {
     return this._page._frameManager.frameAttached(frameId, parentFrameId);
@@ -311,7 +300,7 @@ class BidiPage {
   }
   async _onScriptMessage(event) {
     if (event.channel !== kPlaywrightBindingChannel) return;
-    const pageOrError = await this.pageOrError();
+    const pageOrError = await this._page.waitForInitializedOrError();
     if (pageOrError instanceof Error) return;
     const context = this._realmToContext.get(event.source.realm);
     if (!context) return;
@@ -351,7 +340,7 @@ class BidiPage {
       context: this._session.sessionId,
       format: {
         type: `image/${format === 'png' ? 'png' : 'jpeg'}`,
-        quality: quality || 80
+        quality: quality ? quality / 100 : 0.8
       },
       origin: documentRect ? 'document' : 'viewport',
       clip: {

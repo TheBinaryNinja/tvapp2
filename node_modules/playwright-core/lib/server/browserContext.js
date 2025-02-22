@@ -102,7 +102,7 @@ class BrowserContext extends _instrumentation.SdkObject {
     this._debugger = new _debugger.Debugger(this);
 
     // When PWDEBUG=1, show inspector for each context.
-    if ((0, _utils.debugMode)() === 'inspector') await _recorder.Recorder.show('actions', this, _recorderApp.RecorderApp.factory(this), {
+    if ((0, _utils.debugMode)() === 'inspector') await _recorder.Recorder.show(this, _recorderApp.RecorderApp.factory(this), {
       pauseOnNextStatement: true
     });
 
@@ -201,6 +201,9 @@ class BrowserContext extends _instrumentation.SdkObject {
     this._closePromiseFulfill(new Error('Context closed'));
     this.emit(BrowserContext.Events.Close);
   }
+  pages() {
+    return this.possiblyUninitializedPages().filter(page => page.initializedOrUndefined());
+  }
 
   // BrowserContext methods.
 
@@ -226,6 +229,9 @@ class BrowserContext extends _instrumentation.SdkObject {
   }
   setHTTPCredentials(httpCredentials) {
     return this.doSetHTTPCredentials(httpCredentials);
+  }
+  hasBinding(name) {
+    return this._pageBindings.has(name);
   }
   async exposeBinding(name, needsHandle, playwrightBinding) {
     if (this._pageBindings.has(name)) throw new Error(`Function "${name}" has been already registered`);
@@ -266,27 +272,29 @@ class BrowserContext extends _instrumentation.SdkObject {
     this._timeoutSettings.setDefaultTimeout(timeout);
   }
   async _loadDefaultContextAsIs(progress) {
-    if (!this.pages().length) {
+    if (!this.possiblyUninitializedPages().length) {
       const waitForEvent = _helper.helper.waitForEvent(progress, this, BrowserContext.Events.Page);
       progress.cleanupWhenAborted(() => waitForEvent.dispose);
-      const page = await waitForEvent.promise;
-      if (page._pageIsError) throw page._pageIsError;
+      // Race against BrowserContext.close
+      await Promise.race([waitForEvent.promise, this._closePromise]);
     }
-    const pages = this.pages();
-    if (pages[0]._pageIsError) throw pages[0]._pageIsError;
-    await pages[0].mainFrame()._waitForLoadState(progress, 'load');
-    return pages;
+    const page = this.possiblyUninitializedPages()[0];
+    if (!page) return;
+    const pageOrError = await page.waitForInitializedOrError();
+    if (pageOrError instanceof Error) throw pageOrError;
+    await page.mainFrame()._waitForLoadState(progress, 'load');
+    return page;
   }
   async _loadDefaultContext(progress) {
-    const pages = await this._loadDefaultContextAsIs(progress);
+    const defaultPage = await this._loadDefaultContextAsIs(progress);
+    if (!defaultPage) return;
     const browserName = this._browser.options.name;
     if (this._options.isMobile && browserName === 'chromium' || this._options.locale && browserName === 'webkit') {
       // Workaround for:
       // - chromium fails to change isMobile for existing page;
       // - webkit fails to change locale for existing page.
-      const oldPage = pages[0];
       await this.newPage(progress.metadata);
-      await oldPage.close(progress.metadata);
+      await defaultPage.close(progress.metadata);
     }
   }
   _authenticateProxyViaHeader() {
@@ -319,8 +327,8 @@ class BrowserContext extends _instrumentation.SdkObject {
       password: password || ''
     };
   }
-  async addInitScript(source) {
-    const initScript = new _page6.InitScript(source);
+  async addInitScript(source, name) {
+    const initScript = new _page6.InitScript(source, false /* internal */, name);
     this.initScripts.push(initScript);
     await this.doAddInitScript(initScript);
   }
@@ -380,9 +388,9 @@ class BrowserContext extends _instrumentation.SdkObject {
     await this._closePromise;
   }
   async newPage(metadata) {
-    const pageDelegate = await this.newPageDelegate();
-    if (metadata.isServerSide) pageDelegate.potentiallyUninitializedPage().markAsServerSideOnly();
-    const pageOrError = await pageDelegate.pageOrError();
+    const page = await this.doCreateNewPage();
+    if (metadata.isServerSide) page.markAsServerSideOnly();
+    const pageOrError = await page.waitForInitializedOrError();
     if (pageOrError instanceof _page6.Page) {
       if (pageOrError.isClosed()) throw new Error('Page has been closed.');
       return pageOrError;

@@ -47,7 +47,8 @@ class Page extends _instrumentation.SdkObject {
     super(browserContext, 'page');
     this._closedState = 'open';
     this._closedPromise = new _manualPromise.ManualPromise();
-    this._initialized = false;
+    this._initialized = void 0;
+    this._initializedPromise = new _manualPromise.ManualPromise();
     this._eventsToEmitAfterInitialized = [];
     this._crashed = false;
     this.openScope = new _utils.LongStandingScope();
@@ -72,7 +73,6 @@ class Page extends _instrumentation.SdkObject {
     this._clientRequestInterceptor = void 0;
     this._serverRequestInterceptor = void 0;
     this._ownedContext = void 0;
-    this._pageIsError = void 0;
     this._video = null;
     this._opener = void 0;
     this._isServerSideOnly = false;
@@ -96,19 +96,21 @@ class Page extends _instrumentation.SdkObject {
     if (delegate.pdf) this.pdf = delegate.pdf.bind(delegate);
     this.coverage = delegate.coverage ? delegate.coverage() : null;
   }
-  async initOpener(opener) {
-    if (!opener) return;
-    const openerPage = await opener.pageOrError();
-    if (openerPage instanceof Page && !openerPage.isClosed()) this._opener = openerPage;
+  async reportAsNew(opener, error = undefined, contextEvent = _browserContext.BrowserContext.Events.Page) {
+    if (opener) {
+      const openerPageOrError = await opener.waitForInitializedOrError();
+      if (openerPageOrError instanceof Page && !openerPageOrError.isClosed()) this._opener = openerPageOrError;
+    }
+    this._markInitialized(error, contextEvent);
   }
-  reportAsNew(error = undefined, contextEvent = _browserContext.BrowserContext.Events.Page) {
+  _markInitialized(error = undefined, contextEvent = _browserContext.BrowserContext.Events.Page) {
     if (error) {
       // Initialization error could have happened because of
       // context/browser closure. Just ignore the page.
       if (this._browserContext.isClosingOrClosed()) return;
-      this._setIsError(error);
+      this._frameManager.createDummyMainFrameIfNeeded();
     }
-    this._initialized = true;
+    this._initialized = error || this;
     this.emitOnContext(contextEvent, this);
     for (const {
       event,
@@ -120,9 +122,16 @@ class Page extends _instrumentation.SdkObject {
     // in that case we fire another Close event to ensure that each reported Page will have
     // corresponding Close event after it is reported on the context.
     if (this.isClosed()) this.emit(Page.Events.Close);else this.instrumentation.onPageOpen(this);
+
+    // Note: it is important to resolve _initializedPromise at the end,
+    // so that anyone who awaits waitForInitializedOrError got a ready and reported page.
+    this._initializedPromise.resolve(this._initialized);
   }
   initializedOrUndefined() {
     return this._initialized ? this : undefined;
+  }
+  waitForInitializedOrError() {
+    return this._initializedPromise;
   }
   emitOnContext(event, ...args) {
     if (this._isServerSideOnly) return;
@@ -407,8 +416,8 @@ class Page extends _instrumentation.SdkObject {
   async bringToFront() {
     await this._delegate.bringToFront();
   }
-  async addInitScript(source) {
-    const initScript = new InitScript(source);
+  async addInitScript(source, name) {
+    const initScript = new InitScript(source, false /* internal */, name);
     this.initScripts.push(initScript);
     await this._delegate.addInitScript(initScript);
   }
@@ -531,10 +540,6 @@ class Page extends _instrumentation.SdkObject {
     }
     if (!runBeforeUnload) await this._closedPromise;
     if (this._ownedContext) await this._ownedContext.close(options);
-  }
-  _setIsError(error) {
-    this._pageIsError = error;
-    this._frameManager.createDummyMainFrameIfNeeded();
   }
   isClosed() {
     return this._closedState === 'closed';
@@ -781,9 +786,10 @@ function addPageBinding(playwrightBinding, bindingName, needsHandle, utilityScri
   globalThis[bindingName].__installed = true;
 }
 class InitScript {
-  constructor(source, internal) {
+  constructor(source, internal, name) {
     this.source = void 0;
     this.internal = void 0;
+    this.name = void 0;
     const guid = (0, _utils.createGuid)();
     this.source = `(() => {
       globalThis.__pwInitScripts = globalThis.__pwInitScripts || {};
@@ -794,6 +800,7 @@ class InitScript {
       ${source}
     })();`;
     this.internal = !!internal;
+    this.name = name;
   }
 }
 exports.InitScript = InitScript;

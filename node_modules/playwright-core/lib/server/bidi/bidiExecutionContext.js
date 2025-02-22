@@ -109,7 +109,26 @@ class BidiExecutionContext {
     throw new js.JavaScriptErrorInEvaluate('Unexpected response type: ' + JSON.stringify(response));
   }
   async getProperties(context, objectId) {
-    throw new Error('Method not implemented.');
+    const handle = this.createHandle(context, {
+      objectId
+    });
+    try {
+      const names = await handle.evaluate(object => {
+        const names = [];
+        const descriptors = Object.getOwnPropertyDescriptors(object);
+        for (const name in descriptors) {
+          var _descriptors$name;
+          if ((_descriptors$name = descriptors[name]) !== null && _descriptors$name !== void 0 && _descriptors$name.enumerable) names.push(name);
+        }
+        return names;
+      });
+      const values = await Promise.all(names.map(name => handle.evaluateHandle((object, name) => object[name], name)));
+      const map = new Map();
+      for (let i = 0; i < names.length; i++) map.set(names[i], values[i]);
+      return map;
+    } finally {
+      handle.dispose();
+    }
   }
   createHandle(context, jsRemoteObject) {
     const remoteObject = jsRemoteObject;

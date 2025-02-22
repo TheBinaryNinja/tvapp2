@@ -104,7 +104,7 @@ async function installDependenciesLinux(targets, dryRun) {
   for (const target of targets) {
     const info = _nativeDeps.deps[platform];
     if (!info) {
-      console.warn(`Cannot install dependencies for ${platform}!`); // eslint-disable-line no-console
+      console.warn(`Cannot install dependencies for ${platform} with Playwright ${(0, _userAgent.getPlaywrightVersion)()}!`); // eslint-disable-line no-console
       return;
     }
     libraries.push(...info[target]);
@@ -132,11 +132,11 @@ async function installDependenciesLinux(targets, dryRun) {
     child.on('error', reject);
   });
 }
-async function validateDependenciesWindows(windowsExeAndDllDirectories) {
+async function validateDependenciesWindows(sdkLanguage, windowsExeAndDllDirectories) {
   const directoryPaths = windowsExeAndDllDirectories;
   const lddPaths = [];
   for (const directoryPath of directoryPaths) lddPaths.push(...(await executablesOrSharedLibraries(directoryPath)));
-  const allMissingDeps = await Promise.all(lddPaths.map(lddPath => missingFileDependenciesWindows(lddPath)));
+  const allMissingDeps = await Promise.all(lddPaths.map(lddPath => missingFileDependenciesWindows(sdkLanguage, lddPath)));
   const missingDeps = new Set();
   for (const deps of allMissingDeps) {
     for (const dep of deps) missingDeps.add(dep);
@@ -238,8 +238,8 @@ async function executablesOrSharedLibraries(directoryPath) {
   }))).filter(Boolean);
   return executablersOrLibraries;
 }
-async function missingFileDependenciesWindows(filePath) {
-  const executable = _path.default.join(__dirname, '..', '..', '..', 'bin', 'PrintDeps.exe');
+async function missingFileDependenciesWindows(sdkLanguage, filePath) {
+  const executable = _.registry.findExecutable('winldd').executablePathOrDie(sdkLanguage);
   const dirname = _path.default.dirname(filePath);
   const {
     stdout,

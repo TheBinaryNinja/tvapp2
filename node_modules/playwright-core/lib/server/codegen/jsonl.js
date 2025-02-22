@@ -32,7 +32,7 @@ class JsonlLanguageGenerator {
     const locator = actionInContext.action.selector ? JSON.parse((0, _utils.asLocator)('jsonl', actionInContext.action.selector)) : undefined;
     const entry = {
       ...actionInContext.action,
-      pageAlias: actionInContext.frame.pageAlias,
+      ...actionInContext.frame,
       locator
     };
     return JSON.stringify(entry);

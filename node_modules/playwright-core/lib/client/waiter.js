@@ -35,7 +35,7 @@ class Waiter {
     this._savedZone = void 0;
     this._waitId = (0, _utils.createGuid)();
     this._channelOwner = channelOwner;
-    this._savedZone = _utils.zones.currentZone();
+    this._savedZone = _utils.zones.current().without('apiZone');
     this._channelOwner._channel.waitForEventInfo({
       info: {
         waitId: this._waitId,

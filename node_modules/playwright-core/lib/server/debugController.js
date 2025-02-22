@@ -9,7 +9,9 @@ var _instrumentation = require("./instrumentation");
 var _recorder = require("./recorder");
 var _recorderApp = require("./recorder/recorderApp");
 var _utils = require("../utils");
-var _ariaSnapshot = require("./ariaSnapshot");
+var _utilsBundle = require("../utilsBundle");
+var _locatorParser = require("../utils/isomorphic/locatorParser");
+var _ariaSnapshot = require("../utils/isomorphic/ariaSnapshot");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -35,9 +37,6 @@ class DebugController extends _instrumentation.SdkObject {
       },
       instrumentation: (0, _instrumentation.createInstrumentation)()
     }, undefined, 'DebugController');
-    this._autoCloseTimer = void 0;
-    // TODO: remove in 1.27
-    this._autoCloseAllowed = false;
     this._trackHierarchyListener = void 0;
     this._playwright = void 0;
     this._sdkLanguage = 'javascript';
@@ -48,20 +47,17 @@ class DebugController extends _instrumentation.SdkObject {
     this._codegenId = codegenId;
     this._sdkLanguage = sdkLanguage;
   }
-  setAutoCloseAllowed(allowed) {
-    this._autoCloseAllowed = allowed;
-  }
   dispose() {
     this.setReportStateChanged(false);
-    this.setAutoCloseAllowed(false);
   }
   setReportStateChanged(enabled) {
     if (enabled && !this._trackHierarchyListener) {
       this._trackHierarchyListener = {
-        onPageOpen: () => this._emitSnapshot(),
-        onPageClose: () => this._emitSnapshot()
+        onPageOpen: () => this._emitSnapshot(false),
+        onPageClose: () => this._emitSnapshot(false)
       };
       this._playwright.instrumentation.addListener(this._trackHierarchyListener, null);
+      this._emitSnapshot(true);
     } else if (!enabled && this._trackHierarchyListener) {
       this._playwright.instrumentation.removeListener(this._trackHierarchyListener);
       this._trackHierarchyListener = undefined;
@@ -83,7 +79,6 @@ class DebugController extends _instrumentation.SdkObject {
         recorder.hideHighlightedSelector();
         recorder.setMode('none');
       }
-      this.setAutoCloseEnabled(true);
       return;
     }
     if (!this._playwright.allBrowsers().length) await this._playwright.chromium.launch(internalMetadata, {
@@ -108,20 +103,13 @@ class DebugController extends _instrumentation.SdkObject {
       if (params.mode !== 'inspecting') recorder.setOutput(this._codegenId, params.file);
       recorder.setMode(params.mode);
     }
-    this.setAutoCloseEnabled(true);
-  }
-  async setAutoCloseEnabled(enabled) {
-    if (!this._autoCloseAllowed) return;
-    if (this._autoCloseTimer) clearTimeout(this._autoCloseTimer);
-    if (!enabled) return;
-    const heartBeat = () => {
-      if (!this._playwright.allPages().length) (0, _processLauncher.gracefullyProcessExitDoNotHang)(0);else this._autoCloseTimer = setTimeout(heartBeat, 5000);
-    };
-    this._autoCloseTimer = setTimeout(heartBeat, 30000);
   }
   async highlight(params) {
+    // Assert parameters validity.
+    if (params.selector) (0, _locatorParser.unsafeLocatorOrSelectorAsSelector)(this._sdkLanguage, params.selector, 'data-testid');
+    const ariaTemplate = params.ariaTemplate ? (0, _ariaSnapshot.parseAriaSnapshotUnsafe)(_utilsBundle.yaml, params.ariaTemplate) : undefined;
     for (const recorder of await this._allRecorders()) {
-      if (params.ariaTemplate) recorder.setHighlightedAriaTemplate((0, _ariaSnapshot.parseYamlForAriaSnapshot)(params.ariaTemplate));else if (params.selector) recorder.setHighlightedSelector(this._sdkLanguage, params.selector);
+      if (ariaTemplate) recorder.setHighlightedAriaTemplate(ariaTemplate);else if (params.selector) recorder.setHighlightedSelector(this._sdkLanguage, params.selector);
     }
   }
   async hideHighlight() {
@@ -144,23 +132,9 @@ class DebugController extends _instrumentation.SdkObject {
       reason: 'Close all browsers requested'
     })));
   }
-  _emitSnapshot() {
-    const browsers = [];
-    let pageCount = 0;
-    for (const browser of this._playwright.allBrowsers()) {
-      const b = {
-        contexts: []
-      };
-      browsers.push(b);
-      for (const context of browser.contexts()) {
-        const c = {
-          pages: []
-        };
-        b.contexts.push(c);
-        for (const page of context.pages()) c.pages.push(page.mainFrame().url());
-        pageCount += context.pages().length;
-      }
-    }
+  _emitSnapshot(initial) {
+    const pageCount = this._playwright.allPages().length;
+    if (initial && !pageCount) return;
     this.emit(DebugController.Events.StateChanged, {
       pageCount
     });
@@ -204,7 +178,8 @@ class InspectingRecorderApp extends _recorderApp.EmptyRecorderApp {
     const locator = (0, _utils.asLocator)(this._debugController._sdkLanguage, elementInfo.selector);
     this._debugController.emit(DebugController.Events.InspectRequested, {
       selector: elementInfo.selector,
-      locator
+      locator,
+      ariaSnapshot: elementInfo.ariaSnapshot
     });
   }
   async setSources(sources) {

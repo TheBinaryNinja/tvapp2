@@ -100,11 +100,7 @@ class CRExecutionContext {
 }
 exports.CRExecutionContext = CRExecutionContext;
 function rewriteError(error) {
-  if (error.message.includes('Object reference chain is too long')) return {
-    result: {
-      type: 'undefined'
-    }
-  };
+  if (error.message.includes('Object reference chain is too long')) throw new Error('Cannot serialize result: object reference chain is too long.');
   if (error.message.includes('Object couldn\'t be returned by value')) return {
     result: {
       type: 'undefined'

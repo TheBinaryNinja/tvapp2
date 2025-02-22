@@ -20,7 +20,6 @@ var _writableStreamDispatcher = require("./writableStreamDispatcher");
 var _dialogDispatcher = require("./dialogDispatcher");
 var _errors = require("../errors");
 var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
-var _recorderInTraceViewer = require("../recorder/recorderInTraceViewer");
 var _recorderApp = require("../recorder/recorderApp");
 var _webSocketRouteDispatcher = require("./webSocketRouteDispatcher");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
@@ -284,7 +283,7 @@ class BrowserContextDispatcher extends _dispatcher.Dispatcher {
   }
   async setWebSocketInterceptionPatterns(params, metadata) {
     this._webSocketInterceptionPatterns = params.patterns;
-    if (params.patterns.length) await _webSocketRouteDispatcher.WebSocketRouteDispatcher.installIfNeeded(this, this._context);
+    if (params.patterns.length) await _webSocketRouteDispatcher.WebSocketRouteDispatcher.installIfNeeded(this._context);
   }
   async storageState(params, metadata) {
     return await this._context.storageState();
@@ -294,17 +293,7 @@ class BrowserContextDispatcher extends _dispatcher.Dispatcher {
     await this._context.close(params);
   }
   async enableRecorder(params) {
-    if (params.codegenMode === 'trace-events') {
-      await this._context.tracing.start({
-        name: 'trace',
-        snapshots: true,
-        screenshots: true,
-        live: true
-      });
-      await _recorder.Recorder.show('trace-events', this._context, _recorderInTraceViewer.RecorderInTraceViewer.factory(this._context), params);
-    } else {
-      await _recorder.Recorder.show('actions', this._context, _recorderApp.RecorderApp.factory(this._context), params);
-    }
+    await _recorder.Recorder.show(this._context, _recorderApp.RecorderApp.factory(this._context), params);
   }
   async pause(params, metadata) {
     // Debugger will take care of this.

@@ -40,8 +40,7 @@ class Keyboard {
     const autoRepeat = this._pressedKeys.has(description.code);
     this._pressedKeys.add(description.code);
     if (kModifiers.includes(description.key)) this._pressedModifiers.add(description.key);
-    const text = description.text;
-    await this._raw.keydown(this._pressedModifiers, description.code, description.keyCode, description.keyCodeWithoutLocation, description.key, description.location, autoRepeat, text);
+    await this._raw.keydown(this._pressedModifiers, key, description, autoRepeat);
   }
   _keyDescriptionForString(str) {
     const keyString = resolveSmartModifierString(str);
@@ -61,7 +60,7 @@ class Keyboard {
     const description = this._keyDescriptionForString(key);
     if (kModifiers.includes(description.key)) this._pressedModifiers.delete(description.key);
     this._pressedKeys.delete(description.code);
-    await this._raw.keyup(this._pressedModifiers, description.code, description.keyCode, description.keyCodeWithoutLocation, description.key, description.location);
+    await this._raw.keyup(this._pressedModifiers, key, description);
   }
   async insertText(text) {
     await this._raw.sendText(text);

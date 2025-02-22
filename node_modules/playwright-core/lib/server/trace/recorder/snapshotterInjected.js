@@ -36,6 +36,7 @@ function frameSnapshotStreamer(snapshotStreamer, removeNoScript) {
   const kCustomElementsAttribute = '__playwright_custom_elements__';
   const kCurrentSrcAttribute = '__playwright_current_src__';
   const kBoundingRectAttribute = '__playwright_bounding_rect__';
+  const kPopoverOpenAttribute = '__playwright_popover_open_';
 
   // Symbols for our own info on Nodes/StyleSheets.
   const kSnapshotFrameId = Symbol('__playwright_snapshot_frameid_');
@@ -354,17 +355,23 @@ function frameSnapshotStreamer(snapshotStreamer, removeNoScript) {
             expectValue(value);
             attrs[kSelectedAttribute] = value;
           }
-          if (nodeName === 'CANVAS') {
+          if (nodeName === 'CANVAS' || nodeName === 'IFRAME' || nodeName === 'FRAME') {
             const boundingRect = element.getBoundingClientRect();
             const value = JSON.stringify({
-              left: boundingRect.left / window.innerWidth,
-              top: boundingRect.top / window.innerHeight,
-              right: boundingRect.right / window.innerWidth,
-              bottom: boundingRect.bottom / window.innerHeight
+              left: boundingRect.left,
+              top: boundingRect.top,
+              right: boundingRect.right,
+              bottom: boundingRect.bottom
             });
             expectValue(kBoundingRectAttribute);
             expectValue(value);
             attrs[kBoundingRectAttribute] = value;
+          }
+          if (element.popover && element.matches && element.matches(':popover-open')) {
+            const value = 'true';
+            expectValue(kPopoverOpenAttribute);
+            expectValue(value);
+            attrs[kPopoverOpenAttribute] = value;
           }
           if (element.scrollTop) {
             expectValue(kScrollTopAttribute);

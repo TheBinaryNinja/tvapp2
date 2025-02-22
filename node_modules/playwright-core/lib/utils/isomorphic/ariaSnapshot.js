@@ -3,9 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.AriaKeyError = void 0;
-exports.parseAriaKey = parseAriaKey;
-exports.parseYamlTemplate = parseYamlTemplate;
+exports.ParserError = exports.KeyParser = void 0;
+exports.parseAriaSnapshot = parseAriaSnapshot;
+exports.parseAriaSnapshotUnsafe = parseAriaSnapshotUnsafe;
+exports.valueOrRegex = valueOrRegex;
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -24,65 +25,191 @@ exports.parseYamlTemplate = parseYamlTemplate;
 
 // https://www.w3.org/TR/wai-aria-1.2/#role_definitions
 
-function parseYamlTemplate(fragment) {
-  const result = {
-    kind: 'role',
-    role: 'fragment'
-  };
-  populateNode(result, fragment);
-  if (result.children && result.children.length === 1) return result.children[0];
-  return result;
+// We pass parsed template between worlds using JSON, make it easy.
+
+function parseAriaSnapshotUnsafe(yaml, text) {
+  const result = parseAriaSnapshot(yaml, text);
+  if (result.errors.length) throw new Error(result.errors[0].message);
+  return result.fragment;
 }
-function populateNode(node, container) {
-  for (const object of container) {
-    if (typeof object === 'string') {
-      const childNode = KeyParser.parse(object);
-      node.children = node.children || [];
-      node.children.push(childNode);
-      continue;
+function parseAriaSnapshot(yaml, text, options = {}) {
+  var _fragment$children;
+  const lineCounter = new yaml.LineCounter();
+  const parseOptions = {
+    keepSourceTokens: true,
+    lineCounter,
+    ...options
+  };
+  const yamlDoc = yaml.parseDocument(text, parseOptions);
+  const errors = [];
+  const convertRange = range => {
+    return [lineCounter.linePos(range[0]), lineCounter.linePos(range[1])];
+  };
+  const addError = error => {
+    errors.push({
+      message: error.message,
+      range: [lineCounter.linePos(error.pos[0]), lineCounter.linePos(error.pos[1])]
+    });
+  };
+  const convertSeq = (container, seq) => {
+    for (const item of seq.items) {
+      const itemIsString = item instanceof yaml.Scalar && typeof item.value === 'string';
+      if (itemIsString) {
+        const childNode = KeyParser.parse(item, parseOptions, errors);
+        if (childNode) {
+          container.children = container.children || [];
+          container.children.push(childNode);
+        }
+        continue;
+      }
+      const itemIsMap = item instanceof yaml.YAMLMap;
+      if (itemIsMap) {
+        convertMap(container, item);
+        continue;
+      }
+      errors.push({
+        message: 'Sequence items should be strings or maps',
+        range: convertRange(item.range || seq.range)
+      });
     }
-    for (const key of Object.keys(object)) {
-      node.children = node.children || [];
-      const value = object[key];
-      if (key === 'text') {
-        node.children.push({
-          kind: 'text',
-          text: valueOrRegex(value)
+  };
+  const convertMap = (container, map) => {
+    for (const entry of map.items) {
+      container.children = container.children || [];
+      // Key must by a string
+      const keyIsString = entry.key instanceof yaml.Scalar && typeof entry.key.value === 'string';
+      if (!keyIsString) {
+        errors.push({
+          message: 'Only string keys are supported',
+          range: convertRange(entry.key.range || map.range)
         });
         continue;
       }
-      const childNode = KeyParser.parse(key);
-      if (childNode.kind === 'text') {
-        node.children.push({
+      const key = entry.key;
+      const value = entry.value;
+
+      // - text: "text"
+      if (key.value === 'text') {
+        const valueIsString = value instanceof yaml.Scalar && typeof value.value === 'string';
+        if (!valueIsString) {
+          errors.push({
+            message: 'Text value should be a string',
+            range: convertRange(entry.value.range || map.range)
+          });
+          continue;
+        }
+        container.children.push({
           kind: 'text',
-          text: valueOrRegex(value)
+          text: valueOrRegex(value.value)
         });
         continue;
       }
-      if (typeof value === 'string') {
-        node.children.push({
+
+      // role "name": ...
+      const childNode = KeyParser.parse(key, parseOptions, errors);
+      if (!childNode) continue;
+
+      // - role "name": "text"
+      const valueIsScalar = value instanceof yaml.Scalar;
+      if (valueIsScalar) {
+        const type = typeof value.value;
+        if (type !== 'string' && type !== 'number' && type !== 'boolean') {
+          errors.push({
+            message: 'Node value should be a string or a sequence',
+            range: convertRange(entry.value.range || map.range)
+          });
+          continue;
+        }
+        container.children.push({
           ...childNode,
           children: [{
             kind: 'text',
-            text: valueOrRegex(value)
+            text: valueOrRegex(String(value.value))
           }]
         });
         continue;
       }
-      node.children.push(childNode);
-      populateNode(childNode, value);
+
+      // - role "name":
+      //   - child
+      const valueIsSequence = value instanceof yaml.YAMLSeq;
+      if (valueIsSequence) {
+        container.children.push(childNode);
+        convertSeq(childNode, value);
+        continue;
+      }
+      errors.push({
+        message: 'Map values should be strings or sequences',
+        range: convertRange(entry.value.range || map.range)
+      });
     }
+  };
+  const fragment = {
+    kind: 'role',
+    role: 'fragment'
+  };
+  yamlDoc.errors.forEach(addError);
+  if (errors.length) return {
+    errors,
+    fragment
+  };
+  if (!(yamlDoc.contents instanceof yaml.YAMLSeq)) {
+    errors.push({
+      message: 'Aria snapshot must be a YAML sequence, elements starting with " -"',
+      range: yamlDoc.contents ? convertRange(yamlDoc.contents.range) : [{
+        line: 0,
+        col: 0
+      }, {
+        line: 0,
+        col: 0
+      }]
+    });
   }
+  if (errors.length) return {
+    errors,
+    fragment
+  };
+  convertSeq(fragment, yamlDoc.contents);
+  if (errors.length) return {
+    errors,
+    fragment: emptyFragment
+  };
+  if (((_fragment$children = fragment.children) === null || _fragment$children === void 0 ? void 0 : _fragment$children.length) === 1) return {
+    fragment: fragment.children[0],
+    errors
+  };
+  return {
+    fragment,
+    errors
+  };
 }
+const emptyFragment = {
+  kind: 'role',
+  role: 'fragment'
+};
 function normalizeWhitespace(text) {
   return text.replace(/[\r\n\s\t]+/g, ' ').trim();
 }
 function valueOrRegex(value) {
-  return value.startsWith('/') && value.endsWith('/') ? new RegExp(value.slice(1, -1)) : normalizeWhitespace(value);
+  return value.startsWith('/') && value.endsWith('/') && value.length > 1 ? {
+    pattern: value.slice(1, -1)
+  } : normalizeWhitespace(value);
 }
 class KeyParser {
-  static parse(input) {
-    return new KeyParser(input)._parse();
+  static parse(text, options, errors) {
+    try {
+      return new KeyParser(text.value)._parse();
+    } catch (e) {
+      if (e instanceof ParserError) {
+        const message = options.prettyErrors === false ? e.message : e.message + ':\n\n' + text.value + '\n' + ' '.repeat(e.pos) + '^\n';
+        errors.push({
+          message,
+          range: [options.lineCounter.linePos(text.range[0]), options.lineCounter.linePos(text.range[0] + e.pos)]
+        });
+        return null;
+      }
+      throw e;
+    }
   }
   constructor(input) {
     this._input = void 0;
@@ -132,8 +259,8 @@ class KeyParser {
     }
     this._throwError('Unterminated string');
   }
-  _throwError(message, pos) {
-    throw new AriaKeyError(message, this._input, pos || this._pos);
+  _throwError(message, offset = 0) {
+    throw new ParserError(message, offset || this._pos);
   }
   _readRegex() {
     let result = '';
@@ -148,7 +275,9 @@ class KeyParser {
         escaped = true;
         result += ch;
       } else if (ch === '/' && !insideClass) {
-        return result;
+        return {
+          pattern: result
+        };
       } else if (ch === '[') {
         insideClass = true;
         result += ch;
@@ -165,11 +294,11 @@ class KeyParser {
     const ch = this._peek();
     if (ch === '"') {
       this._next();
-      return this._readString();
+      return normalizeWhitespace(this._readString());
     }
     if (ch === '/') {
       this._next();
-      return new RegExp(this._readRegex());
+      return this._readRegex();
     }
     return null;
   }
@@ -251,17 +380,12 @@ class KeyParser {
     if (!value) this._throwError(message || 'Assertion error', valuePos);
   }
 }
-function parseAriaKey(key) {
-  return KeyParser.parse(key);
-}
-class AriaKeyError extends Error {
-  constructor(message, input, pos) {
-    super(message + ':\n\n' + input + '\n' + ' '.repeat(pos) + '^\n');
-    this.shortMessage = void 0;
+exports.KeyParser = KeyParser;
+class ParserError extends Error {
+  constructor(message, pos) {
+    super(message);
     this.pos = void 0;
-    this.shortMessage = message;
     this.pos = pos;
-    this.stack = undefined;
   }
 }
-exports.AriaKeyError = AriaKeyError;
+exports.ParserError = ParserError;

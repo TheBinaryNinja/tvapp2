@@ -132,13 +132,13 @@ class FFBrowser extends _browser.Browser {
 
     // Abort the navigation that turned into download.
     ffPage._page._frameManager.frameAbortedNavigation(payload.frameId, 'Download is starting');
-    let originPage = ffPage._initializedPage;
+    let originPage = ffPage._page.initializedOrUndefined();
     // If it's a new window download, report it on the opener page.
     if (!originPage) {
       // Resume the page creation with an error. The page will automatically close right
       // after the download begins.
       ffPage._markAsError(new Error('Starting new page download'));
-      if (ffPage._opener) originPage = ffPage._opener._initializedPage;
+      if (ffPage._opener) originPage = ffPage._opener._page.initializedOrUndefined();
     }
     if (!originPage) return;
     this._downloadCreated(originPage, payload.uuid, payload.url, payload.suggestedFileName);
@@ -268,10 +268,10 @@ class FFBrowserContext extends _browserContext.BrowserContext {
   _ffPages() {
     return Array.from(this._browser._ffPages.values()).filter(ffPage => ffPage._browserContext === this);
   }
-  pages() {
-    return this._ffPages().map(ffPage => ffPage._initializedPage).filter(pageOrNull => !!pageOrNull);
+  possiblyUninitializedPages() {
+    return this._ffPages().map(ffPage => ffPage._page);
   }
-  async newPageDelegate() {
+  async doCreateNewPage() {
     (0, _browserContext.assertBrowserContextIsNotOwned)(this);
     const {
       targetId
@@ -281,7 +281,7 @@ class FFBrowserContext extends _browserContext.BrowserContext {
       if (e.message.includes('Failed to override timezone')) throw new Error(`Invalid timezone ID: ${this._options.timezoneId}`);
       throw e;
     });
-    return this._browser._ffPages.get(targetId);
+    return this._browser._ffPages.get(targetId)._page;
   }
   async doGetCookies(urls) {
     const {
@@ -457,4 +457,6 @@ function toJugglerProxyOptions(proxy) {
 
 // Prefs for quick fixes that didn't make it to the build.
 // Should all be moved to `playwright.cfg`.
-const kBandaidFirefoxUserPrefs = {};
+const kBandaidFirefoxUserPrefs = {
+  'dom.fetchKeepalive.enabled': false
+};

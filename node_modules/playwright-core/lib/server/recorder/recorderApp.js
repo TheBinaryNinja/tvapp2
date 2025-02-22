@@ -87,7 +87,7 @@ class RecorderApp extends _events.EventEmitter {
       }).catch(() => {});
     });
     const mainFrame = this._page.mainFrame();
-    await mainFrame.goto((0, _instrumentation.serverSideCallMetadata)(), 'https://playwright/index.html');
+    await mainFrame.goto((0, _instrumentation.serverSideCallMetadata)(), process.env.PW_HMR ? 'http://localhost:44225' : 'https://playwright/index.html');
   }
   static factory(context) {
     return async recorder => {

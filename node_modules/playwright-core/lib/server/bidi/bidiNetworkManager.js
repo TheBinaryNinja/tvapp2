@@ -57,10 +57,12 @@ class BidiNetworkManager {
     if (param.intercepts) {
       // We do not support intercepting redirects.
       if (redirectedFrom) {
-        var _redirectedFrom$_orig;
+        var _redirectedFrom$_orig, _redirectedFrom$_orig2;
+        let params = {};
+        if ((_redirectedFrom$_orig = redirectedFrom._originalRequestRoute) !== null && _redirectedFrom$_orig !== void 0 && _redirectedFrom$_orig._alreadyContinuedHeaders) params = toBidiRequestHeaders((_redirectedFrom$_orig2 = redirectedFrom._originalRequestRoute._alreadyContinuedHeaders) !== null && _redirectedFrom$_orig2 !== void 0 ? _redirectedFrom$_orig2 : []);
         this._session.sendMayFail('network.continueRequest', {
           request: param.request.request,
-          ...(((_redirectedFrom$_orig = redirectedFrom._originalRequestRoute) === null || _redirectedFrom$_orig === void 0 ? void 0 : _redirectedFrom$_orig._alreadyContinuedHeaders) || {})
+          ...params
         });
       } else {
         route = new BidiRouteImpl(this._session, param.request.request);
@@ -80,10 +82,10 @@ class BidiNetworkManager {
     const startTime = timings.requestTime;
     function relativeToStart(time) {
       if (!time) return -1;
-      return (time - startTime) / 1000;
+      return time - startTime;
     }
     const timing = {
-      startTime: startTime / 1000,
+      startTime: startTime,
       requestStart: relativeToStart(timings.requestStart),
       responseStart: relativeToStart(timings.responseStart),
       domainLookupStart: relativeToStart(timings.dnsStart),
@@ -111,7 +113,7 @@ class BidiNetworkManager {
 
     // Keep redirected requests in the map for future reference as redirectedFrom.
     const isRedirected = response.status() >= 300 && response.status() <= 399;
-    const responseEndTime = params.request.timings.responseEnd / 1000 - response.timing().startTime;
+    const responseEndTime = params.request.timings.responseEnd - response.timing().startTime;
     if (isRedirected) {
       response._requestFinished(responseEndTime);
     } else {
@@ -287,11 +289,8 @@ function fromBidiHeaders(bidiHeaders) {
 }
 function toBidiRequestHeaders(allHeaders) {
   const bidiHeaders = toBidiHeaders(allHeaders);
-  const cookies = bidiHeaders.filter(h => h.name.toLowerCase() === 'cookie');
-  const headers = bidiHeaders.filter(h => h.name.toLowerCase() !== 'cookie');
   return {
-    cookies,
-    headers
+    headers: bidiHeaders
   };
 }
 function toBidiResponseHeaders(headers) {

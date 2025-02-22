@@ -8,6 +8,7 @@ exports.createProxyAgent = createProxyAgent;
 var _http = _interopRequireDefault(require("http"));
 var _https = _interopRequireDefault(require("https"));
 var _stream = require("stream");
+var _url = _interopRequireDefault(require("url"));
 var _zlib = _interopRequireDefault(require("zlib"));
 var _timeoutSettings = require("../common/timeoutSettings");
 var _userAgent = require("../utils/userAgent");
@@ -388,7 +389,6 @@ class APIRequestContext extends _instrumentation.SdkObject {
       }));
       request.on('close', () => _utils.eventsHelper.removeEventListeners(listeners));
       request.on('socket', socket => {
-        var _tcpConnectionAt, _tcpConnectionAt3;
         if (request.reusedSocket) {
           reusedSocketAt = (0, _utils.monotonicTime)();
           return;
@@ -397,14 +397,13 @@ class APIRequestContext extends _instrumentation.SdkObject {
         // happy eyeballs don't emit lookup and connect events, so we use our custom ones
         const happyEyeBallsTimings = (0, _happyEyeballs.timingForSocket)(socket);
         dnsLookupAt = happyEyeBallsTimings.dnsLookupAt;
-        (_tcpConnectionAt = tcpConnectionAt) !== null && _tcpConnectionAt !== void 0 ? _tcpConnectionAt : tcpConnectionAt = happyEyeBallsTimings.tcpConnectionAt;
+        tcpConnectionAt = happyEyeBallsTimings.tcpConnectionAt;
 
         // non-happy-eyeballs sockets
         listeners.push(_utils.eventsHelper.addEventListener(socket, 'lookup', () => {
           dnsLookupAt = (0, _utils.monotonicTime)();
         }), _utils.eventsHelper.addEventListener(socket, 'connect', () => {
-          var _tcpConnectionAt2;
-          (_tcpConnectionAt2 = tcpConnectionAt) !== null && _tcpConnectionAt2 !== void 0 ? _tcpConnectionAt2 : tcpConnectionAt = (0, _utils.monotonicTime)();
+          tcpConnectionAt = (0, _utils.monotonicTime)();
         }), _utils.eventsHelper.addEventListener(socket, 'secureConnect', () => {
           tlsHandshakeAt = (0, _utils.monotonicTime)();
           if (socket instanceof _tls.TLSSocket) {
@@ -419,20 +418,11 @@ class APIRequestContext extends _instrumentation.SdkObject {
             };
           }
         }));
-
-        // when using socks proxy, having the socket means the connection got established
-        if (agent instanceof _utilsBundle.SocksProxyAgent) (_tcpConnectionAt3 = tcpConnectionAt) !== null && _tcpConnectionAt3 !== void 0 ? _tcpConnectionAt3 : tcpConnectionAt = (0, _utils.monotonicTime)();
         serverIPAddress = socket.remoteAddress;
         serverPort = socket.remotePort;
       });
       request.on('finish', () => {
         requestFinishAt = (0, _utils.monotonicTime)();
-      });
-
-      // http proxy
-      request.on('proxyConnect', () => {
-        var _tcpConnectionAt4;
-        (_tcpConnectionAt4 = tcpConnectionAt) !== null && _tcpConnectionAt4 !== void 0 ? _tcpConnectionAt4 : tcpConnectionAt = (0, _utils.monotonicTime)();
       });
       progress.log(`→ ${options.method} ${url.toString()}`);
       if (options.headers) {
@@ -579,13 +569,17 @@ class GlobalAPIRequestContext extends APIRequestContext {
 }
 exports.GlobalAPIRequestContext = GlobalAPIRequestContext;
 function createProxyAgent(proxy) {
-  var _proxyURL$protocol;
-  const proxyURL = new URL(proxy.server);
-  if ((_proxyURL$protocol = proxyURL.protocol) !== null && _proxyURL$protocol !== void 0 && _proxyURL$protocol.startsWith('socks')) return new _utilsBundle.SocksProxyAgent(proxyURL);
-  if (proxy.username) proxyURL.username = proxy.username;
-  if (proxy.password) proxyURL.password = proxy.password;
-  // TODO: We should use HttpProxyAgent conditional on proxyURL.protocol instead of always using CONNECT method.
-  return new _utilsBundle.HttpsProxyAgent(proxyURL);
+  var _proxyOpts$protocol;
+  const proxyOpts = _url.default.parse(proxy.server);
+  if ((_proxyOpts$protocol = proxyOpts.protocol) !== null && _proxyOpts$protocol !== void 0 && _proxyOpts$protocol.startsWith('socks')) {
+    return new _utilsBundle.SocksProxyAgent({
+      host: proxyOpts.hostname,
+      port: proxyOpts.port || undefined
+    });
+  }
+  if (proxy.username) proxyOpts.auth = `${proxy.username}:${proxy.password || ''}`;
+  // TODO: We should use HttpProxyAgent conditional on proxyOpts.protocol instead of always using CONNECT method.
+  return new _utilsBundle.HttpsProxyAgent(proxyOpts);
 }
 function toHeadersArray(rawHeaders) {
   const result = [];

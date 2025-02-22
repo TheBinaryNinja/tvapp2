@@ -50,6 +50,7 @@ class Request extends _channelOwner.ChannelOwner {
     this._actualHeadersPromise = void 0;
     this._timing = void 0;
     this._fallbackOverrides = {};
+    this.markAsInternalType();
     this._redirectedFrom = Request.fromNullable(initializer.redirectedFrom);
     if (this._redirectedFrom) this._redirectedFrom._redirectedTo = this;
     this._provisionalHeaders = new RawHeaders(initializer.headers);
@@ -510,6 +511,7 @@ class Response extends _channelOwner.ChannelOwner {
     this._actualHeadersPromise = void 0;
     this._request = void 0;
     this._finishedPromise = new _manualPromise.ManualPromise();
+    this.markAsInternalType();
     this._provisionalHeaders = new RawHeaders(initializer.headers);
     this._request = Request.from(this._initializer.request);
     Object.assign(this._request._timing, this._initializer.timing);
@@ -659,7 +661,7 @@ class RouteHandler {
     this._times = times;
     this.url = url;
     this.handler = handler;
-    this._svedZone = _utils.zones.currentZone();
+    this._svedZone = _utils.zones.current().without('apiZone');
   }
   static prepareInterceptionPatterns(handlers) {
     const patterns = [];

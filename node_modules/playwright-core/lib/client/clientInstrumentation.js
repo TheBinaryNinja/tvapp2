@@ -20,6 +20,8 @@ exports.createInstrumentation = createInstrumentation;
  * limitations under the License.
  */
 
+// Instrumentation can mutate the data, for example change apiName or stepId.
+
 function createInstrumentation() {
   const listeners = [];
   return new Proxy({}, {

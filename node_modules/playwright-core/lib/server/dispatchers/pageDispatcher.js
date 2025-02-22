@@ -181,7 +181,7 @@ class PageDispatcher extends _dispatcher.Dispatcher {
   }
   async setWebSocketInterceptionPatterns(params, metadata) {
     this._webSocketInterceptionPatterns = params.patterns;
-    if (params.patterns.length) await _webSocketRouteDispatcher.WebSocketRouteDispatcher.installIfNeeded(this.parentScope(), this._page);
+    if (params.patterns.length) await _webSocketRouteDispatcher.WebSocketRouteDispatcher.installIfNeeded(this._page);
   }
   async expectScreenshot(params, metadata) {
     const mask = (params.mask || []).map(({

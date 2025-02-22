@@ -42,7 +42,7 @@ class WebKit extends _browserType.BrowserType {
   }
   doRewriteStartupLog(error) {
     if (!error.logs) return error;
-    if (error.logs.includes('cannot open display')) error.logs = '\n' + (0, _utils.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
+    if (error.logs.includes('Failed to open display') || error.logs.includes('cannot open display')) error.logs = '\n' + (0, _utils.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
     return error;
   }
   attemptToGracefullyCloseBrowser(transport) {

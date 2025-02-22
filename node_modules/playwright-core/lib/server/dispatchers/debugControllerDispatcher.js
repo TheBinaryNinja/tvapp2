@@ -33,11 +33,13 @@ class DebugControllerDispatcher extends _dispatcher.Dispatcher {
       this._dispatchEvent('stateChanged', params);
     }), _utils.eventsHelper.addEventListener(this._object, _debugController.DebugController.Events.InspectRequested, ({
       selector,
-      locator
+      locator,
+      ariaSnapshot
     }) => {
       this._dispatchEvent('inspectRequested', {
         selector,
-        locator
+        locator,
+        ariaSnapshot
       });
     }), _utils.eventsHelper.addEventListener(this._object, _debugController.DebugController.Events.SourceChanged, ({
       text,

@@ -66,22 +66,28 @@ function calculatePlatform() {
     // KDE Neon is ubuntu-based and has the same versions.
     // TUXEDO OS is ubuntu-based and has the same versions.
     if ((distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.id) === 'ubuntu' || (distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.id) === 'pop' || (distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.id) === 'neon' || (distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.id) === 'tuxedo') {
-      const isOfficiallySupportedPlatform = (distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.id) === 'ubuntu';
-      if (parseInt(distroInfo.version, 10) <= 19) return {
+      const isUbuntu = (distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.id) === 'ubuntu';
+      const version = distroInfo === null || distroInfo === void 0 ? void 0 : distroInfo.version;
+      const major = parseInt(distroInfo.version, 10);
+      if (major < 20) return {
         hostPlatform: 'ubuntu18.04' + archSuffix,
         isOfficiallySupportedPlatform: false
       };
-      if (parseInt(distroInfo.version, 10) <= 21) return {
+      if (major < 22) return {
         hostPlatform: 'ubuntu20.04' + archSuffix,
-        isOfficiallySupportedPlatform
+        isOfficiallySupportedPlatform: isUbuntu && version === '20.04'
       };
-      if (parseInt(distroInfo.version, 10) <= 22) return {
+      if (major < 24) return {
         hostPlatform: 'ubuntu22.04' + archSuffix,
-        isOfficiallySupportedPlatform
+        isOfficiallySupportedPlatform: isUbuntu && version === '22.04'
+      };
+      if (major < 26) return {
+        hostPlatform: 'ubuntu24.04' + archSuffix,
+        isOfficiallySupportedPlatform: isUbuntu && version === '24.04'
       };
       return {
-        hostPlatform: 'ubuntu24.04' + archSuffix,
-        isOfficiallySupportedPlatform
+        hostPlatform: 'ubuntu' + distroInfo.version + archSuffix,
+        isOfficiallySupportedPlatform: false
       };
     }
     // Linux Mint is ubuntu-based but does not have the same versions

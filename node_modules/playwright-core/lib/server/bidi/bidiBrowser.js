@@ -80,8 +80,8 @@ class BidiBrowser extends _browser.Browser {
       browser._defaultContext = new BidiBrowserContext(browser, undefined, options.persistent);
       await browser._defaultContext._initialize();
       // Create default page as we cannot get access to the existing one.
-      const pageDelegate = await browser._defaultContext.newPageDelegate();
-      await pageDelegate.pageOrError();
+      const page = await browser._defaultContext.doCreateNewPage();
+      await page.waitForInitializedOrError();
     }
     return browser;
   }
@@ -129,6 +129,8 @@ class BidiBrowser extends _browser.Browser {
         if (!parentFrame) continue;
         page._session.addFrameBrowsingContext(event.context);
         page._page._frameManager.frameAttached(event.context, parentFrameId);
+        const frame = page._page._frameManager.frame(event.context);
+        if (frame) frame._url = event.url;
         return;
       }
       return;
@@ -139,6 +141,7 @@ class BidiBrowser extends _browser.Browser {
     const session = this._connection.createMainFrameBrowsingContextSession(event.context);
     const opener = event.originalOpener && this._bidiPages.get(event.originalOpener);
     const page = new _bidiPage.BidiPage(context, session, opener || null);
+    page._page.mainFrame()._url = event.url;
     this._bidiPages.set(event.context, page);
   }
   _onBrowsingContextDestroyed(event) {
@@ -173,10 +176,10 @@ class BidiBrowserContext extends _browserContext.BrowserContext {
   _bidiPages() {
     return [...this._browser._bidiPages.values()].filter(bidiPage => bidiPage._browserContext === this);
   }
-  pages() {
-    return this._bidiPages().map(bidiPage => bidiPage._initializedPage).filter(Boolean);
+  possiblyUninitializedPages() {
+    return this._bidiPages().map(bidiPage => bidiPage._page);
   }
-  async newPageDelegate() {
+  async doCreateNewPage() {
     (0, _browserContext.assertBrowserContextIsNotOwned)(this);
     const {
       context
@@ -184,7 +187,7 @@ class BidiBrowserContext extends _browserContext.BrowserContext {
       type: bidi.BrowsingContext.CreateType.Window,
       userContext: this._browserContextId
     });
-    return this._browser._bidiPages.get(context);
+    return this._browser._bidiPages.get(context)._page;
   }
   async doGetCookies(urls) {
     const {

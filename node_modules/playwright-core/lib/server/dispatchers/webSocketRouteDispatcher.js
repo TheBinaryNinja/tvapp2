@@ -28,8 +28,6 @@ var _class;
  */
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-const kBindingInstalledSymbol = Symbol('webSocketRouteBindingInstalled');
-const kInitScriptInstalledSymbol = Symbol('webSocketRouteInitScriptInstalled');
 class WebSocketRouteDispatcher extends _dispatcher.Dispatcher {
   constructor(scope, id, url, frame) {
     super(scope, {
@@ -55,15 +53,16 @@ class WebSocketRouteDispatcher extends _dispatcher.Dispatcher {
       webSocketRoute: this
     });
   }
-  static async installIfNeeded(contextDispatcher, target) {
+  static async installIfNeeded(target) {
+    const kBindingName = '__pwWebSocketBinding';
     const context = target instanceof _page.Page ? target.context() : target;
-    if (!context[kBindingInstalledSymbol]) {
-      context[kBindingInstalledSymbol] = true;
-      await context.exposeBinding('__pwWebSocketBinding', false, (source, payload) => {
+    if (!context.hasBinding(kBindingName)) {
+      await context.exposeBinding(kBindingName, false, (source, payload) => {
         if (payload.type === 'onCreate') {
-          const pageDispatcher = _pageDispatcher.PageDispatcher.fromNullable(contextDispatcher, source.page);
+          const contextDispatcher = (0, _dispatcher.existingDispatcher)(context);
+          const pageDispatcher = contextDispatcher ? _pageDispatcher.PageDispatcher.fromNullable(contextDispatcher, source.page) : undefined;
           let scope;
-          if (pageDispatcher && matchesPattern(pageDispatcher, context._options.baseURL, payload.url)) scope = pageDispatcher;else if (matchesPattern(contextDispatcher, context._options.baseURL, payload.url)) scope = contextDispatcher;
+          if (pageDispatcher && matchesPattern(pageDispatcher, context._options.baseURL, payload.url)) scope = pageDispatcher;else if (contextDispatcher && matchesPattern(contextDispatcher, context._options.baseURL, payload.url)) scope = contextDispatcher;
           if (scope) {
             new WebSocketRouteDispatcher(scope, payload.id, payload.url, source.frame);
           } else {
@@ -96,15 +95,15 @@ class WebSocketRouteDispatcher extends _dispatcher.Dispatcher {
         });
       });
     }
-    if (!target[kInitScriptInstalledSymbol]) {
-      target[kInitScriptInstalledSymbol] = true;
+    const kInitScriptName = 'webSocketMockSource';
+    if (!target.initScripts.find(s => s.name === kInitScriptName)) {
       await target.addInitScript(`
         (() => {
           const module = {};
           ${webSocketMockSource.source}
           (module.exports.inject())(globalThis);
         })();
-      `);
+      `, kInitScriptName);
     }
   }
   async connect(params) {

@@ -149,7 +149,7 @@ async function launchProcess(options) {
   let processClosed = false;
   let fulfillCleanup = () => {};
   const waitForCleanup = new Promise(f => fulfillCleanup = f);
-  spawnedProcess.once('exit', (exitCode, signal) => {
+  spawnedProcess.once('close', (exitCode, signal) => {
     options.log(`[pid=${spawnedProcess.pid}] <process did exit: exitCode=${exitCode}, signal=${signal}>`);
     processClosed = true;
     gracefullyCloseSet.delete(gracefullyClose);

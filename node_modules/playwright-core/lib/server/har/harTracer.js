@@ -196,7 +196,7 @@ class HarTracer {
     if (!this._shouldIncludeEntryWithUrl(request.url())) return;
     const page = (_request$frame = request.frame()) === null || _request$frame === void 0 ? void 0 : _request$frame._page;
     if (this._page && page !== this._page) return;
-    const url = network.parsedURL(request.url());
+    const url = network.parseURL(request.url());
     if (!url) return;
     const pageEntry = this._createPageEntryIfNeeded(page);
     const harEntry = createHarEntry(request.method(), url, (_request$frame2 = request.frame()) === null || _request$frame2 === void 0 ? void 0 : _request$frame2.guid, this._options);

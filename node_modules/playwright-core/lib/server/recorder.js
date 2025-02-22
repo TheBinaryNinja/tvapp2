@@ -12,7 +12,6 @@ var _browserContext = require("./browserContext");
 var _debugger = require("./debugger");
 var _contextRecorder = require("./recorder/contextRecorder");
 var _recorderUtils = require("./recorder/recorderUtils");
-var _recorderUtils2 = require("../utils/isomorphic/recorderUtils");
 var _selectorParser = require("../utils/isomorphic/selectorParser");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
@@ -36,26 +35,26 @@ const recorderSymbol = Symbol('recorderSymbol');
 class Recorder {
   static async showInspector(context, params, recorderAppFactory) {
     if ((0, _utils.isUnderTest)()) params.language = process.env.TEST_INSPECTOR_LANGUAGE;
-    return await Recorder.show('actions', context, recorderAppFactory, params);
+    return await Recorder.show(context, recorderAppFactory, params);
   }
   static showInspectorNoReply(context, recorderAppFactory) {
     Recorder.showInspector(context, {}, recorderAppFactory).catch(() => {});
   }
-  static show(codegenMode, context, recorderAppFactory, params) {
+  static show(context, recorderAppFactory, params) {
     let recorderPromise = context[recorderSymbol];
     if (!recorderPromise) {
-      recorderPromise = Recorder._create(codegenMode, context, recorderAppFactory, params);
+      recorderPromise = Recorder._create(context, recorderAppFactory, params);
       context[recorderSymbol] = recorderPromise;
     }
     return recorderPromise;
   }
-  static async _create(codegenMode, context, recorderAppFactory, params = {}) {
-    const recorder = new Recorder(codegenMode, context, params);
+  static async _create(context, recorderAppFactory, params = {}) {
+    const recorder = new Recorder(context, params);
     const recorderApp = await recorderAppFactory(recorder);
     await recorder._install(recorderApp);
     return recorder;
   }
-  constructor(codegenMode, context, params) {
+  constructor(context, params) {
     this.handleSIGINT = void 0;
     this._context = void 0;
     this._mode = void 0;
@@ -73,7 +72,7 @@ class Recorder {
     this._currentLanguage = void 0;
     this._mode = params.mode || 'none';
     this.handleSIGINT = params.handleSIGINT;
-    this._contextRecorder = new _contextRecorder.ContextRecorder(codegenMode, context, params, {});
+    this._contextRecorder = new _contextRecorder.ContextRecorder(context, params, {});
     this._context = context;
     this._omitCallTracking = !!params.omitCallTracking;
     this._debugger = context.debugger();
@@ -121,6 +120,10 @@ class Recorder {
         this._contextRecorder.clearScript();
         return;
       }
+      if (data.event === 'runTask') {
+        this._contextRecorder.runTask(data.params.task);
+        return;
+      }
     });
     await Promise.all([recorderApp.setMode(this._mode), recorderApp.setPaused(this._debugger.isPaused()), this._pushAllSources()]);
     this._context.once(_browserContext.BrowserContext.Events.Close, () => {
@@ -165,7 +168,7 @@ class Recorder {
       var _this$_recorderApp2;
       const selectorChain = await (0, _contextRecorder.generateFrameSelector)(frame);
       await ((_this$_recorderApp2 = this._recorderApp) === null || _this$_recorderApp2 === void 0 ? void 0 : _this$_recorderApp2.elementPicked({
-        selector: (0, _recorderUtils2.buildFullSelector)(selectorChain, elementInfo.selector),
+        selector: (0, _recorderUtils.buildFullSelector)(selectorChain, elementInfo.selector),
         ariaSnapshot: elementInfo.ariaSnapshot
       }, true));
     });

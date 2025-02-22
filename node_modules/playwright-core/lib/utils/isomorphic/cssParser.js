@@ -46,7 +46,7 @@ function parseCSS(selector, customNames) {
     tokens = css.tokenize(selector);
     if (!(tokens[tokens.length - 1] instanceof css.EOFToken)) tokens.push(new css.EOFToken());
   } catch (e) {
-    const newMessage = e.message + ` while parsing selector "${selector}"`;
+    const newMessage = e.message + ` while parsing css selector "${selector}". Did you mean to CSS.escape it?`;
     const index = (e.stack || '').indexOf(e.message);
     if (index !== -1) e.stack = e.stack.substring(0, index) + newMessage + e.stack.substring(index + e.message.length);
     e.message = newMessage;
@@ -61,11 +61,11 @@ function parseCSS(selector, customNames) {
     // TODO: Consider treating these as strings?
     token instanceof css.URLToken || token instanceof css.PercentageToken;
   });
-  if (unsupportedToken) throw new InvalidSelectorError(`Unsupported token "${unsupportedToken.toSource()}" while parsing selector "${selector}"`);
+  if (unsupportedToken) throw new InvalidSelectorError(`Unsupported token "${unsupportedToken.toSource()}" while parsing css selector "${selector}". Did you mean to CSS.escape it?`);
   let pos = 0;
   const names = new Set();
   function unexpected() {
-    return new InvalidSelectorError(`Unexpected token "${tokens[pos].toSource()}" while parsing selector "${selector}"`);
+    return new InvalidSelectorError(`Unexpected token "${tokens[pos].toSource()}" while parsing css selector "${selector}". Did you mean to CSS.escape it?`);
   }
   function skipWhitespace() {
     while (tokens[pos] instanceof css.WhitespaceToken) pos++;
@@ -227,7 +227,7 @@ function parseCSS(selector, customNames) {
   }
   const result = consumeFunctionArguments();
   if (!isEOF()) throw unexpected();
-  if (result.some(arg => typeof arg !== 'object' || !('simples' in arg))) throw new InvalidSelectorError(`Error while parsing selector "${selector}"`);
+  if (result.some(arg => typeof arg !== 'object' || !('simples' in arg))) throw new InvalidSelectorError(`Error while parsing css selector "${selector}". Did you mean to CSS.escape it?`);
   return {
     selector: result,
     names: Array.from(names)

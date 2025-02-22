@@ -7,7 +7,7 @@ exports.WebSocket = exports.Route = exports.Response = exports.Request = void 0;
 exports.filterCookies = filterCookies;
 exports.kMaxCookieExpiresDateInSeconds = void 0;
 exports.mergeHeaders = mergeHeaders;
-exports.parsedURL = parsedURL;
+exports.parseURL = parseURL;
 exports.rewriteCookies = rewriteCookies;
 exports.singleHeader = singleHeader;
 exports.statusText = statusText;
@@ -75,7 +75,7 @@ function rewriteCookies(cookies) {
     return copy;
   });
 }
-function parsedURL(url) {
+function parseURL(url) {
   try {
     return new URL(url);
   } catch (e) {

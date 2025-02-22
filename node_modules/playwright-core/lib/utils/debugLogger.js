@@ -46,7 +46,9 @@ const debugLoggerColorMap = {
   // cyan
   'server:channel': 34,
   // green
-  'server:metadata': 33 // blue
+  'server:metadata': 33,
+  // blue,
+  'recorder': 45 // cyan
 };
 class DebugLogger {
   constructor() {

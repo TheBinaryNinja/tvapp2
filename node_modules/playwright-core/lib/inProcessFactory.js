@@ -44,6 +44,8 @@ function createInProcessPlaywright() {
   playwrightAPI.firefox._serverLauncher = new _browserServerImpl.BrowserServerLauncherImpl('firefox');
   playwrightAPI.webkit._serverLauncher = new _browserServerImpl.BrowserServerLauncherImpl('webkit');
   playwrightAPI._android._serverLauncher = new _androidServerImpl.AndroidServerLauncherImpl();
+  playwrightAPI._bidiChromium._serverLauncher = new _browserServerImpl.BrowserServerLauncherImpl('bidiChromium');
+  playwrightAPI._bidiFirefox._serverLauncher = new _browserServerImpl.BrowserServerLauncherImpl('bidiFirefox');
 
   // Switch to async dispatch after we got Playwright object.
   dispatcherConnection.onmessage = message => setImmediate(() => clientConnection.dispatch(message));
