@@ -82,6 +82,14 @@ This project contains several repositories which all share the same code; use th
 
 Pull the latest version of the TVApp2 image from either Github, Gitea, and Dockerhub.
 
+| Platform | Version |
+| --- | --- |
+| Github | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
+| DockerHub | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
+| Gitea | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
+
+<br />
+
 | Pull URL | Platform | Host |
 | --- | --- | --- |
 | `ghcr.io/thebinaryninja/tvapp2:latest` | amd64 | Github |
@@ -786,3 +794,21 @@ The following people have helped get this project going:
 <!-- BADGE > GITHUB > COMMIT -->
   [github-commit-img]: https://img.shields.io/github/last-commit/TheBinaryNinja/tvapp2?logo=conventionalcommits&logoColor=FFFFFF&label=Last%20Commit&color=313131
   [github-commit-uri]: https://github.com/TheBinaryNinja/tvapp2/commits/main/
+
+<!-- BADGE > Github > Docker Image > SELFHOSTED BADGES -->
+  [github-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=latest&label=version&trim=
+  [github-docker-version-uri]: https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2
+
+<!-- BADGE > Dockerhub > Docker Image -->
+  [dockerhub-docker-version-img]: https://img.shields.io/docker/v/thebinaryninja/tvapp2
+  [dockerhub-docker-version-uri]: https://hub.docker.com/repository/docker/thebinaryninja/tvapp2/general
+
+<!-- BADGE > Gitea > Docker Image > SELFHOSTED BADGES -->
+  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%23ae094f&ignore=latest&label=version&trim=
+  [gitea-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/tvapp2
+
+<!-- BADGE > Gitea 2 > Docker Image -->
+  [gitea2-docker-version-img]: https://img.shields.io/gitea/v/release/binaryninja/tvapp2?gitea_url=https%3A%2F%2Fgit.binaryninja.net
+  [gitea2-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/tvapp2
+
+
