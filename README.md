@@ -26,7 +26,7 @@
 - [About](#about)
   - [How It Works](#how-it-works)
 - [Building `tvapp` Image](#building-tvapp-image)
-- [How It Works](#how-it-works-1)
+  - [How It Works](#how-it-works-1)
   - [Before Building](#before-building)
     - [LF over CRLF](#lf-over-crlf)
     - [Set `+x / 0755` Permissions](#set-x--0755-permissions)
@@ -105,7 +105,7 @@ These instructions outline how the TVApp2 docker image is set up, and how to bui
 
 <br />
 
-## How It Works
+### How It Works
 
 The TVApp2 application requires one dependency docker image, which is utilized as the base image and contains Alpine linux. You may use the pre-compiled docker image provided by us on Github, or you may choose to build your own. The base alpine image is available at:
 
