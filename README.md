@@ -82,25 +82,19 @@ This project contains several repositories which all share the same code; use th
 
 Pull the latest version of the TVApp2 image from either Github, Gitea, and Dockerhub.
 
-| Platform | Version |
-| --- | --- |
-| Github | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
-| DockerHub | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
-| Gitea | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
-
 <br />
 
-| Pull URL | Platform | Host |
-| --- | --- | --- |
-| `ghcr.io/thebinaryninja/tvapp2:latest` | amd64 | Github |
-| `ghcr.io/thebinaryninja/tvapp2:amd64` | amd64 | Github |
-| `ghcr.io/thebinaryninja/tvapp2:arm64` | arm64 | Github |
-| `thebinaryninja/tvapp2:latest` | amd64 | Dockerhub |
-| `thebinaryninja/tvapp2:1.0.0-amd64` | amd64 | Dockerhub |
-| `thebinaryninja/tvapp2:1.0.0-arm64` | arm64 | Dockerhub |
-| `git.binaryninja.net/binaryninja/tvapp2:latest` | amd64 | Gitea |
-| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | amd64 | Gitea |
-| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | arm64 | Gitea |
+| Pull URL | Platform | Registry | Version |
+| --- | --- | --- | --- |
+| `ghcr.io/thebinaryninja/tvapp2:latest` | Github | amd64 | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
+| `ghcr.io/thebinaryninja/tvapp2:amd64` | Github | amd64 | |
+| `ghcr.io/thebinaryninja/tvapp2:arm64` | Github | arm64 | |
+| `thebinaryninja/tvapp2:latest` | Dockerhub | amd64 | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
+| `thebinaryninja/tvapp2:1.0.0-amd64` | Dockerhub | amd64 |
+| `thebinaryninja/tvapp2:1.0.0-arm64` | Dockerhub | arm64 |
+| `git.binaryninja.net/binaryninja/tvapp2:latest` | Gitea |amd64 | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
+| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | Gitea | amd64 |
+| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | Gitea | arm64 |
 
 <br />
 
@@ -804,11 +798,9 @@ The following people have helped get this project going:
   [dockerhub-docker-version-uri]: https://hub.docker.com/repository/docker/thebinaryninja/tvapp2/general
 
 <!-- BADGE > Gitea > Docker Image > SELFHOSTED BADGES -->
-  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%23ae094f&ignore=latest&label=version&trim=
+  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%23f21171&ignore=latest&label=version&trim=
   [gitea-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/tvapp2
 
 <!-- BADGE > Gitea 2 > Docker Image -->
   [gitea2-docker-version-img]: https://img.shields.io/gitea/v/release/binaryninja/tvapp2?gitea_url=https%3A%2F%2Fgit.binaryninja.net
-  [gitea2-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/tvapp2
-
-
+  [gitea2-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/-/packages/container/tvapp2/latest
