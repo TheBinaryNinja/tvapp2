@@ -25,6 +25,7 @@
 
 - [About](#about)
   - [How It Works](#how-it-works)
+  - [Available Docker Images](#available-docker-images)
 - [Building `tvapp` Image](#building-tvapp-image)
   - [How It Works](#how-it-works-1)
   - [Before Building](#before-building)
@@ -92,6 +93,24 @@ A[tvapp2] <--> |Fetch XMLTV/EPG| C(XMLTV-EPG)
 B(tvapp2-externals) --> D{Pull Dynamic Formats}
 C(XMLTV-EPG) ---> E{Pull Dynamic EPG}
 ```
+
+<br />
+
+### Available Docker Images
+
+You may use the following URLs to pull our docker image for TVApp2
+
+| Pull URL | Platform | Host |
+| --- | --- | --- |
+| `ghcr.io/thebinaryninja/tvapp2:latest` | amd64 | Github |
+| `ghcr.io/thebinaryninja/tvapp2:amd64` | amd64 | Github |
+| `ghcr.io/thebinaryninja/tvapp2:arm64` | arm64 | Github |
+| `thebinaryninja/tvapp2:latest` | amd64 | Dockerhub |
+| `thebinaryninja/tvapp2:1.0.0-amd64` | amd64 | Dockerhub |
+| `thebinaryninja/tvapp2:1.0.0-arm64` | arm64 | Dockerhub |
+| `git.binaryninja.net/binaryninja/tvapp2:latest` | amd64 | Gitea |
+| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | amd64 | Gitea |
+| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | arm64 | Gitea |
 
 <br />
 
