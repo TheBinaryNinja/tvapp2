@@ -1,1 +1,2 @@
-/etc/s6-overlay/s6-rc.d/init-nginx/run
+# this file allows you to load an nginx webserver
+# /etc/s6-overlay/s6-rc.d/init-nginx/run
