@@ -410,11 +410,12 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }} › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
+                      - Source: `Dockerhub` https://hub.docker.com/r/thebinaryninja/tvapp2
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
@@ -655,11 +656,12 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }} › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
+                      - Source: `Dockerhub` https://hub.docker.com/r/thebinaryninja/tvapp2
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
