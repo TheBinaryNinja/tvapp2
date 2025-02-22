@@ -504,7 +504,7 @@ To use the new TVApp2 image, you can either call it with the `docker run` comman
 ### docker run
 If you want to use the tvapp docker image in the `docker run` command, execute the following:
 ```shell ignore
-docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/tvapp:/config ghcr.io/TheBinaryNinja/tvapp2:latest
+docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/tvapp:/config ghcr.io/thebinaryninja/tvapp2:latest
 ```
 
 <br />
@@ -530,7 +530,7 @@ Add the following to your `docker-compose.yml`:
 services:
     tvapp:
         container_name: tvapp2
-        image: ghcr.io/TheBinaryNinja/tvapp2:latest    # Github image
+        image: ghcr.io/thebinaryninja/tvapp2:latest    # Github image
       # image: TheBinaryNinja/tvapp:latest             # Dockerhub image
         restart: unless-stopped
         volumes:
