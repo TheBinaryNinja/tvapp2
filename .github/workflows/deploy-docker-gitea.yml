@@ -6,8 +6,8 @@
 #                       upload this workflow to both the `main` branch of the tvapp2 repository
 #   @secrets            secrets.ADMINSERV_GPG_KEY_ASC                               gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
 #                       secrets.ADMINSERV_GPG_PASSPHRASE                            gpg private key passphrase
-#                       secrets.ORG_GITEA_BINARYNINJA_TOKEN                         github personal access token (classic) with package:write permission
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         Discord webhook to report releases from github to discord
+#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         gitea personal access token (classic) with package:write permission
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         Discord webhook to report releases from gitea to discord
 # #
 
 name: "📦 Deploy › Docker › Gitea"
@@ -32,26 +32,13 @@ on:
             #   Image Name
             #
             #   used in github image path
-            #       git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+            #       git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
             # #
 
             IMAGE_NAME:
                 description:  '📦 Image Name'
                 required:     true
                 default:      'tvapp2'
-                type:         string
-
-            # #
-            #   Image Author
-            #
-            #   used in github image path
-            #       git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
-            # #
-
-            IMAGE_AUTHOR:
-                description:  '🪪 Image Author'
-                required:     true
-                default:      'BinaryNinja'
                 type:         string
 
             # #
@@ -67,9 +54,22 @@ on:
                 type:         string
 
             # #
-            #   Image ghcr username
+            #   Gitea › Author
             #
-            #   this is the user to sign into ghcr as.
+            #   used in github image path
+            #       git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+            # #
+
+            IMAGE_GITEA_AUTHOR:
+                description:  '🪪 Image Author'
+                required:     true
+                default:      'BinaryNinja'
+                type:         string
+
+            # #
+            #   Gitea › Username
+            #
+            #   this is the user to sign into gitea as.
             # #
 
             IMAGE_GITEA_USERNAME:
@@ -114,7 +114,7 @@ on:
 
 env:
     IMAGE_NAME:           ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_AUTHOR:         ${{ github.event.inputs.IMAGE_AUTHOR || 'BinaryNinja' }}
+    IMAGE_GITEA_AUTHOR:   ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
     IMAGE_VERSION:        ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
     IMAGE_GITEA_USERNAME: ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
     BOT_NAME_1:           EuropaServ
@@ -316,7 +316,7 @@ jobs:
               with:
                   registry: git.binaryninja.net
                   username: ${{ env.IMAGE_GITEA_USERNAME }}
-                  password: ${{ secrets.ORG_GITEA_BINARYNINJA_TOKEN }}
+                  password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
             # #
             #   Release › Gitea › Meta › Arm64
@@ -327,7 +327,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest no
                       type=raw,value=latest,enable=false
@@ -344,8 +344,8 @@ jobs:
                       org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.GIT_REF }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
 
             # #
             #   Release › Gitea › Checkpoint › Arm64
@@ -360,7 +360,7 @@ jobs:
                   echo "github.ref_name ...... ${{ github.ref_name }}"
                   echo "github.event_name .... ${{ github.event_name }}"
                   echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_AUTHOR }}"
+                  echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
                   echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
 
@@ -415,7 +415,7 @@ jobs:
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
@@ -556,7 +556,7 @@ jobs:
               with:
                   registry: git.binaryninja.net
                   username: ${{ env.IMAGE_GITEA_USERNAME }}
-                  password: ${{ secrets.ORG_GITEA_BINARYNINJA_TOKEN }}
+                  password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
             # #
             #   Release › Gitea › Meta › Amd64
@@ -567,7 +567,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -586,8 +586,8 @@ jobs:
                       org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.GIT_REF }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
 
             # #
             #   Release › Gitea › Checkpoint › Amd64
@@ -602,7 +602,7 @@ jobs:
                   echo "github.ref_name ...... ${{ github.ref_name }}"
                   echo "github.event_name .... ${{ github.event_name }}"
                   echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_AUTHOR }}"
+                  echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
                   echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
 
@@ -656,7 +656,7 @@ jobs:
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`

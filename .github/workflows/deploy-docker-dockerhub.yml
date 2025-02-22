@@ -31,8 +31,8 @@ on:
             # #
             #   Image Name
             #
-            #   used in github image path
-            #       ${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+            #   used in dockerhub image path
+            #       ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
             # #
 
             IMAGE_NAME:
@@ -40,19 +40,6 @@ on:
                 required:     true
                 default:      'tvapp2'
                 type:         string
-
-            # #
-            #   Image Author
-            #
-            #   used in github image path
-            #       ${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
-            # #
-
-            IMAGE_AUTHOR:
-                description:    '🪪 Image Author'
-                required:       true
-                default:        'TheBinaryNinja'
-                type:           string
 
             # #
             #   Image Version
@@ -67,7 +54,20 @@ on:
                 type:           string
 
             # #
-            #   Image Dockerhub username
+            #   Dockerhub › Author
+            #
+            #   used in dockerhub image path
+            #       hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
+            # #
+
+            IMAGE_DOCKERHUB_AUTHOR:
+                description:    '🪪 Image Author'
+                required:       true
+                default:        'TheBinaryNinja'
+                type:           string
+
+            # #
+            #   Dockerhub › Username
             #
             #   this is the user to sign into Dockerhub as.
             #   this username MUST be lowercase or you will get `unauthorized: incorrect username or password`
@@ -115,7 +115,7 @@ on:
 
 env:
     IMAGE_NAME:                 ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_AUTHOR:               ${{ github.event.inputs.IMAGE_AUTHOR || 'thebinaryninja' }}
+    IMAGE_DOCKERHUB_AUTHOR:     ${{ github.event.inputs.IMAGE_DOCKERHUB_AUTHOR || 'thebinaryninja' }}
     IMAGE_VERSION:              ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
     IMAGE_DOCKERHUB_USERNAME:   ${{ github.event.inputs.IMAGE_DOCKERHUB_USERNAME || 'thebinaryninja' }}
     BOT_NAME_1:                 EuropaServ
@@ -327,7 +327,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest no
                       type=raw,value=latest,enable=false
@@ -347,8 +347,8 @@ jobs:
                       org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.GIT_REF }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_DOCKERHUB_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
 
             # #
             #   Release › Dockerhub › Checkpoint › Arm64
@@ -363,7 +363,7 @@ jobs:
                   echo "github.ref_name ...... ${{ github.ref_name }}"
                   echo "github.event_name .... ${{ github.event_name }}"
                   echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_AUTHOR }}"
+                  echo "env.AUTHOR ........... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
                   echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
 
@@ -418,7 +418,7 @@ jobs:
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
@@ -570,7 +570,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -593,8 +593,8 @@ jobs:
                       org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.GIT_REF }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_DOCKERHUB_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
 
             # #
             #   Release › Dockerhub › Checkpoint › Amd64
@@ -609,7 +609,7 @@ jobs:
                   echo "github.ref_name ...... ${{ github.ref_name }}"
                   echo "github.event_name .... ${{ github.event_name }}"
                   echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_AUTHOR }}"
+                  echo "env.AUTHOR ........... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
                   echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
 
@@ -664,7 +664,7 @@ jobs:
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
