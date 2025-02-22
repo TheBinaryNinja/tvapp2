@@ -32,7 +32,7 @@ on:
             #   Image Name
             #
             #   used in github image path
-            #       ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+            #       git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
             # #
 
             IMAGE_NAME:
@@ -45,13 +45,13 @@ on:
             #   Image Author
             #
             #   used in github image path
-            #       ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+            #       git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
             # #
 
             IMAGE_AUTHOR:
                 description:  '🪪 Image Author'
                 required:     true
-                default:      'TheBinaryNinja'
+                default:      'BinaryNinja'
                 type:         string
 
             # #
@@ -73,9 +73,9 @@ on:
             # #
 
             IMAGE_GHCR_USERNAME:
-                description:    '🪪 ghcr.io Username'
+                description:    '🪪 Gitea Username'
                 required:       true
-                default:        'TheBinaryNinja'
+                default:        'aetherinox'
                 type:           string
 
             # #
@@ -327,7 +327,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest no
                       type=raw,value=latest,enable=false
@@ -414,7 +414,7 @@ jobs:
 
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
@@ -566,7 +566,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -654,7 +654,7 @@ jobs:
 
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: https://ghcr.io/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
