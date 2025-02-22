@@ -72,7 +72,7 @@ on:
             #   this is the user to sign into ghcr as.
             # #
 
-            IMAGE_GHCR_USERNAME:
+            IMAGE_GITEA_USERNAME:
                 description:    '🪪 Gitea Username'
                 required:       true
                 default:        'aetherinox'
@@ -116,7 +116,7 @@ env:
     IMAGE_NAME:           ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
     IMAGE_AUTHOR:         ${{ github.event.inputs.IMAGE_AUTHOR || 'BinaryNinja' }}
     IMAGE_VERSION:        ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
-    IMAGE_GHCR_USERNAME:  ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'BinaryNinja' }}
+    IMAGE_GITEA_USERNAME: ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
     BOT_NAME_1:           EuropaServ
     BOT_NAME_DEPENDABOT:  dependabot[bot]
 
@@ -315,7 +315,7 @@ jobs:
               uses: docker/login-action@v3
               with:
                   registry: git.binaryninja.net
-                  username: ${{ env.IMAGE_GHCR_USERNAME }}
+                  username: ${{ env.IMAGE_GITEA_USERNAME }}
                   password: ${{ secrets.ORG_GITEA_BINARYNINJA_TOKEN }}
 
             # #
@@ -407,12 +407,12 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Gitea)᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ## 📦 ᲼Docker › Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Gitea. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
-                      - Source: `Gitea` https://git.binaryninja.net/BinaryNinja
+                      - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
@@ -555,7 +555,7 @@ jobs:
               uses: docker/login-action@v3
               with:
                   registry: git.binaryninja.net
-                  username: ${{ env.IMAGE_GHCR_USERNAME }}
+                  username: ${{ env.IMAGE_GITEA_USERNAME }}
                   password: ${{ secrets.ORG_GITEA_BINARYNINJA_TOKEN }}
 
             # #
@@ -648,12 +648,12 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Gitea)  ${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ## 📦 ᲼Docker › Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Gitea. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
-                      - Source: `Gitea` https://git.binaryninja.net/BinaryNinja
+                      - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: https://git.binaryninja.net/${{ env.IMAGE_AUTHOR }}/${{ env.IMAGE_NAME }}
