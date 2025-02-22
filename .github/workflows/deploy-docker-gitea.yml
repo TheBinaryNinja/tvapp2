@@ -114,8 +114,8 @@ on:
 
 env:
     IMAGE_NAME:           ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_GITEA_AUTHOR:   ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
     IMAGE_VERSION:        ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
+    IMAGE_GITEA_AUTHOR:   ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
     IMAGE_GITEA_USERNAME: ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
     BOT_NAME_1:           EuropaServ
     BOT_NAME_DEPENDABOT:  dependabot[bot]
