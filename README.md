@@ -24,8 +24,8 @@
 <br />
 
 - [About](#about)
+  - [Quick Install](#quick-install)
   - [How It Works](#how-it-works)
-  - [Available Docker Images](#available-docker-images)
 - [Building `tvapp` Image](#building-tvapp-image)
   - [How It Works](#how-it-works-1)
   - [Before Building](#before-building)
@@ -76,6 +76,44 @@ This project contains several repositories which all share the same code; use th
 - [https://git.binaryninja.net/BinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)
 
 <br />
+<br />
+
+### Quick Install
+
+Pull the latest version of the TVApp2 image from either Github, Gitea, and Dockerhub.
+
+| Pull URL | Platform | Host |
+| --- | --- | --- |
+| `ghcr.io/thebinaryninja/tvapp2:latest` | amd64 | Github |
+| `ghcr.io/thebinaryninja/tvapp2:amd64` | amd64 | Github |
+| `ghcr.io/thebinaryninja/tvapp2:arm64` | arm64 | Github |
+| `thebinaryninja/tvapp2:latest` | amd64 | Dockerhub |
+| `thebinaryninja/tvapp2:1.0.0-amd64` | amd64 | Dockerhub |
+| `thebinaryninja/tvapp2:1.0.0-arm64` | arm64 | Dockerhub |
+| `git.binaryninja.net/binaryninja/tvapp2:latest` | amd64 | Gitea |
+| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | amd64 | Gitea |
+| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | arm64 | Gitea |
+
+<br />
+
+Once you bring the docker container up; open your web-browser and access the container's webserver by going to:
+
+```console
+http://container-ip:4124
+```
+
+<br />
+
+Copy both the M3U playlist URL and the EPG guide URL, and paste it in your favorite IPTV application; Plex, Jellyfin, Emby, etc.
+
+<br />
+
+If you need more extensive instructions on installing and using this container, read the section:
+
+- [Using TVApp2 Image](#using-tvapp-image)
+
+<br />
+<br />
 
 ### How It Works
 
@@ -93,24 +131,6 @@ A[tvapp2] <--> |Fetch XMLTV/EPG| C(XMLTV-EPG)
 B(tvapp2-externals) --> D{Pull Dynamic Formats}
 C(XMLTV-EPG) ---> E{Pull Dynamic EPG}
 ```
-
-<br />
-
-### Available Docker Images
-
-You may use the following URLs to pull our docker image for TVApp2
-
-| Pull URL | Platform | Host |
-| --- | --- | --- |
-| `ghcr.io/thebinaryninja/tvapp2:latest` | amd64 | Github |
-| `ghcr.io/thebinaryninja/tvapp2:amd64` | amd64 | Github |
-| `ghcr.io/thebinaryninja/tvapp2:arm64` | arm64 | Github |
-| `thebinaryninja/tvapp2:latest` | amd64 | Dockerhub |
-| `thebinaryninja/tvapp2:1.0.0-amd64` | amd64 | Dockerhub |
-| `thebinaryninja/tvapp2:1.0.0-arm64` | arm64 | Dockerhub |
-| `git.binaryninja.net/binaryninja/tvapp2:latest` | amd64 | Gitea |
-| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | amd64 | Gitea |
-| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | arm64 | Gitea |
 
 <br />
 
@@ -549,8 +569,9 @@ Add the following to your `docker-compose.yml`:
 services:
     tvapp:
         container_name: tvapp2
-        image: ghcr.io/thebinaryninja/tvapp2:latest    # Github image
-      # image: TheBinaryNinja/tvapp:latest             # Dockerhub image
+        image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+      # image: TheBinaryNinja/tvapp2:latest                         # Image: Dockerhub
+      # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
         restart: unless-stopped
         volumes:
             - ./tvapp:/config
