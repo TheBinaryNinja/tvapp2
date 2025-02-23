@@ -4,7 +4,7 @@
 #   install and startup for tvapp2
 # #
 
-cp -r ${DIR_BUILD} ${DIR_RUN}
+cp -r ${DIR_BUILD}/* ${DIR_RUN}
 rm -rf ${DIR_BUILD}/*
 cd ${DIR_RUN}
 npm start
