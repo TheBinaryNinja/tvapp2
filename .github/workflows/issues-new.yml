@@ -858,10 +858,13 @@ jobs:
         runs-on: apollo-x64
         timeout-minutes: 4
         needs: [ job-assign-labels ]
-        if: |
-            always()
-            && contains( needs.*.result, 'success' )
-            && !contains( needs.*.result, 'failure' )
+      # disable
+      #
+      # if: |
+      #     always()
+      #     && contains( needs.*.result, 'success' )
+      #     && !contains( needs.*.result, 'failure' )
+        if: false
         permissions:
             contents: write
         steps:
