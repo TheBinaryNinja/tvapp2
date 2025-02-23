@@ -206,15 +206,6 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.SELF_TOKEN_CL }}
 
             # #
-            #   Release › Print / Lint
-            # #
-
-            - name: "🪪 NPM › Lint"
-              id: task_release_npm_prettylint
-              run: |
-                  npm run lint
-
-            # #
             #   Release › Build
             # #
 
