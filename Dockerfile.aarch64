@@ -56,6 +56,7 @@ ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
 ENV NODE_VERSION=18.20.5
 ENV YARN_VERSION=1.22.22
+ENV WORKING_DIR=/usr/bin/app
 
 # #
 #   Install
@@ -94,10 +95,10 @@ WORKDIR /usr/src/app
 COPY tvapp2/ ./
 
 # #
-#   install node (production)
+#   set work dir to built app
 # #
 
-RUN npm install --only=production
+WORKDIR ${WORKING_DIR}
 
 # #
 #   Ports and volumes

@@ -27,6 +27,7 @@ fi
 echo "        Port(s)                 $(echo $WEB_PORT)"
 echo "        Gateway                 $(echo $IP_GATEWAY)"
 echo "        Web Server              $(echo $IP_CONTAINER:$WEB_PORT)"
+echo "        App Folder              $(echo $WORKING_DIR)"
 echo ""
 echo '──────────────────────────────────────────────────────────────────────────────────────────'
 

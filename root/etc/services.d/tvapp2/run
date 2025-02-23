@@ -1,3 +1,10 @@
 #!/usr/bin/with-contenv sh
-cd "/usr/src/app"
+
+# #
+#   install and startup for tvapp2
+# #
+
+cp -r ${INSTALL_DIR} ${WORKING_DIR}
+rm -rf ${INSTALL_DIR}/*
+cd ${WORKING_DIR}
 npm start

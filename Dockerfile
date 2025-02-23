@@ -19,7 +19,6 @@
 #       arm64       docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
 # #
 
-
 FROM ghcr.io/aetherinox/alpine-base:3.20-amd64
 
 # #
@@ -57,6 +56,8 @@ ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
 ENV NODE_VERSION=18.20.5
 ENV YARN_VERSION=1.22.22
+ENV INSTALL_DIR=/usr/src/app
+ENV WORKING_DIR=/usr/bin/app
 
 # #
 #   Install
@@ -86,7 +87,7 @@ COPY root/ /
 #   set work directory
 # #
 
-WORKDIR /usr/src/app
+WORKDIR ${INSTALL_DIR}
 
 # #
 #   copy tvapp2 project to workdir
@@ -95,10 +96,10 @@ WORKDIR /usr/src/app
 COPY tvapp2/ ./
 
 # #
-#   install node (production)
+#   set work dir to built app
 # #
 
-RUN npm install --only=production
+WORKDIR ${WORKING_DIR}
 
 # #
 #   Ports and volumes
