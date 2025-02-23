@@ -306,7 +306,7 @@ jobs:
                       const bug_bFoundPRTitle       = Boolean( bug_findPRTitle.test( iss_title ) );
 
                       console.log( "Title Lowercase ............... " + iss_title_lc  )
-                      console.log( "Startswith " + bug_tag.toLowerCase( ) + "................ " + iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) )
+                      console.log( "Startswith " + bug_tag.toLowerCase( ) + "................ " + iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) )
                       console.log( "Title Includes Keyword ........ " + bTriggerWordInTitle  )
                       console.log( "Title Includes Regex .......... " + bFoundMatchTitle  )
                       console.log( "Body Includes Regex ........... " + bFoundMatchBody  )
@@ -317,14 +317,14 @@ jobs:
                           - Check if title contains word in words
                       */
 
-                      if ( iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
+                      if ( iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
                       {
 
                           console.log( "⚠️ " + bug_tag + " ---------------------------------------" )
-                          console.log( "Already starts with " + bug_tag + " ......... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + feat_tag + " ..... " + iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + urgn_tag + " ...... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + road_tag + " ..... " + iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          console.log( "Already starts with " + bug_tag + " ......... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + feat_tag + " ..... " + iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + urgn_tag + " ...... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + road_tag + " ..... " + iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
 
                           add_labels.push( `${ bug_lbl }` );
 
@@ -337,7 +337,7 @@ jobs:
                           // Rename title to contain Bug:
                           // Make sure issue / pr title doesnt already contain a beginning title tag
 
-                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !bug_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !bug_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
                           {
                               console.log( "Renaming Title" )
                               console.log( `Old Title: .................. ${ iss_title }` )
@@ -435,7 +435,7 @@ jobs:
                       const feat_bFoundPRTitle    = Boolean( feat_findPRTitle.test( iss_title ) );
 
                       console.log( "Title Lowercase ............... " + iss_title_lc  )
-                      console.log( "Startswith " + feat_tag.toLowerCase( ) + "............ " + iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) )
+                      console.log( "Startswith " + feat_tag.toLowerCase( ) + "............ " + iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) )
                       console.log( "Title Includes Keyword ........ " + bTriggerWordInTitle  )
                       console.log( "Title Includes Regex .......... " + bFoundMatchTitle  )
                       console.log( "Body Includes Regex ........... " + bFoundMatchBody  )
@@ -447,14 +447,14 @@ jobs:
                       */
 
                       // change TAG per category
-                      if ( iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
+                      if ( iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
                       {
 
                           console.log( "⚠️ " + feat_tag + " ---------------------------------------" )
-                          console.log( "Already starts with " + bug_tag + " ......... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + feat_tag + " ..... " + iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + urgn_tag + " ...... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + road_tag + " ..... " + iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          console.log( "Already starts with " + bug_tag + " ......... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + feat_tag + " ..... " + iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + urgn_tag + " ...... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + road_tag + " ..... " + iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
 
                           // change LBL per category
                           add_labels.push( `${ feat_lbl }` );
@@ -468,7 +468,7 @@ jobs:
                           // Rename title to contain Feature:
                           // Make sure issue / pr title doesnt already contain a beginning title tag
 
-                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !feat_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !feat_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
                           {
                               console.log( "Renaming Title" )
                               console.log( `Old Title: .................. ${ iss_title }` )
@@ -566,7 +566,7 @@ jobs:
                       const urgn_bFoundPRTitle      = Boolean( urgn_findPRTitle.test( iss_title ) );
 
                       console.log( "Title Lowercase ............... " + iss_title_lc  )
-                      console.log( "Startswith " + urgn_tag.toLowerCase( ) + "............. " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) )
+                      console.log( "Startswith " + urgn_tag.toLowerCase( ) + "............. " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) )
                       console.log( "Title Includes Keyword ........ " + bTriggerWordInTitle  )
                       console.log( "Title Includes Regex .......... " + bFoundMatchTitle  )
                       console.log( "Body Includes Regex ........... " + bFoundMatchBody  )
@@ -578,14 +578,14 @@ jobs:
                       */
 
                       // change TAG per category
-                      if ( iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
+                      if ( iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
                       {
 
                           console.log( "⚠️ " + urgn_tag + " ---------------------------------------" )
-                          console.log( "Already starts with " + bug_tag + " ......... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + feat_tag + " ..... " + iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + urgn_tag + " ...... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + road_tag + " ..... " + iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          console.log( "Already starts with " + bug_tag + " ......... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + feat_tag + " ..... " + iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + urgn_tag + " ...... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + road_tag + " ..... " + iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
 
                           // change LBL per category
                           add_labels.push( `${ urgn_lbl }` );
@@ -599,7 +599,7 @@ jobs:
                           // Rename title to contain Urgent:
                           // Make sure issue / pr title doesnt already contain a beginning title tag
 
-                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !urgn_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !urgn_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
                           {
                               console.log( "Renaming Title" )
                               console.log( `Old Title: .................. ${ iss_title }` )
@@ -684,7 +684,7 @@ jobs:
                               https://regex101.com/r/ucajBZ/1
                       */
 
-                      const findWordList 	        = /#\s*Summary[\S\s]+#\s*(?:Proposal|Objective)[^\]]+/igm;
+                      const findWordList 	          = /#\s*Summary[\S\s]+#\s*(?:Proposal|Objective)[^\]]+/igm;
                       const bFoundMatchTitle        = Boolean( findWordList.test( iss_title ) );
                       const bFoundMatchBody         = Boolean( findWordList.test( iss_body ) );
 
@@ -699,7 +699,7 @@ jobs:
                       const road_bFoundPRTitle    = Boolean( road_findPRTitle.test( iss_title ) );
 
                       console.log( "Title Lowercase ............... " + iss_title_lc  )
-                      console.log( "Startswith " + road_tag.toLowerCase( ) + "............ " + iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                      console.log( "Startswith " + road_tag.toLowerCase( ) + "............ " + iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
                       console.log( "Title Includes Keyword ........ " + bTriggerWordInTitle  )
                       console.log( "Title Includes Regex .......... " + bFoundMatchTitle  )
                       console.log( "Body Includes Regex ........... " + bFoundMatchBody  )
@@ -711,14 +711,14 @@ jobs:
                       */
 
                       // change TAG per category
-                      if ( iss_title_lc.startsWith( road_tag.toLowerCase( ) ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
+                      if ( iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) || bTriggerWordInTitle || bFoundMatchTitle || bFoundMatchBody )
                       {
 
                           console.log( "⚠️ " + road_tag + " ---------------------------------------" )
-                          console.log( "Already starts with " + bug_tag + " ...... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + feat_tag + " .. " + iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + urgn_tag + " ... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) )
-                          console.log( "Already starts with " + road_tag + " .. " + iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          console.log( "Already starts with " + bug_tag + " ...... " + iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + feat_tag + " .. " + iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + urgn_tag + " ... " + iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) )
+                          console.log( "Already starts with " + road_tag + " .. " + iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
 
                           // change LBL per category
                           add_labels.push( `${ road_lbl }` );
@@ -732,7 +732,7 @@ jobs:
                           // Rename title to contain Roadmap:
                           // Make sure issue / pr title doesnt already contain a beginning title tag
 
-                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !road_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ) ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ) ) )
+                          if ( iss_author !== `${{ env.BOT_NAME_DEPENDABOT }}` && !road_bFoundPRTitle && !iss_title_lc.startsWith( bug_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( feat_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( urgn_tag.toLowerCase( ), 3 ) && !iss_title_lc.startsWith( road_tag.toLowerCase( ), 3 ) )
                           {
                               console.log( "Renaming Title" )
                               console.log( `Old Title: .................. ${ iss_title }` )
