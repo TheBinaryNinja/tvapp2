@@ -68,9 +68,9 @@
   - [Labels](#labels-1)
   - [Dynamic.yml](#dynamicyml-1)
 - [Troubleshooting](#troubleshooting)
-    - [Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
-    - [Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
-    - [Build Error: unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied](#build-error-unable-to-exec-etcs6-overlays6-rcdinit-envfilerun-permission-denied)
+    - [Run Error: `Error serving playlist: ENOENT: no such file or directory, open /usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
+    - [Build Error: `s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle`](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
+    - [Build Error: `unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied`](#build-error-unable-to-exec-etcs6-overlays6-rcdinit-envfilerun-permission-denied)
 - [Extra Notes](#extra-notes)
   - [Accessing Container Shell](#accessing-container-shell)
     - [ash](#ash)
@@ -146,8 +146,8 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sub>This should not be used unless you know what you're doing</sub> |
-| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sub>⚠️ This should not be used unless you know what you're doing</sub> |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
+| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 
 <br />
 <br />
@@ -402,21 +402,21 @@ find ./ -name 'run' -exec sudo chmod +x {} \;
 **[Optional]**: If you want to set the permissions manually, run the following below. If you executed the `find` command above, you don't need to run the list of commands below:
 
 ```shell
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-adduser/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-crontab-config/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-custom-files/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-envfile/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-folders/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-keygen/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-migrations/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-nginx/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-permissions/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-php/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-samples/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/init-version-checks/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-cron/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-nginx/run
-sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
+sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-crontab-config/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-custom-files/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-envfile/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-folders/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-keygen/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-migrations/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-nginx/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-permissions/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-php/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-samples/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-version-checks/run \
+  ./root/etc/s6-overlay/s6-rc.d/svc-cron/run \
+  ./root/etc/s6-overlay/s6-rc.d/svc-nginx/run \
+  ./root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
 ```
 
 <br />
@@ -445,7 +445,7 @@ This method will show you how to build the TVApp2 docker image using `docker bui
 
 ```shell ignore
 # Build tvapp2 amd64
-docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
+docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
 ```
 
 <br />
@@ -454,7 +454,7 @@ docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=2025
 
 ```shell ignore
 # Build tvapp2 arm64
-docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:1.0.0-arm64 -f Dockerfile.aarch64 .
+docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:1.0.0-arm64 -f Dockerfile.aarch64 .
 ```
 
 <br />
@@ -517,7 +517,7 @@ The command below will build your TVApp2 docker image, and save a local copy of 
 
 ```shell ignore
 # Build tvapp2 amd64
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
+docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
 ```
 
 <br />
@@ -526,7 +526,7 @@ docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUIL
 
 ```shell ignore
 # Build tvapp2 arm64
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
+docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
 ```
 
 <br />
@@ -596,16 +596,20 @@ You should see your name:
 
 You are ready to build the TVApp2 docker image, run the command for your platform:
 
+<br />
+
 ###### amd64
 
 ```shell ignore
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --provenance=true --sbom=true --builder=container --push .
+docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --provenance=true --sbom=true --builder=container --push .
 ```
+
+<br />
 
 ###### arm64 / aarch64
 
 ```shell ignore
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --provenance=true --sbom=true --builder=container --push .
+docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --provenance=true --sbom=true --builder=container --push .
 ```
 
 <br />
@@ -750,8 +754,8 @@ This docker container contains the following env variables:
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sub>This should not be used unless you know what you're doing</sub> |
-| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sub>⚠️ This should not be used unless you know what you're doing</sub> |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
+| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 
 <br />
 <br />
@@ -1307,7 +1311,7 @@ If you have issues building your TVApp2 docker image, please refer to the follow
 <br />
 <br />
 
-#### Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`
+#### Run Error: `Error serving playlist: ENOENT: no such file or directory, open /usr/src/app/xmltv.1.xml`
 
 This error occurs at run-time when attempting to spin up your TVApp2 docker container. If you receive this error, restart your TVApp2 docker container. Ensure that your docker container also has access to your docker network so that it can connect to our repository and fetch the data files it needs to generate your playlist.
 
@@ -1318,7 +1322,7 @@ If the error continues after doing the above; delete the existing image, and re-
 <br />
 <br />
 
-#### Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle
+#### Build Error: `s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle`
 
 This error means that you are attempting to combine files which are utilizing CRLF over LF; which is **CR** = Carriage Return and **LF** = Line Feed
 
@@ -1356,7 +1360,7 @@ find ./ -type f | grep -Ev '.git|*.jpg|*.jpeg|*.png' | sudo xargs dos2unix --
 <br />
 <br />
 
-#### Build Error: unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied
+#### Build Error: `unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied`
 
 There are multiple errors you can receive when attempting to run your TVApp2 docker image. You may receive any of the following errors:
 
@@ -1424,7 +1428,10 @@ docker exec -it tvapp2 bash
 
 ### Custom Docker Image Scripts
 
-These instructions are for **Advanced Users Only**
+> [!NOTE]
+> These instructions are for **Advanced Users Only**; who wish to build their own image.
+
+<br />
 
 The `🔀 TheBinaryNinja/tvapp2` image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `/root` folder
 
