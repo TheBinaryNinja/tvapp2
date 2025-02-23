@@ -56,8 +56,8 @@ ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
 ENV NODE_VERSION=18.20.5
 ENV YARN_VERSION=1.22.22
-ENV INSTALL_DIR=/usr/src/app
-ENV WORKING_DIR=/usr/bin/app
+ENV DIR_BUILD=/usr/src/app
+ENV DIR_RUN=/usr/bin/app
 
 # #
 #   Install
@@ -87,7 +87,7 @@ COPY root/ /
 #   set work directory
 # #
 
-WORKDIR ${INSTALL_DIR}
+WORKDIR ${DIR_BUILD}
 
 # #
 #   copy tvapp2 project to workdir
@@ -99,7 +99,7 @@ COPY tvapp2/ ./
 #   set work dir to built app
 # #
 
-WORKDIR ${WORKING_DIR}
+WORKDIR ${DIR_RUN}
 
 # #
 #   Ports and volumes
