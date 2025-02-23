@@ -531,7 +531,7 @@ jobs:
               uses: actions/upload-artifact@v4
               if: always()
               with:
-                  name: "release"
+                  name: "${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}"
                   path: ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                   retention-days: 30
 
@@ -578,7 +578,7 @@ jobs:
             - name: "🕛 Get Env Vars"
               id: task_complete_set_envs
               run: |
-                  release_stable_file="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
+                  release_stable_file="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}/${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
                   release_stable_sha256="$(shasum --algorithm 256 ${release_stable_file} | awk '{ print $1 }')"
 
                   echo "FILE_STABLE=${release_stable_file}" >> $GITHUB_ENV
