@@ -1,0 +1,203 @@
+# #
+#   @type               github workflow
+#   @desc               builds mkdocs from the main branch /docs/ folder and puts the compiled version
+#                       in the `gh-pages` branch. Is hosted using Github Pages.
+#   @author             Aetherinox
+#   @url                https://github.com/Aetherinox
+#
+#   @secrets            secrets.SELF_TOKEN_CL                                                 Github Access Token (Classic)
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS                  Discord Webbhook URL; right-click on channel, click "Integrations"
+# #
+
+name: "📒 Docs › Build"
+run-name: "📒 Docs › Build"
+
+# #
+#   triggers
+# #
+
+on:
+    release:
+        types:
+            - published
+    push:
+        paths:
+            - docs/**
+    workflow_dispatch:
+    schedule:
+        - cron: "0 */12 * * *"
+
+# #
+#   environment variables
+# #
+
+env:
+    ASSIGN_USER:                  Aetherinox
+    BOT_NAME_1:                   EuropaServ
+    BOT_NAME_DEPENDABOT:          dependabot[bot]
+
+# #
+#   jobs
+# #
+
+jobs:
+    build-docs:
+      # runs-on: ubuntu-latest
+        runs-on: apollo-x64
+        timeout-minutes: 20
+        permissions:
+            contents: write
+            pages: write
+        environment:
+            name: Orion
+        steps:
+
+            # #
+            #   Documentation › Checkout › Arm64
+            # #
+
+            - name: >-
+                ✅ Checkout
+              id: task_docs_checkout
+              uses: actions/checkout@v4
+
+            # #
+            #   Documentation › Set Env Variables
+            # #
+
+            - name: >-
+                🕛 Get Timestamp
+              id: task_docs_set_timestamp
+              run: |
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+            # #
+            #   Documentation › Setup Python
+            # #
+
+            - name: "🐍 Setup Python"
+              id: task_docs_python_setup
+              uses: actions/setup-python@v5
+              with:
+                  python-version: 3.x
+
+            # #
+            #   Documentation › Build Documentation
+            # #
+
+            - name: >-
+                📕 Build Documentation
+              id: task_docs_build
+              run: |
+                  export DOCS_NAME=${{ secrets.DOCS_NAME || 'TVApp2' }}
+                  export DOCS_SECRET_L1=${{ secrets.DOCS_SECRET_L1 }}
+                  export DOCS_SECRET_L2=${{ secrets.DOCS_SECRET_L2 }}
+                  export GH_TOKEN=${{ secrets.ADMINSERV_TOKEN }}
+
+                  pip install mkdocs
+                  pip install mkdocs-material
+                  pip install mike
+                  pip install mkdocs-git-committers-plugin-2
+                  pip install mkdocs-encryptcontent-plugin
+                  pip install mkdocs-redirects mkdocs-glightbox pymdown-extensions mkdocs-git-revision-date-localized-plugin mkdocs-git-authors-plugin mkdocs-link-embeds-plugin
+                  cd docs
+                  mkdocs build
+                  dir
+              env:
+                  GH_TOKEN: ${{ secrets.ADMINSERV_TOKEN }}
+
+            # #
+            #   Documentation › Deploy
+            # #
+
+            - name: "💽 Deploy"
+              id: task_docs_deploy
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  personal_token: ${{ secrets.ADMINSERV_TOKEN_CL }}
+                  publish_dir: ./docs/site
+
+
+            # #
+            #   Documentation › Get Weekly Commits
+            # #
+
+            - name: >-
+                🕛 Get Weekly Commit List
+              id: task_docs_set_weekly_commit_list
+              run: |
+                  echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
+                  git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
+                  echo 'EOF' >> $GITHUB_ENV
+
+            # #
+            #   Documentation › Notify Github › Success
+            # #
+
+            - name: >-
+                🔔 Send Discord Webhook Message (Success)
+              id: task_docs_notify_discord_success
+              uses: tsickert/discord-webhook@v6.0.0
+              if: success()
+              with:
+                  username: 'Io'
+                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS }}
+                  embed-title: "⚙️ ${{ github.workflow_ref }}"
+                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
+                  embed-description: |
+                      ## 📦 Documentation Deployment᲼${{ job.status == 'success' && '✅' || '❌' }}
+
+                      A **successful** deployment of TVApp2 documentation has been completed. Changes to documentation will appear in the next 5 minutes.
+
+                      - Documentation: https://thebinaryninja.github.io/tvapp2/
+                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
+                      - Triggered By: `${{ github.actor }}`
+                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
+
+                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
+                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
+                  embed-timestamp: "${{ env.NOW_LONG }}"
+                  embed-author-name: "${{ github.repository_owner }}"
+                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
+
+            # #
+            #   Documentation › Notify Github › Failure
+            # #
+
+            - name: >-
+                🔔 Send Discord Webhook Message (Failure)
+              id: task_docs_notify_discord_failure
+              uses: tsickert/discord-webhook@v6.0.0
+              if: failure()
+              with:
+                  username: 'Io'
+                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS }}
+                  embed-title: "⚙️ ${{ github.workflow_ref }}"
+                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
+                  embed-description: |
+                      ## 📦 Documentation Deployment᲼${{ job.status == 'success' && '✅' || '❌' }}
+
+                      A **failed** attempt to build the new documentation has triggered. No changes to your documentation will be made until the errors are fixed in the workflow.
+
+                      - Documentation: https://thebinaryninja.github.io/tvapp2/
+                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
+                      - Runner: `${{ runner.name }}`
+                      - Triggered By: `${{ github.actor }}`
+                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
+
+                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
+                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
+                  embed-timestamp: "${{ env.NOW_LONG }}"
+                  embed-author-name: "${{ github.repository_owner }}"
+                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
+
