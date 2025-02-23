@@ -200,11 +200,8 @@ jobs:
             - name: "🪪 NPM › Install"
               id: task_release_npm_install
               run: |
-                  echo ${PWD}
                   cd ./tvapp2
-                  echo ${PWD}
                   npm ci
-                  ls
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.SELF_TOKEN_CL }}
 
@@ -215,9 +212,7 @@ jobs:
             - name: "🪪 Generate IDs"
               id: task_release_npm_env_generate
               run: |
-                  echo ${PWD}
                   cd ./tvapp2
-                  echo ${PWD}
                   npm run root:generate
 
             # #
@@ -241,4 +236,31 @@ jobs:
               run: |
                   echo "GUID: ${{ steps.task_release_dotenv_get.outputs.GUID }}"
                   echo "UUID: ${{ steps.task_release_dotenv_get.outputs.UUID }}"
+
+            # #
+            #   Build Project & Create Zip
+            # #
+
+            - name: "🔨 Build › Stable ( ${{ inputs.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip )"
+              id: task_release_build_st
+              if: ${{ startsWith( inputs.PRERELEASE, false ) }}
+              run: |
+                  ls
+                  echo Building STABLE Package .zip ${{ env.PACKAGE_VERSION }}
+                  zip -r ${{ inputs.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip package.json README.md LICENSE dist/**
+                  ls
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
+
+            - name: "🔨 Build › RC ( ${{ inputs.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip )"
+              id: task_release_build_rc
+              if: ${{ startsWith( inputs.PRERELEASE, true ) }}
+              run: |
+                  cd ./tvapp2
+                  ls
+                  echo Building PRE-RELEASE Package .zip ${{ env.PACKAGE_VERSION }}
+                  zip -r ${{ inputs.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip package.json README.md LICENSE dist/**
+                  ls
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
