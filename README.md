@@ -19,7 +19,8 @@
 
 <div align="center">
 
-[![Discord Button](https://img.shields.io/badge/Join%20Discord-de1f68?style=for-the-badge&logo=discord&logoColor=FFFFFF)](https://discord.gg/gTze6hRe)
+[![View](https://img.shields.io/discord/1340814107124830229?style=for-the-badge&color=de1f68)](https://discord.gg/gTze6hRe)[![View](https://img.shields.io/badge/Join%20Discord-2d5e97?style=for-the-badge&logo=discord&logoColor=FFFFFF)](https://discord.gg/gTze6hRe)
+
 
 </div>
 
