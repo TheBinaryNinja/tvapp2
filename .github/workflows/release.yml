@@ -200,7 +200,9 @@ jobs:
             - name: "🪪 NPM › Install"
               id: task_release_npm_install
               run: |
+                  echo ${PWD}
                   cd ./tvapp2
+                  echo ${PWD}
                   npm ci
                   ls
               env:
@@ -213,7 +215,9 @@ jobs:
             - name: "🪪 Generate IDs"
               id: task_release_npm_env_generate
               run: |
-                  ls
+                  echo ${PWD}
+                  cd ./tvapp2
+                  echo ${PWD}
                   npm run root:generate
 
             # #
