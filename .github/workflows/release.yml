@@ -521,6 +521,20 @@ jobs:
                   echo "RC Output ID ............... ${{ steps.task_release_bundle_rc.outputs.id }}"
                   echo "---- CHANGELOG ---------------------------------------------------------------"
 
+            # #
+            #   Upload artifacts > release files
+            # #
+
+            - name: >-
+                📋 Upload Artifacts › ${{ env.PLUGIN_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+              id: task_release_artifact
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: "release"
+                  path: ${{ env.PLUGIN_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+                  retention-days: 30
+
     # #
     #   Job › Complete
     # #
