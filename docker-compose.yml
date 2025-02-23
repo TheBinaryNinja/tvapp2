@@ -1,0 +1,18 @@
+services:
+
+    tvapp2:
+        container_name: ${TVAPP2CONTAINER_NAME:-tvapp2}
+#       image: ghcr.io/aetherinox/tvapp2:latest
+        image: tvapp2:latest
+        hostname: tvapp2
+        environment:
+            TZ: "Etc/UTC"
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1

@@ -57,10 +57,9 @@ LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
 # #
 
 ENV TZ="Etc/UTC"
-ENV URL_REPO_BASE="https://github.com/aetherinox/alpine-base/pkgs/container/alpine-base"
-ENV URL_REPO_APP="https://git.binaryninja.net/BinaryNinja/tvapp2"
-ENV FILE_NAME="index.html"
-ENV PORT_HTTP=4124
+ENV URL_REPO="https://git.binaryninja.net/BinaryNinja/"
+ENV WEB_IP="0.0.0.0"
+ENV WEB_PORT=4124
 ENV NODE_VERSION=18.20.5
 ENV YARN_VERSION=1.22.22
 
@@ -83,16 +82,22 @@ RUN \
 COPY docker-entrypoint.sh /usr/local/bin/
 
 # #
-#   Set work directory
+#   copy s6-overlays root to image root
+# #
+
+COPY root/ /
+
+# #
+#   set work directory
 # #
 
 WORKDIR /usr/src/app
 
 # #
-#   copy node package.json to workdir
+#   copy tvapp2 project to workdir
 # #
 
-COPY package*.json ./
+COPY tvapp2/ ./
 
 # #
 #   install node (production)
@@ -101,34 +106,16 @@ COPY package*.json ./
 RUN npm install --only=production
 
 # #
-#   Add local files
-# #
-
-COPY . .
-# COPY node_modules/ package.json package-lock.json formatted.dat index.js ./
-
-# #
-#   when copying with the command above, all files in root folder will be copied.
-# #
-
-RUN rm -rf ./root
-RUN rm ./Dockerfile ./Dockerfile.aarch64 docker-entrypoint.sh
-
-# #
-#   copy s6-overlays root to image root
-# #
-
-COPY root/ /
-
-# #
 #   Ports and volumes
 # #
 
-EXPOSE ${PORT_HTTP}/tcp
+EXPOSE ${WEB_PORT}/tcp
 
 # #
 #   In case user sets up the cron for a longer duration, do a first run
 #   and then keep the container running. Hacky, but whatever.
 # #
 
-CMD ["sh", "-c", "npm start"]
+#CMD ["npm start"]
+
+ENTRYPOINT ["/init"]

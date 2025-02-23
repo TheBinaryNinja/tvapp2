@@ -3,23 +3,4 @@
 
 # permissions
 aetherxown -R dockerx:dockerx \
-    /var/lib/nginx \
-    /var/tmp/nginx
-
-aetherxown -R dockerx:dockerx \
-    /config/keys \
-    /config/log \
-    /config/nginx \
-    /config/php
-
-aetherxown dockerx:dockerx \
-    /config/www
-
-chmod -R g+w \
-    /config/nginx
-
-chmod -R 644 /etc/logrotate.d
-
-if [[ -f "/config/log/logrotate.status" ]]; then
-    chmod 600 /config/log/logrotate.status
-fi
+    /config/keys
