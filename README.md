@@ -48,6 +48,11 @@
 - [Using `tvapp` Image](#using-tvapp-image)
   - [docker run](#docker-run)
   - [docker-compose.yml](#docker-composeyml)
+  - [Environment Variables](#environment-variables)
+- [Troubleshooting](#troubleshooting)
+    - [Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
+    - [Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
+    - [Build Error: unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied](#build-error-unable-to-exec-etcs6-overlays6-rcdinit-envfilerun-permission-denied)
 - [Extra Notes](#extra-notes)
   - [Custom Docker Image Scripts](#custom-docker-image-scripts)
 - [🏆 Dedication](#-dedication)
@@ -552,6 +557,7 @@ docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/tvap
 
 ### docker-compose.yml
 If you'd much rather use a `docker-compose.yml` file and call the tvapp image that way, create a new folder somewhere:
+
 ```shell ignore
 mkdir -p /home/docker/tvapp2
 ```
@@ -599,6 +605,105 @@ TVApp2 should now be running as a container. You can access it by opening your b
 ```shell ignore
 http://container-ip:4124
 ```
+
+<br />
+
+### Environment Variables
+
+This docker container contains the following env variables:
+
+| Env Var | Default | Description |
+| --- | --- | --- |
+| `TZ` | `Etc/UTC` | Timezone to use for error / log reporting |
+| `WEB_IP` | `0.0.0.0` | This will allow you to change the default bind IP |
+| `WEB_PORT` | `4124` | Out of box, this image binds to the IP `0.0.0.0`. Use this variable to change the binding IP |
+| `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | This variable determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
+
+<br />
+
+---
+
+<br />
+
+
+## Troubleshooting
+
+If you have issues building your TVApp2 docker image, please refer to the following sections below:
+
+<br />
+<br />
+
+#### Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`
+
+This error occurs at run-time when attempting to spin up your TVApp2 docker container. If you receive this error, restart your TVApp2 docker container. Ensure that your docker container also has access to your docker network so that it can connect to our repository and fetch the data files it needs to generate your playlist.
+
+<br />
+
+If the error continues after doing the above; delete the existing image, and re-pull from one of our official sources.
+
+<br />
+<br />
+
+#### Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle
+
+This error means that you are attempting to combine files which are utilizing CRLF over LF; which is **CR** = Carriage Return and **LF** = Line Feed
+
+The **CRLF** line break type is commonly used in Windows operating systems and DOS-based text files. It combines two characters: Carriage Return (CR) and Line Feed (LF).
+
+The **LF** line break type is predominantly used in Unix, Linux, macOS, and modern text editors, including those for web development. In this convention, a single Line Feed character `\n` represents a line break. Unlike CR LF, there is no preceding Carriage Return character. The LF line break type solely relies on the line feed character to move to the next line.
+
+<br />
+
+If you attempt to build the TVApp2 docker image in Linux, but have modified the files in Windows, you may receive the following error:
+
+```console
+s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle
+```
+
+<br />
+
+To correct this issue, `cd` into the folder with the TVApp2 files, and then convert them to `LF` using the library `dos2unix`. The command below will convert all files to LF, but will EXCLUDE the following:
+
+- `.git` folder
+- `.jpg` images
+- `.jpeg` images
+- `.png` images
+
+```shell
+cd /path/to/tvapp2
+find ./ -type f | grep -Ev '.git|*.jpg|*.jpeg|*.png' | sudo xargs dos2unix --
+```
+
+> [!WARNING]
+> Do not run `dos2unix` on your `.git` folder or you will corrupt your git indexes and will be unable to push commits.
+>
+> If you accidentally run dos2unix on your .git folder, do NOT push anything to git. Pull a new copy from the repo.
+
+<br />
+<br />
+
+#### Build Error: unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied
+
+There are multiple errors you can receive when attempting to run your TVApp2 docker image. You may receive any of the following errors:
+
+- `Failed to open apk database: Permission denied`
+- `s6-rc: warning: unable to start service init-adduser: command exited 127`
+- `unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied`
+- `/etc/s6-overlay/s6-rc.d/init-adduser/run: line 34: aetherxown: command not found`
+- `/etc/s6-overlay/s6-rc.d/init-adduser/run: /usr/bin/aetherxown: cannot execute: required file not found`
+
+<br />
+
+If you receive any of the above errors; this means that you have not set your `run` files to have execute permissions `+x`. Run the following command in the root directory of your TVApp2 project folder:
+
+```shell
+find ./ -name 'run' -exec sudo chmod +x {} \;
+```
+
+<br />
+<br />
+
+After you have set these permissions, re-build your docker image using `docker build` or `docker buildx`. Then spin the container up.
 
 <br />
 
