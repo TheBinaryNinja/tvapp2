@@ -15,6 +15,15 @@
 [![Contributors][contribs-all-img]](#contributors-)
 <!-- prettier-ignore-end -->
 
+<br />
+
+<div align="center">
+
+[![Discord Button](https://img.shields.io/badge/Join%20Discord-de1f68?style=for-the-badge&logo=discord&logoColor=FFFFFF)](https://discord.gg/gTze6hRe)
+
+</div>
+
+
 </div>
 
 <br />
