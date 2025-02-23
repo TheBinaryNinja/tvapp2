@@ -47,11 +47,6 @@ LABEL org.opencontainers.image.url="https://github.com/TheBinaryNinja/tvapp2/pkg
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
 
-#   @repo.1         https://github.com/TheBinaryNinja/tvapp2
-#   @repo.2         https://git.binaryninja.net/BinaryNinja/tvapp2
-#   @repo.3         https://github.com/aetherinox/docker-base-alpine
-
-
 # #
 #   Set Env Var
 # #
@@ -115,7 +110,5 @@ EXPOSE ${WEB_PORT}/tcp
 #   In case user sets up the cron for a longer duration, do a first run
 #   and then keep the container running. Hacky, but whatever.
 # #
-
-#CMD ["npm start"]
 
 ENTRYPOINT ["/init"]
