@@ -27,6 +27,8 @@
   - [Quick Install](#quick-install)
     - [Registry URLs](#registry-urls)
     - [Environment Variables](#environment-variables)
+    - [Mountable Volumes](#mountable-volumes)
+  - [Start Container](#start-container)
     - [Run Command](#run-command)
     - [docker-compose.yml](#docker-composeyml)
   - [How It Works](#how-it-works)
@@ -53,6 +55,7 @@
   - [docker run](#docker-run)
   - [docker-compose.yml](#docker-composeyml-1)
   - [Environment Variables](#environment-variables-1)
+  - [Mountable Volumes](#mountable-volumes-1)
 - [Troubleshooting](#troubleshooting)
     - [Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
     - [Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
@@ -122,16 +125,40 @@ For the [environment variables](#environment-variables), you may specify these i
 | `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | Gitea | arm64 |
 
 <br />
+<br />
 
 #### Environment Variables
 
 | Env Var | Default | Description |
 | --- | --- | --- |
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
-| `WEB_IP` | `0.0.0.0` | Port to use for webserver |
-| `WEB_PORT` | `4124` | IP to use for webserver |
+| `WEB_IP` | `0.0.0.0` | IP to use for webserver |
+| `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `WORKING_DIR` | `/usr/bin/app` | Folder where TVApp2 will be installed and ran |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
+| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
+
+<br />
+<br />
+
+#### Mountable Volumes
+
+These paths can be mounted and shared between the TVApp2 docker container and your host machine:
+
+| Container Path | Description |
+| --- | --- |
+| `/usr/bin/app` | <sup>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sup> |
+| `/config` | <sup>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sup> |
+
+<br />
+<br />
+
+<br />
+<br />
+
+### Start Container
+
+These are quick instructions on how to start the TVApp2 docker container once you have finished the section [Quick Install](#quick-install).
 
 <br />
 
@@ -143,11 +170,12 @@ If you want to bring the container up using `docker run`; execute the following:
 docker run -d --restart=unless-stopped \
   --name tvapp2 \
   -p 4124:4124 \
-  -e "WORKING_DIR=/usr/bin/app" \
+  -e "DIR_RUN=/usr/bin/app" \
   -e "TZ=Etc/UTC" \
   -v ${PWD}/app:/usr/bin/app ghcr.io/thebinaryninja/tvapp2:latest
 ```
 
+<br />
 <br />
 
 #### docker-compose.yml
@@ -170,6 +198,7 @@ services:
             - ./app:/usr/bin/app
         environment:
             - TZ=Etc/UTC
+            - DIR_RUN=/usr/bin/app
 ```
 
 <br />
@@ -622,7 +651,12 @@ To use the new TVApp2 image, you can either call it with the `docker run` comman
 If you want to use the tvapp docker image in the `docker run` command, execute the following:
 
 ```shell ignore
-docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/app:/usr/bin/app ghcr.io/thebinaryninja/tvapp2:latest
+docker run -d --restart=unless-stopped \
+  --name tvapp2 \
+  -p 4124:4124 \
+  -e "DIR_RUN=/usr/bin/app" \
+  -e "TZ=Etc/UTC" \
+  -v ${PWD}/app:/usr/bin/app ghcr.io/thebinaryninja/tvapp2:latest
 ```
 
 <br />
@@ -661,6 +695,7 @@ services:
             - ./app:/usr/bin/app
         environment:
             - TZ=Etc/UTC
+            - DIR_RUN=/usr/bin/app
 ```
 
 <br />
@@ -681,6 +716,7 @@ http://container-ip:4124
 ```
 
 <br />
+<br />
 
 ### Environment Variables
 
@@ -689,10 +725,23 @@ This docker container contains the following env variables:
 | Env Var | Default | Description |
 | --- | --- | --- |
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
-| `WEB_IP` | `0.0.0.0` | Port to use for webserver |
-| `WEB_PORT` | `4124` | IP to use for webserver |
+| `WEB_IP` | `0.0.0.0` | IP to use for webserver |
+| `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `WORKING_DIR` | `/usr/bin/app` | Folder where TVApp2 will be installed and ran |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
+| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
+
+<br />
+<br />
+
+### Mountable Volumes
+
+These paths can be mounted and shared between the TVApp2 docker container and your host machine:
+
+| Container Path | Description |
+| --- | --- |
+| `/usr/bin/app` | <sup>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sup> |
+| `/config` | <sup>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sup> |
 
 <br />
 
