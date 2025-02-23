@@ -29,8 +29,8 @@
     - [Environment Variables](#environment-variables)
     - [Mountable Volumes](#mountable-volumes)
   - [Start Container](#start-container)
-    - [Run Command](#run-command)
-    - [docker-compose.yml](#docker-composeyml)
+    - [Docker Run](#docker-run)
+    - [Docker Compose](#docker-compose)
   - [How It Works](#how-it-works)
 - [Building `tvapp` Image](#building-tvapp-image)
   - [How It Works](#how-it-works-1)
@@ -52,10 +52,21 @@
       - [Platform Commands](#platform-commands)
       - [Available Variables](#available-variables)
 - [Using `tvapp` Image](#using-tvapp-image)
-  - [docker run](#docker-run)
-  - [docker-compose.yml](#docker-composeyml-1)
+  - [Docker Run](#docker-run-1)
+  - [Docker Compose](#docker-compose-1)
   - [Environment Variables](#environment-variables-1)
   - [Mountable Volumes](#mountable-volumes-1)
+- [Traefik Integration](#traefik-integration)
+  - [Labels](#labels)
+  - [Dynamic.yml](#dynamicyml)
+  - [Static.yml](#staticyml)
+    - [Providers](#providers)
+    - [certificatesResolvers](#certificatesresolvers)
+    - [entryPoints (Normal)](#entrypoints-normal)
+    - [entryPoints (Cloudflare)](#entrypoints-cloudflare)
+- [Authentik Integration](#authentik-integration)
+  - [Labels](#labels-1)
+  - [Dynamic.yml](#dynamicyml-1)
 - [Troubleshooting](#troubleshooting)
     - [Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
     - [Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
@@ -135,8 +146,8 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
-| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sub>This should not be used unless you know what you're doing</sub> |
+| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sub>⚠️ This should not be used unless you know what you're doing</sub> |
 
 <br />
 <br />
@@ -147,8 +158,8 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 
 | Container Path | Description |
 | --- | --- |
-| `/usr/bin/app` | <sup>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sup> |
-| `/config` | <sup>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sup> |
+| `/usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sub> |
+| `/config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sub> |
 
 <br />
 <br />
@@ -162,7 +173,7 @@ These are quick instructions on how to start the TVApp2 docker container once yo
 
 <br />
 
-#### Run Command
+#### Docker Run
 
 If you want to bring the container up using `docker run`; execute the following:
 
@@ -178,7 +189,7 @@ docker run -d --restart=unless-stopped \
 <br />
 <br />
 
-#### docker-compose.yml
+#### Docker Compose
 
 If you want to use a `docker-compose.yml` to bring TVApp2 up; you may use the following example:
 
@@ -379,6 +390,7 @@ find ./ -type f -name 'run' | xargs dos2unix --
 <br />
 
 #### Set `+x / 0755` Permissions
+
 The files contained within this repo **MUST** have `chmod 755` /  `+x` executable permissions.
 
 ```shell
@@ -410,6 +422,7 @@ sudo chmod +x /root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
 <br />
 
 ### Build `tvapp` Image
+
 After completing the items above, you can now build the **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image. You can now build the TvApp2 docker image. Pick your platform below and run the associated command. Most people will want to use [amd64](#amd64).
 
 <br />
@@ -475,7 +488,7 @@ docker buildx create --driver docker-container --name container --bootstrap --us
 
 <br />
 
-**<sup>Optional</sup>**  If you have previously created this image and have not restarted your system, clean up the original container before you build again:
+**Optional** : If you have previously created this image and have not restarted your system, clean up the original container before you build again:
 
 ```shell ignore
 docker buildx rm container
@@ -494,12 +507,14 @@ You are now ready to build the TVApp2 docker image. Two different options are pr
 <br />
 
 ##### Build & Save Local Image
+
 The command below will build your TVApp2 docker image, and save a local copy of your docker app, which can be immediately used, or seen using `docker ps`.
 
 <br />
 
 
 ###### amd64
+
 ```shell ignore
 # Build tvapp2 amd64
 docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
@@ -508,6 +523,7 @@ docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUIL
 <br />
 
 ###### arm64 / aarch64
+
 ```shell ignore
 # Build tvapp2 arm64
 docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250224 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
@@ -571,6 +587,7 @@ docker info | grep Username
 <br />
 
 You should see your name:
+
 ```console
  Username: Aetherinox
 ```
@@ -628,6 +645,7 @@ The following is a list of the available commands you can pick from depending on
 <br />
 
 ##### Available Variables
+
 The run command above has several variables you must specify:
 
 | Variable | Description |
@@ -643,11 +661,13 @@ The run command above has several variables you must specify:
 <br />
 
 ## Using `tvapp` Image
+
 To use the new TVApp2 image, you can either call it with the `docker run` command, or create a new `docker-compose.yml` and specify the image:
 
 <br />
 
-### docker run
+### Docker Run
+
 If you want to use the tvapp docker image in the `docker run` command, execute the following:
 
 ```shell ignore
@@ -661,7 +681,8 @@ docker run -d --restart=unless-stopped \
 
 <br />
 
-### docker-compose.yml
+### Docker Compose
+
 If you'd much rather use a `docker-compose.yml` file and call the tvapp image that way, create a new folder somewhere:
 
 ```shell ignore
@@ -671,6 +692,7 @@ mkdir -p /home/docker/tvapp2
 <br />
 
 Then create a new `docker-compose.yml` file and add the following:
+
 ```shell ignore
 sudo nano /home/docker/tvapp2/docker-compose.yml
 ```
@@ -728,8 +750,8 @@ This docker container contains the following env variables:
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
-| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sub>This should not be used unless you know what you're doing</sub> |
+| `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sub>⚠️ This should not be used unless you know what you're doing</sub> |
 
 <br />
 <br />
@@ -740,8 +762,8 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 
 | Container Path | Description |
 | --- | --- |
-| `/usr/bin/app` | <sup>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sup> |
-| `/config` | <sup>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sup> |
+| `/usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sub> |
+| `/config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sub> |
 
 <br />
 
@@ -749,6 +771,534 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 
 <br />
 
+## Traefik Integration
+
+> [!NOTE]
+> These steps are **optional**. 
+> 
+> If you do not use Traefik, you can skip this section of steps. This is only for users who wish to put the TVApp2 container behind Traefik.
+
+<br />
+
+Our first step is to tell Traefik about our TVApp2 container. We highly recommend you utilize a Traefik **[dynamic file](#dynamicyml)**, instead of **[labels](#labels)**. Using a dynamic file allows for automatic refreshing without the need to restart Traefik when a change is made.
+
+If you decide to use **[labels](#labels)** instead of a **[dynamic file](#dynamicyml)**, any changes you want to make to your labels will require a restart of Traefik.
+
+<br />
+
+We will be setting up the following:
+
+- A `middleware` to re-direct http to https
+- A `route` to access TVApp2 via http (optional)
+- A `route` to access TVApp2 via https (secure)
+- A `service` to tell Traefik how to access your TVApp2 container
+- A `resolver` so that Traefik can generate and apply a wildcard SSL certificate
+
+<br />
+
+### Labels
+
+To add TVApp2 to Traefik, you will need to open your `📄 docker-compose.yml` and apply the following labels to your TVApp2 container. Ensure you change `domain.lan` to your actual domain name.
+
+```yml ignore
+services:
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+      # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
+      # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        environment:
+            - TZ=Etc/UTC
+            - DIR_RUN=/usr/bin/app
+        labels:
+
+            #   General
+            - traefik.enable=true
+
+            #   Router > http
+            - traefik.http.routers.tvapp2-http.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+            - traefik.http.routers.tvapp2-http.service=tvapp2
+            - traefik.http.routers.tvapp2-http.entrypoints=http
+            - traefik.http.routers.tvapp2-http.middlewares=https-redirect@file
+
+            #   Router > https
+            - traefik.http.routers.tvapp2-https.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+            - traefik.http.routers.tvapp2-https.service=tvapp2
+            - traefik.http.routers.tvapp2-https.entrypoints=https
+            - traefik.http.routers.tvapp2-https.tls=true
+            - traefik.http.routers.tvapp2-https.tls.certresolver=cloudflare
+            - traefik.http.routers.tvapp2-https.tls.domains[0].main=domain.lan
+            - traefik.http.routers.tvapp2-https.tls.domains[0].sans=*.domain.lan
+
+            #   Load Balancer
+            - traefik.http.services.tvapp2.loadbalancer.server.port=4124
+            - traefik.http.services.tvapp2.loadbalancer.server.scheme=http
+```
+
+
+<br />
+
+After you've added the labels above, skip the [dynamic.yml](#dynamicyml) section and go straight to the **[static.yml](#staticyml)** section.
+
+<br />
+<br />
+
+### Dynamic.yml
+
+If you decide to not use **[labels](#labels)** and want to use a dynamic file, you will first need to create your dynamic file. the Traefik dynamic file is usually named `dynamic.yml`. We need to add a new `middleware`, `router`, and `service` to our Traefik dynamic file so that it knows about our new TVApp2 container and where it is.
+
+```yml
+http:
+    middlewares:
+        https-redirect:
+            redirectScheme:
+                scheme: "https"
+                permanent: true
+
+    routers:
+        tvapp2-http:
+            service: tvapp2
+            rule: Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        tvapp2-https:
+            service: tvapp2
+            rule: Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+            entryPoints:
+                - https
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+
+    services:
+        tvapp2:
+            loadBalancer:
+                servers:
+                    - url: "https://tvapp2:4124"
+```
+
+<br />
+
+### Static.yml
+
+These entries will go in your Traefik `static.yml` file. Any changes made to this file requires that you restart Traefik afterward.
+
+<br />
+
+#### Providers
+
+> [!NOTE]
+> This step is only for users who opted to use the **[dynamic file](#dynamicyml)** method.
+>
+> Users who opted to use [labels](#labels) can skip to the section **[certificatesResolvers](#certificatesresolvers)**
+
+<br />
+
+Ensure you add the following new section to your `static.yml`:
+
+<br />
+
+```yml
+providers:
+    docker:
+        endpoint: "unix:///var/run/docker.sock"
+        exposedByDefault: false
+        network: traefik
+        watch: true
+    file:
+        filename: "/etc/traefik/dynamic.yml"
+        watch: true
+```
+
+<br />
+
+The code above is what enables the use of a **[dynamic file](#dynamicyml)** instead of labels. Change `/etc/traefik/dynamic.yml` if you are placing your dynamic file in a different location. This path is relative to inside the container, not your host machine mounted volume path. Traefik keeps most files in the `/etc/traefik/` folder.
+
+<br />
+
+After you add the above, open your Traefik's `📄 docker-compose.yml` file and mount a new volume so that Traefik knows where your new dynamic file is:
+
+```yml
+services:
+    traefik:
+        container_name: traefik
+        image: traefik:latest
+        restart: unless-stopped
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /etc/localtime:/etc/localtime:ro
+            - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
+            - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
+```
+
+<br />
+
+You must ensure you add a new volume like shown above:
+
+- `/config/dynamic.yml:/etc/traefik/dynamic.yml:ro`
+
+<br />
+
+On your host machine, make sure you place the `dynamic.yml` file in a sub-folder called **config**, which should be inside the same folder where your Traefik's `📄 docker-compose.yml` file is. If you want to change this location, ensure you change the mounted volume path above.
+
+<br />
+
+After you have completed this, proceed to the section **[certificatesResolvers](#certificatesresolvers)**.
+
+<br />
+
+#### certificatesResolvers
+
+> [!NOTE]
+> This step is required no matter which option you picked above, both for **[dynamic file](#dynamicyml)** setups, as well as people using **[labels](#labels)**.
+
+<br />
+
+Open your Traefik `static.yml` file. We need to define the `certResolver` that we added above either in your dynamic file, or label. To define the `certResolver`, we will be adding a new section labeled `certificatesResolvers`. We are going to use Cloudflare in this example, you can use whatever from the list at:
+
+- https://doc.traefik.io/traefik/https/acme/#providers
+
+<br />
+
+```yml
+certificatesResolvers:
+    cloudflare:
+        acme:
+            email: youremail@address.com
+            storage: /cloudflare/acme.json
+            keyType: EC256
+            preferredChain: 'ISRG Root X1'
+            dnsChallenge:
+                provider: cloudflare
+                delayBeforeCheck: 15
+                resolvers:
+                    - "1.1.1.1:53"
+                    - "1.0.0.1:53"
+                disablePropagationCheck: true
+```
+
+<br />
+
+Once you pick the DNS / SSL provider you want to use from the code above, you need to see if that provider has any special environment variables that must be set. The **[Providers Page](https://doc.traefik.io/traefik/https/acme/#providers)** lists all providers and also what env variables need set for each one.
+
+<br />
+
+In our example, since we are using **Cloudflare** for `dnsChallenge` -> `provider`, we must set the following environment variables:
+
+- `CF_API_EMAIL`
+- `CF_API_KEY`
+
+<br />
+
+Create a `.env` environment file in the same folder where your Traefik `📄 docker-compose.yml` file is located, and add the following:
+
+```yml
+CF_API_EMAIL=yourcloudflare@email.com
+CF_API_KEY=Your-Cloudflare-API-Key
+```
+
+<br />
+
+Save the `.env` file and exit. For these environment variables to be detected by Traefik, you must give your Traefik container a restart. Until you restart Traefik, it will not be able to generate your new SSL certificates. 
+
+You can wait and restart in a moment after you finish editing the `static.yml` file, as there are more items to add below.
+
+<br />
+
+#### entryPoints (Normal)
+
+Finally, inside the Traefik `static.yml`, we need to make sure we have our `entryPoints` configured. Add the following to the Traefik `static.yml` file only if you **DON'T** have entry points set yet:
+
+```yml
+entryPoints:
+    http:
+        address: :80
+        http:
+            redirections:
+                entryPoint:
+                    to: https
+                    scheme: https
+
+    https:
+        address: :443
+        http3: {}
+        http:
+            tls:
+                options: default
+                certResolver: cloudflare
+                domains:
+                    - main: domain.lan
+                      sans:
+                          - '*.domain.lan'
+```
+
+<br />
+
+#### entryPoints (Cloudflare)
+
+If your website is behind Cloudflare's proxy service, you need to modify your `entryPoints` above so that you can automatically allow Cloudflare's IP addresses through. This means your entry points will look a bit different.
+
+<br />
+
+In the example below, we will add `forwardedHeaders` -> `trustedIPs` and add all of Cloudflare's IPs to the list which are available here:
+
+- https://cloudflare.com/ips/
+
+```yml
+entryPoints:
+    http:
+        address: :80
+        forwardedHeaders:
+            trustedIPs: &trustedIps
+                - 103.21.244.0/22
+                - 103.22.200.0/22
+                - 103.31.4.0/22
+                - 104.16.0.0/13
+                - 104.24.0.0/14
+                - 108.162.192.0/18
+                - 131.0.72.0/22
+                - 141.101.64.0/18
+                - 162.158.0.0/15
+                - 172.64.0.0/13
+                - 173.245.48.0/20
+                - 188.114.96.0/20
+                - 190.93.240.0/20
+                - 197.234.240.0/22
+                - 198.41.128.0/17
+                - 2400:cb00::/32
+                - 2606:4700::/32
+                - 2803:f800::/32
+                - 2405:b500::/32
+                - 2405:8100::/32
+                - 2a06:98c0::/29
+                - 2c0f:f248::/32
+        http:
+            redirections:
+                entryPoint:
+                    to: https
+                    scheme: https
+
+    https:
+        address: :443
+        http3: {}
+        forwardedHeaders:
+            trustedIPs: *trustedIps
+        http:
+            tls:
+                options: default
+                certResolver: cloudflare
+                domains:
+                    - main: domain.lan
+                      sans:
+                          - '*.domain.lan'
+```
+
+<br />
+
+Save the files and then give Traefik and your TVApp2 container a restart. After the restart is complete; you should be able to access TVApp2 in your browser by going to
+
+```console
+https://tvapp2.domain.lan
+```
+
+<br />
+
+---
+
+<br />
+
+## Authentik Integration
+
+This section will not explain how to install and set up [Authentik](https://goauthentik.io/). We are only going to cover adding TVApp2 integration to Authentik.
+
+<br />
+
+Sign into the Authentik admin panel, go to the left-side navigation, select **Applications** -> **Providers**. Then at the top of the new page, click **Create**.
+
+<br />
+
+<p align="center"><img style="width: 40%;text-align: center;" src="docs/img/authentik/01.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Providers</code></sup></small></p>
+
+<br />
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/02.png"><br><small><sup><b>Authentik:</b> Select <code>Create</code></small></p>
+
+<br />
+
+For the **provider**, select `Proxy Provider`.
+
+<br />
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/03.png"><br><small><sup><b>Authentik:</b> Select desired provider type, or select <b><code>Proxy Provider</code></b></sup></small></p>
+
+<br />
+
+Add the following provider values:
+- **Name**: `TVApp2 ForwardAuth`
+- **Authentication Flow**: `default-source-authentication (Welcome to authentik!)`
+- **Authorization Flow**: `default-provider-authorization-implicit-consent (Authorize Application)`
+
+<br />
+
+Select **Forward Auth (single application)**:
+- **External Host**: `https://tvapp2.domain.lan`
+
+<br />
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/04.gif"><br><small><sup><b>Authentik:</b> Create new <b><code>Provider</code></b></sup></small></p>
+
+<br />
+
+Once finished, click **Create**. Then on the left-side menu, select **Applications** -> **Applications**. Then at the top of the new page, click **Create**.
+
+<br />
+
+<p align="center"><img style="width: 40%;text-align: center;" src="docs/img/authentik/05.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Applications</code></sup></small></p>
+
+<br />
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/02.png"><br><small><sup><b>Authentik:</b> Select <code>Create</code></small></p>
+
+<br />
+
+Add the following parameters:
+- **Name**: `TVApp2 IPTV`
+- **Slug**: `tvapp2`
+- **Group**: `IPTV`
+- **Provider**: `TVApp2 ForwardAuth`
+- **Backchannel Providers**: `None`
+- **Policy Engine Mode**: `any`
+
+<br />
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/06.png"><br><small><sup><b>Authentik:</b> Create Application</sup></small></p>
+
+<br />
+
+Save, and then on the left-side menu, select **Applications** -> **Outposts**:
+
+<br />
+
+<p align="center"><img style="width: 40%;text-align: center;" src="docs/img/authentik/07.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Outposts</code></sup></small></p>
+
+<br />
+
+Find your **Outpost** and edit it.
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/08.png"><br><small><sup><b>Authentik:</b> Edit outpost</sup></small></p>
+
+<br />
+
+Move `TVApp2 IPTV` to the right side **Selected Applications** box.
+
+<br />
+
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/09.png"><br><small><sup><b>Authentik:</b> Assign application to outpost</sup></small></p>
+
+<br />
+
+If you followed our [Traefik](#traefik-integration) guide above, you were shown how to add your TVApp2 container to Traefik using either the **[📄 dynamic file](#dynamicyml)** or **[labels](#labels)**. Depending on which option you picked, follow that section's guide below.
+
+- For **label** users, go to the section [Labels](#labels-1) below.
+- For **dynamic file** users, go to the section [📄 dynamic file](#dynamicyml-1) below.
+
+<br />
+
+### Labels
+
+Open your TVApp2's `📄 docker-compose.yml` and modify your labels to include Authentik as a **middleware** by adding `authentik@file` to the label `traefik.http.routers.tvapp2-https.middlewares`. You should have something similar to the example below:
+
+```yml
+services:
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+      # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
+      # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        environment:
+            - TZ=Etc/UTC
+            - DIR_RUN=/usr/bin/app
+        labels:
+
+          #   General
+          - traefik.enable=true
+
+          #   Router > http
+          - traefik.http.routers.tvapp2-http.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+          - traefik.http.routers.tvapp2-http.service=tvapp2
+          - traefik.http.routers.tvapp2-http.entrypoints=http
+          - traefik.http.routers.tvapp2-http.middlewares=https-redirect@file
+
+          #   Router > https
+          - traefik.http.routers.tvapp2-https.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+          - traefik.http.routers.tvapp2-https.service=tvapp2
+          - traefik.http.routers.tvapp2-https.entrypoints=https
+          - traefik.http.routers.tvapp2-https.middlewares=authentik@file
+          - traefik.http.routers.tvapp2-https.tls=true
+          - traefik.http.routers.tvapp2-https.tls.certresolver=cloudflare
+          - traefik.http.routers.tvapp2-https.tls.domains[0].main=domain.lan
+          - traefik.http.routers.tvapp2-https.tls.domains[0].sans=*.domain.lan
+
+          #   Load Balancer
+          - traefik.http.services.tvapp2.loadbalancer.server.port=443
+          - traefik.http.services.tvapp2.loadbalancer.server.scheme=https
+```
+
+<br />
+
+### Dynamic.yml
+
+If you opted to use the **[📄 dynamic file](#dynamicyml)**, open your Traefik's `📄 dynamic.yml` file and apply the `authentik@file` middleware to look something like the following:
+
+<br />
+
+```yml
+http:
+    routers:
+        tvapp2-https:
+            service: tvapp2
+            rule: Host(`tvapp2.localhost`) || Host(`tvapp2.domain.com`)
+            entryPoints:
+                - https
+            middlewares:
+                - authentik@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.com"
+                      sans:
+                          - "*.domain.com"
+```
+
+<br />
+
+After you've done everything above, give your **Traefik** and **Authentik** containers a restart. Once they come back up; you should be able to access `tvapp2.domain.lan` and be prompted now to authenticate with Authentik. Once you authenticate, you should be re-directed to your TVApp2 home screen which is where you will get your m3u and epg files.
+
+<br />
+
+---
+
+<br />
 
 ## Troubleshooting
 
@@ -957,6 +1507,7 @@ This repository and this project serves in memory of the developer [dtankdempse]
 <br />
 
 ## ✨ Contributors
+
 We are always looking for contributors. If you feel that you can provide something useful to Gistr, then we'd love to review your suggestion. Before submitting your contribution, please review the following resources:
 
 - [Pull Request Procedure](.github/PULL_REQUEST_TEMPLATE.md)
