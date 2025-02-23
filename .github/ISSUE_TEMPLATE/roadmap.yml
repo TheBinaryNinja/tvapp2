@@ -1,7 +1,9 @@
-name: '🗺️ Roadmap'
+name: "🗺️ Roadmap"
 description: Planned projects in the future to do. (⚠️ For contributors only)
-title: '🗺️ Roadmap: <title>'
-labels: ['Type ◦ Roadmap']
+title: "🗺️ Roadmap: <title>"
+labels: [
+  "Type ◦ Roadmap"
+]
 body:
   - type: markdown
     attributes:
@@ -15,49 +17,51 @@ body:
 
         <br />
 
-    - type: input
-      id: roadmap-version-target
-      attributes:
-          label: Target Version
-          description: Which version are we aiming to introduce this into TVApp2?
-          placeholder: "v1.0.0"
-      validations:
-          required: true
+  - type: input
+    id: roadmap-version-target
+    attributes:
+      label: Target Version
+      description: |
+        Which version are we aiming to introduce this into TVApp2?
+      placeholder: "v1.0.0"
+    validations:
+      required: true
 
-    - type: dropdown
-      id: roadmap-package
-      attributes:
-          label: Package
-          description: |
-              Select which aspect of TVApp2 this roadmap is designed for.
-          options:
-              - App Distribution
-              - Build Process
-              - Dependency / NodeJS Package
-              - Documentation
-              - M3U / EPG Grabber
-              - S6-Overlay
-          default: 0
-      validations:
-          required: true
+  - type: dropdown
+    id: roadmap-package
+    attributes:
+        label: Package
+        description: |
+            Select which aspect of TVApp2 this roadmap is designed for.
+        options:
+            - API
+            - Build Process
+            - Dependency / NodeJS Package
+            - Distribution
+            - Documentation
+            - M3U / EPG Functionality
+            - S6-Overlay
+        default: 0
+    validations:
+        required: true
 
-    - type: textarea
-      id: roadmap-details
-      attributes:
-          label: Roadmap Details
-          description: |
-              Explain the vital steps in a bullet-point breakdown
-          placeholder: |
-              - Requires package update
-              - Must first integrate item A
-      validations:
-          required: true
+  - type: textarea
+    id: roadmap-details
+    attributes:
+        label: Roadmap Details
+        description: |
+            Explain the vital steps in a bullet-point breakdown
+        placeholder: |
+            - Requires package update
+            - Must first integrate item A
+    validations:
+        required: true
 
-    - type: textarea
-      id: roadmap-screenshots
-      attributes:
-          label: 'Additional Info / Examples / Screenshots'
-          description: |
-              If available, provide mockups or examples.
-              Any further details you want to add.
-              Example snippets of code.
+  - type: textarea
+    id: roadmap-screenshots
+    attributes:
+        label: 'Additional Info / Examples / Screenshots'
+        description: |
+            If available, provide mockups or examples.
+            Any further details you want to add.
+            Example snippets of code.
