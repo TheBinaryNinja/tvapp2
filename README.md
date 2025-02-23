@@ -54,6 +54,10 @@
     - [Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
     - [Build Error: unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied](#build-error-unable-to-exec-etcs6-overlays6-rcdinit-envfilerun-permission-denied)
 - [Extra Notes](#extra-notes)
+  - [Accessing Container Shell](#accessing-container-shell)
+    - [ash](#ash)
+    - [sh](#sh)
+    - [bash](#bash)
   - [Custom Docker Image Scripts](#custom-docker-image-scripts)
 - [🏆 Dedication](#-dedication)
 - [✨ Contributors](#-contributors)
@@ -614,10 +618,10 @@ This docker container contains the following env variables:
 
 | Env Var | Default | Description |
 | --- | --- | --- |
-| `TZ` | `Etc/UTC` | Timezone to use for error / log reporting |
-| `WEB_IP` | `0.0.0.0` | This will allow you to change the default bind IP |
-| `WEB_PORT` | `4124` | Out of box, this image binds to the IP `0.0.0.0`. Use this variable to change the binding IP |
-| `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | This variable determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
+| `TZ` | `Etc/UTC` | Timezone for error / log reporting |
+| `WEB_IP` | `0.0.0.0` | Port to use for webserver |
+| `WEB_PORT` | `4124` | IP to use for webserver |
+| `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 
 <br />
 
@@ -715,6 +719,37 @@ After you have set these permissions, re-build your docker image using `docker b
 
 The following are other things to take into consideration when creating the TVApp2 image:
 
+<br />
+
+### Accessing Container Shell
+
+The TVApp2 docker image is built on Alpine Linux, but also includes the `bash` package. Use one of the following to access the shell for this container:
+
+<br />
+
+#### ash
+
+```shell
+docker exec -it tvapp2 ash
+```
+
+<br />
+
+#### sh
+
+```shell
+docker exec -it tvapp2 sh
+```
+
+<br />
+
+#### bash
+
+```shell
+docker exec -it tvapp2 bash
+```
+
+<br />
 <br />
 
 ### Custom Docker Image Scripts
