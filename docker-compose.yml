@@ -1,8 +1,36 @@
+# #
+#   TVApp2 Docker-compose.yml
+#
+#   Automatic M3U playlist and XML guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
+#
+#   @url                  https://github.com/TheBinaryNinja/tvapp2
+#                         https://git.binaryninja.net/BinaryNinja/tvapp2
+#
+#   @image:github         ghcr.io/thebinaryninja/tvapp2:latest
+#                         ghcr.io/thebinaryninja/tvapp2:amd64
+#                         ghcr.io/thebinaryninja/tvapp2:arm64
+#
+#   @image:dockerhub      thebinaryninja/tvapp2:latest
+#                         thebinaryninja/tvapp2:1.0.0-amd64
+#                         thebinaryninja/tvapp2:1.0.0-arm64
+#
+#   @image:gitea          git.binaryninja.net/binaryninja/tvapp2:latest
+#                         git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64
+#                         git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64
+# #
+
 services:
+
+    # #
+    #   Service > TVApp2
+    # #
 
     tvapp2:
         container_name: tvapp2
-        image: tvapp2:latest
+        image: tvapp2:latest                                        # Image: Locally built
+      # image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+      # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
+      # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
         hostname: tvapp2
         environment:
             TZ: "Etc/UTC"
@@ -11,7 +39,7 @@ services:
             - /etc/localtime:/etc/localtime:ro
             - /var/run/docker.sock:/var/run/docker.sock
             - ./config:/config
-            - ./data:/usr/bin/app
+            - ./app:/usr/bin/app
         ulimits:
             memlock:
                 soft: -1
