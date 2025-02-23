@@ -4,7 +4,6 @@ title: '🗺️ Roadmap: <title>'
 labels: ['Type ◦ Roadmap']
 body:
   - type: markdown
-    id: roadmap-summary
     attributes:
       value: |
         1. This issue type is different from feature requests.
