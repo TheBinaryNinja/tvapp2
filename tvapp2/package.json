@@ -45,19 +45,34 @@
           "docker:buildx:arm64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --no-cache --pull --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version --platform=linux/arm64 --output type=docker --output type=docker .",
           "env-version": "node -p require('./package.json').version;",
           "contrib:add": "all-contributors add",
-          "contrib:generate": "all-contributors generate"
+          "contrib:generate": "all-contributors generate",
+          "root": "node root.js",
+          "root:generate": "node root.js generate",
+          "env:root": "npx --quiet env-cmd --no-override node root.js",
+          "env:uuid": "npx --quiet env-cmd --no-override node root.js uuid",
+          "env:guid": "npx --quiet env-cmd --no-override node root.js guid",
+          "env:version": "node -p require('./package.json').version;"
     },
     "keywords": [
         "nodejs",
         "playlist",
         "m3u",
+        "epg",
         "thetvapp",
+        "TVPass",
+        "MoveOnJoy",
         "token",
         "iptv"
     ],
     "dependencies": {
         "playwright": "^1.50.1",
         "user-agents": "^1.1.457"
+    },
+    "devDependencies": {
+        "@types/uuid": "^10.0.0",
+        "all-contributors-cli": "^6.26.1",
+        "uuid": "^11.1.0",
+        "env-cmd": "^10.1.0"
     },
     "engines": {
         "node": ">=20"
