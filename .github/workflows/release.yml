@@ -526,13 +526,13 @@ jobs:
             # #
 
             - name: >-
-                📋 Upload Artifacts › ${{ env.PLUGIN_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+                📋 Upload Artifacts › ${{ env.env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
               id: task_release_artifact
               uses: actions/upload-artifact@v4
               if: always()
               with:
                   name: "release"
-                  path: ${{ env.PLUGIN_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+                  path: ${{ env.env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                   retention-days: 30
 
     # #
