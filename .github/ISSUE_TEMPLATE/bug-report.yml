@@ -94,7 +94,7 @@ body:
       description: |
         Select the plugin / app (if any) you are using as a m3u "Proxy" between your parent streaming app and TVApp2.
       options:
-        - "None"
+        - "❌ No Proxy"
         - "Cabernet"
         - "IPTVBoss"
         - "IPTV-Solution"
