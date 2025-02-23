@@ -409,14 +409,10 @@ sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
   ./root/etc/s6-overlay/s6-rc.d/init-folders/run \
   ./root/etc/s6-overlay/s6-rc.d/init-keygen/run \
   ./root/etc/s6-overlay/s6-rc.d/init-migrations/run \
-  ./root/etc/s6-overlay/s6-rc.d/init-nginx/run \
   ./root/etc/s6-overlay/s6-rc.d/init-permissions/run \
-  ./root/etc/s6-overlay/s6-rc.d/init-php/run \
   ./root/etc/s6-overlay/s6-rc.d/init-samples/run \
   ./root/etc/s6-overlay/s6-rc.d/init-version-checks/run \
-  ./root/etc/s6-overlay/s6-rc.d/svc-cron/run \
-  ./root/etc/s6-overlay/s6-rc.d/svc-nginx/run \
-  ./root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run
+  ./root/etc/s6-overlay/s6-rc.d/svc-cron/run
 ```
 
 <br />
