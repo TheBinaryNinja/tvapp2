@@ -25,6 +25,10 @@
 
 - [About](#about)
   - [Quick Install](#quick-install)
+    - [Registry URLs](#registry-urls)
+    - [Environment Variables](#environment-variables)
+    - [Run Command](#run-command)
+    - [docker-compose.yml](#docker-composeyml)
   - [How It Works](#how-it-works)
 - [Building `tvapp` Image](#building-tvapp-image)
   - [How It Works](#how-it-works-1)
@@ -47,8 +51,8 @@
       - [Available Variables](#available-variables)
 - [Using `tvapp` Image](#using-tvapp-image)
   - [docker run](#docker-run)
-  - [docker-compose.yml](#docker-composeyml)
-  - [Environment Variables](#environment-variables)
+  - [docker-compose.yml](#docker-composeyml-1)
+  - [Environment Variables](#environment-variables-1)
 - [Troubleshooting](#troubleshooting)
     - [Run Error: Error serving playlist: ENOENT: no such file or directory, open `/usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
     - [Build Error: s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
@@ -89,9 +93,21 @@ This project contains several repositories which all share the same code; use th
 
 ### Quick Install
 
-Pull the latest version of the TVApp2 image from either Github, Gitea, and Dockerhub.
+To install TVApp2 in docker; you will need to use either the `docker run` command, or create a `docker-compose.yml` file which contains information about how to pull and start up.
 
 <br />
+
+Type out your `docker run` command, or prepare a `docker-compose.yml` script. Examples are provided below. We have also provided charts with a list of the registries you can pull the image from, and a list of all the available environment variables you can use. 
+
+<br />
+
+Pick one registry URL from the list [Registry URLs](#registry-urls) and put it in your `docker run` command, or in your `docker-compose.yml`.
+
+For the [environment variables](#environment-variables), you may specify these in your `docker run` command or `docker-compose.yml` file. See the examples below.
+
+<br />
+
+#### Registry URLs
 
 | Pull URL | Platform | Registry | Version |
 | --- | --- | --- | --- |
@@ -104,6 +120,57 @@ Pull the latest version of the TVApp2 image from either Github, Gitea, and Docke
 | `git.binaryninja.net/binaryninja/tvapp2:latest` | Gitea |amd64 | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
 | `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | Gitea | amd64 |
 | `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | Gitea | arm64 |
+
+<br />
+
+#### Environment Variables
+
+| Env Var | Default | Description |
+| --- | --- | --- |
+| `TZ` | `Etc/UTC` | Timezone for error / log reporting |
+| `WEB_IP` | `0.0.0.0` | Port to use for webserver |
+| `WEB_PORT` | `4124` | IP to use for webserver |
+| `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
+| `WORKING_DIR` | `/usr/bin/app` | Folder where TVApp2 will be installed and ran |
+
+<br />
+
+#### Run Command
+
+If you want to bring the container up using `docker run`; execute the following:
+
+```shell ignore
+docker run -d --restart=unless-stopped \
+  --name tvapp2 \
+  -p 4124:4124 \
+  -e "WORKING_DIR=/usr/bin/app" \
+  -e "TZ=Etc/UTC" \
+  -v ${PWD}/app:/usr/bin/app ghcr.io/thebinaryninja/tvapp2:latest
+```
+
+<br />
+
+#### docker-compose.yml
+
+If you want to use a `docker-compose.yml` to bring TVApp2 up; you may use the following example:
+
+```yml ignore
+services:
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+      # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
+      # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        environment:
+            - TZ=Etc/UTC
+```
 
 <br />
 
@@ -553,8 +620,9 @@ To use the new TVApp2 image, you can either call it with the `docker run` comman
 
 ### docker run
 If you want to use the tvapp docker image in the `docker run` command, execute the following:
+
 ```shell ignore
-docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/tvapp:/config ghcr.io/thebinaryninja/tvapp2:latest
+docker run -d --restart=unless-stopped -p 4124:4124 --name tvapp2 -v ${PWD}/app:/usr/bin/app ghcr.io/thebinaryninja/tvapp2:latest
 ```
 
 <br />
@@ -579,7 +647,7 @@ Add the following to your `docker-compose.yml`:
 
 ```yml ignore
 services:
-    tvapp:
+    tvapp2:
         container_name: tvapp2
         image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
       # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
@@ -592,8 +660,6 @@ services:
             - ./config:/config
             - ./app:/usr/bin/app
         environment:
-            - PUID=1000
-            - PGID=1000
             - TZ=Etc/UTC
 ```
 
@@ -794,7 +860,8 @@ When you create the docker image, this new script will automatically be loaded. 
 services:
     tvapp2:
         volumes:
-            - ./tvapp2:/config
+            - ./config:/config
+            - ./app:/usr/bin/app
             - ./custom-scripts:/custom-cont-init.d:ro
 ```
 
