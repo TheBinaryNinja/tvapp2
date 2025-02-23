@@ -202,6 +202,7 @@ jobs:
               run: |
                   cd ./tvapp2
                   npm ci
+                  ls
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.SELF_TOKEN_CL }}
 
@@ -212,6 +213,7 @@ jobs:
             - name: "🪪 Generate IDs"
               id: task_release_npm_env_generate
               run: |
+                  ls
                   npm run root:generate
 
             # #
