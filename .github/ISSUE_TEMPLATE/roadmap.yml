@@ -28,18 +28,20 @@ body:
       required: true
 
   - type: dropdown
-    id: roadmap-package
+    id: roadmap-category
     attributes:
-        label: Package
+        label: Category
         description: |
             Select which aspect of TVApp2 this roadmap is designed for.
         options:
             - API
             - Build Process
+            - CI (Continuous integration)
             - Dependency / NodeJS Package
             - Distribution
             - Documentation
             - M3U / EPG Functionality
+            - Repository
             - S6-Overlay
         default: 0
     validations:
