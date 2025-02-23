@@ -72,6 +72,39 @@ body:
       required: true
 
   - type: dropdown
+    id: app-parent
+    attributes:
+      label: Parent App
+      description: |
+        Select the application you are using TVApp2 with. Jellyfin, Plex, Emby, etc.
+      options:
+        - "Dim"
+        - "Emby"
+        - "Jellyfin"
+        - "KODI"
+        - "Plex"
+        - "Other (specify in description)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: app-proxy
+    attributes:
+      label: Proxy App
+      description: |
+        Select the plugin / app (if any) you are using as a m3u "Proxy" between your parent streaming app and TVApp2.
+      options:
+        - "None"
+        - "Cabernet"
+        - "IPTVBoss"
+        - "IPTV-Solution"
+        - "Threadfin"
+        - "xTeVe"
+        - "Other (specify in description)"
+    validations:
+      required: true
+
+  - type: dropdown
     id: priority-type
     attributes:
       label: Priority
