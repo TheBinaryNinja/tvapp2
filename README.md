@@ -582,11 +582,15 @@ services:
     tvapp:
         container_name: tvapp2
         image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
-      # image: TheBinaryNinja/tvapp2:latest                         # Image: Dockerhub
+      # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
       # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
         restart: unless-stopped
         volumes:
-            - ./tvapp:/config
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
         environment:
             - PUID=1000
             - PGID=1000
@@ -622,6 +626,7 @@ This docker container contains the following env variables:
 | `WEB_IP` | `0.0.0.0` | Port to use for webserver |
 | `WEB_PORT` | `4124` | IP to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
+| `WORKING_DIR` | `/usr/bin/app` | Folder where TVApp2 will be installed and ran |
 
 <br />
 
