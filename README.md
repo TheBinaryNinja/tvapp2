@@ -146,7 +146,7 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 
 <br />
@@ -750,7 +750,7 @@ This docker container contains the following env variables:
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> ⚠️ <sup>This should not be used unless you know what you're doing</sup> |
+| `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 
 <br />
