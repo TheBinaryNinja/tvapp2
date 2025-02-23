@@ -2,6 +2,10 @@
 #   @type               github workflow
 #   @desc               builds mkdocs from the main branch /docs/ folder and puts the compiled version
 #                       in the `gh-pages` branch. Is hosted using Github Pages.
+#
+#   @update             pip install --upgrade mkdocs
+#                       pip install --upgrade --force-reinstall mkdocs-material
+#
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
 #
