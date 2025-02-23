@@ -564,7 +564,7 @@ jobs:
             - name: "🕛 Get Env Vars"
               id: task_complete_set_envs
               run: |
-                  release_stable_file="release/${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
+                  release_stable_file="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
                   release_stable_sha256="$(shasum --algorithm 256 ${release_stable_file} | awk '{ print $1 }')"
 
                   echo "FILE_STABLE=${release_stable_file}" >> $GITHUB_ENV
@@ -585,6 +585,9 @@ jobs:
                   echo "| **Deploy Time**                 | ${{ env.NOW }}                |" >> $GITHUB_STEP_SUMMARY
                   echo ""
                   echo "### File (${{ env.FILE_STABLE }})                                  " >> $GITHUB_STEP_SUMMARY
+                  echo "This is the main release. It contains all required docker files, and the TVApp2 `package.json`" >> $GITHUB_STEP_SUMMARY
+                  echo "| File                            | Result                        |" >> $GITHUB_STEP_SUMMARY
+                  echo "| ------------------------------- | -----------------------       |" >> $GITHUB_STEP_SUMMARY
                   echo "| **SHA256**                      | ${{ env.SHA_STABLE }}         |" >> $GITHUB_STEP_SUMMARY
                   echo "| **GUID**                        | ${{ env.GUID }}               |" >> $GITHUB_STEP_SUMMARY
                   echo "| **UUID**                        | ${{ env.UUID }}               |" >> $GITHUB_STEP_SUMMARY
