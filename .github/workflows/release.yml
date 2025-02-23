@@ -584,7 +584,7 @@ jobs:
                   echo "| **Project**                     | ${{ env.PROJECT_NAME }}       |" >> $GITHUB_STEP_SUMMARY
                   echo "| **Deploy Time**                 | ${{ env.NOW }}                |" >> $GITHUB_STEP_SUMMARY
                   echo ""
-                  echo "### File (${{ env.FILE_STABLE }})                                 |" >> $GITHUB_STEP_SUMMARY"
+                  echo "### File (${{ env.FILE_STABLE }})                                  " >> $GITHUB_STEP_SUMMARY"
                   echo "| **SHA256**                      | ${{ env.SHA_STABLE }}         |" >> $GITHUB_STEP_SUMMARY
                   echo "| **GUID**                        | ${{ env.GUID }}               |" >> $GITHUB_STEP_SUMMARY
                   echo "| **UUID**                        | ${{ env.UUID }}               |" >> $GITHUB_STEP_SUMMARY
