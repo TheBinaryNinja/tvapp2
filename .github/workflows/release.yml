@@ -201,18 +201,9 @@ jobs:
               id: task_release_npm_install
               run: |
                   cd ./tvapp2
-                  npm install
+                  npm ci
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.SELF_TOKEN_CL }}
-
-            # #
-            #   Release › Build
-            # #
-
-            - name: "📦 NPM › Build"
-              id: task_release_npm_build
-              run: |
-                  npm run build
 
             # #
             #   Release › Execute npm generate so that a uuid and guid can be created
