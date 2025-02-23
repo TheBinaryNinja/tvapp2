@@ -10,8 +10,10 @@ body:
       value: |
         1. Please speak `English`.
         2. Make sure you are using the latest version and take a moment to check that your issue hasn't been reported before.
-        3. It's really important to provide pertinent details and logs,
-           incomplete details will be handled as an invalid report.
+        3. It's really important to provide pertinent details and logs, incomplete details will be handled as an invalid report.
+        4. Before creating this bug report, ensure you updated your applications to the latest versions.
+           Check your configurations to ensure there are no typos or errors.
+           Docker users should attempt to re-pull the TVApp2 image to ensure caching is not the cause of an issue.
 
         <br />
 
@@ -43,7 +45,8 @@ body:
     attributes:
       label: "Version - Tag"
       description: |
-        Version / tag you are pulling for `TVApp2`
+        Version / tag you are pulling for `TVApp2`.
+        You can view your build version in terminal by typing `docker inspect tvapp2 | grep BUILDVERSION`
       placeholder: "Ex: 1.0.0"
     validations:
       required: true
@@ -58,16 +61,17 @@ body:
       required: true
 
   - type: dropdown
-    id: image-source
+    id: image-registry
     attributes:
-      label: Docker Image Source
+      label: Docker Image Registry
       description: |
-        Select which docker image you are pulling from
+        Select which docker image you are pulling from.
+        If you custom built your image, ensure it's not a problem with your code before submitting this bug report.
       options:
         - "Dockerhub"
         - "Gitea"
         - "Github"
-        - "Custom Built"
+        - "Manual Build"
     validations:
       required: true
 
@@ -132,6 +136,7 @@ body:
       label: Logs
       description: |
         Paste your docker logs here.
+        You can get your docker logs by opening terminal and running `docker logs tvapp2`
 
   - type: textarea
     id: screenshots
