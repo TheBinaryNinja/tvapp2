@@ -217,7 +217,7 @@ jobs:
             packages: write
             attestations: write
             id-token: write
-        needs: [ job-docker-release-tags-create, job-docker-release-dockerhub-arm64 ]
+        needs: [ job-docker-release-tags-create ]
         steps:
 
             # #
