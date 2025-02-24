@@ -425,7 +425,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ steps.task_release_gh_push.outputs.digest }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -680,7 +680,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ steps.task_release_gh_push.outputs.digest }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
