@@ -387,6 +387,7 @@ jobs:
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
                   echo "docker sha ........... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id ...... ${{ steps.task_release_gh_push.outputs.imageid }}"
                   echo "docker digest ........ ${{ steps.task_release_gh_push.outputs.digest }}"
 
             # #
@@ -642,6 +643,7 @@ jobs:
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
                   echo "docker sha ........... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id ...... ${{ steps.task_release_gh_push.outputs.imageid }}"
                   echo "docker digest ........ ${{ steps.task_release_gh_push.outputs.digest }}"
 
             # #
