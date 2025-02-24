@@ -351,6 +351,7 @@ jobs:
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_DOCKERHUB_AUTHOR }}
                       org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'yes' || 'no' }}
 
             # #
             #   Release › Dockerhub › Checkpoint › Arm64
@@ -413,15 +414,17 @@ jobs:
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
                       ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Pre-release / Development Version' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
+                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
+                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
-                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
@@ -598,6 +601,7 @@ jobs:
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_DOCKERHUB_AUTHOR }}
                       org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'yes' || 'no' }}
 
             # #
             #   Release › Dockerhub › Checkpoint › Amd64
@@ -660,15 +664,17 @@ jobs:
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
                       ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Pre-release / Development Version' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
+                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
+                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
-                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`

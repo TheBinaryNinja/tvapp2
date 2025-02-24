@@ -348,6 +348,7 @@ jobs:
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
                       org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'yes' || 'no' }}
 
             # #
             #   Release › Gitea › Checkpoint › Arm64
@@ -410,10 +411,13 @@ jobs:
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
                       ## 📦 ᲼Docker › Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Pre-release / Development Version' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Gitea. The image is available at:
                       - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
+                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
+                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
@@ -591,6 +595,7 @@ jobs:
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
                       org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'yes' || 'no' }}
 
             # #
             #   Release › Gitea › Checkpoint › Amd64
@@ -652,10 +657,13 @@ jobs:
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
                       ## 📦 ᲼Docker › Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Pre-release / Development Version' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Gitea. The image is available at:
                       - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
+                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
+                      - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
