@@ -399,6 +399,9 @@ jobs:
 
                       #  tag            add tag-arm64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+
+                      #  tag            add arm64
+                      type=raw,enable=false,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -653,11 +656,14 @@ jobs:
                       #  dispatch       add amd64-development
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
 
-                      #  tag            add tag-arm64
+                      #  tag            add tag-amd64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+
+                      #  tag            add amd64
+                      type=raw,enable=false,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
@@ -914,6 +920,9 @@ jobs:
 
                       #  tag            add tag-arm64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+
+                      #  tag            add arm64
+                      type=raw,enable=false,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -1167,11 +1176,14 @@ jobs:
                       #  dispatch       add amd64-development
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
 
-                      #  tag            add tag-arm64
+                      #  tag            add tag-amd64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+
+                      #  tag            add amd64
+                      type=raw,enable=false,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
@@ -1429,6 +1441,9 @@ jobs:
 
                       #  tag            add tag-arm64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+
+                      #  tag            add arm64
+                      type=raw,enable=false,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -1683,11 +1698,14 @@ jobs:
                       #  dispatch       add amd64-development
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
 
-                      #  tag            add tag-arm64
+                      #  tag            add tag-amd64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+
+                      #  tag            add amd64
+                      type=raw,enable=false,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
