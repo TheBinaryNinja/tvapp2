@@ -1,12 +1,12 @@
 # #
 #   @type               github workflow
-#   @desc               publishes a new release
+#   @desc               publishes a new release on Github
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
 # #
 
-name: "📦 Release › Publish"
-run-name: "📦 Release › Publish"
+name: "📦 Release › Github"
+run-name: "📦 Release › Github"
 
 # #
 #   Triggers
@@ -79,13 +79,13 @@ on:
 # #
 
 env:
-    PROJECT_NAME:           ${{ github.event.inputs.PROJECT_NAME || 'tvapp2' }}
-    CHANGELOG_MODE_COMMIT:  true
-    SHOW_UNCATEGORIZED:     false
-    PRERELEASE:             false
-    VERSION_RC:             '1'
-    BOT_NAME_1:             EuropaServ
-    BOT_NAME_DEPENDABOT:    dependabot[bot]
+    PROJECT_NAME:               ${{ github.event.inputs.PROJECT_NAME || 'tvapp2' }}
+    CHANGELOG_MODE_COMMIT:      true
+    SHOW_UNCATEGORIZED:         false
+    PRERELEASE:                 false
+    VERSION_RC:                 '1'
+    BOT_NAME_1:                 EuropaServ
+    BOT_NAME_DEPENDABOT:        dependabot[bot]
 
 # #
 #   Jobs
@@ -146,8 +146,9 @@ jobs:
 
             - name: "👁️‍🗨️ Package Version › Set"
               id: task_initialize_package_getversion
+              working-directory: ./tvapp2
               run: |
-                  VER=$(cat tvapp2/package.json | jq -r '.version')
+                  VER=$(cat package.json | jq -r '.version')
                   echo "PACKAGE_VERSION=$VER" >> $GITHUB_OUTPUT
 
             - name: "👁️‍🗨️ Package Version › Get"
@@ -258,8 +259,11 @@ jobs:
               id: task_release_build_st
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
-                  echo Building STABLE Package .zip ${{ env.PACKAGE_VERSION }}
-                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip Dockerfile Dockerfile.aarch64 docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
+                  echo Building STABLE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip Dockerfile Dockerfile.aarch64 docker-compose.yml docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
+
+                  echo Building STABLE Package ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip
+                  zip -r ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip docker-compose.yml README.md LICENSE
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
@@ -267,8 +271,11 @@ jobs:
               id: task_release_build_rc
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
-                  echo Building PRE-RELEASE Package .zip ${{ env.PACKAGE_VERSION }}
-                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip Dockerfile Dockerfile.aarch64 docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
+                  echo Building PRE-RELEASE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
+                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip Dockerfile Dockerfile.aarch64 docker-compose.yml docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
+
+                  echo Building PRE-RELEASE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
+                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip docker-compose.yml README.md LICENSE
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
@@ -466,6 +473,7 @@ jobs:
                   draft: false
                   generate_release_notes: false
                   files: |
+                      ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip
                       ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                       SHA256SUMS.txt
                   prerelease: false
@@ -487,6 +495,7 @@ jobs:
                   draft: false
                   generate_release_notes: false
                   files: |
+                      ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
                       ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
                       SHA256SUMS.txt
                   prerelease: false
@@ -595,14 +604,14 @@ jobs:
                   echo ""
                   echo "| File                            | Result                        |" >> $GITHUB_STEP_SUMMARY
                   echo "| ------------------------------- | -----------------------       |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **Project**                     | ${{ env.PROJECT_NAME }}       |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **Deploy Time**                 | ${{ env.NOW }}                |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 📦 **Project**                  | ${{ env.PROJECT_NAME }}       |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🕛 **Deploy Time**              | ${{ env.NOW }}                |" >> $GITHUB_STEP_SUMMARY
                   echo ""
-                  echo "### File (${{ env.FILE_STABLE }})                                  " >> $GITHUB_STEP_SUMMARY
+                  echo "### 📄 File (${{ env.FILE_STABLE }})                              " >> $GITHUB_STEP_SUMMARY
                   echo "This is the main release. It contains all required docker files, and the TVApp2 `package.json`" >> $GITHUB_STEP_SUMMARY
                   echo "| File                            | Result                        |" >> $GITHUB_STEP_SUMMARY
                   echo "| ------------------------------- | -----------------------       |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **SHA256**                      | ${{ env.SHA_STABLE }}         |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **GUID**                        | ${{ env.GUID }}               |" >> $GITHUB_STEP_SUMMARY
-                  echo "| **UUID**                        | ${{ env.UUID }}               |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🏷️ **SHA256**                      | ${{ env.SHA_STABLE }}      |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🏷️ **GUID**                        | ${{ env.GUID }}            |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🏷️ **UUID**                        | ${{ env.UUID }}            |" >> $GITHUB_STEP_SUMMARY
 
