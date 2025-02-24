@@ -354,6 +354,22 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
+            #   Release › Github › Build and Push › Arm64
+            # #
+
+            - name: '📦 Build & Push (linux/arm64)'
+              id: task_release_gh_push
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile.aarch64
+                  platforms: linux/arm64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+
+            # #
             #   Release › Github › Checkpoint › Arm64
             # #
 
@@ -371,22 +387,7 @@ jobs:
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
                   echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-
-            # #
-            #   Release › Github › Build and Push › Arm64
-            # #
-
-            - name: '📦 Build & Push (linux/arm64)'
-              id: task_release_gh_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile.aarch64
-                  platforms: linux/arm64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  echo "docker digest ........ ${{ steps.task_release_gh_push.outputs.digest }}"
 
             # #
             #   Release › Github › Get Weekly Commits
@@ -423,7 +424,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ env.DOCKER_SHA }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ steps.task_release_gh_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -608,6 +609,22 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
+            #   Release › Github › Build and Push › Amd64
+            # #
+
+            - name: '📦 Build & Push (linux/amd64)'
+              id: task_release_gh_push
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/amd64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+
+            # #
             #   Release › Github › Checkpoint › Amd64
             # #
 
@@ -625,22 +642,7 @@ jobs:
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
                   echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-
-            # #
-            #   Release › Github › Build and Push › Amd64
-            # #
-
-            - name: '📦 Build & Push (linux/amd64)'
-              id: task_release_gh_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile
-                  platforms: linux/amd64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  echo "docker digest ........ ${{ steps.task_release_gh_push.outputs.digest }}"
 
             # #
             #   Release › Github › Get Weekly Commits
@@ -676,7 +678,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ env.DOCKER_SHA }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ steps.task_release_gh_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
