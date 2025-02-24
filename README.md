@@ -133,17 +133,11 @@ For the [environment variables](#environment-variables), you may specify these i
 
 #### Registry URLs
 
-| Pull URL | Platform | Registry | Version |
+| Pull URL | Registry | Architecture | Version |
 | --- | --- | --- | --- |
-| `ghcr.io/thebinaryninja/tvapp2:latest` | Github | amd64 | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
-| `ghcr.io/thebinaryninja/tvapp2:amd64` | Github | amd64 | |
-| `ghcr.io/thebinaryninja/tvapp2:arm64` | Github | arm64 | |
-| `thebinaryninja/tvapp2:latest` | Dockerhub | amd64 | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
-| `thebinaryninja/tvapp2:1.0.0-amd64` | Dockerhub | amd64 |
-| `thebinaryninja/tvapp2:1.0.0-arm64` | Dockerhub | arm64 |
-| `git.binaryninja.net/binaryninja/tvapp2:latest` | Gitea |amd64 | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
-| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64` | Gitea | amd64 |
-| `git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64` | Gitea | arm64 |
+| `ghcr.io/thebinaryninja/tvapp2:latest` | Github | amd64 / arm64 | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
+| `thebinaryninja/tvapp2:latest` | Dockerhub | amd64 / arm64 | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
+| `git.binaryninja.net/binaryninja/tvapp2:latest` | Gitea | amd64 / arm64 | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
 
 <br />
 <br />
@@ -344,10 +338,10 @@ GRAPH_ALPINE --> obj_step20 --> obj_step21 --> obj_step22 --> obj_step23 --> obj
 
 When building your TVApp2 images with the commands provided below, ensure you create two sets of tags:
 
-| Architecture | Dockerfile           | Tags                                                                    |
-| ------------ | -------------------- | ----------------------------------------------------------------------- |
-| `amd64`      | `Dockerfile`         | `tvapp2:latest` <br /> `tvapp2:1.0.0` <br /> `tvapp2:1.0.0-amd64` |
-| `arm64`      | `Dockerfile.aarch64` | `tvapp2:1.0.0-arm64`                                                  |
+| Architecture | Dockerfile                   | Tags                                                            |
+| -------------------- | -------------------- | --------------------------------------------------------------- |
+| `amd64`      | `Dockerfile`         | `tvapp2:latest` <br /> `tvapp2:1.0.0` <br /> `tvapp2:1.0.0-amd64`       |
+| `arm64`      | `Dockerfile`         | `tvapp2:latest` <br /> `tvapp2:1.0.0-arm64`                             |
 
 <br />
 
@@ -451,7 +445,7 @@ This method will show you how to build the TVApp2 docker image using `docker bui
 
 ```shell ignore
 # Build tvapp2 amd64
-docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
+docker build --network=host --build-arg ARCH=amd64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
 ```
 
 <br />
@@ -460,7 +454,7 @@ docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=2025
 
 ```shell ignore
 # Build tvapp2 arm64
-docker build --network=host --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:1.0.0-arm64 -f Dockerfile.aarch64 .
+docker build --network=host --build-arg ARCH=arm64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:1.0.0-arm64 -f Dockerfile.aarch64 .
 ```
 
 <br />
@@ -523,7 +517,7 @@ The command below will build your TVApp2 docker image, and save a local copy of 
 
 ```shell ignore
 # Build tvapp2 amd64
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
+docker buildx build --no-cache --pull --build-arg ARCH=amd64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
 ```
 
 <br />
@@ -532,7 +526,7 @@ docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUIL
 
 ```shell ignore
 # Build tvapp2 arm64
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
+docker buildx build --no-cache --pull --build-arg ARCH=arm64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
 ```
 
 <br />
@@ -607,7 +601,7 @@ You are ready to build the TVApp2 docker image, run the command for your platfor
 ###### amd64
 
 ```shell ignore
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --provenance=true --sbom=true --builder=container --push .
+docker buildx build --no-cache --pull --build-arg ARCH=amd64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --provenance=true --sbom=true --builder=container --push .
 ```
 
 <br />
@@ -615,7 +609,7 @@ docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUIL
 ###### arm64 / aarch64
 
 ```shell ignore
-docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --provenance=true --sbom=true --builder=container --push .
+docker buildx build --no-cache --pull --build-arg ARCH=arm64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --provenance=true --sbom=true --builder=container --push .
 ```
 
 <br />
@@ -643,7 +637,7 @@ npm run docker:build:amd64 --VERSION=1.0.1 --BUILDDATE=20250220
 
 ##### Platform Commands
 
-The following is a list of the available commands you can pick from depending on how you would like to build TvAPP2:
+The following is a list of the available commands you can pick from depending on how you would like to build TvApp2:
 
 | Command | Description |
 | --- | --- |
@@ -1619,11 +1613,11 @@ The following people have helped get this project going:
   [github-docker-version-uri]: https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2
 
 <!-- BADGE > Dockerhub > Docker Image -->
-  [dockerhub-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=development-amd64%2Cdevelopment%2Cdevelopment-arm64%2Clatest&label=version&trim=
+  [dockerhub-docker-version-img]: https://img.shields.io/docker/v/thebinaryninja/tvapp2?sort=semver&arch=arm64
   [dockerhub-docker-version-uri]: https://hub.docker.com/repository/docker/thebinaryninja/tvapp2/general
 
 <!-- BADGE > Gitea > Docker Image > SELFHOSTED BADGES -->
-  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=development-amd64%2Cdevelopment%2Cdevelopment-arm64%2Clatest&label=version&trim=
+  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=latest&label=version&trim=
   [gitea-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/tvapp2
 
 <!-- BADGE > Gitea 2 > Docker Image -->
