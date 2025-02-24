@@ -413,8 +413,8 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
-                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Pre-release / Development Version' || '' }}
+                      ## 📦 ᲼Docker › Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-dev' || '' }}`
+                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
@@ -422,7 +422,7 @@ jobs:
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-dev' || '' }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
@@ -663,8 +663,8 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
-                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Pre-release / Development Version' || '' }}
+                      ## 📦 ᲼Docker › Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-dev' || '' }}`
+                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
@@ -672,7 +672,7 @@ jobs:
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}`
+                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-dev' || '' }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
