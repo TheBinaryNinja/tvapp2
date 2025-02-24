@@ -356,6 +356,22 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
+            #   Release › Gitea › Build and Push › Arm64
+            # #
+
+            - name: '📦 Build & Push (linux/arm64)'
+              id: task_release_gi_push
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile.aarch64
+                  platforms: linux/arm64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+
+            # #
             #   Release › Gitea › Checkpoint › Arm64
             # #
 
@@ -372,22 +388,9 @@ jobs:
                   echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-
-            # #
-            #   Release › Gitea › Build and Push › Arm64
-            # #
-
-            - name: '📦 Build & Push (linux/arm64)'
-              id: task_release_gi_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile.aarch64
-                  platforms: linux/arm64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
+                  echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
@@ -611,6 +614,22 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
+            #   Release › Gitea › Build and Push › Amd64
+            # #
+
+            - name: '📦 Build & Push (linux/amd64)'
+              id: task_release_gi_push
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/amd64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+
+            # #
             #   Release › Gitea › Checkpoint › Amd64
             # #
 
@@ -627,22 +646,9 @@ jobs:
                   echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-
-            # #
-            #   Release › Gitea › Build and Push › Amd64
-            # #
-
-            - name: '📦 Build & Push (linux/amd64)'
-              id: task_release_gi_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile
-                  platforms: linux/amd64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
+                  echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
