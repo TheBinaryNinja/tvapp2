@@ -428,7 +428,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}@${{ github.sha }}`
+                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -685,7 +685,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}@${{ github.sha }}`
+                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
