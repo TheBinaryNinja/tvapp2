@@ -229,6 +229,16 @@ jobs:
                   echo "Starting Github Docker arm64"
 
             # #
+            #   Release › Github › Checkout › Arm64
+            # #
+
+            - name: '✅ Checkout'
+              id: task_release_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
             #   Release › Github › Get Timestamp
             # #
 
@@ -241,16 +251,6 @@ jobs:
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Github › Checkout › Arm64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gh_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             # #
             #   Release › Github › Install Dependencies
@@ -484,7 +484,17 @@ jobs:
                   echo "Starting Github docker release"
 
             # #
-            #   Release › Get Timestamp
+            #   Release › Github › Checkout › Amd64
+            # #
+
+            - name: '✅ Checkout'
+              id: task_release_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Release › Github › Get Timestamp
             # #
 
             - name: '🕛 Get Timestamp'
@@ -496,16 +506,6 @@ jobs:
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Github › Checkout › Amd64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gh_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             # #
             #   Release › Github › Install Dependencies

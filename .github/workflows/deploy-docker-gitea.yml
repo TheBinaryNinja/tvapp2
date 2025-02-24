@@ -229,6 +229,16 @@ jobs:
                   echo "Starting Gitea Docker arm64"
 
             # #
+            #   Release › Gitea › Checkout › Arm64
+            # #
+
+            - name: '✅ Checkout'
+              id: task_release_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
             #   Release › Gitea › Get Timestamp
             # #
 
@@ -236,20 +246,11 @@ jobs:
               id: task_release_set_timestamp
               run: |
                   echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
                   echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Gitea › Checkout › Arm64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gi_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             # #
             #   Release › Gitea › Install Dependencies
@@ -482,6 +483,16 @@ jobs:
                   echo "Starting Gitea docker release"
 
             # #
+            #   Release › Gitea › Checkout
+            # #
+
+            - name: '✅ Checkout'
+              id: task_release_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
             #   Release › Gitea › Get Timestamp
             # #
 
@@ -489,20 +500,11 @@ jobs:
               id: task_release_set_timestamp
               run: |
                   echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
                   echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Gitea › Checkout › Amd64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gi_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             # #
             #   Release › Gitea › Install Dependencies
