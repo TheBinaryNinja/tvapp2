@@ -321,7 +321,7 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN }}
 
             # #
-            #   Release › Dockerhub › Meta › Amd64
+            #   Release › Dockerhub › Meta
             # #
 
             - name: '🔨 Dockerhub: Meta'
@@ -457,14 +457,14 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
+                      ### 📦 ᲼Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Dockerhub. The image is available at:
-                      - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
+                      - https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
+                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
                       - Pull (amd64): `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}`
                       - Pull (arm64): `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`

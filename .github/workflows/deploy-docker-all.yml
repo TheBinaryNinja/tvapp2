@@ -257,282 +257,21 @@ jobs:
                   gpg_passphrase: ${{ secrets.ADMINSERV_GPG_PASSPHRASE }}
 
     # #
-    #   Job › Docker Release › Github › Arm64
+    #   Job › Docker Release › Github
     # #
 
-    job-docker-release-github-arm64:
+    job-docker-release-github:
         name: >-
-            📦 Release › Github › Arm64
+            📦 Release › Github
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
         timeout-minutes: 10
+        permissions:
+            contents: write
+            packages: write
+            attestations: write
+            id-token: write
         needs: [ job-docker-release-tags-create ]
-        permissions:
-            contents: write
-            packages: write
-            attestations: write
-            id-token: write
-        steps:
-
-            # #
-            #   Release › Github › Start › Arm64
-            # #
-
-            - name: '🏳️ Start'
-              id: task_release_gh_start
-              run: |
-                  echo "Starting Github Docker arm64"
-
-            # #
-            #   Release › Github › Checkout
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gh_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            # #
-            #   Release › Github › Get Timestamp
-            # #
-
-            - name: '🕛 Get Timestamp'
-              id: task_release_set_timestamp
-              run: |
-                  echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Github › Install Dependencies
-            # #
-
-            - name: '📦 Install Dependencies'
-              id: task_release_gh_dependencies
-              run:
-                  sudo apt-get install -qq dos2unix
-
-            # #
-            #   Release › Github › Execute dos2unix
-            # #
-
-            - name: '🔐 Apply dos2unix'
-              id: task_release_gh_dos2unix
-              run: |
-                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
-                  find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
-                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
-
-            # #
-            #   Release › Github › Fix Permissions
-            # #
-
-            - name: '#️⃣ Manage Permissions'
-              id: task_release_gh_permissions
-              run: |
-                  find ./ -name 'run' -exec chmod 755 {} \;
-                  WRONG_PERM=$(find ./  -path "./.git" -prune -o \( -name "run" -o -name "finish" -o -name "check" \) -not -perm -u=x,g=x,o=x -print)
-                  if [ -n "${WRONG_PERM}" ]; then
-                      echo "⚠️⚠️⚠️ Permissions are invalid ⚠️⚠️⚠️"
-                      for i in ${WRONG_PERM}; do
-                      echo "::error file=${i},line=1,title=Missing Executable Bit::This file needs to be set as executable!"
-                      done
-                      exit 1
-                  else
-                      echo "✅✅✅ Executable permissions are OK ✅✅✅"
-                  fi
-
-            # #
-            #   Release › Github › QEMU › Arm64
-            # #
-
-            - name: '⚙️ Set up QEMU'
-              id: task_release_gh_qemu
-              uses: docker/setup-qemu-action@v3
-
-            # #
-            #   Release › Github › Setup BuildX › Arm64
-            # #
-
-            - name: '⚙️ Setup Buildx'
-              id: task_release_gh_buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  version: latest
-                  driver-opts: 'image=moby/buildkit:latest'
-
-            # #
-            #   Release › Github › Registry Login › Arm64
-            # #
-
-            - name: '⚙️ Login to Github'
-              id: task_release_gh_registry
-              uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ env.IMAGE_GHCR_USERNAME }}
-                  password: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
-
-            # #
-            #   Release › Github › Meta › Arm64
-            # #
-
-            - name: '🔨 Github: Meta - Arm64'
-              id: task_release_gh_meta
-              uses: docker/metadata-action@v5
-              with:
-                  images: |
-                      ghcr.io/${{ env.IMAGE_GHCR_AUTHOR }}/${{ env.IMAGE_NAME }}
-                  tags: |
-                      #  latest no
-                      type=raw,value=latest,enable=false
-
-                      #  tag            add arm64
-                      #  type=raw,enable=true,priority=1000,value=arm64
-
-                      #  dispatch       add x1.x.x-arm64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
-
-                      #  dispatch       add arm64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
-
-                      #  tag            add tag-arm64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
-                  flavor: |
-                      latest=false
-                  labels: |
-                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
-                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
-                      org.opencontainers.image.licenses=MIT
-                      org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_GHCR_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
-                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-
-            # #
-            #   Release › Github › Build and Push › Arm64
-            # #
-
-            - name: '📦 Build & Push (linux/arm64)'
-              id: task_release_gh_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile.aarch64
-                  platforms: linux/arm64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
-                  provenance: false
-
-            # #
-            #   Release › Github › Checkpoint › Arm64
-            # #
-
-            - name: '⚠️ Checkpoint'
-              id: task_release_gh_checkpoint
-              run: |
-                  echo "registry ............. Github"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_GHCR_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_gh_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_gh_push.outputs.digest }}"
-
-            # #
-            #   Release › Github › Get Weekly Commits
-            # #
-
-            - name: '🕛 Get Weekly Commit List'
-              id: task_release_set_weekly_commit_list
-              run: |
-                  echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
-                  git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
-                  echo 'EOF' >> $GITHUB_ENV
-
-            # #
-            #   Release › Github › Notify Github
-            # #
-
-            - name: '🔔 Send Discord Webhook Message'
-              id: task_release_notifications_discord_send
-              uses: tsickert/discord-webhook@v6.0.0
-              if: success()
-              with:
-                  username: 'Io'
-                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
-                  embed-title: "⚙️ ${{ github.workflow_ref }}"
-                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
-                  embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Github) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
-
-                      A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Github GHCR. The image is available at:
-                      - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
-
-                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push.outputs.digest }}`
-                      - Dry Run: `${{ inputs.DRY_RUN }}`
-                      - Source: `Github` https://github.com/${{ github.repository }}
-                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      - Version: `${{ env.IMAGE_VERSION }}`
-                      - Branch: `${{ github.ref_name }}`
-                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
-                      - Runner: `${{ runner.name }}`
-                      - Triggered By: `${{ github.actor }}`
-                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
-
-                      ### Tags
-                      -# This docker image will use the following tags:
-
-                      ```
-                      ${{ steps.task_release_gh_meta.outputs.tags }}
-                      ```
-
-                      ### Labels
-                      -# This docker image embeds the following labels:
-
-                      ```
-                      ${{ steps.task_release_gh_meta.outputs.labels }}
-                      ```
-                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
-                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
-                  embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.repository_owner }}"
-                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
-
-    # #
-    #   Job › Docker Release › Github › Amd64
-    # #
-
-    job-docker-release-github-amd64:
-        name: >-
-            📦 Release › Github › Amd64
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
-        timeout-minutes: 10
-        permissions:
-            contents: write
-            packages: write
-            attestations: write
-            id-token: write
-        needs: [ job-docker-release-tags-create, job-docker-release-github-arm64 ]
         steps:
 
             # #
@@ -637,10 +376,10 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
 
             # #
-            #   Release › Github › Meta › Amd64
+            #   Release › Github › Meta
             # #
 
-            - name: '🔨 Github: Meta - Amd64'
+            - name: '🔨 Github: Meta'
               id: task_release_gh_meta
               uses: docker/metadata-action@v5
               with:
@@ -650,17 +389,14 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  tag            add amd64
-                      #  type=raw,enable=true,priority=1000,value=amd64
+                      #  dispatch       add x1.x.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
 
-                      #  dispatch       add x1.x.x-amd64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+                      #  dispatch       add development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
 
-                      #  dispatch       add amd64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
-
-                      #  tag            add tag-amd64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
@@ -680,7 +416,7 @@ jobs:
             # #
 
             - name: '📦 Build & Push (linux/amd64)'
-              id: task_release_gh_push
+              id: task_release_gh_push_amd64
               uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
@@ -691,27 +427,64 @@ jobs:
                   tags: ${{ steps.task_release_gh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   provenance: false
+                  build-args: |-
+                      ARCH=amd64
 
             # #
-            #   Release › Github › Checkpoint › Amd64
+            #   Release › Github › Build and Push › Arm64
+            # #
+
+            - name: '📦 Build & Push (linux/arm64)'
+              id: task_release_gh_push_arm64
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/arm64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  provenance: false
+                  build-args: |-
+                      ARCH=arm64
+
+            # #
+            #   Release › Github › Push Manifest
+            # #
+
+            - name: '📦 Push Manifest'
+              id: task_release_gh_manifest
+              uses: int128/docker-manifest-create-action@v2
+              with:
+                tags: |
+                    ${{ steps.task_release_gh_meta.outputs.tags }}
+                sources: |
+                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push_amd64.outputs.digest }}
+                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}
+
+            # #
+            #   Release › Github › Checkpoint
             # #
 
             - name: '⚠️ Checkpoint'
               id: task_release_gh_checkpoint
               run: |
-                  echo "registry ............. Github"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_GHCR_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_gh_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_gh_push.outputs.digest }}"
+                  echo "registry ..................... Github"
+                  echo "github.actor.................. ${{ github.actor }}"
+                  echo "github.ref ................... ${{ github.ref }}"
+                  echo "github.ref_name .............. ${{ github.ref_name }}"
+                  echo "github.event_name ............ ${{ github.event_name }}"
+                  echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
+                  echo "env.AUTHOR ................... ${{ env.IMAGE_GHCR_AUTHOR }}"
+                  echo "tags ......................... ${{ steps.task_release_gh_meta.outputs.tags }}"
+                  echo "labels ....................... ${{ steps.task_release_gh_meta.outputs.labels }}"
+                  echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
+                  echo "docker sha ................... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id (amd64) ...... ${{ steps.task_release_gh_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) ........ ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) ...... ${{ steps.task_release_gh_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) ........ ${{ steps.task_release_gh_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Github › Get Weekly Commits
@@ -739,15 +512,16 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Github) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
+                      ### 📦 ᲼Deploy (Github) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Github GHCR. The image is available at:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push.outputs.digest }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
+                      - Pull (amd64): `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push_amd64.outputs.digest }}`
+                      - Pull (arm64): `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -779,281 +553,21 @@ jobs:
                   embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
 
     # #
-    #   Job › Docker Release › Dockerhub › Arm64
+    #   Job › Docker Release › Dockerhub
     # #
 
-    job-docker-release-dockerhub-arm64:
+    job-docker-release-dockerhub:
         name: >-
-            📦 Release › Dockerhub › Arm64
+            📦 Release › Dockerhub
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
         timeout-minutes: 10
+        permissions:
+            contents: write
+            packages: write
+            attestations: write
+            id-token: write
         needs: [ job-docker-release-tags-create ]
-        permissions:
-            contents: write
-            packages: write
-            attestations: write
-            id-token: write
-        steps:
-
-            # #
-            #   Release › Dockerhub › Start › Arm64
-            # #
-
-            - name: '🏳️ Start'
-              id: task_release_dh_start
-              run: |
-                  echo "Starting Dockerhub arm64"
-
-            # #
-            #   Release › Dockerhub › Checkout › Arm64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_dh_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            # #
-            #   Release › Dockerhub › Get Timestamp
-            # #
-
-            - name: '🕛 Get Timestamp'
-              id: task_release_set_timestamp
-              run: |
-                  echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Dockerhub › Install Dependencies
-            # #
-
-            - name: '📦 Install Dependencies'
-              id: task_release_dh_dependencies
-              run:
-                  sudo apt-get install -qq dos2unix
-
-            # #
-            #   Release › Dockerhub › Execute dos2unix
-            # #
-
-            - name: '🔐 Apply dos2unix'
-              id: task_release_dh_dos2unix
-              run: |
-                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
-                  find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
-                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
-
-            # #
-            #   Release › Dockerhub › Fix Permissions
-            # #
-
-            - name: '#️⃣ Manage Permissions'
-              id: task_release_dh_permissions
-              run: |
-                  find ./ -name 'run' -exec chmod 755 {} \;
-                  WRONG_PERM=$(find ./  -path "./.git" -prune -o \( -name "run" -o -name "finish" -o -name "check" \) -not -perm -u=x,g=x,o=x -print)
-                  if [ -n "${WRONG_PERM}" ]; then
-                      echo "⚠️⚠️⚠️ Permissions are invalid ⚠️⚠️⚠️"
-                      for i in ${WRONG_PERM}; do
-                      echo "::error file=${i},line=1,title=Missing Executable Bit::This file needs to be set as executable!"
-                      done
-                      exit 1
-                  else
-                      echo "✅✅✅ Executable permissions are OK ✅✅✅"
-                  fi
-
-            # #
-            #   Release › Dockerhub › QEMU › Arm64
-            # #
-
-            - name: '⚙️ Set up QEMU'
-              id: task_release_dh_qemu
-              uses: docker/setup-qemu-action@v3
-
-            # #
-            #   Release › Dockerhub › Setup BuildX › Arm64
-            # #
-
-            - name: '⚙️ Setup Buildx'
-              id: task_release_dh_buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  version: latest
-                  driver-opts: 'image=moby/buildkit:latest'
-
-            # #
-            #   Release › Dockerhub › Registry Login › Arm64
-            # #
-
-            - name: '⚙️ Login to Dockerhub'
-              id: task_release_dh_registry
-              uses: docker/login-action@v3
-              with:
-                  username: ${{ env.IMAGE_DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN }}
-
-            # #
-            #   Release › Dockerhub › Meta › Arm64
-            # #
-
-            - name: '🔨 Dockerhub: Meta - Arm64'
-              id: task_release_dh_meta
-              uses: docker/metadata-action@v5
-              with:
-                  images: |
-                      ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
-                  tags: |
-                      #  latest no
-                      type=raw,value=latest,enable=false
-
-                      #  tag            add arm64
-                      #  type=raw,enable=true,priority=1000,value=arm64
-
-                      #  dispatch       add x1.x.x-arm64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
-
-                      #  dispatch       add arm64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
-
-                      #  tag            add tag-arm64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
-                  flavor: |
-                      latest=false
-                  labels: |
-                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
-                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
-                      org.opencontainers.image.licenses=MIT
-                      org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_DOCKERHUB_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
-                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-
-            # #
-            #   Release › Dockerhub › Build and Push › Arm64
-            # #
-
-            - name: '📦 Build & Push (linux/arm64)'
-              id: task_release_dh_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile.aarch64
-                  platforms: linux/arm64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_dh_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_dh_meta.outputs.labels }}
-                  provenance: false
-
-            # #
-            #   Release › Dockerhub › Checkpoint › Arm64
-            # #
-
-            - name: '⚠️ Checkpoint'
-              id: task_release_dh_checkpoint
-              run: |
-                  echo "registry ............. Dockerhub"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_dh_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_dh_push.outputs.digest }}"
-
-            # #
-            #   Release › Dockerhub › Get Weekly Commits
-            # #
-
-            - name: '🕛 Get Weekly Commit List'
-              id: task_release_set_weekly_commit_list
-              run: |
-                  echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
-                  git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
-                  echo 'EOF' >> $GITHUB_ENV
-
-            # #
-            #   Release › Dockerhub › Notify Github
-            # #
-
-            - name: '🔔 Send Discord Webhook Message'
-              id: task_release_notifications_discord_send
-              uses: tsickert/discord-webhook@v6.0.0
-              if: success()
-              with:
-                  username: 'Io'
-                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
-                  embed-title: "⚙️ ${{ github.workflow_ref }}"
-                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
-                  embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
-
-                      A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Dockerhub. The image is available at:
-                      - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
-
-                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push.outputs.digest }}`
-                      - Dry Run: `${{ inputs.DRY_RUN }}`
-                      - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      - Version: `${{ env.IMAGE_VERSION }}`
-                      - Branch: `${{ github.ref_name }}`
-                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
-                      - Runner: `${{ runner.name }}`
-                      - Triggered By: `${{ github.actor }}`
-                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
-
-                      ### Tags
-                      -# This docker image will use the following tags:
-
-                      ```
-                      ${{ steps.task_release_dh_meta.outputs.tags }}
-                      ```
-
-                      ### Labels
-                      -# This docker image embeds the following labels:
-
-                      ```
-                      ${{ steps.task_release_dh_meta.outputs.labels }}
-                      ```
-                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
-                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
-                  embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.repository_owner }}"
-                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
-
-    # #
-    #   Job › Docker Release › Dockerhub › Amd64
-    # #
-
-    job-docker-release-dockerhub-amd64:
-        name: >-
-            📦 Release › Dockerhub › Amd64
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
-        timeout-minutes: 10
-        permissions:
-            contents: write
-            packages: write
-            attestations: write
-            id-token: write
-        needs: [ job-docker-release-tags-create, job-docker-release-dockerhub-arm64 ]
         steps:
 
             # #
@@ -1157,10 +671,10 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN }}
 
             # #
-            #   Release › Dockerhub › Meta › Amd64
+            #   Release › Dockerhub › Meta
             # #
 
-            - name: '🔨 Dockerhub: Meta - Amd64'
+            - name: '🔨 Dockerhub: Meta'
               id: task_release_dh_meta
               uses: docker/metadata-action@v5
               with:
@@ -1170,17 +684,14 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  tag            add amd64
-                      #  type=raw,enable=true,priority=1000,value=amd64
+                      #  dispatch       add x1.x.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
 
-                      #  dispatch       add x1.x.x-amd64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+                      #  dispatch       add development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
 
-                      #  dispatch       add amd64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
-
-                      #  tag            add tag-amd64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
@@ -1200,7 +711,7 @@ jobs:
             # #
 
             - name: '📦 Build & Push (linux/amd64)'
-              id: task_release_dh_push
+              id: task_release_dh_push_amd64
               uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
@@ -1211,27 +722,64 @@ jobs:
                   tags: ${{ steps.task_release_dh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
                   provenance: false
+                  build-args: |-
+                      ARCH=amd64
 
             # #
-            #   Release › Dockerhub › Checkpoint › Amd64
+            #   Release › Dockerhub › Build and Push › Arm64
+            # #
+
+            - name: '📦 Build & Push (linux/arm64)'
+              id: task_release_dh_push_arm64
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/arm64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_dh_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_dh_meta.outputs.labels }}
+                  provenance: false
+                  build-args: |-
+                      ARCH=arm64
+
+            # #
+            #   Release › Dockerhub › Push Manifest
+            # #
+
+            - name: '📦 Push Manifest'
+              id: task_release_dh_manifest
+              uses: int128/docker-manifest-create-action@v2
+              with:
+                tags: |
+                    ${{ steps.task_release_dh_meta.outputs.tags }}
+                sources: |
+                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}
+                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}
+
+            # #
+            #   Release › Dockerhub › Checkpoint
             # #
 
             - name: '⚠️ Checkpoint'
               id: task_release_dh_checkpoint
               run: |
-                  echo "registry ............. Dockerhub"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_dh_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_dh_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_dh_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_dh_push.outputs.digest }}"
+                  echo "registry ..................... Dockerhub"
+                  echo "github.actor.................. ${{ github.actor }}"
+                  echo "github.ref ................... ${{ github.ref }}"
+                  echo "github.ref_name .............. ${{ github.ref_name }}"
+                  echo "github.event_name ............ ${{ github.event_name }}"
+                  echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
+                  echo "env.AUTHOR ................... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
+                  echo "tags ......................... ${{ steps.task_release_dh_meta.outputs.tags }}"
+                  echo "labels ....................... ${{ steps.task_release_dh_meta.outputs.labels }}"
+                  echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
+                  echo "docker sha ................... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id (amd64) ...... ${{ steps.task_release_dh_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) ........ ${{ steps.task_release_dh_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) ...... ${{ steps.task_release_dh_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) ........ ${{ steps.task_release_dh_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Dockerhub › Get Weekly Commits
@@ -1259,15 +807,16 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
+                      ### 📦 ᲼Deploy (Dockerhub) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Dockerhub. The image is available at:
-                      - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
+                      - https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push.outputs.digest }}`
+                      - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
+                      - Pull (amd64): `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}`
+                      - Pull (arm64): `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -1299,282 +848,21 @@ jobs:
                   embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
 
     # #
-    #   Job › Docker Release › Gitea › Arm64
+    #   Job › Docker Release › Gitea
     # #
 
-    job-docker-release-gitea-arm64:
+    job-docker-release-gitea:
         name: >-
-            📦 Release › Gitea › Arm64
+            📦 Release › Gitea
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
         timeout-minutes: 10
+        permissions:
+            contents: write
+            packages: write
+            attestations: write
+            id-token: write
         needs: [ job-docker-release-tags-create ]
-        permissions:
-            contents: write
-            packages: write
-            attestations: write
-            id-token: write
-        steps:
-
-            # #
-            #   Release › Gitea › Start › Arm64
-            # #
-
-            - name: '🏳️ Start'
-              id: task_release_gi_start
-              run: |
-                  echo "Starting Gitea Docker arm64"
-
-            # #
-            #   Release › Gitea › Checkout › Arm64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gi_checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-
-            # #
-            #   Release › Gitea › Get Timestamp
-            # #
-
-            - name: '🕛 Get Timestamp'
-              id: task_release_set_timestamp
-              run: |
-                  echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-            # #
-            #   Release › Gitea › Install Dependencies
-            # #
-
-            - name: '📦 Install Dependencies'
-              id: task_release_gi_dependencies
-              run:
-                  sudo apt-get install -qq dos2unix
-
-            # #
-            #   Release › Gitea › Execute dos2unix
-            # #
-
-            - name: '🔐 Apply dos2unix'
-              id: task_release_gi_dos2unix
-              run: |
-                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
-                  find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
-                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
-
-            # #
-            #   Release › Gitea › Fix Permissions
-            # #
-
-            - name: '#️⃣ Manage Permissions'
-              id: task_release_gi_permissions
-              run: |
-                  find ./ -name 'run' -exec chmod 755 {} \;
-                  WRONG_PERM=$(find ./  -path "./.git" -prune -o \( -name "run" -o -name "finish" -o -name "check" \) -not -perm -u=x,g=x,o=x -print)
-                  if [ -n "${WRONG_PERM}" ]; then
-                      echo "⚠️⚠️⚠️ Permissions are invalid ⚠️⚠️⚠️"
-                      for i in ${WRONG_PERM}; do
-                      echo "::error file=${i},line=1,title=Missing Executable Bit::This file needs to be set as executable!"
-                      done
-                      exit 1
-                  else
-                      echo "✅✅✅ Executable permissions are OK ✅✅✅"
-                  fi
-
-            # #
-            #   Release › Gitea › QEMU › Arm64
-            # #
-
-            - name: '⚙️ Set up QEMU'
-              id: task_release_gi_qemu
-              uses: docker/setup-qemu-action@v3
-
-            # #
-            #   Release › Gitea › Setup BuildX › Arm64
-            # #
-
-            - name: '⚙️ Setup Buildx'
-              id: task_release_gi_buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  version: latest
-                  driver-opts: 'image=moby/buildkit:latest'
-
-            # #
-            #   Release › Gitea › Registry Login › Arm64
-            # #
-
-            - name: '⚙️ Login to Gitea'
-              id: task_release_gi_registry
-              uses: docker/login-action@v3
-              with:
-                  registry: git.binaryninja.net
-                  username: ${{ env.IMAGE_GITEA_USERNAME }}
-                  password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
-
-            # #
-            #   Release › Gitea › Meta › Arm64
-            # #
-
-            - name: '🔨 Gitea: Meta - Arm64'
-              id: task_release_gi_meta
-              uses: docker/metadata-action@v5
-              with:
-                  images: |
-                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
-                  tags: |
-                      #  latest no
-                      type=raw,value=latest,enable=false
-
-                      #  tag            add arm64
-                      #  type=raw,enable=true,priority=1000,value=arm64
-
-                      #  dispatch       add x1.x.x-arm64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
-
-                      #  dispatch       add arm64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
-
-                      #  tag            add tag-arm64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
-                  flavor: |
-                      latest=false
-                  labels: |
-                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
-                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
-                      org.opencontainers.image.licenses=MIT
-                      org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
-                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-
-            # #
-            #   Release › Gitea › Build and Push › Arm64
-            # #
-
-            - name: '📦 Build & Push (linux/arm64)'
-              id: task_release_gi_push
-              uses: docker/build-push-action@v6
-              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
-              with:
-                  context: .
-                  file: Dockerfile.aarch64
-                  platforms: linux/arm64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
-                  provenance: false
-
-            # #
-            #   Release › Gitea › Checkpoint › Arm64
-            # #
-
-            - name: '⚠️ Checkpoint'
-              id: task_release_gi_checkpoint
-              run: |
-                  echo "registry ............. Gitea"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
-
-            # #
-            #   Release › Gitea › Get Weekly Commits
-            # #
-
-            - name: '🕛 Get Weekly Commit List'
-              id: task_release_set_weekly_commit_list
-              run: |
-                  echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
-                  git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
-                  echo 'EOF' >> $GITHUB_ENV
-
-            # #
-            #   Release › Gitea › Notify Gitea
-            # #
-
-            - name: '🔔 Send Discord Webhook Message'
-              id: task_release_notifications_discord_send
-              uses: tsickert/discord-webhook@v6.0.0
-              if: success()
-              with:
-                  username: 'Io'
-                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
-                  embed-title: "⚙️ ${{ github.workflow_ref }}"
-                  embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
-                  embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
-
-                      A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Gitea. The image is available at:
-                      - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
-
-                      - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push.outputs.digest }}`
-                      - Dry Run: `${{ inputs.DRY_RUN }}`
-                      - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
-                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      - Version: `${{ env.IMAGE_VERSION }}`
-                      - Branch: `${{ github.ref_name }}`
-                      - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
-                      - Runner: `${{ runner.name }}`
-                      - Triggered By: `${{ github.actor }}`
-                      - Status: `${{ job.status == 'success' && '✅ Successful' || '❌ Failed' }}`
-
-                      ### Tags
-                      -# This docker image will use the following tags:
-
-                      ```
-                      ${{ steps.task_release_gi_meta.outputs.tags }}
-                      ```
-
-                      ### Labels
-                      -# This docker image embeds the following labels:
-
-                      ```
-                      ${{ steps.task_release_gi_meta.outputs.labels }}
-                      ```
-                  embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
-                  embed-footer-text: "Completed at ${{ env.NOW }} UTC"
-                  embed-timestamp: "${{ env.NOW_LONG }}"
-                  embed-author-name: "${{ github.repository_owner }}"
-                  embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
-
-    # #
-    #   Job › Docker Release › Gitea › Amd64
-    # #
-
-    job-docker-release-gitea-amd64:
-        name: >-
-            📦 Release › Gitea › Amd64
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
-        timeout-minutes: 10
-        permissions:
-            contents: write
-            packages: write
-            attestations: write
-            id-token: write
-        needs: [ job-docker-release-tags-create, job-docker-release-gitea-arm64 ]
         steps:
 
             # #
@@ -1679,10 +967,10 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
             # #
-            #   Release › Gitea › Meta › Amd64
+            #   Release › Gitea › Meta
             # #
 
-            - name: '🔨 Gitea: Meta - Amd64'
+            - name: '🔨 Gitea: Meta'
               id: task_release_gi_meta
               uses: docker/metadata-action@v5
               with:
@@ -1692,17 +980,14 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  tag            add amd64
-                      #  type=raw,enable=true,priority=1000,value=amd64
+                      #  dispatch       add x1.x.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
 
-                      #  dispatch       add x1.x.x-amd64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+                      #  dispatch       add development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
 
-                      #  dispatch       add amd64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
-
-                      #  tag            add tag-amd64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
@@ -1722,7 +1007,7 @@ jobs:
             # #
 
             - name: '📦 Build & Push (linux/amd64)'
-              id: task_release_gi_push
+              id: task_release_gi_push_amd64
               uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
@@ -1733,27 +1018,64 @@ jobs:
                   tags: ${{ steps.task_release_gi_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gi_meta.outputs.labels }}
                   provenance: false
+                  build-args: |-
+                      ARCH=amd64
 
             # #
-            #   Release › Gitea › Checkpoint › Amd64
+            #   Release › Gitea › Build and Push › Arm64
+            # #
+
+            - name: '📦 Build & Push (linux/arm64)'
+              id: task_release_gi_push_arm64
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/arm64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  provenance: false
+                  build-args: |-
+                      ARCH=arm64
+
+            # #
+            #   Release › Gitea › Push Manifest
+            # #
+
+            - name: '📦 Push Manifest'
+              id: task_release_gi_manifest
+              uses: int128/docker-manifest-create-action@v2
+              with:
+                tags: |
+                    ${{ steps.task_release_gi_meta.outputs.tags }}
+                sources: |
+                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
+                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
+
+            # #
+            #   Release › Gitea › Checkpoint
             # #
 
             - name: '⚠️ Checkpoint'
               id: task_release_gi_checkpoint
               run: |
-                  echo "registry ............. Gitea"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
+                  echo "registry ..................... Gitea"
+                  echo "github.actor.................. ${{ github.actor }}"
+                  echo "github.ref ................... ${{ github.ref }}"
+                  echo "github.ref_name .............. ${{ github.ref_name }}"
+                  echo "github.event_name ............ ${{ github.event_name }}"
+                  echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
+                  echo "env.AUTHOR ................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "tags ......................... ${{ steps.task_release_gi_meta.outputs.tags }}"
+                  echo "labels ....................... ${{ steps.task_release_gi_meta.outputs.labels }}"
+                  echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
+                  echo "docker sha ................... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id (amd64) ...... ${{ steps.task_release_gi_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) ........ ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) ...... ${{ steps.task_release_gi_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) ........ ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
@@ -1781,15 +1103,16 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
                   embed-description: |
-                      ## 📦 ᲼Docker › Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
+                      ### 📦 ᲼Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Gitea. The image is available at:
                       - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push.outputs.digest }}`
+                      - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
+                      - Pull (amd64): `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}`
+                      - Pull (arm64): `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
