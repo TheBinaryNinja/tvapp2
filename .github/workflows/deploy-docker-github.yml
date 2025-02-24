@@ -235,8 +235,6 @@ jobs:
             - name: '✅ Checkout'
               id: task_release_gh_checkout
               uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             # #
             #   Release › Github › Get Timestamp
@@ -490,8 +488,6 @@ jobs:
             - name: '✅ Checkout'
               id: task_release_gh_checkout
               uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             # #
             #   Release › Github › Get Timestamp
