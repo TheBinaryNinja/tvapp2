@@ -27,12 +27,12 @@ fi
 echo "        Port(s)                 $(echo $WEB_PORT)"
 echo "        Gateway                 $(echo $IP_GATEWAY)"
 echo "        Web Server              $(echo $IP_CONTAINER:$WEB_PORT)"
-echo "        App Folder              $(echo $WORKING_DIR)"
+echo "        App Folder              $(echo $DIR_RUN)"
 echo ""
 echo '──────────────────────────────────────────────────────────────────────────────────────────'
 
 if [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
     aetherxown dockerx:dockerx /app
     aetherxown dockerx:dockerx /config
-    aetherxown dockerx:dockerx /usr/src/app
+    aetherxown dockerx:dockerx $(echo $DIR_BUILD)
 fi
