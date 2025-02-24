@@ -336,6 +336,9 @@ jobs:
                       #  latest no
                       type=raw,value=latest,enable=false
 
+                      #  tag            add arm64
+                      type=raw,enable=true,priority=1000,value=arm64
+
                       #  dispatch       add x1.x.x-arm64
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
 
@@ -345,8 +348,6 @@ jobs:
                       #  tag            add tag-arm64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
 
-                      #  tag            add arm64
-                      type=raw,enable=true,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -594,6 +595,9 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
+                      #  tag            add amd64
+                      type=raw,enable=true,priority=1000,value=amd64
+
                       #  dispatch       add x1.x.x-amd64
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
 
@@ -605,9 +609,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-
-                      #  tag            add amd64
-                      type=raw,enable=true,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
