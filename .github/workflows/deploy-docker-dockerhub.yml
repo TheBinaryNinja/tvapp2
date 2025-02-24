@@ -370,6 +370,7 @@ jobs:
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: ${{ steps.task_release_dh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
+                  provenance: false
 
             # #
             #   Release › Dockerhub › Checkpoint › Arm64
@@ -627,6 +628,7 @@ jobs:
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: ${{ steps.task_release_dh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
+                  provenance: false
 
             # #
             #   Release › Dockerhub › Checkpoint › Amd64
