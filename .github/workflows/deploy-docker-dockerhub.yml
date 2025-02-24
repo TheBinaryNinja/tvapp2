@@ -338,7 +338,7 @@ jobs:
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
 
                       #  dispatch       add arm64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-development,value=arm64
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
 
                       #  tag            add tag-arm64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
@@ -420,11 +420,11 @@ jobs:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
+                      - Pull: `docker pull ${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development-' || '' }}amd64
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
@@ -585,12 +585,12 @@ jobs:
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
 
                       #  dispatch       add amd64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-development,value=amd64
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
 
                       #  tag            add tag-arm64
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push'}},priority=600,prefix=,suffix=-amd64,event=tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
 
-                      #  add development tag
+                      #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
@@ -670,11 +670,11 @@ jobs:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
+                      - Pull: `docker pull ${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development-' || '' }}amd64
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       - Version: `${{ env.IMAGE_VERSION }}`
-                      - Pull URL: ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }}
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
