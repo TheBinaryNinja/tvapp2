@@ -236,6 +236,7 @@ jobs:
               id: task_release_set_timestamp
               run: |
                   echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
                   echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
@@ -371,6 +372,7 @@ jobs:
                   echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
+                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
 
             # #
             #   Release › Github › Build and Push › Arm64
@@ -423,7 +425,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ github.sha }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ env.DOCKER_SHA }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -489,6 +491,7 @@ jobs:
               id: task_release_set_timestamp
               run: |
                   echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
                   echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
@@ -625,6 +628,7 @@ jobs:
                   echo "tags ................. ${{ steps.task_release_gh_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
+                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
 
             # #
             #   Release › Github › Build and Push › Amd64
@@ -676,7 +680,7 @@ jobs:
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ github.sha }}`
+                      - Pull: `docker pull ghcr.io/${{ env.DOCKER_IMAGE }}@sha256:${{ env.DOCKER_SHA }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Github` https://github.com/${{ github.repository }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
