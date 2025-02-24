@@ -324,7 +324,7 @@ jobs:
             #   Release › Dockerhub › Meta › Amd64
             # #
 
-            - name: '🔨 Dockerhub: Meta - Amd64'
+            - name: '🔨 Dockerhub: Meta'
               id: task_release_dh_meta
               uses: docker/metadata-action@v5
               with:
@@ -373,7 +373,7 @@ jobs:
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
                   provenance: false
                   build-args: |-
-                    ARCH=amd64
+                      ARCH=amd64
 
             # #
             #   Release › Dockerhub › Build and Push › Arm64
@@ -392,7 +392,7 @@ jobs:
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
                   provenance: false
                   build-args: |-
-                    ARCH=arm64
+                      ARCH=arm64
 
             # #
             #   Release › Dockerhub › Push Manifest
@@ -403,8 +403,7 @@ jobs:
               uses: int128/docker-manifest-create-action@v2
               with:
                 tags: |
-                    ${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64
-                    ${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64
+                    ${{ steps.task_release_dh_meta.outputs.tags }}
                 sources: |
                     ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}
                     ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}
