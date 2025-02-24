@@ -420,7 +420,7 @@ jobs:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development-' || '' }}amd64
+                      - Pull: `docker pull ${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -670,7 +670,7 @@ jobs:
                       - https://github.com/${{ github.repository }}/pkgs/container/${{ env.IMAGE_NAME }}
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development-' || '' }}amd64
+                      - Pull: `docker pull ${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`

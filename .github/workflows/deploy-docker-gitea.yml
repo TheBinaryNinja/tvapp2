@@ -420,7 +420,7 @@ jobs:
                       - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull git.binaryninja.net/${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development-' || '' }}arm64
+                      - Pull: `docker pull git.binaryninja.net/${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -670,7 +670,7 @@ jobs:
                       - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull git.binaryninja.net/${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development-' || '' }}amd64
+                      - Pull: `docker pull git.binaryninja.net/${{ github.repository }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
