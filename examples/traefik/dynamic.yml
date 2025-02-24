@@ -1,0 +1,357 @@
+# #
+#   @module       Traefik
+#   @type         Traefik dynamic file
+#   @desc         applying changes does not require you to restart traefik when editing this file
+# #
+
+# #
+#   TCP
+# #
+
+tcp:
+    routers:
+
+    # #
+    #   TCP › Services
+    # #
+
+    services:
+
+    # #
+    #   TCP › Middleware
+    # #
+
+    middlewares:
+        tcp-MaxAllowedConn:
+            inFlightConn:
+                amount: 10
+
+# #
+#   http › Middleware
+# #
+
+http:
+    middlewares:
+
+        # #
+        #   http › Middlewares › Plugin › API Token
+        #
+        #   This Traefik middleware allows you to secure certain routes behind a request header API token. Users who have not successfully
+        #   authenticated will be greeted with a 403 Forbidden Error. Also displays information about each connection including IP address
+        #   and URL that the user is trying to access.
+        #
+        #   To access the sites protected behind this plugin, install the plugin within Firefox:
+        #       https://addons.mozilla.org/en-US/firefox/addon/modify-header-value/
+        #
+        #   Add a new header targeting your domain
+        #       Header Name     X-AUTH-TOKEN
+        #       Header Value    XXX
+        #
+        #   @url            https://plugins.traefik.io/plugins/66f6ac697dd5a6c3095befd3/api-key-and-token-middleware
+        #                   https://github.com/Aetherinox/traefik-api-token-middleware
+        # #
+
+        api:
+            plugin:
+                traefik-api-token-middleware:
+                    authenticationHeader: true
+                    authenticationheaderName: X-AUTH-TOKEN
+                    bearerHeader: true
+                    bearerHeaderName: Authorization
+                    removeHeadersOnSuccess: true
+                    removeTokenNameOnFailure: true
+                    tokens:
+                        - TokenName
+                    whitelistIPs:
+                        - "127.0.0.1"
+                    agentAllow:
+                        - 'Google'
+
+        # #
+        #   http › Middlewares › Plugin › API
+        #
+        #   Displays information in console about a connecting client
+        # #
+
+        whois:
+            plugin:
+                traefik-whois-middleware:
+                    debugLogs: true
+
+        # #
+        #   http › Middlewares › Authentik
+        # #
+
+        authentik:
+            forwardauth:
+                address: http://authentik-server:9000/outpost.goauthentik.io/auth/traefik
+                trustForwardHeader: true
+                authResponseHeaders:
+                    - X-authentik-username
+                    - X-authentik-groups
+                    - X-authentik-email
+                    - X-authentik-name
+                    - X-authentik-uid
+                    - X-authentik-jwt
+                    - X-authentik-meta-jwks
+                    - X-authentik-meta-outpost
+                    - X-authentik-meta-provider
+                    - X-authentik-meta-app
+                    - X-authentik-meta-version
+
+        # #
+        #   http › Middlewares › Redirect www
+        #
+        #   http://www.my-site.org => https://my-site.org
+        #     - "traefik.http.routers.my-site.middlewares=redirect-www@file"
+        # #
+
+        redirect-www:
+            redirectRegex:
+                regex: "^https?://www\\.(.+)"
+                replacement: "https://${1}"
+                permanent: true
+
+        # #
+        #   http › Middlewares › Https-Forward
+        #
+        #   usage:
+        #       - traefik.http.routers.vscode-http.middlewares=default-headers@file
+        # #
+
+        https-forward:
+            headers:
+                customRequestHeaders:
+                    X-Forwarded-Proto: https
+
+        # #
+        #   http › Middlewares › Redirect http to https
+        # #
+
+        https-redirect:
+            redirectScheme:
+                scheme: "https"
+                permanent: true
+
+        # #
+        #   http › Middlewares › Error page handling
+        #
+        #   all error pages from 400 - 599 will redirect to catchall
+        # #
+
+        error-page:
+            errors:
+                status:
+                    - "400-599"
+                service: catchall@file
+                query: "/index.html"
+
+        # #
+        #   http › Middleware › Redirect invalid subdomains to 404
+        # #
+
+        router-error:
+            redirectRegex:
+                regex: ".*"
+                replacement: https://domain.lan/404.html
+                permanent: false
+
+    # #
+    #   http › Routers
+    # #
+
+    routers:
+
+        catchall:
+            entryPoints: http,https
+            rule: HostRegexp(`^.+.domain.lan$`)
+            service: catchall@file
+            tls:
+                certResolver: cloudflare
+            priority: 1
+            middlewares:
+                - router-error
+
+        # #
+        #   @container          Traefik
+        #   @url                https://hub.docker.com/_/traefik
+        #                       https://github.com/traefik/traefik
+        #                       https://doc.traefik.io/traefik/providers/docker/
+        #   @api                https://traefik.domain.com/api/http/routers
+        #
+        #   Requires chmod 600:
+        #       - /ssl/cloudflare/acme.json
+        #       - /ssl/letsencrypt/acme.json
+        #
+        # #
+
+        traefik:
+            service: api@internal
+            rule: "Host(`traefik.domain.lan`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))"
+            entryPoints:
+                - "traefik"
+            middlewares:
+                - redirect-www@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+
+        traefik-http:
+            service: "traefik"
+            rule: "Host(`traefik.localhost`) || Host(`traefik.domain.lan`)"
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        traefik-https:
+            service: "traefik"
+            rule: "Host(`traefik.localhost`) || Host(`traefik.domain.lan`)"
+            entryPoints:
+                - https
+            middlewares:
+                - redirect-www@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+
+        # #
+        #   @container          Plex
+        #   @desc               All-in-one multimedia server which allows you to host your own streaming service for videos
+        #                       music, and photo collections, for any device.
+        #   @url:               https://github.com/plexinc/pms-docker
+        #                       https://github.com/linuxserver/docker-plex
+        #                       https://github.com/linuxserver/docker-documentation
+        #                       https://docs.linuxserver.io/images/docker-plex/
+        # #
+
+        plex-http:
+            service: "plex"
+            rule: "Host(`plex.localhost`) || Host(`plex.domain.lan`)"
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        plex-https:
+            service: "plex"
+            rule: "Host(`plex.localhost`) || Host(`plex.domain.lan`)"
+            entryPoints:
+                - https
+            middlewares:
+                - redirect-www@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+
+        # #
+        #   @container          Jellyfin
+        #   @desc               Jellyfin is a Free Software Media System that puts you in control of managing and streaming your media.
+        #                       It is an alternative to the proprietary Emby and Plex, to provide media from a dedicated server to
+        #                       end-user devices via multiple apps. Jellyfin is descended from Emby's 3.5.2 release and ported to the
+        #                       .NET Core framework to enable full cross-platform support. There are no strings attached, no premium
+        #                       licenses or features, and no hidden agendas: just a team who want to build something better and work
+        #                       together to achieve it. We welcome anyone who is interested in joining us in our quest!
+        #
+        #   @url:               https://github.com/jellyfin/jellyfin
+        #                       https://hub.docker.com/r/jellyfin/jellyfin
+        #
+        #                       https://github.com/linuxserver/docker-jellyfin
+        #                       https://hub.docker.com/r/linuxserver/jellyfin
+        #
+        #                       https://jellyfin.org/
+        #                       https://jellyfin.org/docs/
+        # #
+
+        jellyfin-http:
+            service: "jellyfin"
+            rule: "Host(`jelly.localhost`) || Host(`jelly.domain.lan`)"
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        jellyfin-https:
+            service: "jellyfin"
+            rule: "Host(`jelly.localhost`) || Host(`jelly.domain.lan`)"
+            entryPoints:
+                - https
+            middlewares:
+                - redirect-www@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+
+        # #
+        #   @container          TVApp2
+        #   @desc               utomatic M3U playlist and XML guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
+        #   @url                https://github.com/TheBinaryNinja/tvapp2
+        #
+        #   remove / comment out the authentik line if you do not plan to use authentik:
+        #       - authentik@file
+        # #
+
+        tvapp2-http:
+            service: "tvapp2"
+            rule: "Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)"
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        tvapp2-https:
+            service: "tvapp2"
+            rule: "Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)"
+            entryPoints:
+                - https
+            middlewares:
+                - redirect-www@file
+                - authentik@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+
+    # #
+    #   http › Services
+    # #
+
+    services:
+        catchall:
+            loadBalancer:
+                servers:
+                    - url: "https://nginx:443"
+
+        traefik:
+            loadBalancer:
+                servers:
+                    - url: "http://traefik:8080"
+
+        jellyfin:
+            loadBalancer:
+                servers:
+                    - url: "http://jellyfin:8096"
+
+        plex:
+            loadBalancer:
+                servers:
+                    - url: "http://plex:32400"
+
+        tvapp2:
+            loadBalancer:
+                servers:
+                    - url: "http://tvapp2:4124"
