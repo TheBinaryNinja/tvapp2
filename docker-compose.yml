@@ -27,10 +27,10 @@ services:
 
     tvapp2:
         container_name: tvapp2
-        image: tvapp2:latest                                        # Image: Locally built
-      # image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+        image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
       # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
       # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
+      # image: tvapp2:latest                                        # Image: Locally built
         hostname: tvapp2
         environment:
             TZ: "Etc/UTC"
