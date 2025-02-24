@@ -1615,15 +1615,15 @@ The following people have helped get this project going:
   [github-commit-uri]: https://github.com/TheBinaryNinja/tvapp2/commits/main/
 
 <!-- BADGE > Github > Docker Image > SELFHOSTED BADGES -->
-  [github-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=latest&label=version&trim=
+  [github-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=development-amd64%2Cdevelopment%2Cdevelopment-arm64%2Clatest&label=version&trim=
   [github-docker-version-uri]: https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2
 
 <!-- BADGE > Dockerhub > Docker Image -->
-  [dockerhub-docker-version-img]: https://img.shields.io/docker/v/thebinaryninja/tvapp2
+  [dockerhub-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=development-amd64%2Cdevelopment%2Cdevelopment-arm64%2Clatest&label=version&trim=
   [dockerhub-docker-version-uri]: https://hub.docker.com/repository/docker/thebinaryninja/tvapp2/general
 
 <!-- BADGE > Gitea > Docker Image > SELFHOSTED BADGES -->
-  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%23f21171&ignore=latest&label=version&trim=
+  [gitea-docker-version-img]: https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&ignore=development-amd64%2Cdevelopment%2Cdevelopment-arm64%2Clatest&label=version&trim=
   [gitea-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/tvapp2
 
 <!-- BADGE > Gitea 2 > Docker Image -->
