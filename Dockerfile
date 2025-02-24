@@ -19,7 +19,16 @@
 #       arm64       docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
 # #
 
-FROM ghcr.io/aetherinox/alpine-base:3.20-amd64
+# #
+#   FROM
+#   any args defined before FROM cannot be called after FROM and the ARE is classified outside the build process.
+#   You will have to re-define the arg after FROM to utilize it anywhere else in the build process.
+#
+#   @ref            https://docs.docker.com/reference/dockerfile/#understand-how-arg-and-from-interact
+# #
+
+ARG ARCH=and64
+FROM ghcr.io/aetherinox/alpine-base:3.20-${ARCH}
 
 # #
 #   Set Args
