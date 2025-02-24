@@ -405,8 +405,8 @@ jobs:
                 tags: |
                     ${{ steps.task_release_gi_meta.outputs.tags }}
                 sources: |
-                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
-                    ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
+                    git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
+                    git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
 
             # #
             #   Release › Gitea › Checkpoint
