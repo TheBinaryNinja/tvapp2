@@ -401,7 +401,7 @@ jobs:
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
 
                       #  tag            add arm64
-                      type=raw,enable=false,priority=100,value=arm64
+                      type=raw,enable=true,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -663,7 +663,7 @@ jobs:
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
 
                       #  tag            add amd64
-                      type=raw,enable=false,priority=100,value=amd64
+                      type=raw,enable=true,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
@@ -922,7 +922,7 @@ jobs:
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
 
                       #  tag            add arm64
-                      type=raw,enable=false,priority=100,value=arm64
+                      type=raw,enable=true,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -1183,7 +1183,7 @@ jobs:
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
 
                       #  tag            add amd64
-                      type=raw,enable=false,priority=100,value=amd64
+                      type=raw,enable=true,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
@@ -1443,7 +1443,7 @@ jobs:
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
 
                       #  tag            add arm64
-                      type=raw,enable=false,priority=100,value=arm64
+                      type=raw,enable=true,priority=100,value=arm64
                   flavor: |
                       latest=false
                   labels: |
@@ -1705,7 +1705,7 @@ jobs:
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
 
                       #  tag            add amd64
-                      type=raw,enable=false,priority=100,value=amd64
+                      type=raw,enable=true,priority=100,value=amd64
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
