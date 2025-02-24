@@ -239,7 +239,7 @@ jobs:
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-                  echo "REPO=${GITHUB_REPOSITORY@L}" >> "${GITHUB_ENV}"
+                  echo "REPO=${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
 
             # #
             #   Release › Github › Checkout › Arm64
@@ -491,7 +491,7 @@ jobs:
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
-                  echo "REPO=${GITHUB_REPOSITORY@L}" >> "${GITHUB_ENV}"
+                  echo "REPO=${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
 
             # #
             #   Release › Github › Checkout › Amd64
