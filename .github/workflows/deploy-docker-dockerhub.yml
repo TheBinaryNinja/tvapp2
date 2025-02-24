@@ -337,7 +337,7 @@ jobs:
                       type=raw,value=latest,enable=false
 
                       #  tag            add arm64
-                      type=raw,enable=true,priority=1000,value=arm64
+                      #  type=raw,enable=true,priority=1000,value=arm64
 
                       #  dispatch       add x1.x.x-arm64
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
@@ -596,7 +596,7 @@ jobs:
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
                       #  tag            add amd64
-                      type=raw,enable=true,priority=1000,value=amd64
+                      #  type=raw,enable=true,priority=1000,value=amd64
 
                       #  dispatch       add x1.x.x-amd64
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
