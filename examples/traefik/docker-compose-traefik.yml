@@ -1,0 +1,90 @@
+# #
+#   TVApp2 › Docker-compose.yml › Traefik Labels
+#
+#   Automatic M3U playlist and XML guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
+#
+#   This docker-compose.yml file contains labels set up for Traefik reverse proxy. if you do not wish to use Traefik, remove
+#   the labels.
+#
+#   @url                  https://github.com/TheBinaryNinja/tvapp2
+#                         https://git.binaryninja.net/BinaryNinja/tvapp2
+#
+#   @image:github         ghcr.io/thebinaryninja/tvapp2:latest
+#                         ghcr.io/thebinaryninja/tvapp2:amd64
+#                         ghcr.io/thebinaryninja/tvapp2:arm64
+#
+#   @image:dockerhub      thebinaryninja/tvapp2:latest
+#                         thebinaryninja/tvapp2:1.0.0-amd64
+#                         thebinaryninja/tvapp2:1.0.0-arm64
+#
+#   @image:gitea          git.binaryninja.net/binaryninja/tvapp2:latest
+#                         git.binaryninja.net/binaryninja/tvapp2:1.0.0-amd64
+#                         git.binaryninja.net/binaryninja/tvapp2:1.0.0-arm64
+# #
+
+services:
+
+    # #
+    #   Service › TVApp2 › Traefik Labels
+    # #
+
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest                 # Image: Github
+      # image: thebinaryninja/tvapp2:latest                         # Image: Dockerhub
+      # image: git.binaryninja.net/binaryninja/tvapp2:latest        # Image: Gitea
+      # image: tvapp2:latest                                        # Image: Locally built
+        hostname: tvapp2
+        environment:
+            TZ: "Etc/UTC"
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        labels:
+
+          # #
+          #   General
+          # #
+
+          - traefik.enable=true
+
+          # #
+          #   Scope > http
+          # #
+
+          - traefik.http.routers.tvapp2-http.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`) || Host(`www.tvapp2.domain.lan`) || Host(`${SERVICE_IP}`)
+          - traefik.http.routers.tvapp2-http.service=tvapp2
+          - traefik.http.routers.tvapp2-http.entrypoints=http
+          - traefik.http.routers.tvapp2-http.priority=1
+          - traefik.http.routers.tvapp2-http.middlewares=https-redirect@file
+
+          # #
+          #   Scope > https
+          #
+          #   remove the authentik@file line if you do not wish to use Authentik or middleware
+          #       - traefik.http.routers.tvapp2-https.middlewares=authentik@file
+          # #
+
+          - traefik.http.routers.tvapp2-https.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)
+          - traefik.http.routers.tvapp2-https.service=tvapp2
+          - traefik.http.routers.tvapp2-https.entrypoints=https
+          - traefik.http.routers.tvapp2-https.priority=1
+          - traefik.http.routers.tvapp2-https.tls=true
+          - traefik.http.routers.tvapp2-https.tls.certresolver=cloudflare
+          - traefik.http.routers.tvapp2-https.tls.domains[0].main=domain.lan
+          - traefik.http.routers.tvapp2-https.tls.domains[0].sans=*.domain.lan
+          - traefik.http.routers.tvapp2-https.middlewares=authentik@file
+
+          # #
+          #   Load Balancer
+          # #
+
+          - traefik.http.services.tvapp2.loadbalancer.server.port=http
+          - traefik.http.services.tvapp2.loadbalancer.server.scheme=4124
