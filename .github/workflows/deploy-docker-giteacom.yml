@@ -258,13 +258,14 @@ jobs:
             - name: '🕛 Get Timestamp'
               id: task_release_set_timestamp
               run: |
-                  echo "DOCKER_IMAGE=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}      #  binaryninja/tvapp2
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                    #  71fad013cfce9116ec62779e4a7e627fe4c33627
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                            #  02-25-2025 12:49:48
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                               #  02-25-2025
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                          #  02-25-2025 12:49
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                          #  20250225
-                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                      #  2025-02-25T12:50:11.569Z
+                  echo "REGISTRY_REPO_ORG_AUTHOR_LC=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}   #  binaryninja/tvapp2
+                  echo "REGISTRY_REPO_AUTHOR_LC=`echo ${{ env.IMAGE_GITEA_AUTHOR }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}                             #  binaryninja
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                                #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                                        #  02-25-2025 12:49:48
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                                           #  02-25-2025
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                      #  02-25-2025 12:49
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                      #  20250225
+                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                  #  2025-02-25T12:50:11.569Z
 
             # #
             #   Release › Gitea › Install Dependencies
@@ -406,7 +407,7 @@ jobs:
                   echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
                   echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
+                  echo "docker image ......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
                   echo "docker sha ........... ${{ env.DOCKER_SHA }}"
                   echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
                   echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
@@ -445,8 +446,8 @@ jobs:
                       - https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
-                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push.outputs.digest }}`
+                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-arm64`
+                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gi_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
@@ -520,13 +521,14 @@ jobs:
             - name: '🕛 Get Timestamp'
               id: task_release_set_timestamp
               run: |
-                  echo "DOCKER_IMAGE=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}      #  binaryninja/tvapp2
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                    #  71fad013cfce9116ec62779e4a7e627fe4c33627
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                            #  02-25-2025 12:49:48
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                               #  02-25-2025
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                          #  02-25-2025 12:49
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                          #  20250225
-                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                      #  2025-02-25T12:50:11.569Z
+                  echo "REGISTRY_REPO_ORG_AUTHOR_LC=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}   #  binaryninja/tvapp2
+                  echo "REGISTRY_REPO_AUTHOR_LC=`echo ${{ env.IMAGE_GITEA_AUTHOR }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}                             #  binaryninja
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                                #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                                        #  02-25-2025 12:49:48
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                                           #  02-25-2025
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                      #  02-25-2025 12:49
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                      #  20250225
+                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                  #  2025-02-25T12:50:11.569Z
 
             # #
             #   Release › Gitea › Install Dependencies
@@ -669,7 +671,6 @@ jobs:
                   echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
                   echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
                   echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.DOCKER_IMAGE }}"
                   echo "docker sha ........... ${{ env.DOCKER_SHA }}"
                   echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
                   echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
@@ -707,8 +708,8 @@ jobs:
                       - https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
-                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push.outputs.digest }}`
+                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}-amd64`
+                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gi_push.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
