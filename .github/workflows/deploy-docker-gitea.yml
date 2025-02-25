@@ -245,7 +245,7 @@ jobs:
             - name: '🕛 Get Timestamp'
               id: task_release_set_timestamp
               run: |
-                  echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
+                  echo "DOCKER_IMAGE=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
                   echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
                   echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
@@ -463,6 +463,7 @@ jobs:
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Gitea. The image is available at:
                       - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
+                      - Version: `${{ env.IMAGE_VERSION }}`
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
                       - Pull (amd64): `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}`
@@ -470,7 +471,6 @@ jobs:
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      - Version: `${{ env.IMAGE_VERSION }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`

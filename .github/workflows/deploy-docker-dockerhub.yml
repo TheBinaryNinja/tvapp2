@@ -463,6 +463,7 @@ jobs:
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Dockerhub. The image is available at:
                       - https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
 
+                      - Version: `${{ env.IMAGE_VERSION }}`
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
                       - Pull: `docker pull ${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
                       - Pull (amd64): `docker pull ${{ env.DOCKER_IMAGE }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}`
@@ -470,7 +471,6 @@ jobs:
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Dockerhub` https://hub.docker.com/r/${{ env.IMAGE_DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
-                      - Version: `${{ env.IMAGE_VERSION }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
