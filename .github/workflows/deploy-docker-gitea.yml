@@ -523,7 +523,6 @@ jobs:
                   echo "(arm64) labels ........................... ${{ steps.task_release_gi_meta_arm64.outputs.labels }}"
                   echo "(arm64) digest ........................... ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
                   echo ""
-                  echo ""
                   echo "(release) tags ........................... ${{ steps.task_release_gi_meta_release.outputs.tags }}"
                   echo "(release) labels ......................... ${{ steps.task_release_gi_meta_release.outputs.labels }}"
                   echo ""
