@@ -41,15 +41,15 @@ on:
 # #
 
 env:
-    PREFIX_BUG:           "Bug"
+    PREFIX_BUG:           "🐛 Bug"
     PREFIX_DEPENDENCY:    "Dependency"
     PREFIX_DOCS:          "Docs"
-    PREFIX_FEATURE:       "Feature"
+    PREFIX_FEATURE:       "💡 Feature"
     PREFIX_GIT:           "Git Action"
     PREFIX_PR:            "PR"
-    PREFIX_ROADMAP:       "Roadmap"
+    PREFIX_ROADMAP:       "🗺️ Roadmap"
     PREFIX_INTERNAL:      "Internal"
-    PREFIX_URGENT:        "Urgent"
+    PREFIX_URGENT:        "⚠ Urgent"
 
     LABEL_BUG:            "Type ◦ Bug"
     LABEL_DEPENDENCY:     "Type ◦ Dependency"
@@ -141,8 +141,7 @@ jobs:
     job-labels-create:
         name: >-
             🎫 Labels › Verify Existing
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
         timeout-minutes: 4
         steps:
 
@@ -218,8 +217,7 @@ jobs:
     job-issues-nolabel:
         name: >-
             🎫 Labels › Assign Missing
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
         timeout-minutes: 4
         needs: job-labels-create
         steps:
@@ -587,8 +585,7 @@ jobs:
     job-issues-stale:
         name: >-
             💤 Check › Stale
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
         timeout-minutes: 4
         needs:
             - job-labels-create
@@ -631,8 +628,7 @@ jobs:
     job-issues-lock:
         name: >-
             🔒 Check › Inactive
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
         timeout-minutes: 4
         needs:
             - job-labels-create
