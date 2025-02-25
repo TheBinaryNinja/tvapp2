@@ -321,11 +321,83 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
             # #
-            #   Release › Gitea › Meta
+            #   Release › Gitea › Meta › amd64
             # #
 
-            - name: '🔨 Gitea: Meta'
+            - name: '🔨 Gitea: Meta › amd64'
               id: task_release_gi_meta_amd64
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      #  latest yes
+                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
+
+                      #  tag            add amd64
+                      #  type=raw,enable=true,priority=1000,value=amd64
+
+                      #  dispatch       add x1.x.x-amd64
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add amd64-development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
+
+                      #  tag            add tag-amd64
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
+
+                      #  add development tag to default architecture (amd64)
+                      type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=${{ !inputs.DEV_RELEASE }}
+                  labels: |
+                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+
+            # #
+            #   Release › Gitea › Meta › arm64
+            # #
+
+            - name: '🔨 Gitea: Meta › arm64'
+              id: task_release_gi_meta_arm64
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      #  latest yes
+                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
+
+                      #  dispatch       add x1.x.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
+
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+                  flavor: |
+                      latest=${{ !inputs.DEV_RELEASE }}
+                  labels: |
+                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+
+            # #
+            #   Release › Gitea › Meta › Release
+            # #
+
+            - name: '🔨 Gitea: Meta › Release'
+              id: task_release_gi_meta_release
               uses: docker/metadata-action@v5
               with:
                   images: |
@@ -345,39 +417,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
-                  labels: |
-                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
-                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
-                      org.opencontainers.image.licenses=MIT
-                      org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
-                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-
-            # #
-            #   Release › Gitea › Meta
-            # #
-
-            - name: '🔨 Gitea: Meta'
-              id: task_release_gi_meta_arm64
-              uses: docker/metadata-action@v5
-              with:
-                  images: |
-                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
-                  tags: |
-                      #  latest yes
-                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
-
-                      #  dispatch       add x1.x.x
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
-
-                      #  dispatch       add development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
-
-                      #  tag            add tag
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
@@ -436,7 +475,7 @@ jobs:
               uses: int128/docker-manifest-create-action@v2
               with:
                 tags: |
-                    ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
+                    ${{ steps.task_release_gi_meta_release.outputs.tags }}
                 sources: |
                     git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
                     git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
