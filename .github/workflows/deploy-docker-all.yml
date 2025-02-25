@@ -339,7 +339,9 @@ jobs:
             - name: '🔐 Apply dos2unix'
               id: task_release_gh_dos2unix
               run: |
+                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
                   find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
+                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
 
             # #
             #   Release › Github › Fix Permissions
@@ -416,8 +418,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -670,7 +670,9 @@ jobs:
             - name: '🔐 Apply dos2unix'
               id: task_release_dh_dos2unix
               run: |
+                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
                   find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
+                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
 
             # #
             #   Release › Dockerhub › Fix Permissions
@@ -746,8 +748,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -1000,7 +1000,9 @@ jobs:
             - name: '🔐 Apply dos2unix'
               id: task_release_gi_dos2unix
               run: |
+                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
                   find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
+                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
 
             # #
             #   Release › Gitea › Fix Permissions
@@ -1077,8 +1079,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -1100,9 +1100,6 @@ jobs:
                   images: |
                       ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
-                      #  latest yes
-                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
-
                       #  dispatch       add x1.x.x
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
 
@@ -1111,8 +1108,6 @@ jobs:
 
                       #  tag            add tag
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -1148,8 +1143,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}

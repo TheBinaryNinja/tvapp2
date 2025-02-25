@@ -271,7 +271,9 @@ jobs:
             - name: '🔐 Apply dos2unix'
               id: task_release_dh_dos2unix
               run: |
+                  echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
                   find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
+                  echo "✅✅✅ Completed DOS2UNIX ✅✅✅"
 
             # #
             #   Release › Dockerhub › Fix Permissions
@@ -347,8 +349,6 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
-                  flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
