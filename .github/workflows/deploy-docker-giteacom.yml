@@ -500,7 +500,7 @@ jobs:
             - name: '🏳️ Start'
               id: task_release_gi_start
               run: |
-                  echo "Generating Docker Image on ${{ env.IMAGE_GITEA_WEBSITE }} › arm64"
+                  echo "Generating Docker Image on ${{ env.IMAGE_GITEA_WEBSITE }} › amd64"
                   echo "Using original Gitea workflow without manifest"
 
             # #

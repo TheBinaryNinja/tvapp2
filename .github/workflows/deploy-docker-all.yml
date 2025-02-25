@@ -779,21 +779,32 @@ jobs:
             - name: '⚠️ Checkpoint'
               id: task_release_dh_checkpoint
               run: |
-                  echo "registry ..................... Dockerhub"
-                  echo "github.actor.................. ${{ github.actor }}"
-                  echo "github.ref ................... ${{ github.ref }}"
-                  echo "github.ref_name .............. ${{ github.ref_name }}"
-                  echo "github.event_name ............ ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ................... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
-                  echo "tags ......................... ${{ steps.task_release_dh_meta.outputs.tags }}"
-                  echo "labels ....................... ${{ steps.task_release_dh_meta.outputs.labels }}"
-                  echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ................... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id (amd64) ...... ${{ steps.task_release_dh_push_amd64.outputs.imageid }}"
-                  echo "docker digest (amd64) ........ ${{ steps.task_release_dh_push_amd64.outputs.digest }}"
-                  echo "docker image id (arm64) ...... ${{ steps.task_release_dh_push_arm64.outputs.imageid }}"
-                  echo "docker digest (arm64) ........ ${{ steps.task_release_dh_push_arm64.outputs.digest }}"
+                  echo "github.actor.............................. ${{ github.actor }}"
+                  echo "github.ref ............................... ${{ github.ref }}"
+                  echo "github.ref_name .......................... ${{ github.ref_name }}"
+                  echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo ""
+                  echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
+                  echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
+                  echo "inputs.IMAGE_DOCKERHUB_AUTHOR ............ ${{ inputs.IMAGE_DOCKERHUB_AUTHOR }}"
+                  echo "inputs.IMAGE_DOCKERHUB_AUTHOR ............ ${{ inputs.IMAGE_DOCKERHUB_USERNAME }}"
+                  echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
+                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
+                  echo ""
+                  echo "registry ................................. Dockerhub"
+                  echo "tags ..................................... ${{ steps.task_release_dh_meta.outputs.tags }}"
+                  echo "labels ................................... ${{ steps.task_release_dh_meta.outputs.labels }}"
+                  echo "env.AUTHOR ............................... ${{ env.IMAGE_DOCKERHUB_AUTHOR }}"
+                  echo "env.NOW .................................. ${{ env.NOW }}"
+                  echo "env.NOW_SHORT ............................ ${{ env.NOW_SHORT }}"
+                  echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
+                  echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
+                  echo "env.DOCKER_IMAGE ......................... ${{ env.DOCKER_IMAGE }}"
+                  echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id (amd64) .................. ${{ steps.task_release_dh_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) .................... ${{ steps.task_release_dh_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) .................. ${{ steps.task_release_dh_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) .................... ${{ steps.task_release_dh_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Dockerhub › Get Weekly Commits
@@ -981,11 +992,80 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
             # #
-            #   Release › Gitea › Meta
+            #   Release › Gitea › Meta › amd64
             # #
 
-            - name: '🔨 Gitea: Meta'
-              id: task_release_gi_meta
+            - name: '🔨 Gitea: Meta › amd64'
+              id: task_release_gi_meta_amd64
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      #  latest yes
+                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
+
+                      #  dispatch       add x1.x.x-amd64
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add amd64-development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
+
+                      #  tag            add tag-amd64
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
+
+                      #  add development tag to default architecture (amd64)
+                      type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=${{ !inputs.DEV_RELEASE }}
+                  labels: |
+                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+
+            # #
+            #   Release › Gitea › Meta › arm64
+            # #
+
+            - name: '🔨 Gitea: Meta › arm64'
+              id: task_release_gi_meta_arm64
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      #  latest yes
+                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
+
+                      #  dispatch       add x1.x.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
+
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+                  flavor: |
+                      latest=${{ !inputs.DEV_RELEASE }}
+                  labels: |
+                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+
+            # #
+            #   Release › Gitea › Meta › Release
+            # #
+
+            - name: '🔨 Gitea: Meta › Release'
+              id: task_release_gi_meta_release
               uses: docker/metadata-action@v5
               with:
                   images: |
@@ -1029,8 +1109,8 @@ jobs:
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  tags: ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
                   provenance: false
                   build-args: |-
                       ARCH=amd64
@@ -1048,8 +1128,8 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  tags: ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
                   provenance: false
                   build-args: |-
                       ARCH=arm64
@@ -1063,7 +1143,7 @@ jobs:
               uses: int128/docker-manifest-create-action@v2
               with:
                 tags: |
-                    ${{ steps.task_release_gi_meta.outputs.tags }}
+                    ${{ steps.task_release_gi_meta_release.outputs.tags }}
                 sources: |
                     ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
                     ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
@@ -1075,21 +1155,50 @@ jobs:
             - name: '⚠️ Checkpoint'
               id: task_release_gi_checkpoint
               run: |
-                  echo "registry ..................... Gitea"
-                  echo "github.actor.................. ${{ github.actor }}"
-                  echo "github.ref ................... ${{ github.ref }}"
-                  echo "github.ref_name .............. ${{ github.ref_name }}"
-                  echo "github.event_name ............ ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ................... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ......................... ${{ steps.task_release_gi_meta.outputs.tags }}"
-                  echo "labels ....................... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ................... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id (amd64) ...... ${{ steps.task_release_gi_push_amd64.outputs.imageid }}"
-                  echo "docker digest (amd64) ........ ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
-                  echo "docker image id (arm64) ...... ${{ steps.task_release_gi_push_arm64.outputs.imageid }}"
-                  echo "docker digest (arm64) ........ ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
+                  echo ""
+                  echo "[ GITHUB ] ---------------------------------------------------------------------------------------------"
+                  echo "github.actor.............................. ${{ github.actor }}"
+                  echo "github.ref ............................... ${{ github.ref }}"
+                  echo "github.ref_name .......................... ${{ github.ref_name }}"
+                  echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo ""
+                  echo "[ INPUTS ] ---------------------------------------------------------------------------------------------"
+                  echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
+                  echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
+                  echo "inputs.IMAGE_GITEA_USERNAME .............. ${{ inputs.IMAGE_GITEA_AUTHOR }}"
+                  echo "inputs.IMAGE_GITEA_USERNAME .............. ${{ inputs.IMAGE_GITEA_USERNAME }}"
+                  echo "inputs.IMAGE_GITEA_WEBSITE ............... ${{ inputs.IMAGE_GITEA_WEBSITE }}"
+                  echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
+                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
+                  echo ""
+                  echo "[ DOCKER IMAGES ] --------------------------------------------------------------------------------------"
+                  echo "registry ................................. Gitea"
+                  echo "(amd64) tags ............................. ${{ steps.task_release_gi_meta_amd64.outputs.tags }}"
+                  echo "(amd64) labels ........................... ${{ steps.task_release_gi_meta_amd64.outputs.labels }}"
+                  echo "(amd64) digest ........................... ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
+                  echo ""
+                  echo "(arm64) tags ............................. ${{ steps.task_release_gi_meta_arm64.outputs.tags }}"
+                  echo "(arm64) labels ........................... ${{ steps.task_release_gi_meta_arm64.outputs.labels }}"
+                  echo "(arm64) digest ........................... ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
+                  echo ""
+                  echo ""
+                  echo "(release) tags ........................... ${{ steps.task_release_gi_meta_release.outputs.tags }}"
+                  echo "(release) labels ......................... ${{ steps.task_release_gi_meta_release.outputs.labels }}"
+                  echo ""
+                  echo "[ ENV ] ------------------------------------------------------------------------------------------------"
+                  echo "env.AUTHOR ............................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "env.NOW .................................. ${{ env.NOW }}"
+                  echo "env.NOW_SHORT ............................ ${{ env.NOW_SHORT }}"
+                  echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
+                  echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
+                  echo "env.DOCKER_IMAGE ......................... ${{ env.DOCKER_IMAGE }}"
+                  echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
+                  echo ""
+                  echo "[ DOCKER DIGESTS ] -------------------------------------------------------------------------------------"
+                  echo "docker image id (amd64) .................. ${{ steps.task_release_gi_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) .................... ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) .................. ${{ steps.task_release_gi_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) .................... ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
@@ -1141,14 +1250,14 @@ jobs:
                       -# This docker image will use the following tags:
 
                       ```
-                      ${{ steps.task_release_gi_meta.outputs.tags }}
+                      ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
                       ```
 
                       ### Labels
                       -# This docker image embeds the following labels:
 
                       ```
-                      ${{ steps.task_release_gi_meta.outputs.labels }}
+                      ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
                       ```
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"

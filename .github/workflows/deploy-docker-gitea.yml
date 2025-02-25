@@ -347,9 +347,6 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  tag            add amd64
-                      #  type=raw,enable=true,priority=1000,value=amd64
-
                       #  dispatch       add x1.x.x-amd64
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
 
@@ -500,21 +497,50 @@ jobs:
             - name: '⚠️ Checkpoint'
               id: task_release_gi_checkpoint
               run: |
-                  echo "registry ..................... Gitea"
-                  echo "github.actor.................. ${{ github.actor }}"
-                  echo "github.ref ................... ${{ github.ref }}"
-                  echo "github.ref_name .............. ${{ github.ref_name }}"
-                  echo "github.event_name ............ ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ................... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ......................... ${{ steps.task_release_gi_meta_amd64.outputs.tags }}"
-                  echo "labels ....................... ${{ steps.task_release_gi_meta_amd64.outputs.labels }}"
-                  echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
-                  echo "docker sha ................... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id (amd64) ...... ${{ steps.task_release_gi_push_amd64.outputs.imageid }}"
-                  echo "docker digest (amd64) ........ ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
-                  echo "docker image id (arm64) ...... ${{ steps.task_release_gi_push_arm64.outputs.imageid }}"
-                  echo "docker digest (arm64) ........ ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
+                  echo ""
+                  echo "[ GITHUB ] ---------------------------------------------------------------------------------------------"
+                  echo "github.actor.............................. ${{ github.actor }}"
+                  echo "github.ref ............................... ${{ github.ref }}"
+                  echo "github.ref_name .......................... ${{ github.ref_name }}"
+                  echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo ""
+                  echo "[ INPUTS ] ---------------------------------------------------------------------------------------------"
+                  echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
+                  echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
+                  echo "inputs.IMAGE_GITEA_USERNAME .............. ${{ inputs.IMAGE_GITEA_AUTHOR }}"
+                  echo "inputs.IMAGE_GITEA_USERNAME .............. ${{ inputs.IMAGE_GITEA_USERNAME }}"
+                  echo "inputs.IMAGE_GITEA_WEBSITE ............... ${{ inputs.IMAGE_GITEA_WEBSITE }}"
+                  echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
+                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
+                  echo ""
+                  echo "[ DOCKER IMAGES ] --------------------------------------------------------------------------------------"
+                  echo "registry ................................. Gitea"
+                  echo "(amd64) tags ............................. ${{ steps.task_release_gi_meta_amd64.outputs.tags }}"
+                  echo "(amd64) labels ........................... ${{ steps.task_release_gi_meta_amd64.outputs.labels }}"
+                  echo "(amd64) digest ........................... ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
+                  echo ""
+                  echo "(arm64) tags ............................. ${{ steps.task_release_gi_meta_arm64.outputs.tags }}"
+                  echo "(arm64) labels ........................... ${{ steps.task_release_gi_meta_arm64.outputs.labels }}"
+                  echo "(arm64) digest ........................... ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
+                  echo ""
+                  echo ""
+                  echo "(release) tags ........................... ${{ steps.task_release_gi_meta_release.outputs.tags }}"
+                  echo "(release) labels ......................... ${{ steps.task_release_gi_meta_release.outputs.labels }}"
+                  echo ""
+                  echo "[ ENV ] ------------------------------------------------------------------------------------------------"
+                  echo "env.AUTHOR ............................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "env.NOW .................................. ${{ env.NOW }}"
+                  echo "env.NOW_SHORT ............................ ${{ env.NOW_SHORT }}"
+                  echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
+                  echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
+                  echo "env.DOCKER_IMAGE ......................... ${{ env.DOCKER_IMAGE }}"
+                  echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
+                  echo ""
+                  echo "[ DOCKER DIGESTS ] -------------------------------------------------------------------------------------"
+                  echo "docker image id (amd64) .................. ${{ steps.task_release_gi_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) .................... ${{ steps.task_release_gi_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) .................. ${{ steps.task_release_gi_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) .................... ${{ steps.task_release_gi_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
