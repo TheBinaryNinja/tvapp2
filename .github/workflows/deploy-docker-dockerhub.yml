@@ -374,6 +374,8 @@ jobs:
                   provenance: false
                   build-args: |-
                       ARCH=amd64
+                      VERSION=${{ env.IMAGE_VERSION }}
+                      BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
             # #
             #   Release › Dockerhub › Build and Push › Arm64
@@ -393,6 +395,8 @@ jobs:
                   provenance: false
                   build-args: |-
                       ARCH=arm64
+                      VERSION=${{ env.IMAGE_VERSION }}
+                      BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
             # #
             #   Release › Dockerhub › Push Manifest
