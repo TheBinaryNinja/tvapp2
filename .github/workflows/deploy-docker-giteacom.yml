@@ -627,7 +627,7 @@ jobs:
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
-                      latest=${{ !inputs.DEV_RELEASE }}
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}

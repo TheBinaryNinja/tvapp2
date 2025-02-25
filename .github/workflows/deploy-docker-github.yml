@@ -347,6 +347,8 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -370,9 +372,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=amd64
                       VERSION=${{ env.IMAGE_VERSION }}
@@ -391,9 +395,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}

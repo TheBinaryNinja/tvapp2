@@ -418,6 +418,8 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -441,9 +443,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=amd64
                       VERSION=${{ env.IMAGE_VERSION }}
@@ -462,9 +466,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}
@@ -748,6 +754,8 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -771,9 +779,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_dh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_dh_meta.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=amd64
                       VERSION=${{ env.IMAGE_VERSION }}
@@ -792,9 +802,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_dh_meta.outputs.tags }}
                   labels: ${{ steps.task_release_dh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_dh_meta.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}
@@ -1079,6 +1091,8 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -1100,6 +1114,9 @@ jobs:
                   images: |
                       ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
+                      #  latest yes
+                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
+
                       #  dispatch       add x1.x.x
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
 
@@ -1108,6 +1125,8 @@ jobs:
 
                       #  tag            add tag
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+                  flavor: |
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -1143,6 +1162,8 @@ jobs:
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
+                  flavor: |
+                      latest=false
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -1166,9 +1187,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
                   labels: ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=amd64
                       VERSION=${{ env.IMAGE_VERSION }}
@@ -1187,9 +1210,11 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
+                  labels: ${{ steps.task_release_gi_meta_arm64.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gi_meta_arm64.outputs.tags }}
                   provenance: false
+                  sbom: false
                   build-args: |-
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}
