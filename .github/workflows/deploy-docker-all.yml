@@ -422,7 +422,7 @@ jobs:
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GHCR_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
@@ -740,7 +740,7 @@ jobs:
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_DOCKERHUB_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
@@ -1059,7 +1059,7 @@ jobs:
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
@@ -1092,7 +1092,7 @@ jobs:
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
@@ -1128,7 +1128,7 @@ jobs:
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
-                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
