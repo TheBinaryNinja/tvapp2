@@ -325,7 +325,7 @@ jobs:
             # #
 
             - name: '🔨 Gitea: Meta'
-              id: task_release_gi_meta
+              id: task_release_gi_meta_amd64
               uses: docker/metadata-action@v5
               with:
                   images: |
@@ -357,6 +357,39 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
 
             # #
+            #   Release › Gitea › Meta
+            # #
+
+            - name: '🔨 Gitea: Meta'
+              id: task_release_gi_meta_arm64
+              uses: docker/metadata-action@v5
+              with:
+                  images: |
+                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      #  latest yes
+                      type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
+
+                      #  dispatch       add x1.x.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add development
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
+
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+                  flavor: |
+                      latest=${{ !inputs.DEV_RELEASE }}
+                  labels: |
+                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.ref.name=${{ env.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+
+            # #
             #   Release › Gitea › Build and Push › Amd64
             # #
 
@@ -369,8 +402,8 @@ jobs:
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  tags: ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
                   provenance: false
                   build-args: |-
                       ARCH=amd64
@@ -388,8 +421,8 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: binaryninja/tvapp2:development-arm64
-                  labels: ${{ steps.task_release_gi_meta.outputs.labels }}
+                  tags: ${{ steps.task_release_gi_meta_arm64.outputs.tags }}
+                  labels: ${{ steps.task_release_gi_meta_arm64.outputs.labels }}
                   provenance: false
                   build-args: |-
                       ARCH=arm64
@@ -403,7 +436,7 @@ jobs:
               uses: int128/docker-manifest-create-action@v2
               with:
                 tags: |
-                    ${{ steps.task_release_gi_meta.outputs.tags }}
+                    ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
                 sources: |
                     git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
                     git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
@@ -422,8 +455,8 @@ jobs:
                   echo "github.event_name ............ ${{ github.event_name }}"
                   echo "inputs.DRY_RUN ............... ${{ inputs.DRY_RUN }}"
                   echo "env.AUTHOR ................... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ......................... ${{ steps.task_release_gi_meta.outputs.tags }}"
-                  echo "labels ....................... ${{ steps.task_release_gi_meta.outputs.labels }}"
+                  echo "tags ......................... ${{ steps.task_release_gi_meta_amd64.outputs.tags }}"
+                  echo "labels ....................... ${{ steps.task_release_gi_meta_amd64.outputs.labels }}"
                   echo "docker image ................. ${{ env.DOCKER_IMAGE }}"
                   echo "docker sha ................... ${{ env.DOCKER_SHA }}"
                   echo "docker image id (amd64) ...... ${{ steps.task_release_gi_push_amd64.outputs.imageid }}"
@@ -481,14 +514,14 @@ jobs:
                       -# This docker image will use the following tags:
 
                       ```
-                      ${{ steps.task_release_gi_meta.outputs.tags }}
+                      ${{ steps.task_release_gi_meta_amd64.outputs.tags }}
                       ```
 
                       ### Labels
                       -# This docker image embeds the following labels:
 
                       ```
-                      ${{ steps.task_release_gi_meta.outputs.labels }}
+                      ${{ steps.task_release_gi_meta_amd64.outputs.labels }}
                       ```
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
