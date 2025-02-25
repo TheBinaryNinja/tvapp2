@@ -41,32 +41,33 @@ ARG VERSION
 #   Set Labels
 # #
 
-LABEL maintainer="aetherinox, iFlip721"
-LABEL org.opencontainers.image.authors="aetherinox, iFlip721"
+LABEL org.opencontainers.image.authors="Aetherinox, iFlip721, Optx"
 LABEL org.opencontainers.image.vendor="BinaryNinja"
 LABEL org.opencontainers.image.title="TVApp2"
 LABEL org.opencontainers.image.description="Automatic m3u and xml guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client."
-LABEL org.opencontainers.image.source="https://github.com/TheBinaryNinja/tvapp2"
-LABEL org.opencontainers.image.repo.1="https://github.com/TheBinaryNinja/tvapp2"
-LABEL org.opencontainers.image.repo.2="https://git.binaryninja.net/BinaryNinja/tvapp2"
+LABEL org.opencontainers.image.source="https://github.com/thebinaryninja/tvapp2"
+LABEL org.opencontainers.image.repo.1="https://github.com/thebinaryninja/tvapp2"
+LABEL org.opencontainers.image.repo.2="https://git.binaryninja.net/binaryninja/tvapp2"
 LABEL org.opencontainers.image.repo.3="https://github.com/aetherinox/docker-base-alpine"
 LABEL org.opencontainers.image.documentation="https://thebinaryninja.github.io/tvapp2"
-LABEL org.opencontainers.image.url="https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2"
+LABEL org.opencontainers.image.url="https://github.com/thebinaryninja/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL BUILDVERSION="Version:- ${VERSION} Date:- ${BUILDDATE}"
+LABEL org.opencontainers.image.ref.name="main"
+LABEL org.tvapp2.image.maintainers="Aetherinox, iFlip721, Optx"
+LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
 
 # #
 #   Set Env Var
 # #
 
-ENV TZ="Etc/UTC"
-ENV URL_REPO="https://git.binaryninja.net/BinaryNinja/"
-ENV WEB_IP="0.0.0.0"
-ENV WEB_PORT=4124
-ENV NODE_VERSION=18.20.5
-ENV YARN_VERSION=1.22.22
 ENV DIR_BUILD=/usr/src/app
 ENV DIR_RUN=/usr/bin/app
+ENV NODE_VERSION=18.20.5
+ENV YARN_VERSION=1.22.22
+ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
+ENV WEB_IP="0.0.0.0"
+ENV WEB_PORT=4124
+ENV TZ="Etc/UTC"
 
 # #
 #   Install

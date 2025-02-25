@@ -258,12 +258,13 @@ jobs:
             - name: '🕛 Get Timestamp'
               id: task_release_set_timestamp
               run: |
-                  echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+                  echo "DOCKER_IMAGE=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}      #  binaryninja/tvapp2
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                    #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                            #  02-25-2025 12:49:48
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                               #  02-25-2025
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                          #  02-25-2025 12:49
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                          #  20250225
+                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                      #  2025-02-25T12:50:11.569Z
 
             # #
             #   Release › Gitea › Install Dependencies
@@ -363,13 +364,14 @@ jobs:
                   flavor: |
                       latest=false
                   labels: |
-                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
-                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
             #   Release › Gitea › Build and Push › Arm64
@@ -518,12 +520,13 @@ jobs:
             - name: '🕛 Get Timestamp'
               id: task_release_set_timestamp
               run: |
-                  echo "DOCKER_IMAGE=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+                  echo "DOCKER_IMAGE=`echo ${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}      #  binaryninja/tvapp2
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                    #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                            #  02-25-2025 12:49:48
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                               #  02-25-2025
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                          #  02-25-2025 12:49
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                          #  20250225
+                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                      #  2025-02-25T12:50:11.569Z
 
             # #
             #   Release › Gitea › Install Dependencies
@@ -624,13 +627,14 @@ jobs:
                   flavor: |
                       latest=${{ !inputs.DEV_RELEASE }}
                   labels: |
-                      org.opencontainers.image.VERSION=${{ env.IMAGE_VERSION }}
-                      org.opencontainers.image.BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
             #   Release › Gitea › Build and Push › Amd64
