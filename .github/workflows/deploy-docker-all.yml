@@ -133,13 +133,14 @@ on:
             #   Gitea › Website
             #
             #   this is the gitea website / url to push to
+            #   github workflow_dispatch allows a max of 10 input fields.
             # #
 
-            IMAGE_GITEA_WEBSITE:
-              description:      '🌎 Gitea Website'
-              required:         true
-              default:          'git.binaryninja.net'
-              type:             string
+            # IMAGE_GITEA_WEBSITE:
+            # description:      '🌎 Gitea Website'
+            # required:         true
+            # default:          'git.binaryninja.net'
+            # type:             string
 
             # #
             #   true            no changes to the repo will be made
