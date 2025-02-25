@@ -50,10 +50,10 @@ LABEL org.opencontainers.image.source="https://github.com/TheBinaryNinja/tvapp2"
 LABEL org.opencontainers.image.repo.1="https://github.com/TheBinaryNinja/tvapp2"
 LABEL org.opencontainers.image.repo.2="https://git.binaryninja.net/BinaryNinja/tvapp2"
 LABEL org.opencontainers.image.repo.3="https://github.com/aetherinox/docker-base-alpine"
-LABEL org.opencontainers.image.documentation="https://github.com/TheBinaryNinja/tvapp2/wiki"
+LABEL org.opencontainers.image.documentation="https://thebinaryninja.github.io/tvapp2"
 LABEL org.opencontainers.image.url="https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL BUILDVERSION="TVApp2 v${VERSION} Build ${BUILDDATE}"
+LABEL BUILDVERSION="Version:- ${VERSION} Date:- ${BUILDDATE}"
 
 # #
 #   Set Env Var
