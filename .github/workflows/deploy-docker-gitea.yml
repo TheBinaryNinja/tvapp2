@@ -388,7 +388,7 @@ jobs:
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.task_release_gi_meta.outputs.tags }}
+                  tags: binaryninja/tvapp2:development-arm64
                   labels: ${{ steps.task_release_gi_meta.outputs.labels }}
                   provenance: false
                   build-args: |-
