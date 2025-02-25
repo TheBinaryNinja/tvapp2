@@ -36,10 +36,10 @@ on:
             # #
 
             IMAGE_NAME:
-                description:  '📦 Image Name'
-                required:     true
-                default:      'tvapp2'
-                type:         string
+                description:    '📦 Image Name'
+                required:       true
+                default:        'tvapp2'
+                type:           string
 
             # #
             #   Image Version
@@ -48,10 +48,10 @@ on:
             # #
 
             IMAGE_VERSION:
-                description:  '🏷️ Image Version'
-                required:     true
-                default:      '1.0.0'
-                type:         string
+                description:    '🏷️ Image Version'
+                required:       true
+                default:        '1.0.0'
+                type:           string
 
             # #
             #   Gitea › Author
@@ -61,10 +61,10 @@ on:
             # #
 
             IMAGE_GITEA_AUTHOR:
-                description:  '🪪 Image Author'
-                required:     true
-                default:      'BinaryNinja'
-                type:         string
+                description:    '🪪 Image Author'
+                required:       true
+                default:        'BinaryNinja'
+                type:           string
 
             # #
             #   Gitea › Username
@@ -77,6 +77,18 @@ on:
                 required:       true
                 default:        'aetherinox'
                 type:           string
+
+            # #
+            #   Gitea › Website
+            #
+            #   this is the gitea website / url to push to
+            # #
+
+            IMAGE_GITEA_WEBSITE:
+              description:      '🌎 Gitea Website'
+              required:         true
+              default:          'git.binaryninja.net'
+              type:             string
 
             # #
             #   true            no changes to the repo will be made
@@ -113,12 +125,13 @@ on:
 # #
 
 env:
-    IMAGE_NAME:           ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_VERSION:        ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
-    IMAGE_GITEA_AUTHOR:   ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
-    IMAGE_GITEA_USERNAME: ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
-    BOT_NAME_1:           EuropaServ
-    BOT_NAME_DEPENDABOT:  dependabot[bot]
+    IMAGE_NAME:                 ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
+    IMAGE_VERSION:              ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
+    IMAGE_GITEA_AUTHOR:         ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
+    IMAGE_GITEA_USERNAME:       ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
+    IMAGE_GITEA_WEBSITE:        ${{ github.event.inputs.IMAGE_GITEA_WEBSITE || 'git.binaryninja.net' }}
+    BOT_NAME_1:                 EuropaServ
+    BOT_NAME_DEPENDABOT:        dependabot[bot]
 
 # #
 #   Jobs
@@ -316,7 +329,7 @@ jobs:
               id: task_release_gi_registry
               uses: docker/login-action@v3
               with:
-                  registry: git.binaryninja.net
+                  registry: ${{ env.IMAGE_GITEA_WEBSITE }}
                   username: ${{ env.IMAGE_GITEA_USERNAME }}
                   password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
@@ -329,7 +342,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -368,7 +381,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -401,7 +414,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      git.binaryninja.net/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -477,8 +490,8 @@ jobs:
                 tags: |
                     ${{ steps.task_release_gi_meta_release.outputs.tags }}
                 sources: |
-                    git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
-                    git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
+                    ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
+                    ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
 
             # #
             #   Release › Gitea › Checkpoint
@@ -533,15 +546,15 @@ jobs:
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Gitea. The image is available at:
-                      - https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
+                      - https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
                       - Version: `${{ env.IMAGE_VERSION }}`
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
-                      - Pull (amd64): `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}`
-                      - Pull (arm64): `docker pull git.binaryninja.net/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}`
+                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
+                      - Pull (amd64): `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}`
+                      - Pull (arm64): `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.DOCKER_IMAGE }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
-                      - Source: `Gitea` https://git.binaryninja.net/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
+                      - Source: `Gitea` https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
                       - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
