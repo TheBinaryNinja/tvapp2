@@ -349,6 +349,9 @@ jobs:
 
             # #
             #   Release › Github › Meta
+            #
+            #   this version of meta does not need one for amd64 and one for arm64 because both
+            #   platforms are combined into one release, all sharing the same tags
             # #
 
             - name: '🔨 Github: Meta'
@@ -358,25 +361,25 @@ jobs:
                   images: |
                       ghcr.io/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
-                      #  latest yes
+                      #  tag            latest = yes          ( no dev )
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  tag            add tag
+                      #  tag            add pr tag            ( PR or push only )
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
-                      #  dispatch       add x1.x.x
+                      #  tag            add 1.0.0             ( dispatch only + no dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
 
-                      #  dispatch       add x1.x
+                      #  tag            add 1.0               ( dispatch only + no dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.IMAGE_VERSION_2DIGIT }}
 
-                      #  dispatch       add x1
+                      #  tag            add 1                 ( dispatch only + no dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.IMAGE_VERSION_1DIGIT }}
 
-                      #  dispatch       add development
+                      #  tag            add development       ( dispatch only + only dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
 
-                      #  add development tag to default architecture (amd64)
+                      #  tag            add development       ( amd64 + only dev )
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
                       latest=false
@@ -388,6 +391,7 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Github
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
@@ -397,6 +401,7 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Github
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
@@ -415,6 +420,8 @@ jobs:
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   tags: |
                       ${{ steps.task_release_gh_meta.outputs.tags }}
+                  annotations: |
+                      ${{ steps.task_release_gh_meta.outputs.annotations }}
                   provenance: false
                   sbom: false
                   build-args: |-
@@ -438,6 +445,8 @@ jobs:
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   tags: |
                       ${{ steps.task_release_gh_meta.outputs.tags }}
+                  annotations: |
+                      ${{ steps.task_release_gh_meta.outputs.annotations }}
                   provenance: false
                   sbom: false
                   build-args: |-
@@ -453,13 +462,14 @@ jobs:
               id: task_release_gh_manifest
               uses: int128/docker-manifest-create-action@v2
               with:
-                tags: |
-                    ${{ steps.task_release_gh_meta.outputs.tags }}
-                sources: |
-                    ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_amd64.outputs.digest }}
-                    ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}
-                index-annotations: |
-                    ${{ steps.task_release_gh_meta.outputs.labels }}
+                  push: ${{ !inputs.DRY_RUN }}
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
+                  sources: |
+                      ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_amd64.outputs.digest }}
+                      ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}
+                  index-annotations: |
+                      ${{ steps.task_release_gh_meta.outputs.labels }}
 
             # #
             #   Release › Github › Checkpoint

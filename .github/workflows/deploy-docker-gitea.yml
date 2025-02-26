@@ -341,6 +341,9 @@ jobs:
 
             # #
             #   Release › Gitea › Meta › amd64
+            #
+            #   this version of meta needs one entry for amd64 and one for arm64 because each
+            #   image needs to be uploaded manually, and then merged into a single platform.
             # #
 
             - name: '🔨 Gitea: Meta › amd64'
@@ -350,19 +353,28 @@ jobs:
                   images: |
                       ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
-                      #  latest yes
+                      #  tag            latest = yes          ( no dev )
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  dispatch       add x1.x.x-amd64
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
-
-                      #  dispatch       add amd64-development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-amd64,value=development
-
-                      #  tag            add tag-amd64
+                      #  tag            add tag-amd64         ( PR or push only )
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
 
-                      #  add development tag to default architecture (amd64)
+                      #  tag            add 1.0.0-amd64       ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=500,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+
+                      #  tag            add 1.0.0             ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+
+                      #  tag            add 1.0               ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.IMAGE_VERSION_2DIGIT }}
+
+                      #  tag            add 1                 ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.IMAGE_VERSION_1DIGIT }}
+
+                      #  dispatch       add development-amd64 ( dispatch only + only dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=development-,suffix=,value=amd64
+
+                      #  tag            add development       ( amd64 + only dev )
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
                       latest=false
@@ -374,6 +386,7 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Gitea
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
@@ -383,10 +396,14 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Gitea
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
             #   Release › Gitea › Meta › arm64
+            #
+            #   this version of meta needs one entry for amd64 and one for arm64 because each
+            #   image needs to be uploaded manually, and then merged into a single platform.
             # #
 
             - name: '🔨 Gitea: Meta › arm64'
@@ -396,14 +413,17 @@ jobs:
                   images: |
                       ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
-                      #  dispatch       add x1.x.x
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
+                      #  tag            latest = no
+                      type=raw,value=latest,enable=false
 
-                      #  dispatch       add development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
-
-                      #  tag            add tag
+                      #  tag            add tag-arm64
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
+
+                      #  tag            add 1.0.0-arm64       ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=500,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add development-arm64 ( dispatch only + only dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
                   flavor: |
                       latest=false
                   labels: |
@@ -414,6 +434,7 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Gitea
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
@@ -423,10 +444,17 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Gitea
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
             #   Release › Gitea › Meta › Release
+            #
+            #   this version of meta needs one entry for amd64 and one for arm64 because each
+            #   image needs to be uploaded manually, and then merged into a single platform.
+            #
+            #   this meta action is for the final image; which has both platforms merged and
+            #   will be the final release.
             # #
 
             - name: '🔨 Gitea: Meta › Release'
@@ -436,19 +464,25 @@ jobs:
                   images: |
                       ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
-                      #  latest yes
+                      #  tag            latest = yes          ( no dev )
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
-                      #  dispatch       add x1.x.x
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
-
-                      #  dispatch       add development
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
-
-                      #  tag            add tag
+                      #  tag            add pr tag            ( PR or push only )
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
-                      #  add development tag to default architecture (amd64)
+                      #  tag            add 1.0.0             ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+
+                      #  tag            add 1.0               ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.IMAGE_VERSION_2DIGIT }}
+
+                      #  tag            add 1                 ( dispatch only + no dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.IMAGE_VERSION_1DIGIT }}
+
+                      #  tag            add development       ( dispatch only + only dev )
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
+
+                      #  tag            add development       ( amd64 + only dev )
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
                       latest=false
@@ -460,6 +494,7 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Gitea
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
@@ -469,6 +504,7 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=Gitea
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
