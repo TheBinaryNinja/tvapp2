@@ -409,20 +409,35 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
+
                       #  dispatch       add x1.x.x
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add x1.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.IMAGE_VERSION_2DIGIT }}
+
+                      #  dispatch       add x1
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.IMAGE_VERSION_1DIGIT }}
 
                       #  dispatch       add development
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
-
-                      #  tag            add tag
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
                       latest=false
                   labels: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                  annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -491,6 +506,8 @@ jobs:
                 sources: |
                     ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_amd64.outputs.digest }}
                     ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}
+                index-annotations: |
+                    ${{ steps.task_release_gh_meta.outputs.labels }}
 
             # #
             #   Release › Github › Checkpoint
@@ -765,20 +782,35 @@ jobs:
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
 
+                      #  tag            add tag
+                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
+
                       #  dispatch       add x1.x.x
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=300,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+
+                      #  dispatch       add x1.x
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.IMAGE_VERSION_2DIGIT }}
+
+                      #  dispatch       add x1
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.IMAGE_VERSION_1DIGIT }}
 
                       #  dispatch       add development
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
-
-                      #  tag            add tag
-                      type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
                       #  add development tag to default architecture (amd64)
                       type=raw,enable=${{ inputs.DEV_RELEASE }},priority=400,prefix=,suffix=,value=development
                   flavor: |
                       latest=false
                   labels: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                  annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -847,6 +879,8 @@ jobs:
                 sources: |
                     ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}
                     ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}
+                index-annotations: |
+                    ${{ steps.task_release_dh_meta.outputs.labels }}
 
             # #
             #   Release › Dockerhub › Checkpoint
@@ -1130,6 +1164,15 @@ jobs:
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                  annotations: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
             #   Release › Gitea › Meta › arm64
@@ -1156,6 +1199,15 @@ jobs:
                   flavor: |
                       latest=false
                   labels: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                  annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -1193,6 +1245,15 @@ jobs:
                   flavor: |
                       latest=false
                   labels: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                  annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -1261,6 +1322,8 @@ jobs:
                 sources: |
                     ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}
                     ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}
+                index-annotations: |
+                    ${{ steps.task_release_gi_meta_release.outputs.labels }}
 
             # #
             #   Release › Gitea › Checkpoint

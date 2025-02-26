@@ -348,7 +348,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest no
                       type=raw,value=latest,enable=false
@@ -371,7 +371,7 @@ jobs:
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
@@ -408,7 +408,7 @@ jobs:
                   echo "github.repository_owner .................. ${{ github.repository_owner }}"
                   echo "github.repository ........................ ${{ github.repository }}"
                   echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ............................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "env.AUTHOR ............................... ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
                   echo "tags ..................................... ${{ steps.task_release_gi_meta.outputs.tags }}"
                   echo "labels ................................... ${{ steps.task_release_gi_meta.outputs.labels }}"
                   echo "docker image ............................. ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
@@ -613,7 +613,7 @@ jobs:
               uses: docker/metadata-action@v5
               with:
                   images: |
-                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_AUTHOR }}/${{ env.IMAGE_NAME }}
+                      ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_AUTHOR_LC }}/${{ env.IMAGE_NAME }}
                   tags: |
                       #  latest yes
                       type=raw,value=latest,enable=${{ !inputs.DEV_RELEASE }}
@@ -639,7 +639,16 @@ jobs:
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
-                      org.opencontainers.image.vendor=${{ env.IMAGE_GITEA_AUTHOR }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                  annotations: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
@@ -676,7 +685,7 @@ jobs:
                   echo "github.repository_owner .................. ${{ github.repository_owner }}"
                   echo "github.repository ........................ ${{ github.repository }}"
                   echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ............................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "env.AUTHOR ............................... ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
                   echo "tags ..................................... ${{ steps.task_release_gi_meta.outputs.tags }}"
                   echo "labels ................................... ${{ steps.task_release_gi_meta.outputs.labels }}"
                   echo "docker image ............................. ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"

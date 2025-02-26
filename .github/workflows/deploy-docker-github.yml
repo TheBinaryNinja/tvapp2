@@ -459,7 +459,7 @@ jobs:
                     ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_amd64.outputs.digest }}
                     ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}
                 index-annotations: |
-                    ${{ steps.task_release_gh_meta.outputs.annotations }}
+                    ${{ steps.task_release_gh_meta.outputs.labels }}
 
             # #
             #   Release › Github › Checkpoint
