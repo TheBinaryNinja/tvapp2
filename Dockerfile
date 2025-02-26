@@ -53,6 +53,7 @@ LABEL org.opencontainers.image.documentation="https://thebinaryninja.github.io/t
 LABEL org.opencontainers.image.url="https://github.com/thebinaryninja/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.ref.name="main"
+LABEL org.opencontainers.image.registry="local"
 LABEL org.tvapp2.image.maintainers="Aetherinox, iFlip721, Optx"
 LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
 
