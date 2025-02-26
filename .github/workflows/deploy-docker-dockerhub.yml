@@ -36,10 +36,10 @@ on:
             # #
 
             IMAGE_NAME:
-                description:  '📦 Image Name'
-                required:     true
-                default:      'tvapp2'
-                type:         string
+                description:    '📦 Image Name'
+                required:       true
+                default:        'tvapp2'
+                type:           string
 
             # #
             #   Image Version
@@ -246,16 +246,16 @@ jobs:
             - name: '🕛 Get Timestamp'
               id: task_release_set_timestamp
               run: |
-                  echo "IMAGE_VERSION_1DIGIT=`echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1`" >> ${GITHUB_ENV}                                               #  1
-                  echo "IMAGE_VERSION_2DIGIT=`echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-2`" >> ${GITHUB_ENV}                                               #  1.0
-                  echo "REGISTRY_REPO_ORG_AUTHOR_LC=`echo ${{github.repository}} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}                                #  thebinaryninja/tvapp2
-                  echo "REGISTRY_REPO_AUTHOR_LC=`echo ${{ env.IMAGE_DOCKERHUB_AUTHOR }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}                         #  thebinaryninja
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                                #  71fad013cfce9116ec62779e4a7e627fe4c33627
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                                        #  02-25-2025 12:49:48
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                                           #  02-25-2025
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                      #  02-25-2025 12:49
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                      #  20250225
-                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                  #  2025-02-25T12:50:11.569Z
+                  echo "IMAGE_VERSION_1DIGIT=`echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1`" >> ${GITHUB_ENV}                                                   #  1
+                  echo "IMAGE_VERSION_2DIGIT=`echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-2`" >> ${GITHUB_ENV}                                                   #  1.0
+                  echo "REGISTRY_REPO_ORG_AUTHOR_LC=`echo ${{ env.IMAGE_DOCKERHUB_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}   #  thebinaryninja/tvapp2
+                  echo "REGISTRY_REPO_AUTHOR_LC=`echo ${{ env.IMAGE_DOCKERHUB_AUTHOR }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}                             #  thebinaryninja
+                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                                    #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                                            #  02-25-2025 12:49:48
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                                               #  02-25-2025
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                          #  02-25-2025 12:49
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                          #  20250225
+                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                      #  2025-02-25T12:50:11.569Z
 
             # #
             #   Release › Dockerhub › Install Dependencies
