@@ -6,8 +6,11 @@
 #                       upload this workflow to both the `main` branch of the tvapp2 repository
 #   @secrets            secrets.ADMINSERV_GPG_KEY_ASC                               gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
 #                       secrets.ADMINSERV_GPG_PASSPHRASE                            gpg private key passphrase
-#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            github personal access token (classic) with package:write permission
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         Discord webhook to report releases from github to discord
+#                       secrets.ORG_BINARYNINJA_TOKEN                               github personal access token (fine-grained)
+#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            github personal access token (classic)
+#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     dockerhub secret
+#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         gitea personal access token (classic) with package:write permission
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         discord webhook to report releases from github to discord
 # #
 
 name: "📦 Deploy › Docker › Github"
@@ -326,6 +329,8 @@ jobs:
 
             # #
             #   Release › Github › Read Readme
+            #
+            #   @usage      org.opencontainers.image.description=${{ steps.task_release_gh_readme_cache.outputs.content }}
             # #
 
             - name: '📄 Cache README.md'
@@ -430,6 +435,34 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
             # #
+            #   Release › Github › Export Digest › Amd64
+            # #
+
+            - name: '📄 Export Digest (linux/amd64)'
+              id: task_release_gh_digest_export_amd64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-amd64
+                  digest="${{ steps.task_release_gh_push_amd64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-amd64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Github › Upload Digest › Amd64
+            # #
+
+            - name: '🔼 Upload Digest (linux/amd64)'
+              id: task_release_gh_digest_upload_amd64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-amd64
+                  path: /tmp/build-digest-amd64/*
+                  if-no-files-found: error
+                  retention-days: 10
+
+            # #
             #   Release › Github › Build and Push › Arm64
             # #
 
@@ -453,6 +486,34 @@ jobs:
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+
+            # #
+            #   Release › Github › Export Digest › Arm64
+            # #
+
+            - name: '📄 Export Digest (linux/arm64)'
+              id: task_release_gh_digest_export_arm64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-arm64
+                  digest="${{ steps.task_release_gh_push_arm64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-arm64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Github › Upload Digest › Arm64
+            # #
+
+            - name: '🔼 Upload Digest (linux/arm64)'
+              id: task_release_gh_digest_upload_arm64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-arm64
+                  path: /tmp/build-digest-arm64/*
+                  if-no-files-found: error
+                  retention-days: 10
 
             # #
             #   Release › Github › Push Manifest

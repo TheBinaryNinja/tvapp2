@@ -6,8 +6,11 @@
 #                       upload this workflow to both the `main` branch of the tvapp2 repository
 #   @secrets            secrets.ADMINSERV_GPG_KEY_ASC                               gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
 #                       secrets.ADMINSERV_GPG_PASSPHRASE                            gpg private key passphrase
-#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            github personal access token (classic) with package:write permission
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         Discord webhook to report releases from github to discord
+#                       secrets.ORG_BINARYNINJA_TOKEN                               github personal access token (fine-grained)
+#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            github personal access token (classic)
+#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     dockerhub secret
+#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         gitea personal access token (classic) with package:write permission
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         discord webhook to report releases from github to discord
 # #
 
 name: "📦 Deploy › Docker › All"
@@ -396,6 +399,31 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
 
             # #
+            #   Release › Github › Read Readme
+            #
+            #   @usage      org.opencontainers.image.description=${{ steps.task_release_gh_readme_cache.outputs.content }}
+            # #
+
+            - name: '📄 Cache README.md'
+              id: task_release_gh_readme_cache
+              uses: actions/github-script@v7
+              with:
+                github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
+                script: |
+                    'use strict'
+
+                    const { promises: fs } = require('fs')
+
+                    const main = async () => {
+                      const path = "README.md"
+                      let content = await fs.readFile(path, 'utf8')
+
+                      core.setOutput('content', content)
+                    }
+
+                    main().catch(err => core.setFailed(err.message))
+
+            # #
             #   Release › Github › Meta
             #
             #   this version of meta does not need one for amd64 and one for arm64 because both
@@ -453,6 +481,57 @@ jobs:
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
 
             # #
+            #   Release › Github › Build and Push › Amd64
+            # #
+
+            - name: '📦 Build & Push (linux/amd64)'
+              id: task_release_gh_push_amd64
+              uses: docker/build-push-action@v6
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  context: .
+                  file: Dockerfile
+                  platforms: linux/amd64
+                  push: ${{ github.event_name != 'pull_request' }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
+                  provenance: false
+                  sbom: false
+                  build-args: |-
+                      ARCH=amd64
+                      VERSION=${{ env.IMAGE_VERSION }}
+                      BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+
+            # #
+            #   Release › Github › Export Digest › Amd64
+            # #
+
+            - name: '📄 Export Digest (linux/amd64)'
+              id: task_release_gh_digest_export_amd64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-amd64
+                  digest="${{ steps.task_release_gh_push_amd64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-amd64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Github › Upload Digest › Amd64
+            # #
+
+            - name: '🔼 Upload Digest (linux/amd64)'
+              id: task_release_gh_digest_upload_amd64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-amd64
+                  path: /tmp/build-digest-amd64/*
+                  if-no-files-found: error
+                  retention-days: 10
+
+            # #
             #   Release › Github › Build and Push › Arm64
             # #
 
@@ -476,27 +555,32 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
             # #
-            #   Release › Github › Build and Push › Amd64
+            #   Release › Github › Export Digest › Arm64
             # #
 
-            - name: '📦 Build & Push (linux/amd64)'
-              id: task_release_gh_push_amd64
-              uses: docker/build-push-action@v6
+            - name: '📄 Export Digest (linux/arm64)'
+              id: task_release_gh_digest_export_arm64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-arm64
+                  digest="${{ steps.task_release_gh_push_arm64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-arm64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Github › Upload Digest › Arm64
+            # #
+
+            - name: '🔼 Upload Digest (linux/arm64)'
+              id: task_release_gh_digest_upload_arm64
+              uses: actions/upload-artifact@v4
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
-                  context: .
-                  file: Dockerfile
-                  platforms: linux/amd64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
-                  tags: |
-                      ${{ steps.task_release_gh_meta.outputs.tags }}
-                  provenance: false
-                  sbom: false
-                  build-args: |-
-                      ARCH=amd64
-                      VERSION=${{ env.IMAGE_VERSION }}
-                      BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                  name: digest-arm64
+                  path: /tmp/build-digest-arm64/*
+                  if-no-files-found: error
+                  retention-days: 10
 
             # #
             #   Release › Github › Push Manifest
@@ -774,6 +858,31 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN }}
 
             # #
+            #   Release › Dockerhub › Read Readme
+            #
+            #   @usage      org.opencontainers.image.description=${{ steps.task_release_dh_readme_cache.outputs.content }}
+            # #
+
+            - name: '📄 Cache README.md'
+              id: task_release_dh_readme_cache
+              uses: actions/github-script@v7
+              with:
+                github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
+                script: |
+                    'use strict'
+
+                    const { promises: fs } = require('fs')
+
+                    const main = async () => {
+                      const path = "README.md"
+                      let content = await fs.readFile(path, 'utf8')
+
+                      core.setOutput('content', content)
+                    }
+
+                    main().catch(err => core.setFailed(err.message))
+
+            # #
             #   Release › Dockerhub › Meta
             #
             #   this version of meta does not need one for amd64 and one for arm64 because both
@@ -854,6 +963,34 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
             # #
+            #   Release › Dockerhub › Export Digest › Amd64
+            # #
+
+            - name: '📄 Export Digest (linux/amd64)'
+              id: task_release_dh_digest_export_amd64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-amd64
+                  digest="${{ steps.task_release_dh_push_amd64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-amd64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Dockerhub › Upload Digest › Amd64
+            # #
+
+            - name: '🔼 Upload Digest (linux/amd64)'
+              id: task_release_dh_digest_upload_amd64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-amd64
+                  path: /tmp/build-digest-amd64/*
+                  if-no-files-found: error
+                  retention-days: 10
+
+            # #
             #   Release › Dockerhub › Build and Push › Arm64
             # #
 
@@ -875,6 +1012,34 @@ jobs:
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+
+            # #
+            #   Release › Dockerhub › Export Digest › Arm64
+            # #
+
+            - name: '📄 Export Digest (linux/arm64)'
+              id: task_release_dh_digest_export_arm64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-arm64
+                  digest="${{ steps.task_release_dh_push_arm64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-arm64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Dockerhub › Upload Digest › Arm64
+            # #
+
+            - name: '🔼 Upload Digest (linux/arm64)'
+              id: task_release_dh_digest_upload_arm64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-arm64
+                  path: /tmp/build-digest-arm64/*
+                  if-no-files-found: error
+                  retention-days: 10
 
             # #
             #   Release › Dockerhub › Push Manifest
@@ -1139,6 +1304,31 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_GITEA_TOKEN }}
 
             # #
+            #   Release › Gitea › Read Readme
+            #
+            #   @usage      org.opencontainers.image.description=${{ steps.task_release_gi_readme_cache.outputs.content }}
+            # #
+
+            - name: '📄 Cache README.md'
+              id: task_release_gi_readme_cache
+              uses: actions/github-script@v7
+              with:
+                github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
+                script: |
+                    'use strict'
+
+                    const { promises: fs } = require('fs')
+
+                    const main = async () => {
+                      const path = "README.md"
+                      let content = await fs.readFile(path, 'utf8')
+
+                      core.setOutput('content', content)
+                    }
+
+                    main().catch(err => core.setFailed(err.message))
+
+            # #
             #   Release › Gitea › Meta › amd64
             #
             #   this version of meta needs one entry for amd64 and one for arm64 because each
@@ -1330,6 +1520,34 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
             # #
+            #   Release › Gitea › Export Digest › Amd64
+            # #
+
+            - name: '📄 Export Digest (linux/amd64)'
+              id: task_release_gi_digest_export_amd64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-amd64
+                  digest="${{ steps.task_release_gi_push_amd64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-amd64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Gitea › Upload Digest › Amd64
+            # #
+
+            - name: '🔼 Upload Digest (linux/amd64)'
+              id: task_release_gi_digest_upload_amd64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-amd64
+                  path: /tmp/build-digest-amd64/*
+                  if-no-files-found: error
+                  retention-days: 10
+
+            # #
             #   Release › Gitea › Build and Push › Arm64
             # #
 
@@ -1351,6 +1569,34 @@ jobs:
                       ARCH=arm64
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+
+            # #
+            #   Release › Gitea › Export Digest › Arm64
+            # #
+
+            - name: '📄 Export Digest (linux/arm64)'
+              id: task_release_gi_digest_export_arm64
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              run: |
+                  mkdir -p /tmp/build-digest-arm64
+                  digest="${{ steps.task_release_gi_push_arm64.outputs.digest }}"
+                  digest="${digest#sha256:}"
+                  touch "/tmp/build-digest-arm64/$digest"
+              shell: bash
+
+            # #
+            #   Release › Gitea › Upload Digest › Arm64
+            # #
+
+            - name: '🔼 Upload Digest (linux/arm64)'
+              id: task_release_gi_digest_upload_arm64
+              uses: actions/upload-artifact@v4
+              if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
+              with:
+                  name: digest-arm64
+                  path: /tmp/build-digest-arm64/*
+                  if-no-files-found: error
+                  retention-days: 10
 
             # #
             #   Release › Gitea › Push Manifest
