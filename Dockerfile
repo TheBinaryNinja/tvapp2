@@ -52,6 +52,7 @@ LABEL org.opencontainers.image.repo.3="https://github.com/aetherinox/docker-base
 LABEL org.opencontainers.image.documentation="https://thebinaryninja.github.io/tvapp2"
 LABEL org.opencontainers.image.url="https://github.com/thebinaryninja/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.architecture="${ARCH}"
 LABEL org.opencontainers.image.ref.name="main"
 LABEL org.opencontainers.image.registry="local"
 LABEL org.tvapp2.image.maintainers="Aetherinox, iFlip721, Optx"
