@@ -436,6 +436,8 @@ jobs:
                   echo "github.ref ............................... ${{ github.ref }}"
                   echo "github.ref_name .......................... ${{ github.ref_name }}"
                   echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo "github.repository_owner .................. ${{ github.repository_owner }}"
+                  echo "github.repository ........................ ${{ github.repository }}"
                   echo ""
                   echo "[ INPUTS ] ---------------------------------------------------------------------------------------------"
                   echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"

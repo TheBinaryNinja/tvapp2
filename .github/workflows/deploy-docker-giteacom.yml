@@ -400,19 +400,21 @@ jobs:
             - name: '⚠️ Checkpoint'
               id: task_release_gi_checkpoint
               run: |
-                  echo "registry ............. Gitea"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker image ......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
+                  echo "registry ................................. Gitea"
+                  echo "github.actor.............................. ${{ github.actor }}"
+                  echo "github.ref ............................... ${{ github.ref }}"
+                  echo "github.ref_name .......................... ${{ github.ref_name }}"
+                  echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo "github.repository_owner .................. ${{ github.repository_owner }}"
+                  echo "github.repository ........................ ${{ github.repository }}"
+                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
+                  echo "env.AUTHOR ............................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "tags ..................................... ${{ steps.task_release_gi_meta.outputs.tags }}"
+                  echo "labels ................................... ${{ steps.task_release_gi_meta.outputs.labels }}"
+                  echo "docker image ............................. ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
+                  echo "docker sha ............................... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id .......................... ${{ steps.task_release_gi_push.outputs.imageid }}"
+                  echo "docker digest ............................ ${{ steps.task_release_gi_push.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
@@ -666,18 +668,21 @@ jobs:
             - name: '⚠️ Checkpoint'
               id: task_release_gi_checkpoint
               run: |
-                  echo "registry ............. Gitea"
-                  echo "github.actor.......... ${{ github.actor }}"
-                  echo "github.ref ........... ${{ github.ref }}"
-                  echo "github.ref_name ...... ${{ github.ref_name }}"
-                  echo "github.event_name .... ${{ github.event_name }}"
-                  echo "inputs.DRY_RUN ....... ${{ inputs.DRY_RUN }}"
-                  echo "env.AUTHOR ........... ${{ env.IMAGE_GITEA_AUTHOR }}"
-                  echo "tags ................. ${{ steps.task_release_gi_meta.outputs.tags }}"
-                  echo "labels ............... ${{ steps.task_release_gi_meta.outputs.labels }}"
-                  echo "docker sha ........... ${{ env.DOCKER_SHA }}"
-                  echo "docker image id ...... ${{ steps.task_release_gi_push.outputs.imageid }}"
-                  echo "docker digest ........ ${{ steps.task_release_gi_push.outputs.digest }}"
+                  echo "registry ................................. Gitea"
+                  echo "github.actor.............................. ${{ github.actor }}"
+                  echo "github.ref ............................... ${{ github.ref }}"
+                  echo "github.ref_name .......................... ${{ github.ref_name }}"
+                  echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo "github.repository_owner .................. ${{ github.repository_owner }}"
+                  echo "github.repository ........................ ${{ github.repository }}"
+                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
+                  echo "env.AUTHOR ............................... ${{ env.IMAGE_GITEA_AUTHOR }}"
+                  echo "tags ..................................... ${{ steps.task_release_gi_meta.outputs.tags }}"
+                  echo "labels ................................... ${{ steps.task_release_gi_meta.outputs.labels }}"
+                  echo "docker image ............................. ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
+                  echo "docker sha ............................... ${{ env.DOCKER_SHA }}"
+                  echo "docker image id .......................... ${{ steps.task_release_gi_push.outputs.imageid }}"
+                  echo "docker digest ............................ ${{ steps.task_release_gi_push.outputs.digest }}"
 
             # #
             #   Release › Gitea › Get Weekly Commits
