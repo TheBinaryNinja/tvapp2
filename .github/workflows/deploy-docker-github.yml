@@ -562,3 +562,55 @@ jobs:
                   embed-author-name: "${{ github.repository_owner }}"
                   embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
+
+    # #
+    #   Job › Docker Release › Cleanup
+    # #
+
+    job-docker-release-cleanup:
+        name: >-
+            🧹 Release › Cleanup
+      # runs-on: ubuntu-latest
+        runs-on: apollo-x64
+        timeout-minutes: 5
+        permissions:
+            contents: write
+            packages: write
+            attestations: write
+            id-token: write
+        needs: [ job-docker-release-tags-create, job-docker-release-github ]
+        steps:
+
+            # #
+            #   Release › Cleanup
+            # #
+
+            - name: '🏳️ Start'
+              id: task_cleanup_gh_start
+              run: |
+                  echo "Cleaning up untagged docker images"
+
+            # #
+            #   Release › Cleanup › Checkout
+            # #
+
+            - name: '✅ Checkout'
+              id: task_cleanup_gh_checkout
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            # #
+            #   Release › Cleanup › Clean Untagged Images
+            # #
+
+            - name: '🧹 Clean Untagged Images'
+              id: task_cleanup_clean
+              uses: quartx-analytics/ghcr-cleaner@v1
+              with:
+                  owner-type: org
+                  token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
+                  repository-owner: ${{ github.repository_owner }}
+                  repository-name: ${{ github.repository }}
+                  delete-untagged: true
+                # keep-at-most: 0
