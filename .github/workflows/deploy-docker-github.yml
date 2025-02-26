@@ -325,6 +325,29 @@ jobs:
                   password: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
 
             # #
+            #   Release › Github › Read Readme
+            # #
+
+            - name: '📄 Cache README.md'
+              id: task_release_gh_readme_cache
+              uses: actions/github-script@v7
+              with:
+                github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
+                script: |
+                    'use strict'
+
+                    const { promises: fs } = require('fs')
+
+                    const main = async () => {
+                      const path = 'README.md'
+                      let content = await fs.readFile(path, 'utf8')
+
+                      core.setOutput('content', content)
+                    }
+
+                    main().catch(err => core.setFailed(err.message))
+
+            # #
             #   Release › Github › Meta
             # #
 
@@ -360,6 +383,7 @@ jobs:
                   labels: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.description=${{ steps.task_release_gh_readme_cache.outputs.content }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ github.sha }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
