@@ -27,7 +27,7 @@
 #   @ref            https://docs.docker.com/reference/dockerfile/#understand-how-arg-and-from-interact
 # #
 
-ARG ARCH=and64
+ARG ARCH=amd64
 FROM ghcr.io/aetherinox/alpine-base:3.20-${ARCH}
 
 # #
