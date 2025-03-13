@@ -730,7 +730,7 @@ jobs:
             # #
 
             - name: '🔔 Send Discord Webhook Message'
-              uses: tsickert/discord-webhook@v6.0.0
+              uses: tsickert/discord-webhook@v7.0.0
               if: success()
               with:
                   username: 'Io'

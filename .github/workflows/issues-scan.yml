@@ -819,7 +819,7 @@ jobs:
             - name: >-
                 🔔 Send Discord Webhook Message (Success)
               id: task_autocheck_notify_discord_success
-              uses: tsickert/discord-webhook@v6.0.0
+              uses: tsickert/discord-webhook@v7.0.0
               if: success()
               with:
                   username: 'Io'
@@ -870,7 +870,7 @@ jobs:
             - name: >-
                 🔔 Send Discord Webhook Message (Failure)
               id: task_autocheck_notify_discord_failure
-              uses: tsickert/discord-webhook@v6.0.0
+              uses: tsickert/discord-webhook@v7.0.0
               if: failure()
               with:
                   username: 'Io'
