@@ -65,7 +65,7 @@
         "iptv"
     ],
     "dependencies": {
-        "playwright": "^1.50.1",
+        "playwright": "^1.51.0",
         "user-agents": "^1.1.457"
     },
     "devDependencies": {
