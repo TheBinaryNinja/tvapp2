@@ -2,5 +2,64 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "prCreation": "immediate",
+  "rebaseWhen": "conflicted",
+  "rebaseLabel": "AC › Needs Rebase",
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["Type ◦ Vulnerability"]
+  },
+  "labels": [
+    "Type ◦ Dependency"
+  ],
+  "major": {
+    "automerge": false
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": [
+        "npm",
+        "nvm"
+      ],
+      "addLabels": [
+        "Type ◦ Dependency"
+      ],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchManagers": [
+        "npm",
+        "nvm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": false
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "addLabels": [
+        "Type ◦ Git Action"
+      ],
+      "rangeStrategy": "pin"
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": false
+    }
   ]
 }
