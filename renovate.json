@@ -50,6 +50,9 @@
         "minor",
         "patch"
       ],
+      "addLabels": [
+        "Type ◦ Dependency"
+      ],
       "automerge": false
     },
     {
@@ -64,6 +67,9 @@
     {
       "matchManagers": [
         "github-actions"
+      ],
+      "addLabels": [
+        "Type ◦ Git Action"
       ],
       "matchUpdateTypes": [
         "minor",
