@@ -33,6 +33,7 @@
   "packageRules": [
     {
       "matchManagers": [
+        "node",
         "npm",
         "nvm"
       ],
@@ -43,6 +44,7 @@
     },
     {
       "matchManagers": [
+        "node",
         "npm",
         "nvm"
       ],
