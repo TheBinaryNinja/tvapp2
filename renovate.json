@@ -4,6 +4,9 @@
     "config:recommended",
     ":preserveSemverRanges"
   ],
+  "timezone": "Etc/UTC",
+  "includeForks": true,
+  "baseBranches": ["main"],
   "prCreation": "immediate",
   "rebaseWhen": "conflicted",
   "rebaseLabel": "AC › Needs Rebase",
