@@ -6,6 +6,9 @@
   "prCreation": "immediate",
   "rebaseWhen": "conflicted",
   "rebaseLabel": "AC › Needs Rebase",
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "📁 Dependency Dashboard",
+  "dependencyDashboardLabels": ["📰 Progress Report"],
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["Type ◦ Vulnerability"]
