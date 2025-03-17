@@ -39,7 +39,7 @@
       "addLabels": [
         "Type ◦ Dependency"
       ],
-      "rangeStrategy": "bump"
+      "rangeStrategy": "auto"
     },
     {
       "matchManagers": [
@@ -59,7 +59,7 @@
       "addLabels": [
         "Type ◦ Git Action"
       ],
-      "rangeStrategy": "bump"
+      "rangeStrategy": "auto"
     },
     {
       "matchManagers": [
