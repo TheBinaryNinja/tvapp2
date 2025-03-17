@@ -305,15 +305,29 @@ jobs:
                       console.log(` PR Context ............ ${ context }`)
                       console.log(`-----------------------------------------------------------------------------------------------`)
 
+                      const targetOwner = context.repo.owner;
+                      const targetRepo = context.repo.repo;
+
+                      // Fetch labels from the source repository
+                      const response = await github.rest.issues.listLabelsForRepo({
+                          owner: targetOwner,
+                          repo: targetRepo,
+                      });
+                      console.log("Labels fetched: ", response.data);
+
                       const fs                = require( 'fs' );
                       const escape_html       = ( unsafe ) => unsafe.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' ).replace( /'/g, '&#039;' );
-                      const labels            = [];
+                      const labels            = response.data;
 
-                      const files_List        = `${{ steps.task_autocheck_changed_files_get.outputs.all_changed_files }}` || ''
-                      const files_Array       = files_List.split(',')
-                      const branch_ref        = `${ context.payload.pull_request.head.ref }`
+                      console.log(`-----------------------------------------------------------------------------------------------`)
+                      console.log(` PR Labels ............ ${ labels }`)
+                      console.log(`-----------------------------------------------------------------------------------------------`)
 
-                      let message             = [ "\n<br />\n" ]
+                      const files_List        = `${{ steps.task_autocheck_changed_files_get.outputs.all_changed_files }}` || '';
+                      const files_Array       = files_List.split(',');
+                      const branch_ref        = `${ context.payload.pull_request.head.ref }`;
+
+                      let message             = [ "\n<br />\n" ];
                       message.push            ( "## Automatic Self-Check - #" + context.issue.number + "\n" );
                       message.push            ( `The details of our automated scan for your pull request are listed below. If our scan detected errors, they must be corrected before this pull request will be advanced to the review stage:\n` );
                       message.push            ( "\n<br />\n\n---\n\n<br />\n\n" );
