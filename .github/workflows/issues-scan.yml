@@ -40,6 +40,7 @@ env:
 
     BOT_NAME_1:                     EuropaServ
     BOT_NAME_DEPENDABOT:            dependabot[bot]
+    BOT_NAME_RENOVATE:              renovate[bot]
 
     LABELS_JSON: |
       [
@@ -298,6 +299,12 @@ jobs:
               with:
                   github-token: ${{ secrets.ADMINSERV_TOKEN_CL }}
                   script: |
+                      console.log(`-----------------------------------------------------------------------------------------------`)
+                      console.log(` PR Created ............ ${ context.payload.pull_request.created_at }`)
+                      console.log(` PR head_ref ........... ${ context.payload.pull_request.head.ref }`)
+                      console.log(` PR Context ............ ${ context }`)
+                      console.log(`-----------------------------------------------------------------------------------------------`)
+
                       const fs                = require( 'fs' );
                       const escape_html       = ( unsafe ) => unsafe.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' ).replace( /'/g, '&#039;' );
                       const labels            = [];
@@ -389,12 +396,14 @@ jobs:
 
                       const type_dependency =
                       [
-                          "dependabot/npm_and_yarn"
+                          "dependabot/npm_and_yarn",
+                          "renovate/user-agents-1.x"
                       ];
 
                       const type_gitaction =
                       [
-                          "dependabot/github_actions"
+                          "dependabot/github_actions",
+                          "renovate/github_actions"
                       ];
 
                       const files_skipList =
@@ -754,9 +763,9 @@ jobs:
                       const bGitaction    = type_gitaction.some( s => s.includes( branch_ref ) || branch_ref.includes( s ) );
                       const bDependency   = type_dependency.some( s => s.includes( branch_ref ) || branch_ref.includes( s ) );
 
-                      if ( actor ==  "${{ env.BOT_NAME_DEPENDABOT }}" && bDependency )
+                      if ( actor ==  "${{ env.BOT_NAME_DEPENDABOT }}" && bDependency || actor ==  "${{ env.BOT_NAME_RENOVATE }}" && bDependency )
                           labels.push( "${{ env.LABEL_TYPE_DEPENDENCY }}" );
-                      else if ( actor ==  "${{ env.BOT_NAME_DEPENDABOT }}" && bGitaction )
+                      else if ( actor ==  "${{ env.BOT_NAME_DEPENDABOT }}" && bGitaction || actor ==  "${{ env.BOT_NAME_RENOVATE }}" && bGitaction )
                           labels.push( "${{ env.LABEL_TYPE_GITACTION }}" );
 
                       if ( context.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_CHANGES_REQ }}" ).length > 0 )
