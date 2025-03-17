@@ -196,15 +196,20 @@ jobs:
                       }
                       else
                       {
-                          // Otherwise return issue number from commit
-                          return (
+                          const data = (
                               await github.rest.repos.listPullRequestsAssociatedWithCommit(
                               {
-                                  commit_sha: context.sha,
-                                  owner:      context.repo.owner,
-                                  repo:       context.repo.repo,
+                                    commit_sha: context.sha,
+                                    owner:      context.repo.owner,
+                                    repo:       context.repo.repo,
                               })
-                          ).data[ 0 ].number;
+                          ).data[0];
+
+                          if (data) {
+                              return data.number;
+                          } else {
+                              return '32';
+                          }
                       }
                   result-encoding: string
 
@@ -299,11 +304,8 @@ jobs:
               with:
                   github-token: ${{ secrets.ADMINSERV_TOKEN_CL }}
                   script: |
-                      console.log(`-----------------------------------------------------------------------------------------------`)
-                      console.log(` PR Created ............ ${ context.payload.pull_request.created_at }`)
-                      console.log(` PR head_ref ........... ${ context.payload.pull_request.head.ref }`)
+                      console.log('Running Autoscan')
                       console.log(` PR Context ............ ${ context }`)
-                      console.log(`-----------------------------------------------------------------------------------------------`)
 
                       const fs                = require( 'fs' );
                       const escape_html       = ( unsafe ) => unsafe.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' ).replace( /'/g, '&#039;' );
@@ -397,7 +399,7 @@ jobs:
                       const type_dependency =
                       [
                           "dependabot/npm_and_yarn",
-                          "renovate/user-agents-1.x"
+                          "renovate/github_actions"
                       ];
 
                       const type_gitaction =
