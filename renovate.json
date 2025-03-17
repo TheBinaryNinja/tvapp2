@@ -12,6 +12,7 @@
   "rebaseWhen": "conflicted",
   "rebaseLabel": "AC › Needs Rebase",
   "gitAuthor": "EuropaServ <161414668+EuropaServ@users.noreply.github.com>",
+  "updatePinnedDependencies": false,
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "📁 Dependency Dashboard",
   "dependencyDashboardLabels": ["📰 Progress Report"],
