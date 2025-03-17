@@ -6,6 +6,7 @@
   ],
   "timezone": "Etc/UTC",
   "includeForks": true,
+  "forkProcessing": "enabled",
   "baseBranches": ["main"],
   "prCreation": "immediate",
   "rebaseWhen": "conflicted",
