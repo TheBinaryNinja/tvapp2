@@ -5,6 +5,13 @@
 #                           if the code in the files being submitted contains code that is forbidden,
 #                           a report is generated and posted as a comment in the PR.
 #                       sends notifications to discord using webhooks
+#
+#                       can be tested using act:
+#                           - https://github.com/nektos/act
+#                       command:
+#                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/issues-scan.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
+#
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
 # #
@@ -116,7 +123,7 @@ jobs:
 
     pr-autoscan:
       # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
         timeout-minutes: 10
         permissions:
             contents: read
@@ -234,6 +241,7 @@ jobs:
               if: |
                   ( github.event_name == 'pull_request_target' ) || ( github.event_name == 'pull_request' ) || ( github.event_name == 'issue_comment' && contains( github.event.comment.html_url, '/pull/' ) && contains( github.event.comment.body, '/rescan' ) )
               with:
+                  token: ${{ secrets.ADMINSERV_TOKEN_CL || github.token }}
                   fetch-depth: 0
                   ref: "refs/pull/${{ steps.task_autocheck_issue_num_set.outputs.result }}/merge"
 
@@ -307,17 +315,117 @@ jobs:
                       console.log('Running Autoscan')
                       console.log(JSON.stringify(context, null, 4));
                       console.log(JSON.stringify(github, null, 4));
+                      let ct = context;
+
+                      /*  #
+                       #    Example PR used for local act testing
+                       #    Uncomment to use in local env
+                       #  */
+
+                      /*
+                      ct = {
+                            "issue": {
+                                "number": 32
+                            },
+                            "repo": {
+                                "owner": "TheBinaryNinja",
+                                "repo": "TVApp2"
+                            },
+                            "payload": {
+                                "action": "synchronize",
+                                "after": "f087c5bea8800f41018ef328463531ea247547ef",
+                                "before": "a8bdd791b80b2fbb78169234690ccb61b9d014f1",
+                                "number": 32,
+                                "organization": {
+                                    "avatar_url": "https://avatars.githubusercontent.com/u/200161462?v=4",
+                                    "events_url": "https://api.github.com/orgs/TheBinaryNinja/events",
+                                    "hooks_url": "https://api.github.com/orgs/TheBinaryNinja/hooks",
+                                    "issues_url": "https://api.github.com/orgs/TheBinaryNinja/issues",
+                                    "login": "TheBinaryNinja",
+                                    "members_url": "https://api.github.com/orgs/TheBinaryNinja/members{/member}",
+                                    "public_members_url": "https://api.github.com/orgs/TheBinaryNinja/public_members{/member}",
+                                    "repos_url": "https://api.github.com/orgs/TheBinaryNinja/repos",
+                                    "url": "https://api.github.com/orgs/TheBinaryNinja"
+                                },
+                                "pull_request": {
+                                    "created_at": "2025-03-17T23:32:22Z",
+                                    "updated_at": "2025-03-17T23:32:22Z",
+                                    "url": "https://api.github.com/repos/TheBinaryNinja/tvapp2",
+                                    "title": "Test PR Workflow",
+                                    "head": {
+                                        "ref": "main"
+                                    },
+                                    "base": {
+                                        "ref": "main"
+                                    },
+                                    "user": {
+                                        "login": "Aetherinox"
+                                    },
+                                    "labels": [
+                                      {
+                                          "color": "146b4a",
+                                          "default": false,
+                                          "description": "Ready to be reviewed",
+                                          "id": 7821944832,
+                                          "name": "AC › Passed",
+                                          "node_id": "LA_kwDONW-GkM8AAAAB0jloAA",
+                                          "url": "https://api.github.com/repos/TheBinaryNinja/tvapp2/labels/AC%20%E2%80%BA%20Passed"
+                                      },
+                                      {
+                                          "color": "8F1784",
+                                          "default": false,
+                                          "description": "Normal pull request",
+                                          "id": 7821944963,
+                                          "name": "Type ◦ Pull Request",
+                                          "node_id": "LA_kwDONW-GkM8AAAAB0jlogw",
+                                          "url": "https://api.github.com/repos/TheBinaryNinja/tvapp2/labels/Type%20%E2%97%A6%20Pull%20Request"
+                                      }
+                                  ]
+                                },
+                            },
+                            "eventName": "pull_request_target",
+                            "sha": "c938f7a21247f69b29cf352d0c6890a63f260d47",
+                            "ref": "refs/heads/main",
+                            "workflow": "🎫 Issues › Scan",
+                            "action": "task_autocheck_run",
+                            "actor": "renovate[bot]",
+                            "job": "pr-autoscan",
+                            "runNumber": 45,
+                            "runId": 13911964505,
+                            "apiUrl": "https://api.github.com",
+                            "serverUrl": "https://github.com",
+                            "graphqlUrl": "https://api.github.com/graphql"
+                      }
+                      */
+
+                      if (!ct) {
+                        ct = context;
+                      }
 
                       const fs                = require( 'fs' );
                       const escape_html       = ( unsafe ) => unsafe.replace( /&/g, '&amp;' ).replace( /</g, '&lt;' ).replace( />/g, '&gt;' ).replace( /"/g, '&quot;' ).replace( /'/g, '&#039;' );
                       const labels            = [];
 
+                      /*  #
+                       #   Get existing labels and add to list
+                       #  */
+
+                      const labelsExisting = await github.rest.issues.listLabelsOnIssue({
+                          issue_number: ct.issue.number,
+                          owner: ct.repo.owner,
+                          repo: ct.repo.repo
+                      })
+
+                      labelsExisting.data.forEach(({ name }) => {
+                          labels.push(name);
+                      });
+
                       const files_List        = `${{ steps.task_autocheck_changed_files_get.outputs.all_changed_files }}` || ''
                       const files_Array       = files_List.split(',')
-                      const branch_ref        = `${ context.payload.pull_request.head.ref }`
+                      const branch_ref        = `${ ct.payload.pull_request.head.ref }`
 
                       let message             = [ "\n<br />\n" ]
-                      message.push            ( "## Automatic Self-Check - #" + context.issue.number + "\n" );
+                      message.push            ( "## Automatic Self-Check - #" + ct.issue.number + "\n" );
                       message.push            ( `The details of our automated scan for your pull request are listed below. If our scan detected errors, they must be corrected before this pull request will be advanced to the review stage:\n` );
                       message.push            ( "\n<br />\n\n---\n\n<br />\n\n" );
                       message.push            ( "### About\nThis pull request includes the following information:" );
@@ -325,7 +433,7 @@ jobs:
                       let bHasError           = false;
                       let bHasWarning         = false;
 
-                      let date                = new Date( `${ context.payload.pull_request.created_at }` );
+                      let date                = new Date( `${ ct.payload.pull_request.created_at }` );
                       date.toISOString( )
 
                       const actor             = '${{ github.actor }}';
@@ -351,20 +459,20 @@ jobs:
 
                       let date_created        = dateTimeformat( date ) + " UTC";
 
-                      /*
-                          context.payload.pull_request.base.repo.owner.login
-                      */
+                      /*  #
+                       #   ct.payload.pull_request.base.repo.owner.login
+                       #  */
 
                       let md_table =
                       `
                       | Category | Value |
                       | --- | --- |
-                      | Title | [ ` + context.payload.pull_request.title + ` ](https://github.com/` + context.repo.owner + `/` + context.repo.repo + `/pull/` + context.payload.pull_request.number + `) |
+                      | Title | [ ` + ct.payload.pull_request.title + ` ](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `/pull/` + ct.payload.pull_request.number + `) |
                       | Created | [ ` + date_created + ` ](https://worldtimebuddy.com) |
-                      | ID | ` + context.payload.pull_request.html_url + ` |
-                      | Author | [ ` + context.payload.pull_request.user.login + ` ](https://github.com/` + context.repo.owner + `/) |
-                      | Repo | [ ` + context.repo.repo + ` ](https://github.com/` + context.repo.owner + `/` + context.repo.repo + `) |
-                      | Branch | [ ` + context.payload.pull_request.head.ref + `](https://github.com/` + context.repo.owner + `/` + context.repo.repo + `/tree/` + context.payload.pull_request.head.ref + `) ⇁ [ ` + context.payload.pull_request.base.ref + `](https://github.com/` + context.repo.owner + `/` + context.repo.repo + `/tree/` + context.payload.pull_request.base.ref + `) |
+                      | ID | ` + ct.payload.pull_request.html_url + ` |
+                      | Author | [ ` + ct.payload.pull_request.user.login + ` ](https://github.com/` + ct.repo.owner + `/) |
+                      | Repo | [ ` + ct.repo.repo + ` ](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `) |
+                      | Branch | [ ` + ct.payload.pull_request.head.ref + `](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `/tree/` + ct.payload.pull_request.head.ref + `) ⇁ [ ` + ct.payload.pull_request.base.ref + `](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `/tree/` + ct.payload.pull_request.base.ref + `) |
                       | Added Files | ${{ steps.task_autocheck_changed_files_get.outputs.added_files_count }} |
                       | Modified Files | ${{ steps.task_autocheck_changed_files_get.outputs.all_modified_files_count }} |
                       | Renamed Files | ${{ steps.task_autocheck_changed_files_get.outputs.renamed_files_count }} |
@@ -727,7 +835,7 @@ jobs:
                       if ( bHasError == true )
                       {
                           labels.push( "${{ env.LABEL_CHECK_STATUS_FAILED }}" );
-                          core.setFailed( "Pull Request Failed Autocheck: " + context.issue.number + ": " + context.payload.pull_request.title + "." );
+                          core.setFailed( "Pull Request Failed Autocheck: " + ct.issue.number + ": " + ct.payload.pull_request.title + "." );
                       }
 
                       /*
@@ -741,21 +849,21 @@ jobs:
                               change pr title
                           */
 
-                          const pr_title          = `${ context.payload.pull_request.title }`;
-                          const pr_title_append   = `PR ${ context.issue.number }:`;
+                          const pr_title          = `${ ct.payload.pull_request.title }`;
+                          const pr_title_append   = `PR ${ ct.issue.number }:`;
 
-                          if ( !pr_title.startsWith( pr_title_append ) )
+                          if ( !pr_title.startsWith( pr_title_append ) && actor !=  "${{ env.BOT_NAME_RENOVATE }}" )
                           {
                               await github.rest.pulls.update(
                               {
-                                  owner:        context.repo.owner,
-                                  repo:         context.repo.repo,
-                                  pull_number:  context.issue.number,
-                                  title:        `${ pr_title_append } ${ context.payload.pull_request.title }`
+                                  owner:        ct.repo.owner,
+                                  repo:         ct.repo.repo,
+                                  pull_number:  ct.issue.number,
+                                  title:        `${ pr_title_append } ${ ct.payload.pull_request.title }`
                               } );
                           }
 
-                          if ( !context.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_CHANGES_REQ }}" ).length > 0 )
+                          if ( !ct.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_CHANGES_REQ }}" ).length > 0 )
                               labels.push( "${{ env.LABEL_CHECK_REVIEW_READY }}" );
                       }
 
@@ -771,19 +879,19 @@ jobs:
                       else if ( actor ==  "${{ env.BOT_NAME_DEPENDABOT }}" && bGitaction || actor ==  "${{ env.BOT_NAME_RENOVATE }}" && bGitaction )
                           labels.push( "${{ env.LABEL_TYPE_GITACTION }}" );
 
-                      if ( context.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_CHANGES_REQ }}" ).length > 0 )
+                      if ( ct.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_CHANGES_REQ }}" ).length > 0 )
                           labels.push( "${{ env.LABEL_CHECK_CHANGES_REQ }}" );
 
-                      if (context.payload.pull_request.labels.filter(label => label.name === "${{ env.LABEL_CHECK_REBASE_REQ }}" ).length > 0 )
+                      if (ct.payload.pull_request.labels.filter(label => label.name === "${{ env.LABEL_CHECK_REBASE_REQ }}" ).length > 0 )
                           labels.push( "${{ env.LABEL_CHECK_REBASE_REQ }}" );
 
-                      if ( context.payload.pull_request.labels.filter(label => label.name === "${{ env.LABEL_CHECK_SECURITY_ERR }}" ).length > 0 )
+                      if ( ct.payload.pull_request.labels.filter(label => label.name === "${{ env.LABEL_CHECK_SECURITY_ERR }}" ).length > 0 )
                           labels.push( "${{ env.LABEL_CHECK_SECURITY_ERR }}" );
 
-                      if (context.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_STATUS_CHGMADE }}" ).length > 0 )
+                      if (ct.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_STATUS_CHGMADE }}" ).length > 0 )
                           labels.push( "${{ env.LABEL_CHECK_STATUS_CHGMADE }}" );
 
-                      if ( context.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_SCAN_SKIPPED }}" ).length > 0 )
+                      if ( ct.payload.pull_request.labels.filter( label => label.name === "${{ env.LABEL_CHECK_SCAN_SKIPPED }}" ).length > 0 )
                           labels.push( "${{ env.LABEL_CHECK_SCAN_SKIPPED }}" );
 
                       labels.push( "${{ env.LABEL_TYPE_PR }}" );
@@ -794,9 +902,9 @@ jobs:
 
                       await github.rest.issues.setLabels(
                       {
-                          issue_number:   context.issue.number,
-                          owner:          context.repo.owner,
-                          repo:           context.repo.repo,
+                          issue_number:   ct.issue.number,
+                          owner:          ct.repo.owner,
+                          repo:           ct.repo.repo,
                           labels,
                       } );
 
@@ -806,9 +914,9 @@ jobs:
 
                       await github.rest.issues.createComment(
                       {
-                          issue_number:   context.issue.number,
-                          owner:          context.repo.owner,
-                          repo:           context.repo.repo,
+                          issue_number:   ct.issue.number,
+                          owner:          ct.repo.owner,
+                          repo:           ct.repo.repo,
                           body:           message.join('\n'),
                       } );
 
