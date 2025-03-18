@@ -10,6 +10,7 @@
 #                           - https://github.com/nektos/act
 #                       command:
 #                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/issues-scan.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
 #                           act -W .github/workflows/issues-scan.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
 #
 #   @author             Aetherinox
@@ -326,6 +327,7 @@ jobs:
                         #           - https://github.com/nektos/act
                         #       command:
                         #           git pull https://github.com/username/repo
+                        #           act -W .github/workflows/issues-scan.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
                         #           act -W .github/workflows/issues-scan.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
                         #  */
 
