@@ -121,7 +121,8 @@ jobs:
     #   Job [ Autoscan ]
     # #
 
-    pr-autoscan:
+    job-pr-autoscan:
+        name: 🎫 Issues › Autoscan
       # runs-on: ubuntu-latest
         runs-on: ubuntu-latest
         timeout-minutes: 10
@@ -317,10 +318,16 @@ jobs:
                       console.log(JSON.stringify(github, null, 4));
                       let ct = context;
 
-                      /*  #
-                       #    Example PR used for local act testing
-                       #    Uncomment to use in local env
-                       #  */
+                        /*  #
+                        #    Example PR used for local act testing
+                        #    Uncomment to use in local env
+                        #
+                        #       can be tested using act:
+                        #           - https://github.com/nektos/act
+                        #       command:
+                        #           git pull https://github.com/username/repo
+                        #           act -W .github/workflows/issues-scan.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
+                        #  */
 
                       /*
                       ct = {
@@ -389,7 +396,7 @@ jobs:
                             "workflow": "🎫 Issues › Scan",
                             "action": "task_autocheck_run",
                             "actor": "renovate[bot]",
-                            "job": "pr-autoscan",
+                            "job": "job-pr-autoscan",
                             "runNumber": 45,
                             "runId": 13911964505,
                             "apiUrl": "https://api.github.com",
@@ -397,6 +404,10 @@ jobs:
                             "graphqlUrl": "https://api.github.com/graphql"
                       }
                       */
+
+                      /*  #
+                      #    if local env ct isn't used, set ct to context for production
+                      #  */
 
                       if (!ct) {
                         ct = context;
