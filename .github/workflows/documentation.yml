@@ -1,16 +1,38 @@
 # #
 #   @type               github workflow
-#   @desc               builds mkdocs from the main branch /docs/ folder and puts the compiled version
-#                       in the `gh-pages` branch. Is hosted using Github Pages.
-#
-#   @update             pip install --upgrade mkdocs
-#                       pip install --upgrade --force-reinstall mkdocs-material
-#
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
+#   @usage              builds mkdocs from the main branch /docs/ folder and puts the compiled version
+#                       in the `gh-pages` branch. Is hosted using Github Pages.
 #
-#   @secrets            secrets.SELF_TOKEN_CL                                                 Github Access Token (Classic)
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS                  Discord Webbhook URL; right-click on channel, click "Integrations"
+#   @update             use the following commands to update mkdocs and the mkdocs-material theme:
+#                           pip install --upgrade mkdocs
+#                           pip install --upgrade --force-reinstall mkdocs-material
+#
+#   @secrets            secrets.SELF_TOKEN                                          self github personal access token (fine-grained)
+#                       secrets.SELF_TOKEN_CL                                       self github personal access token (classic)
+#                       secrets.NPM_TOKEN                                           self npmjs access token
+#                       secrets.PYPI_API_TOKEN                                      self Pypi API token (production site) - https://pypi.org/
+#                       secrets.PYPI_API_TEST_TOKEN                                 self Pypi API token (test site) - https://test.pypi.org/
+#                       secrets.SELF_DOCKERHUB_TOKEN                                self Dockerhub token
+#                       secrets.ORG_BINARYNINJA_TOKEN                               org github personal access token (fine-grained)
+#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            org github personal access token (classic)
+#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     org dockerhub secret
+#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         org gitea personal access token (classic) with package:write permission
+#                       secrets.BINARYSERV_GPG_KEY_ASC                              bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
+#                       secrets.BINARYSERV_GPG_PASSPHRASE                           bot gpg private key passphrase
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         discord webhook to report release notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS        discord webhook to report workflow notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_UPDATES          discord webhook to report activity notifications from github to discord
+#
+#   @local              these workflows can be tested locally through the use of `act`
+#                           https://github.com/nektos/act
+#                       Extract act to folder
+#                       Add system env var with path to act.exe
+#                       Run the commands:
+#                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/documentation.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
+#                           act -W .github/workflows/documentation.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
 # #
 
 name: "📒 Docs › Build"
@@ -36,9 +58,11 @@ on:
 # #
 
 env:
-    ASSIGN_USER:                  Aetherinox
-    BOT_NAME_1:                   EuropaServ
-    BOT_NAME_DEPENDABOT:          dependabot[bot]
+    ASSIGN_USER:                    Aetherinox
+    BOT_NAME_1:                     EuropaServ
+    BOT_NAME_2:                     BinaryServ
+    BOT_NAME_DEPENDABOT:            dependabot[bot]
+    BOT_NAME_RENOVATE:              renovate[bot]
 
 # #
 #   jobs

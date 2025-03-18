@@ -65,6 +65,7 @@ env:
     LABEL_TYPE_DEPENDENCY:          Type ◦ Dependency
     LABEL_TYPE_GITACTION:           Type ◦ Git Action
 
+    ASSIGN_USER:                    Aetherinox
     BOT_NAME_1:                     EuropaServ
     BOT_NAME_2:                     BinaryServ
     BOT_NAME_DEPENDABOT:            dependabot[bot]

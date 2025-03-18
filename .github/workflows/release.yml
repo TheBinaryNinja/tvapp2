@@ -1,12 +1,37 @@
 # #
 #   @type               github workflow
-#   @desc               publishes a new release on Github
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
+#   @usage              publishes a new release on Github
+#
+#   @secrets            secrets.SELF_TOKEN                                          self github personal access token (fine-grained)
+#                       secrets.SELF_TOKEN_CL                                       self github personal access token (classic)
+#                       secrets.NPM_TOKEN                                           self npmjs access token
+#                       secrets.PYPI_API_TOKEN                                      self Pypi API token (production site) - https://pypi.org/
+#                       secrets.PYPI_API_TEST_TOKEN                                 self Pypi API token (test site) - https://test.pypi.org/
+#                       secrets.SELF_DOCKERHUB_TOKEN                                self Dockerhub token
+#                       secrets.ORG_BINARYNINJA_TOKEN                               org github personal access token (fine-grained)
+#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            org github personal access token (classic)
+#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     org dockerhub secret
+#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         org gitea personal access token (classic) with package:write permission
+#                       secrets.BINARYSERV_GPG_KEY_ASC                              bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
+#                       secrets.BINARYSERV_GPG_PASSPHRASE                           bot gpg private key passphrase
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         discord webhook to report release notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS        discord webhook to report workflow notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_UPDATES          discord webhook to report activity notifications from github to discord
+#
+#   @local              these workflows can be tested locally through the use of `act`
+#                           https://github.com/nektos/act
+#                       Extract act to folder
+#                       Add system env var with path to act.exe
+#                       Run the commands:
+#                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/labels-create.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
+#                           act -W .github/workflows/labels-create.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
 # #
 
-name: "📦 Release › Github"
-run-name: "📦 Release › Github"
+name: '📦 Release › Github'
+run-name: '📦 Release › Github'
 
 # #
 #   Triggers
@@ -22,10 +47,10 @@ on:
             # #
 
             PROJECT_NAME:
-                description:    "📦 Name of App"
-                required:       true
-                default:        'tvapp2'
-                type:           string
+                description:        '📦 Name of App'
+                required:           true
+                default:            'tvapp2'
+                type:               string
 
             # #
             #   ENABLE:   the changelog generated in releases tab will only display single commits.
@@ -33,10 +58,10 @@ on:
             # #
 
             CHANGELOG_MODE_COMMIT:
-                description:    "📑 Use Commits Instead of PRs"
-                required:       true
-                default:        true
-                type:           boolean
+                description:        '📑 Use Commits Instead of PRs'
+                required:           true
+                default:            true
+                type:               boolean
 
             # #
             #   ENABLE:   Will show all types of commits, including uncategorized
@@ -46,10 +71,10 @@ on:
             # #
 
             SHOW_UNCATEGORIZED:
-                description:    "🗂️ Show Uncategorized Commits"
-                required:       true
-                default:        false
-                type:           boolean
+                description:        '🗂️ Show Uncategorized Commits'
+                required:           true
+                default:            false
+                type:               boolean
 
             # #
             #   ENABLE:     released version will be marked as pre-release
@@ -57,10 +82,10 @@ on:
             # #
 
             PRERELEASE:
-                description:    "🧪 Build RC (Pre-release)"
-                required:       true
-                default:        false
-                type:           boolean
+                description:        '🧪 Build RC (Pre-release)'
+                required:           true
+                default:            false
+                type:               boolean
 
             # #
             #   Release Candidate version number
@@ -69,23 +94,26 @@ on:
             # #
 
             VERSION_RC:
-                description:    "🧪 RC (Pre-release) Ver (tvapp2-rc.v1)"
-                required:       false
-                type:           string
-                default:        "1"
+                description:        '🧪 RC (Pre-release) Ver (tvapp2-rc.v1)'
+                required:           false
+                type:               string
+                default:            '1'
 
 # #
 #   environment variables
 # #
 
 env:
-    PROJECT_NAME:               ${{ github.event.inputs.PROJECT_NAME || 'tvapp2' }}
-    CHANGELOG_MODE_COMMIT:      true
-    SHOW_UNCATEGORIZED:         false
-    PRERELEASE:                 false
-    VERSION_RC:                 '1'
-    BOT_NAME_1:                 EuropaServ
-    BOT_NAME_DEPENDABOT:        dependabot[bot]
+    PROJECT_NAME:                   ${{ github.event.inputs.PROJECT_NAME || 'tvapp2' }}
+    CHANGELOG_MODE_COMMIT:          true
+    SHOW_UNCATEGORIZED:             false
+    PRERELEASE:                     false
+    VERSION_RC:                     '1'
+    ASSIGN_USER:                    Aetherinox
+    BOT_NAME_1:                     EuropaServ
+    BOT_NAME_2:                     BinaryServ
+    BOT_NAME_DEPENDABOT:            dependabot[bot]
+    BOT_NAME_RENOVATE:              renovate[bot]
 
 # #
 #   Jobs
@@ -112,7 +140,7 @@ jobs:
             #   Initialize › Start
             # #
 
-            - name: "✅ Start"
+            - name: '✅ Start'
               id: task_initialize_start
               run: |
                   echo "Starting build"
@@ -134,7 +162,7 @@ jobs:
             #   Initialize › Checkout
             # #
 
-            - name: "☑️ Checkout"
+            - name: '☑️ Checkout'
               id: task_initialize_checkout
               uses: actions/checkout@v4
               with:
@@ -144,14 +172,14 @@ jobs:
             #   Initialize › Get version from package.json VERSION value
             # #
 
-            - name: "👁️‍🗨️ Package Version › Set"
+            - name: '👁️‍🗨️ Package Version › Set'
               id: task_initialize_package_getversion
               working-directory: ./tvapp2
               run: |
                   VER=$(cat package.json | jq -r '.version')
                   echo "PACKAGE_VERSION=$VER" >> $GITHUB_OUTPUT
 
-            - name: "👁️‍🗨️ Package Version › Get"
+            - name: '👁️‍🗨️ Package Version › Get'
               id: task_initialize_package_version_get
               run: |
                   echo "VERSION: ${{ steps.task_initialize_package_getversion.outputs.PACKAGE_VERSION }}"
@@ -179,7 +207,7 @@ jobs:
             #   Release › Checkout
             # #
 
-            - name: "☑️ Checkout"
+            - name: '☑️ Checkout'
               id: task_release_checkout
               uses: actions/checkout@v4
               with:
@@ -202,7 +230,7 @@ jobs:
             #   Release › Print Version Debug
             # #
 
-            - name: "🪪 Test Next Job Version"
+            - name: '🪪 Test Next Job Version'
               id: task_release_debug_print_ver
               run: |
                   echo "VERSION: ${{ env.PACKAGE_VERSION }}"
@@ -211,7 +239,7 @@ jobs:
             #   Release › Install package via NPM
             # #
 
-            - name: "🪪 NPM › Install"
+            - name: '🪪 NPM › Install'
               id: task_release_npm_install
               working-directory: ./tvapp2
               run: |
@@ -223,7 +251,7 @@ jobs:
             #   Release › Execute npm generate so that a uuid and guid can be created
             # #
 
-            - name: "🪪 Generate IDs"
+            - name: '🪪 Generate IDs'
               id: task_release_npm_env_generate
               working-directory: ./tvapp2
               run: |
@@ -234,7 +262,7 @@ jobs:
             #   Get guid and uuid from env variable generated by npm
             # #
 
-            - name: "🪪 .ENV › Get"
+            - name: '🪪 .ENV › Get'
               id: task_release_dotenv_get
               uses: falti/dotenv-action@v1
               with:
@@ -245,7 +273,7 @@ jobs:
             #   Show guid and uuid from env variable generated by npm
             # #
 
-            - name: "🪪 .ENV › Read"
+            - name: '🪪 .ENV › Read'
               id: task_dotenv_debug_print
               run: |
                   echo "GUID: ${{ steps.task_release_dotenv_get.outputs.GUID }}"
@@ -255,7 +283,7 @@ jobs:
             #   Build Project & Create Zip
             # #
 
-            - name: "🔨 Build › Stable ( ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip )"
+            - name: '🔨 Build › Stable ( ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip )'
               id: task_release_build_st
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
@@ -267,7 +295,7 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
-            - name: "🔨 Build › RC ( ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip )"
+            - name: '🔨 Build › RC ( ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip )'
               id: task_release_build_rc
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
@@ -287,7 +315,7 @@ jobs:
             #   the list of commits will not be for the correct release.
             # #
 
-            - name: "🔖 Tag › Pre Create ${{ env.PACKAGE_VERSION }}"
+            - name: '🔖 Tag › Pre Create ${{ env.PACKAGE_VERSION }}'
               id: task_release_tag_create
               uses: rickstaa/action-create-tag@v1
               with:
@@ -303,7 +331,7 @@ jobs:
             #   check if tag already exists
             # #
 
-            - name: "🔖 Tag › Confirm ${{ env.PACKAGE_VERSION }}"
+            - name: '🔖 Tag › Confirm ${{ env.PACKAGE_VERSION }}'
               id: task_release_tag_get
               run: |
                   echo "Tag already present: ${{ env.TAG_EXISTS }}"
@@ -313,7 +341,7 @@ jobs:
             #   Checksum › Generate
             # #
 
-            - name: "🆔 Checksum › Stable"
+            - name: '🆔 Checksum › Stable'
               id: task_release_checksum_st_set
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
@@ -327,7 +355,7 @@ jobs:
                   sha256_compose="$(shasum --algorithm 256 ${filename_compose_zip} | awk '{ print $1 }')"
                   echo "FILE_COMPOSE_ZIP=${filename_compose_zip}" >> $GITHUB_ENV
 
-            - name: "🆔 Checksum › RC"
+            - name: '🆔 Checksum › RC'
               id: task_release_checksum_rc_set
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
@@ -345,7 +373,7 @@ jobs:
             #   Checksum › Print
             # #
 
-            - name: "🆔 Checksum › Print"
+            - name: '🆔 Checksum › Print'
               id: task_release_checksum_st_get
               run: |
                   echo ${{ env.SHA256SUM }}
@@ -354,7 +382,7 @@ jobs:
             #   Contributor Images
             # #
 
-            - name: "🥸 Contributors › Generate"
+            - name: '🥸 Contributors › Generate'
               id: task_release_contribs_generate
               uses: jaywcjlove/github-action-contributors@main
               with:
@@ -366,7 +394,7 @@ jobs:
             #   Checksum › Add to ZIP file
             # #
 
-            - name: "📦 Zip › Add Checksum › Stable"
+            - name: '📦 Zip › Add Checksum › Stable'
               id: task_release_zip_st
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
@@ -374,7 +402,7 @@ jobs:
                   zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip SHA256SUMS.txt
                   ls
 
-            - name: "📦 Zip › Add Checksum › RC"
+            - name: '📦 Zip › Add Checksum › RC'
               id: task_release_zip_rc
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
@@ -392,15 +420,17 @@ jobs:
             #     ${{ steps.changelog.outputs.changelog }}
             # #
 
-            - name: "📝 Changelog › Pre Setup (Categorized Commits)"
+            - name: '📝 Changelog › Pre Setup (Categorized Commits)'
               id: task_release_changelog_categorized_sha_set
               run: |
                   echo "TAG_LAST=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
                   echo "COMMIT_LAST=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
-            - name: "📝 Changelog › Build (Categorized)"
+            - name: '📝 Changelog › Build (Categorized)'
               id: task_release_changelog_categorized
-              if: ${{ startsWith( inputs.SHOW_UNCATEGORIZED, false ) }}
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, false )
               uses: mikepenz/release-changelog-builder-action@v5
               with:
                   token: ${{ secrets.ADMINSERV_TOKEN }}
@@ -408,7 +438,7 @@ jobs:
                   #toTag: "${{ github.ref }}"
                   configuration: ".github/changelog-configuration.json"
                   ignorePreReleases: false
-                  commitMode: ${{ inputs.CHANGELOG_MODE_COMMIT }}
+                  commitMode: ${{ inputs.CHANGELOG_MODE_COMMIT || env.CHANGELOG_MODE_COMMIT }}
                   fetchReleaseInformation: true
                   fetchViaCommits: true
                   configurationJson: |
@@ -424,9 +454,11 @@ jobs:
             #                type: description
             # #
 
-            - name: "📝 Changelog › Build (Uncategorized)"
+            - name: '📝 Changelog › Build (Uncategorized)'
               id: task_release_changelog_uncategorized
-              if: ${{ startsWith( inputs.SHOW_UNCATEGORIZED, true ) }}
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, true )
               uses: mikepenz/release-changelog-builder-action@v5
               with:
                   token: ${{ secrets.ADMINSERV_TOKEN }}
@@ -434,7 +466,7 @@ jobs:
                   #toTag: "${{ github.ref }}"
                   configuration: ".github/changelog-configuration.json"
                   ignorePreReleases: false
-                  commitMode: ${{ inputs.CHANGELOG_MODE_COMMIT }}
+                  commitMode: ${{ inputs.CHANGELOG_MODE_COMMIT || env.CHANGELOG_MODE_COMMIT }}
                   fetchReleaseInformation: true
                   fetchViaCommits: true
                   configurationJson: |
@@ -445,18 +477,46 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.ADMINSERV_TOKEN }}
 
             # #
+            #   Changelog > Convert step into ENV
+            #
+            #   This is a requirement in order for the action mikepenz/release-changelog-builder-action@v5 to work properly.
+            #   If you use special characters like quotes and tildes in your push comments, bash will have no way of knowing
+            #   if it's part of the changelog, or code itself.
+            #
+            #   By converting the step into an env var, we quote the text, and it fixes the issue.
+            # #
+
+            - name: "🙊 Changelog › Step to Env › Categorized"
+              id: task_release_changelog_escape_categorized
+              env:
+                  CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+              run: echo "CHANGELOG_CATEGORIZED"
+
+            - name: "🙊 Changelog › Step to Env › Uncategorized"
+              id: task_release_changelog_escape_uncategorized
+              env:
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
+              run: echo "CHANGELOG_UNCATEGORIZED"
+
+            # #
             #   Changelog › Fetch
             # #
 
-            - name: "📝 Changelog › Print (Categorized)"
-              if: ${{ startsWith( inputs.SHOW_UNCATEGORIZED, false ) }}
+            - name: '📝 Changelog › Print (Categorized)'
+              id: task_release_changelog_print_categorized
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, false )
               run: |
-                  echo "${{ steps.task_release_changelog_categorized.outputs.changelog }}"
+                  echo "${{ env.CHANGELOG_CATEGORIZED }}"
 
-            - name: "📝 Changelog › Print (Uncategorized)"
-              if: ${{ startsWith( inputs.SHOW_UNCATEGORIZED, true ) }}
+            - name: '📝 Changelog › Print (Uncategorized)'
+              id: task_release_changelog_print_uncategorized
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, true )
               run: |
-                  echo "${{ steps.task_release_changelog_uncategorized.outputs.changelog }}"
+                  echo "${{ env.CHANGELOG_UNCATEGORIZED }}"
 
             # #
             #   [ Release ]: Post Release
@@ -486,8 +546,8 @@ jobs:
                       SHA256SUMS.txt
                   prerelease: false
                   body: |
-                      ${{ steps.task_release_changelog_categorized.outputs.changelog }}
-                      ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
+                      ${{ env.CHANGELOG_CATEGORIZED }}
+                      ${{ env.CHANGELOG_UNCATEGORIZED }}
 
             - name: "🏳️ Post › Release Candidate"
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
@@ -511,8 +571,8 @@ jobs:
                       > [!WARNING]
                       > This is a **release candidate**, which means it is not a stable release and could contain bugs. You should download it at your own risk.
 
-                      ${{ steps.task_release_changelog_categorized.outputs.changelog }}
-                      ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
+                      ${{ env.CHANGELOG_CATEGORIZED }}
+                      ${{ env.CHANGELOG_UNCATEGORIZED }}
 
             # #
             #   Print Status
@@ -524,8 +584,8 @@ jobs:
                   echo "Printing Variables"
                   echo
                   echo "---- CHANGELOG ---------------------------------------------------------------"
-                  echo "${{ steps.task_release_changelog_categorized.outputs.changelog }}"
-                  echo "${{ steps.task_changelog_uncategorized.outputs.changelog }}"
+                  echo "${{ env.CHANGELOG_CATEGORIZED }}"
+                  echo "${{ env.CHANGELOG_UNCATEGORIZED }}"
                   echo "---- CHANGELOG ---------------------------------------------------------------"
                   echo ""
                   echo ""

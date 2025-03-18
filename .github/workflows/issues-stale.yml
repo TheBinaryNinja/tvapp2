@@ -1,27 +1,51 @@
 # #
 #   @type               github workflow
-#   @desc               creates repository labels if they are not yet installed
-#                         issues marked as stale after 30 days, given tag Status 𐄂 Stale
-#                         inactive issues closed after 180 days, given tag Status 𐄂 Locked
-#                         inactive pr closed after 365 days, given tag Status 𐄂 Locked
-#                         issues marked stale after 30 days, given tag Status 𐄂 Stale
-#                         issues marked closed 7 days after being marked stale, given tag Status 𐄂 Autoclosed
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
+#   @usage              creates repository labels if they are not yet installed
+#                           issues marked as stale after 30 days, given tag Status 𐄂 Stale
+#                           inactive issues closed after 180 days, given tag Status 𐄂 Locked
+#                           inactive pr closed after 365 days, given tag Status 𐄂 Locked
+#                           issues marked stale after 30 days, given tag Status 𐄂 Stale
+#                           issues marked closed 7 days after being marked stale, given tag Status 𐄂 Autoclosed
 #
-#   This Github action must be activated manually.  This workflow script will do the
-#   following:
+#   @notes              This Github action must be activated manually.  This workflow script will do the following:
 #
-#       - Scan issues / pull requests and make sure they have properly assigned labels:
-#           - `Bug`
-#           - `Feature`
-#           - `Urgent`
-#           - `Roadmap`
+#                           - Scan issues / pull requests and make sure they have properly assigned labels:
+#                           - `Bug`
+#                           - `Feature`
+#                           - `Urgent`
+#                           - `Roadmap`
 #
-#       - Workflow script will then scan each pr or issue and mark them as `Stale`
-#         if they haven't had any replies in 30 days.
+#                           - Workflow script will then scan each pr or issue and mark them as `Stale`
+#                               if they haven't had any replies in 30 days.
 #
-#       - Workflow will `autoclose` pr or issues which haven't had action in `365 days`.
+#                           - Workflow will `autoclose` pr or issues which haven't had action in `365 days`.
+#
+#   @secrets            secrets.SELF_TOKEN                                          self github personal access token (fine-grained)
+#                       secrets.SELF_TOKEN_CL                                       self github personal access token (classic)
+#                       secrets.NPM_TOKEN                                           self npmjs access token
+#                       secrets.PYPI_API_TOKEN                                      self Pypi API token (production site) - https://pypi.org/
+#                       secrets.PYPI_API_TEST_TOKEN                                 self Pypi API token (test site) - https://test.pypi.org/
+#                       secrets.SELF_DOCKERHUB_TOKEN                                self Dockerhub token
+#                       secrets.ORG_BINARYNINJA_TOKEN                               org github personal access token (fine-grained)
+#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            org github personal access token (classic)
+#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     org dockerhub secret
+#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         org gitea personal access token (classic) with package:write permission
+#                       secrets.BINARYSERV_GPG_KEY_ASC                              bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
+#                       secrets.BINARYSERV_GPG_PASSPHRASE                           bot gpg private key passphrase
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         discord webhook to report release notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS        discord webhook to report workflow notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_UPDATES          discord webhook to report activity notifications from github to discord
+#
+#   @local              these workflows can be tested locally through the use of `act`
+#                           https://github.com/nektos/act
+#                       Extract act to folder
+#                       Add system env var with path to act.exe
+#                       Run the commands:
+#                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/issues-stale.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
+#                           act -W .github/workflows/issues-stale.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
 # #
 
 name: "🎫 Issues › Stale"
@@ -41,28 +65,32 @@ on:
 # #
 
 env:
-    PREFIX_BUG:           "🐛 Bug"
-    PREFIX_DEPENDENCY:    "Dependency"
-    PREFIX_DOCS:          "Docs"
-    PREFIX_FEATURE:       "💡 Feature"
-    PREFIX_GIT:           "Git Action"
-    PREFIX_PR:            "PR"
-    PREFIX_ROADMAP:       "🗺️ Roadmap"
-    PREFIX_INTERNAL:      "Internal"
-    PREFIX_URGENT:        "⚠ Urgent"
+    PREFIX_BUG:                     "🐛 Bug"
+    PREFIX_DEPENDENCY:              "Dependency"
+    PREFIX_DOCS:                    "Docs"
+    PREFIX_FEATURE:                 "💡 Feature"
+    PREFIX_GIT:                     "Git Action"
+    PREFIX_PR:                      "PR"
+    PREFIX_ROADMAP:                 "🗺️ Roadmap"
+    PREFIX_INTERNAL:                "Internal"
+    PREFIX_URGENT:                  "⚠ Urgent"
 
-    LABEL_BUG:            "Type ◦ Bug"
-    LABEL_DEPENDENCY:     "Type ◦ Dependency"
-    LABEL_DOCS:           "Type ◦ Docs"
-    LABEL_FEATURE:        "Type ◦ Feature"
-    LABEL_GIT:            "Type ◦ Git Action"
-    LABEL_PR:             "Type ◦ Pull Request"
-    LABEL_ROADMAP:        "Type ◦ Roadmap"
-    LABEL_INTERNAL:       "Type ◦ Internal"
-    LABEL_URGENT:         "⚠ Urgent"
+    LABEL_BUG:                     "Type ◦ Bug"
+    LABEL_DEPENDENCY:               "Type ◦ Dependency"
+    LABEL_DOCS:                     "Type ◦ Docs"
+    LABEL_FEATURE:                  "Type ◦ Feature"
+    LABEL_GIT:                      "Type ◦ Git Action"
+    LABEL_PR:                       "Type ◦ Pull Request"
+    LABEL_ROADMAP:                  "Type ◦ Roadmap"
+    LABEL_INTERNAL:                 "Type ◦ Internal"
+    LABEL_URGENT:                   "⚠ Urgent"
 
-    BOT_NAME_1:           EuropaServ
-    BOT_NAME_DEPENDABOT:  dependabot[bot]
+    ASSIGN_USER:                    Aetherinox
+    BOT_NAME_1:                     EuropaServ
+    BOT_NAME_2:                     BinaryServ
+    BOT_NAME_DEPENDABOT:            dependabot[bot]
+    BOT_NAME_RENOVATE:              renovate[bot]
+
     LABELS_JSON: |
       [
           { "name": "AC › Changes Made",           "color": "8F1784", "description": "Requested changes have been made and are pending a re-scan" },
