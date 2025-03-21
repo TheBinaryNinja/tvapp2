@@ -51,16 +51,44 @@ chalk.level = 3;
 let URLS_FILE;
 let FORMATTED_FILE;
 let EPG_FILE;
-const externalURL = `${process.env.URL_REPO}/tvapp2-externals/raw/branch/main/urls.txt`;
-const externalEPG = `${process.env.URL_REPO}//XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
-const externalFORMATTED_1 = `${process.env.URL_REPO}/tvapp2-externals/raw/branch/main/formatted.dat`;
-const externalFORMATTED_2 = '';
-const externalFORMATTED_3 = '';
+
+/*
+    Define > Environment Variables || Defaults
+*/
+
 const envUrlRepo = process.env.URL_REPO || `https://git.binaryninja.net/binaryninja`;
 const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
 const envFilePlaylist = process.env.FILE_PLAYLIST || `playlist.m3u8`;
 const envFileEPG = process.env.FILE_EPG || `xmltv.xml`;
 const LOG_LEVEL = process.env.LOG_LEVEL || 8;
+
+/*
+    Define > Externals
+*/
+
+const extURL = `${envUrlRepo}/tvapp2-externals/raw/branch/main/urls.txt`;
+const extEPG = `${envUrlRepo}/XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
+const extFormatted = `${envUrlRepo}/tvapp2-externals/raw/branch/main/formatted.dat`;
+const extEvents = '';
+
+/*
+    Define > Defaults
+*/
+
+let urls = [];
+let tokenData = {
+    subdomain: null,
+    token: null,
+    url: null,
+    validationUrl: null,
+    cookies: null,
+};
+
+let lastTokenFetchTime = 0;
+
+let gCookies = {};
+const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+
 /*
     Define > Logs
 
@@ -191,7 +219,6 @@ if (process.pkg) {
     const basePath = path.dirname(process.execPath);
     URLS_FILE = path.join(basePath, 'urls.txt');
     FORMATTED_FILE = path.join(basePath, 'formatted.dat');
-    //EPG_FILE = path.join(basePath, 'epg.xml');
     EPG_FILE = path.join(basePath, 'xmltv.1.xml');
     EPG_FILE.length;
 } else {
@@ -200,6 +227,12 @@ if (process.pkg) {
     FORMATTED_FILE = path.resolve(__dirname, 'formatted.dat');
     EPG_FILE = path.resolve(__dirname, 'xmltv.1.xml');
 }
+
+/*
+    Semaphore > Declare
+
+    allows multiple threads to work with the same shared resources
+*/
 
 class Semaphore {
     constructor(max) {
@@ -224,22 +257,21 @@ class Semaphore {
     }
 }
 
+/*
+    Semaphore > Initialize
+
+    @arg        int threads_max
+*/
+
 const semaphore = new Semaphore(5);
 
-let urls = [];
-let tokenData = {
-    subdomain: null,
-    token: null,
-    url: null,
-    validationUrl: null,
-    cookies: null,
-};
-let lastTokenFetchTime = 0;
+/*
+    Func > Download File
 
-const log = (message) => {
-    const now = new Date();
-    console.log(`[${now.toLocaleTimeString()}] ${message}`);
-};
+    @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
+    @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
+    @return     Promise<>
+*/
 
 async function downloadFile(url, filePath) {
     Log.info(`Fetching ${url}`)
@@ -248,7 +280,6 @@ async function downloadFile(url, filePath) {
         const isHttps = new URL(url).protocol === 'https:';
         const httpModule = isHttps ? https : http;
         const file = fs.createWriteStream(filePath);
-
         httpModule
             .get(url, (response) => {
                 if (response.statusCode !== 200) {
@@ -275,6 +306,19 @@ async function downloadFile(url, filePath) {
             });
     });
 }
+
+/*
+    Func > Ensure File Exists
+
+    if file exists; start download from external website utilizing url and file path arguments; or
+    throw error to user that file does not exist via the URL.
+
+    If file cannot be obtained from external url; use local copy if available
+
+    @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
+    @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
+    @return     none
+*/
 
 async function ensureFileExists(url, filePath) {
     try {
@@ -405,9 +449,6 @@ async function serveKey(req, res) {
         res.end('Error fetching key.');
     }
 }
-
-let gCookies = {};
-const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
 
 function parseSetCookieHeaders(setCookieValues) {
     if (!Array.isArray(setCookieValues)) return;
@@ -587,6 +628,10 @@ async function serveChannelPlaylist(req, res) {
     }
 }
 
+/*
+    Rewrites the URLs
+*/
+
 async function rewritePlaylist(originalUrl, req) {
     const rawData = await fetchRemote(originalUrl);
     const protocol = req.headers['x-forwarded-proto']?.split(',')[0] || (req.socket.encrypted ? 'https' : 'http');
@@ -607,6 +652,10 @@ async function rewritePlaylist(originalUrl, req) {
             return `${baseUrl}/channel?url=${encodeURIComponent(resolvedUri)}`;
         });
 }
+
+/*
+    Serves IPTV .m3u playlist
+*/
 
 async function servePlaylist(response, req) {
 
@@ -634,16 +683,18 @@ async function servePlaylist(response, req) {
     } catch (error) {
         Log.error(`Error in servePlaylist:`, chalk.white(` → `), chalk.grey(`${error.message}`));
 
-        console.error('Error in servePlaylist:', error.message);
         response.writeHead(500, {
             'Content-Type': 'text/plain'
         });
-        response.end(`Error serving playlist: ${error.message}`);
 
         response.end(`Error serving playlist: ${error.message}`);
     }
 
 }
+
+/*
+    Serves IPTV .xml guide data
+*/
 
 async function serveXmltv(response, req) {
 
@@ -670,64 +721,9 @@ async function serveXmltv(response, req) {
         });
 
         response.end(`Error serving playlist: ${error.message}`);
-
     }
 
 };
-
-/*
-ORIGINAL ASYNC HANDLER - HOPE ALL IS WELL DTANK - JOB WELL DONE
-async function serveXmltv(response, req) {
-  try {
-    const protocol = req.headers['x-forwarded-proto']?.split(',')[0] || (req.socket.encrypted ? 'https' : 'http');
-    const host = req.headers.host;
-    const baseUrl = `${protocol}://${host}`;
-    //const sportsData = await fetchSportsData();
-    const formattedContent = fs.readFileSync(EPG_FILE, 'utf-8');
-    //const updatedContent = formattedContent
-      //.replace(/#\[SPORTS\]/g, sportsData || '')
-      //.replace(/(https?:\/\/[^\s]*thetvapp[^\s]*)/g, (fullUrl) => {
-        //return `${baseUrl}/channel?url=${encodeURIComponent(fullUrl)}`;
-      //});
-    response.writeHead(200, {
-      'Content-Type': 'application/x-mpegURL',
-      'Content-Disposition': 'inline; filename="playlist.m3u8"',
-    });
-    response.end(updatedContent);
-  } catch (error) {
-    console.error('Error in servePlaylist:', error.message);
-    response.writeHead(500, { 'Content-Type': 'text/plain' });
-    response.end(`Error serving playlist: ${error.message}`);
-  }
-}
-
-async function servePlaylist(response, req) {
-  try {
-    const protocol = req.headers['x-forwarded-proto']?.split(',')[0] || (req.socket.encrypted ? 'https' : 'http');
-    const host = req.headers.host;
-    const baseUrl = `${protocol}://${host}`;
-    //const sportsData = await fetchSportsData();
-    const formattedContent = fs.readFileSync(FORMATTED_FILE, 'utf-8');
-    const updatedContent = formattedContent
-      //.replace(/#\[SPORTS\]/g, sportsData || '')
-      .replace(/(https?:\/\/[^\s]*thetvapp[^\s]*)/g, (fullUrl) => {
-        return `${baseUrl}/channel?url=${encodeURIComponent(fullUrl)}`;
-      })
-      .replace(/(https?:\/\/[^\s]*tvpass[^\s]*)/g, (fullUrl) => {
-        return `${baseUrl}/channel?url=${encodeURIComponent(fullUrl)}`;
-      });
-    response.writeHead(200, {
-      'Content-Type': 'application/x-mpegURL',
-      'Content-Disposition': 'inline; filename="playlist.m3u8"',
-    });
-    response.end(updatedContent);
-  } catch (error) {
-    console.error('Error in servePlaylist:', error.message);
-    response.writeHead(500, { 'Content-Type': 'text/plain' });
-    response.end(`Error serving playlist: ${error.message}`);
-  }
-}
-*/
 
 function setCache(key, value, ttl) {
     const expiry = Date.now() + ttl;
@@ -756,8 +752,9 @@ async function initialize() {
     try {
         Log.info(`Initializing server...`);
 
-        await ensureFileExists(externalFORMATTED_1, FORMATTED_FILE);
-        await ensureFileExists(externalEPG, EPG_FILE);
+        await ensureFileExists(extURL, URLS_FILE);
+        await ensureFileExists(extFormatted, FORMATTED_FILE);
+        await ensureFileExists(extEPG, EPG_FILE);
 
         urls = fs.readFileSync(URLS_FILE, 'utf-8').split('\n').filter(Boolean);
         if (urls.length === 0) {
@@ -779,82 +776,352 @@ const server = http.createServer((req, res) => {
             const htmlContent = `<!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Playlist Details</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>TVApp2 - File Browser</title>
         <meta name="robots" content="noindex, nofollow">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.10.0/css/lightbox.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/TheBinaryNinja/tvapp2@main/tvapp2/web/css/tvapp2.min.css">
         <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                background-color: #fff;
-                padding: 20px;
+            body
+            {
+                background-color: #f8f9fa;
+                padding-bottom: 20px;
+                overflow: auto;
             }
 
-            .container {
+            @media (prefers-color-scheme: dark)
+            {
+                body
+                {
+                    background-color: #262626;
+                    color: #fff;
+                }
+            }
+
+            .container
+            {
+                text-align: left;
+            }
+
+            .container nav
+            {
+                margin-left: -8px;
+            }
+
+            .container .about
+            {
+                padding-left: 8px;
+                padding-bottom: 4vh;
+                font-size: 1.6vmin;
+                line-height: 2.5vmin;
+            }
+
+            .breadcrumb
+            {
+                background-color: transparent;
+                padding: 0rem 1rem;
+            }
+
+            .breadcrumb .breadcrumb-item a
+            {
+                color: #4caf50;
+            }
+
+            html
+            {
+                position: relative;
+                min-height: 100%;
+            }
+
+            p
+            {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+
+            .footer
+            {
+                position: absolute;
+                bottom: 0;
                 width: 100%;
-                max-width: 470px;
-                margin: 0 auto;
+                margin-bottom: 0;
+                padding-bottom: 20px;
+                padding-top: 20px;
+                background-color: #151515;
             }
 
-            h1 {
-                color: #333;
-                margin-bottom: 20px;
+            .footer a,
+            .footer a:focus,
+            .footer a:hover
+            {
+                color: #FFFFFF;
             }
 
-            a {
-                color: #007bff;
-                text-decoration: none;
+            .footer a
+            {
+                color: #f7296c;
             }
 
-            a:hover {
-                text-decoration: underline;
+            .navbar
+            {
+                padding: 15px 1rem;
             }
 
-            .details p {
-                margin: 10px 0;
-                color: #555;
+            .header
+            {
+                background-color: #a82147;
+                color: #fff;
+                height: 55px;
             }
 
-            .warning {
-                color: #ff4e4e;
+            .header .navbar-brand
+            {
+                padding: 0 8px;
                 font-size: 16px;
+                line-height: 24px;
+                height: 24px;
+            }
+
+            .header a
+            {
+                color: #FFF;
+                text-decoration: none;
+                padding-left: 7px;
+            }
+
+            #breadcrumbs::before
+            {
+                margin-top: 4px;
+                padding-right: 15px;
+                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' fill='white' width='19px' height='19px'%3E%3Cdefs%3E%3Cstyle%3E.fa-secondary%7Bopacity:.4%7D%3C/style%3E%3C/defs%3E%3Cpath class='fa-primary' d='M160 384H512c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H394.5c-17 0-33.3-6.7-45.3-18.7L322.7 50.7c-12-12-28.3-18.7-45.3-18.7H160c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64z'%3E%3C/path%3E%3Cpath class='fa-secondary' d='M24 96c13.3 0 24 10.7 24 24V344c0 48.6 39.4 88 88 88H456c13.3 0 24 10.7 24 24s-10.7 24-24 24H136C60.9 480 0 419.1 0 344V120c0-13.3 10.7-24 24-24z'%3E%3C/path%3E%3C/svg%3E");
+            }
+
+            .breadcrumb-item.active
+            {
+                color: #6c757d;
+                padding-left: 10px;
+            }
+
+            .breadcrumb
+            {
+                padding-top: 30px;
+            }
+
+            .header-container
+            {
+                padding-top: 30px;
+            }
+
+            #list a,
+            #list a:focus
+            {
+                color: #FFF !important;
+            }
+
+            #list a:hover
+            {
+                color: #ff275d !important;
+            }
+
+            #list colgroup
+            {
+                display: none;
+            }
+
+            #list .filename
+            {
+                word-break: break-all;
+                white-space: normal;
+            }
+
+            table
+            {
+                margin-bottom: 10vh !important;
+            }
+
+            .table thead th a
+            {
+                color: #9b9b9b !important;
+                font-weight: normal;
+            }
+
+            .table td, .table th
+            {
+                padding: .75rem;
+                vertical-align: top;
+                border-top: 0px solid #dee2e6;
+                font-size: 1.6vmin;
+                line-height: 2.5vmin;
+            }
+
+            .table thead tr
+            {
+                border-bottom: 2px solid #575757;
+                background-color: #181818;
+            }
+
+            .table thead th
+            {
+                vertical-align: bottom;
+                border-bottom: 0px solid #575757;
+                font-size: 1.6vmin;
+                line-height: 2.5vmin;
+            }
+
+            .table-hover tbody tr:hover
+            {
+                background-color: rgba(155, 155, 155, 0.075);
+            }
+
+            .text-accent
+            {
                 font-weight: bold;
-                margin-bottom: 20px;
-                text-align: center;
-                width: 100%;
+                color: #d0c273;
             }
 
-            #firewall-warning {
-                margin-top: 20px;
+            #warning-firewall
+            {
+                background-color: #0F0F0F57;
+                padding: 2vh;
+                margin: 2vh;
+                font-size: 1.6vmin;
+                border: 1px dashed #FF6C00;
                 width: 100%;
-                text-align: center;
-                color: #555;
+                line-height: 25px;
             }
 
-            #warning-container p {
-                margin: 10px 0;
+            #warning-localhost
+            {
+                background-color: #0F0F0F57;
+                padding: 2vh;
+                margin: 2vh;
+                font-size: 1.6vmin;
+                border: 1px dashed #FF0048;
+                width: 100%;
+                line-height: 25px;
+            }
+
+            span.notice
+            {
+                color: #FFF;
+                background-color: #97950A;
+                padding-left: 7px;
+                padding-right: 7px;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+                margin-right: 8px;
+            }
+
+            span.warning
+            {
+                color: #FFF;
+                background-color: #aa102d;
+                padding-left: 7px;
+                padding-right: 7px;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+                margin-right: 8px;
+            }
+
+            code
+            {
+                font-size: 96%;
+                color: #ff4985;
+                word-break: break-word;
+                padding-right: 5px;
+                padding-left: 4px;
+            }
+
+            @media (prefers-color-scheme: dark)
+            {
+                #list a,
+                #list a:focus,
+                #list a:hover {
+                    color: #fff;
+                }
             }
         </style>
     </head>
+
     <body>
-        <center>
-            <div class="container main-container">
-                <h1>Playlist Details</h1>
-                <div class="details">
-                    <p>
-                        <strong>Playlist URL:</strong>
-                        <a id="playlist-url" target="_blank"></a>
-                    </p>
-                    <p>
-                        <strong>EPG URL:</strong>
-                        <a id="epg-url" target="_blank"></a>
-                    </p>
+        <div class="header">
+            <nav class="navbar sticky-top container">
+                <div class="navbar-brand">
+                    <i class="fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
+                    <a href="https://github.com/Aetherinox/thetvapp-docker">TVApp2 for Docker</a>
                 </div>
-                <div id="firewall-warning"></div>
-                <div id="warning-container" class="container"></div>
+            </nav>
+        </div>
+
+        <div class="container header-container">
+            <div class="row">
+                <div class="col">
+                    <div class="about">This page displays your most recent copies of the <code>.m3u8</code> playlist and <code>.xml</code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within an IPTV app such as Jellyfin. The <code>.m3u8</code> and <code>.m3u8.gz</code> are identical guide lists, but the <code>.xml.gz</code> is compressed and will import into your IPTV application much faster.</div>
+                </div>
             </div>
-        </center>
+        </div>
+
+        <div class="container main-container">
+            <table id="list" class="table table-sm table-hover text-nowrap">
+                <thead>
+                    <tr class="d-none d-md-table-row">
+                        <td class="col-auto"></td>
+                        <th style="width:55%" class="col filename">
+                            File Name
+                        </th>
+                        <th style="width:25%" class="col-auto d-none d-md-table-cell">
+                            Description
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-auto">
+                            <svg class="svg-inline--fa fa-file-lines fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
+                                <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
+                            </svg>
+                            <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                        </td>
+                        <td class="link col filename">
+                            <a id="playlist-url" target="_blank"></a>
+                        </td>
+                        <td class="date col-auto d-none d-md-table-cell">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
+                    </tr>
+                    <tr>
+                        <td class="col-auto">
+                            <svg class="svg-inline--fa fa-file-lines fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
+                                <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
+                            </svg>
+                            <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                        </td>
+                        <td class="link col filename">
+                            <a id="epg-url" target="_blank"></a>
+                        </td>
+                        <td class="date col-auto d-none d-md-table-cell">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container">
+            <div id="warning-firewall"></div>
+            <div id="warning-localhost" class="container"></div>
+        </div>
+
+        <footer class="footer navbar">
+            <div class="container">
+                <div class="col text-center text-muted text-small text-nowrap">
+                    <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2">TVApp2</a></small><br />
+                    <small>This utility is for educational purposes only</small>
+                </div>
+            </div>
+        </footer>
+
         <script>
             const baseURL = window.location.origin;
             const playlistURL = baseURL + "/playlist";
@@ -864,30 +1131,36 @@ const server = http.createServer((req, res) => {
             document.getElementById("epg-url").textContent = "${envFileEPG}";
             document.getElementById("epg-url").href = epgURL;
         </script>
+
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function()
+            {
                 const host = window.location.hostname;
-                if (host === "localhost" || host === "127.0.0.1") {
-                    const warning = document.createElement("div");
-                    warning.style.color = "#ff4e4e";
-                    warning.style.fontSize = "14px";
-                    warning.style.textAlign = "center";
-                    warning.style.fontWeight = "bold";
-                    warning.innerHTML = " < p > Warning: If you are accessing this page via 127.0 .0 .1 or localhost, proxying will not work on other devices.Please load this page using your computer 's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p>" +
-                    " < p > How to locate IP address on < a href = 'https://www.youtube.com/watch?v=UAhDHXN2c6E'
-                    target = '_blank' > Windows < /a> or  < a href = 'https://www.youtube.com/watch?v=gaIYP4TZfHI'
-                    target = '_blank' > Linux < /a>. < /p>";
-                    document.getElementById("warning-container").appendChild(warning);
+                if (host === "localhost" || host === "127.0.0.1")
+                {
+                    const warning       = document.createElement("div");
+                    warning.innerHTML   = "<p><span class='warning'>Warning</span> If you are accessing this page via 127.0.0.1 or localhost, proxying will not work on other devices.Please load \
+                                        this page using your computer's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p> \
+                                        <p> How to locate IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' \
+                                        target = '_blank' > Windows</a> or <a href='https://youtube.com/watch?v=gaIYP4TZfHI' \
+                                        target = '_blank' > Linux</a>.</p>";
+
+                    document.getElementById("warning-localhost").appendChild(warning);
                 }
             });
-            document.addEventListener("DOMContentLoaded", function() {
-                const port = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
-                const warningMessage = " < p > Ensure that port < strong > " + port + " < /strong> is open and allowed through your Windows ( < a href = 'https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18'
-                target = '_blank' > how to < /a>) or Linux ( < a href = 'https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12'
-                target = '_blank' > how to < /a>) firewall settings. This will enable other devices, such as Firestick, Android, and others, to connect to the server and request the playlist through the proxy. < /p>";
-                document.getElementById("firewall-warning").innerHTML = warningMessage;
+
+            document.addEventListener("DOMContentLoaded", function()
+            {
+                const port              = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+                const warningMessage    = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your OS firewall settings \
+                                        (<a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> | \
+                                        <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a>). \
+                                        This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
+
+                document.getElementById("warning-firewall").innerHTML = warningMessage;
             });
         </script>
+        <script src="https://cdn.jsdelivr.net/gh/TheBinaryNinja/tvapp2@main/tvapp2/web/js/tvapp2.min.js"></script>
     </body>
 </html>`;
             res.writeHead(200, {
@@ -939,11 +1212,6 @@ const server = http.createServer((req, res) => {
 
             await serveXmltv(res, req);
             return;
-            /*res.writeHead(302, {
-              Location: 'https://raw.githubusercontent.com/dtankdempse/thetvapp-m3u/refs/heads/main/guide/epg.xml',
-            });
-            res.end();
-            return;*/
         }
 
         res.writeHead(404, {
@@ -978,6 +1246,5 @@ const server = http.createServer((req, res) => {
     await initialize();
     server.listen(envWebPort, envWebIP, () => {
         Log.info(`Server is running on ${envWebIP}:${envWebPort}`)
-        log(`Server is running on port ${PORT}`);
     });
 })();
