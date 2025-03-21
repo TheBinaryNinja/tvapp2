@@ -8,10 +8,10 @@ import os from 'os'
 import fs from 'fs'
 import https from 'https'
 import path from 'path';
-import UserAgent from 'user-agents';
 import http from 'http'
 import zlib from 'zlib'
 import chalk from 'chalk';
+import UserAgent from 'user-agents';
 const cache = new Map();
 
 /*
@@ -127,86 +127,37 @@ class Log {
 
     static trace(...message) {
         if (LOG_LEVEL >= 6)
-        {
-            console.trace(
-                chalk.white.bgMagenta.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.magentaBright(message.join(" "))
-            )
-        }
+            console.trace(chalk.white.bgMagenta.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.magentaBright(message.join(" ")))
     }
 
     static debug(...message) {
         if (LOG_LEVEL >= 5)
-        {
-            console.debug(
-                chalk.white.bgGray.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.gray(message.join(" "))
-            )
-        }
+            console.debug(chalk.white.bgGray.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.gray(message.join(" ")))
     }
 
     static info(...message) {
         if (LOG_LEVEL >= 4)
-        {
-            console.info(
-                chalk.white.bgBlueBright.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.blueBright(message.join(" "))
-            )
-        }
+            console.info(chalk.white.bgBlueBright.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.blueBright(message.join(" ")))
     }
 
     static ok(...message) {
         if (LOG_LEVEL >= 4)
-        {
-            console.log(
-                chalk.white.bgGreen.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.greenBright(message.join(" "))
-            )
-        }
+            console.log(chalk.white.bgGreen.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.greenBright(message.join(" ")))
     }
 
     static notice(...message) {
         if (LOG_LEVEL >= 3)
-        {
-            console.log(
-                chalk.white.bgYellow.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.yellowBright(message.join(" "))
-            )
-        }
+            console.log(chalk.white.bgYellow.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.yellowBright(message.join(" ")))
     }
 
     static warn(...message) {
         if (LOG_LEVEL >= 2)
-        {
-            console.warn(
-                chalk.white.bgYellow.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.yellow(message.join(" "))
-            )
-        }
+            console.warn(chalk.white.bgYellow.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.yellow(message.join(" ")))
     }
 
     static error(...message) {
         if (LOG_LEVEL >= 1)
-        {
-            console.error(
-                chalk.white.bgRedBright.bold(` ${name} `),
-                chalk.white(` → `),
-                this.now(),
-                chalk.red(message.join(" "))
-            )
-        }
+            console.error(chalk.white.bgRedBright.bold(` ${name} `), chalk.white(` → `), this.now(), chalk.red(message.join(" ")))
     }
 }
 
@@ -283,11 +234,7 @@ async function downloadFile(url, filePath) {
         httpModule
             .get(url, (response) => {
                 if (response.statusCode !== 200) {
-                    Log.error(
-                        `Failed to download file: ${url}`,
-                        chalk.white(` → `),
-                        chalk.grey(`Status code: ${response.statusCode}`)
-                    );
+                    Log.error(`Failed to download file: ${url}`, chalk.white(` → `), chalk.grey(`Status code: ${response.statusCode}`));
                     return reject(new Error(`Failed to download file: ${url}. Status code: ${response.statusCode}`));
                 }
                 response.pipe(file);
@@ -297,11 +244,7 @@ async function downloadFile(url, filePath) {
                 });
             })
             .on('error', (err) => {
-                Log.error(
-                    `Error downloading file: ${url}`,
-                    chalk.white(` → `),
-                    chalk.grey(`Status code: ${err.message}`)
-                );
+                Log.error(`Error downloading file: ${url}`, chalk.white(` → `), chalk.grey(`Status code: ${err.message}`));
                 fs.unlink(filePath, () => reject(err));
             });
     });
@@ -372,12 +315,7 @@ async function fetchRemote(url) {
             }, (resp) => {
 
                 if (resp.statusCode !== 200) {
-                    Log.error(
-                        `Server returned status code other than 200`,
-                        chalk.white(` → `),
-                        chalk.grey(`${url} - ${resp.statusCode}`)
-                    );
-
+                    Log.error(`Server returned status code other than 200`, chalk.white(` → `), chalk.grey(`${url} - ${resp.statusCode}`));
                     return reject(new Error(`HTTP ${resp.statusCode} for ${url}`));
                 }
 
@@ -419,11 +357,7 @@ async function serveKey(req, res) {
                 'Content-Type': 'text/plain'
             });
 
-            Log.error(
-                `Missing "uri" parameter for key download`,
-                chalk.white(` → `),
-                chalk.grey(`${req.url}`)
-            );
+            Log.error(`Missing "uri" parameter for key download`, chalk.white(` → `), chalk.grey(`${req.url}`));
 
             return res.end('Error: Missing "uri" parameter for key download.');
         }
@@ -436,11 +370,7 @@ async function serveKey(req, res) {
         res.end(keyData);
 
     } catch (err) {
-        Log.error(
-            `ServeKey Error:`,
-            chalk.white(` → `),
-            chalk.grey(`${err.message}`)
-        );
+        Log.error(`ServeKey Error:`, chalk.white(` → `), chalk.grey(`${err.message}`));
 
         res.writeHead(500, {
             'Content-Type': 'text/plain'
@@ -986,7 +916,7 @@ const server = http.createServer((req, res) => {
             {
                 background-color: #0F0F0F57;
                 padding: 2vh;
-                margin: 2vh;
+                margin-bottom: 2vh;
                 font-size: 1.6vmin;
                 border: 1px dashed #FF6C00;
                 width: 100%;
@@ -997,7 +927,6 @@ const server = http.createServer((req, res) => {
             {
                 background-color: #0F0F0F57;
                 padding: 2vh;
-                margin: 2vh;
                 font-size: 1.6vmin;
                 border: 1px dashed #FF0048;
                 width: 100%;
@@ -1146,6 +1075,8 @@ const server = http.createServer((req, res) => {
                                         target = '_blank' > Linux</a>.</p>";
 
                     document.getElementById("warning-localhost").appendChild(warning);
+                } else {
+                    document.getElementById("warning-localhost").style.display = "none";
                 }
             });
 
@@ -1153,7 +1084,7 @@ const server = http.createServer((req, res) => {
             {
                 const port              = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
                 const warningMessage    = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your OS firewall settings \
-                                        (<a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> | \
+                                        (<a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> or \
                                         <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a>). \
                                         This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
 
@@ -1171,44 +1102,28 @@ const server = http.createServer((req, res) => {
         }
 
         if (req.url === '/playlist' && req.method === 'GET') {
-            Log.info(
-                `Received request for playlist data`,
-                chalk.white(` → `),
-                chalk.grey(`/playlist`)
-            );
+            Log.info(`Received request for playlist data`, chalk.white(` → `), chalk.grey(`/playlist`));
 
             await servePlaylist(res, req);
             return;
         }
 
         if (req.url.startsWith('/channel') && req.method === 'GET') {
-            Log.info(
-                `Received request for channel data`,
-                chalk.white(` → `),
-                chalk.grey(`/channel`)
-            );
+            Log.info(`Received request for channel data`, chalk.white(` → `), chalk.grey(`/channel`));
 
             await serveChannelPlaylist(req, res);
             return;
         }
 
         if (req.url.startsWith('/key') && req.method === 'GET') {
-            Log.info(
-                `Received request for key data`,
-                chalk.white(` → `),
-                chalk.grey(`/key`)
-            );
+            Log.info(`Received request for key data`, chalk.white(` → `), chalk.grey(`/key`));
 
             await serveKey(req, res);
             return;
         }
 
         if (req.url === '/epg' && req.method === 'GET') {
-            Log.info(
-                `Received request for EPG data`,
-                chalk.white(` → `),
-                chalk.grey(`/epg`)
-            );
+            Log.info(`Received request for EPG data`, chalk.white(` → `), chalk.grey(`/epg`));
 
             await serveXmltv(res, req);
             return;
@@ -1221,11 +1136,7 @@ const server = http.createServer((req, res) => {
         res.end('Not Found');
     };
     handleRequest().catch((error) => {
-        Log.error(
-            `Error handling request:`,
-            chalk.white(` → `),
-            chalk.grey(`${error}`)
-        );
+        Log.error(`Error handling request:`, chalk.white(` → `), chalk.grey(`${error}`));
 
         res.writeHead(500, {
             'Content-Type': 'text/plain'
