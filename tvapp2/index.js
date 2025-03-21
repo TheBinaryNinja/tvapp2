@@ -57,6 +57,7 @@ const externalFORMATTED_1 = `${process.env.URL_REPO}/tvapp2-externals/raw/branch
 const externalFORMATTED_2 = '';
 const externalFORMATTED_3 = '';
 const externalEvents = '';
+const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
 const envFilePlaylist = process.env.FILE_PLAYLIST || `playlist.m3u8`;
 const envFileEPG = process.env.FILE_EPG || `xmltv.xml`;
 const LOG_LEVEL = process.env.LOG_LEVEL || 8;
