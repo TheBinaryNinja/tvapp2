@@ -70,6 +70,10 @@ ENV YARN_VERSION=1.22.22
 ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
 ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
+ENV STREAM_QUALITY="hd"
+ENV FILE_PLAYLIST="playlist.m3u8"
+ENV FILE_EPG="xmltv.xml"
+ENV LOG_LEVEL=4
 ENV TZ="Etc/UTC"
 
 # #
