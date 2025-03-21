@@ -1,15 +1,32 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const https = require('https');
-const path = require('path');
-const UserAgent = require('user-agents');
-const http = require('http');
-const os = require('os');
-const zlib = require('zlib');
-const { randomUUID } = require('crypto');
-const { channel } = require('diagnostics_channel');
+/*
+    Import Packages
+*/
+
+import os from 'os'
+import fs from 'fs'
+import https from 'https'
+import path from 'path';
+import UserAgent from 'user-agents';
+import http from 'http'
+import zlib from 'zlib'
+import chalk from 'chalk';
 const cache = new Map();
+
+/*
+    Import package.json values
+*/
+
+const { name, author, version, repository } = JSON.parse(fs.readFileSync('./package.json'));
+
+/*
+    Old CJS variables converted to ESM
+*/
+
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url); // get resolved path to file
+const __dirname = path.dirname(__filename); // get name of directory
 
 let URLS_FILE;
 let FORMATTED_FILE;
