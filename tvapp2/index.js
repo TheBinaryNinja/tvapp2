@@ -28,6 +28,26 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url); // get resolved path to file
 const __dirname = path.dirname(__filename); // get name of directory
 
+/*
+    chalk.level
+
+    @ref        https://npmjs.com/package/chalk
+                - 0 	All colors disabled
+                - 1 	Basic color support (16 colors)
+                - 2 	256 color support
+                - 3 	Truecolor support (16 million colors)
+
+    When assigning text colors, terminals and the windows command prompt can display any color; however apps
+    such as Portainer console cannot. If you use 16 million colors and are viewing console in Portainer, colors will
+    not be the same as the rgb value. It's best to just stick to Chalk's default colors.
+*/
+
+chalk.level = 3;
+
+/*
+    Define > General
+*/
+
 let URLS_FILE;
 let FORMATTED_FILE;
 let EPG_FILE;
@@ -37,9 +57,134 @@ const externalFORMATTED_1 = `${process.env.URL_REPO}/tvapp2-externals/raw/branch
 const externalFORMATTED_2 = '';
 const externalFORMATTED_3 = '';
 const externalEvents = '';
+const LOG_LEVEL = process.env.LOG_LEVEL || 8;
+/*
+    Define > Logs
+
+    When assigning text colors, terminals and the windows command prompt can display any color; however apps
+    such as Portainer console cannot. If you use 16 million colors and are viewing console in Portainer, colors will
+    not be the same as the rgb value. It's best to just stick to Chalk's default colors.
+
+    Various levels of logs with the following usage:
+        Log.trace(`This is trace`)
+        Log.debug(`This is debug`)
+        Log.info(`This is info`)
+        Log.ok(`This is ok`)
+        Log.notice(`This is notice`)
+        Log.warn(`This is warn`)
+        Log.error(
+            `Error fetching sports data with error:`,
+            chalk.white(` → `),
+            chalk.grey(`This is the error message`)
+        );
+
+        Level               Type
+    -----------------------------------
+        6                   Trace
+        5                   Debug
+        4                   Info
+        3                   Notice
+        2                   Warn
+        1                   Error
+*/
+
+class Log {
+    static now() {
+        const now = new Date();
+        return chalk.gray(`[${now.toLocaleTimeString()}]`)
+    }
+
+    static trace(...message) {
+        if (LOG_LEVEL >= 6)
+        {
+            console.trace(
+                chalk.white.bgMagenta.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.magentaBright(message.join(" "))
+            )
+        }
+    }
+
+    static debug(...message) {
+        if (LOG_LEVEL >= 5)
+        {
+            console.debug(
+                chalk.white.bgGray.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.gray(message.join(" "))
+            )
+        }
+    }
+
+    static info(...message) {
+        if (LOG_LEVEL >= 4)
+        {
+            console.info(
+                chalk.white.bgBlueBright.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.blueBright(message.join(" "))
+            )
+        }
+    }
+
+    static ok(...message) {
+        if (LOG_LEVEL >= 4)
+        {
+            console.log(
+                chalk.white.bgGreen.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.greenBright(message.join(" "))
+            )
+        }
+    }
+
+    static notice(...message) {
+        if (LOG_LEVEL >= 3)
+        {
+            console.log(
+                chalk.white.bgYellow.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.yellowBright(message.join(" "))
+            )
+        }
+    }
+
+    static warn(...message) {
+        if (LOG_LEVEL >= 2)
+        {
+            console.warn(
+                chalk.white.bgYellow.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.yellow(message.join(" "))
+            )
+        }
+    }
+
+    static error(...message) {
+        if (LOG_LEVEL >= 1)
+        {
+            console.error(
+                chalk.white.bgRedBright.bold(` ${name} `),
+                chalk.white(` → `),
+                this.now(),
+                chalk.red(message.join(" "))
+            )
+        }
+    }
+}
+
+/*
+    Process
+*/
 
 if (process.pkg) {
-    console.log('Process package');
+    Log.info(`Processing Package`);
     const basePath = path.dirname(process.execPath);
     URLS_FILE = path.join(basePath, 'urls.txt');
     FORMATTED_FILE = path.join(basePath, 'formatted.dat');
@@ -47,7 +192,7 @@ if (process.pkg) {
     EPG_FILE = path.join(basePath, 'xmltv.1.xml');
     EPG_FILE.length;
 } else {
-    console.log('Process locals');
+    Log.info(`Processing Locals`);
     URLS_FILE = path.resolve(__dirname, 'urls.txt');
     FORMATTED_FILE = path.resolve(__dirname, 'formatted.dat');
     EPG_FILE = path.resolve(__dirname, 'xmltv.1.xml');
@@ -94,7 +239,8 @@ const log = (message) => {
 };
 
 async function downloadFile(url, filePath) {
-    console.log(`Fetching ${url}`);
+    Log.info(`Fetching ${url}`)
+
     return new Promise((resolve, reject) => {
         const isHttps = new URL(url).protocol === 'https:';
         const httpModule = isHttps ? require('https') : require('http');
@@ -103,17 +249,25 @@ async function downloadFile(url, filePath) {
         httpModule
             .get(url, (response) => {
                 if (response.statusCode !== 200) {
-                    console.error(`Failed to download file: ${url}. Status code: ${response.statusCode}`);
+                    Log.error(
+                        `Failed to download file: ${url}`,
+                        chalk.white(` → `),
+                        chalk.grey(`Status code: ${response.statusCode}`)
+                    );
                     return reject(new Error(`Failed to download file: ${url}. Status code: ${response.statusCode}`));
                 }
                 response.pipe(file);
                 file.on('finish', () => {
-                    log(`Success: ${filePath}`);
+                    Log.ok(`Successfully fetched ${filePath}`)
                     file.close(() => resolve(true));
                 });
             })
             .on('error', (err) => {
-                console.error(`Error downloading file: ${url}. Error: ${err.message}`);
+                Log.error(
+                    `Error downloading file: ${url}`,
+                    chalk.white(` → `),
+                    chalk.grey(`Status code: ${err.message}`)
+                );
                 fs.unlink(filePath, () => reject(err));
             });
     });
@@ -124,9 +278,10 @@ async function ensureFileExists(url, filePath) {
         await downloadFile(url, filePath);
     } catch (error) {
         if (fs.existsSync(filePath)) {
-            console.warn(`Using existing file for ${filePath} due to download failure.`);
+            Log.warn(`Using existing local file ${filePath}, download failed`, chalk.white(` → `), chalk.grey(`${url}`));
         } else {
-            console.error(`Critical: Failed to download ${url}, and no local file exists.`);
+            Log.error(`Failed to download file, and no local file exists; aborting`, chalk.white(` → `), chalk.grey(`${url}`));
+
             throw error;
         }
     }
@@ -141,18 +296,19 @@ async function fetchSportsData() {
         httpModule
             .get(url, (response) => {
                 if (response.statusCode !== 200) {
-                    console.error(`Failed to fetch sports data. Status code: ${response.statusCode}`);
+                    Log.error(`Failed to fetch sports data. Server returned status code other than 200`, chalk.white(` → `), chalk.grey(`${url} - ${response.statusCode}`));
                     return reject(new Error(`Failed to fetch sports data. Status code: ${response.statusCode}`));
                 }
+
                 let data = '';
                 response.on('data', (chunk) => (data += chunk));
                 response.on('end', () => {
-                    log('Fetched sports data successfully.');
+                    Log.ok(`Fetched sports data successfully`);
                     resolve(data);
                 });
             })
             .on('error', (err) => {
-                console.error(`Error fetching sports data: ${err.message}`);
+                Log.error(`Error fetching sports data:`, chalk.white(` → `), chalk.grey(`${err.message}`));
                 reject(err);
             });
     });
@@ -167,10 +323,19 @@ async function fetchRemote(url) {
                     'Accept-Encoding': 'gzip, deflate, br'
                 }
             }, (resp) => {
+
                 if (resp.statusCode !== 200) {
+                    Log.error(
+                        `Server returned status code other than 200`,
+                        chalk.white(` → `),
+                        chalk.grey(`${url} - ${resp.statusCode}`)
+                    );
+
                     return reject(new Error(`HTTP ${resp.statusCode} for ${url}`));
                 }
+
                 const chunks = [];
+
                 resp.on('data', (chunk) => chunks.push(chunk));
                 resp.on('end', () => {
                     const buffer = Buffer.concat(chunks);
@@ -206,18 +371,34 @@ async function serveKey(req, res) {
             res.writeHead(400, {
                 'Content-Type': 'text/plain'
             });
+
+            Log.error(
+                `Missing "uri" parameter for key download`,
+                chalk.white(` → `),
+                chalk.grey(`${req.url}`)
+            );
+
             return res.end('Error: Missing "uri" parameter for key download.');
         }
+
         const keyData = await fetchRemote(uriParam);
         res.writeHead(200, {
             'Content-Type': 'application/octet-stream'
         });
+
         res.end(keyData);
+
     } catch (err) {
-        console.error('Error in serveKey:', err.message);
+        Log.error(
+            `ServeKey Error:`,
+            chalk.white(` → `),
+            chalk.grey(`${err.message}`)
+        );
+
         res.writeHead(500, {
             'Content-Type': 'text/plain'
         });
+
         res.end('Error fetching key.');
     }
 }
@@ -261,9 +442,11 @@ function fetchPage(url) {
                 if (res.statusCode !== 200) {
                     return reject(new Error(`Non-200 status ${res.statusCode} => ${url}`));
                 }
+
                 if (res.headers['set-cookie']) {
                     parseSetCookieHeaders(res.headers['set-cookie']);
                 }
+
                 let data = '';
                 res.on('data', (chunk) => (data += chunk));
                 res.on('end', () => resolve(data));
@@ -278,6 +461,7 @@ async function getTokenizedUrl(channelUrl) {
 
         let streamName;
         let streamHost;
+
         if (channelUrl.includes('espn-')) {
             streamName = 'ESPN';
         } else if (channelUrl.includes('espn2-')) {
@@ -285,35 +469,42 @@ async function getTokenizedUrl(channelUrl) {
         } else {
             const streamNameMatch = html.match(/id="stream_name" name="([^"]+)"/);
             if (!streamNameMatch) {
-                log('No "stream_name" found');
+                Log.error(`Cannot find "stream_name"`, chalk.white(` → `), chalk.grey(`${channelUrl}`));
                 return null;
             }
             streamName = streamNameMatch[1];
         }
+
         if (channelUrl.match('tvpass\.org')) {
             streamHost = 'tvpass.org';
         };
+
         if (channelUrl.match('thetvapp\.to')) {
             streamHost = 'thetvapp.to';
         };
-        const tokenUrl = `https://${streamHost}/token/${streamName}?quality=hd`;
+
+        const tokenUrl = `https://${streamHost}/token/${streamName}?quality=${envStreamQuality}`;
         const tokenResponse = await fetchPage(tokenUrl);
         let finalUrl;
+
         try {
             const json = JSON.parse(tokenResponse);
             finalUrl = json.url;
         } catch (err) {
-            log('Failed to parse token JSON');
+            Log.error(`Failed to parse token JSON for channel`, chalk.white(` → `), chalk.grey(`${channelUrl} - ${err.message}`));
             return null;
         }
+
         if (!finalUrl) {
-            log('No URL found in the token JSON');
+            Log.error(`No URL found in token JSON for channel`, chalk.white(` → `), chalk.grey(`${channelUrl}`));
             return null;
         }
-        log(`Tokenized URL: ${finalUrl}`);
+
+        Log.debug(`Tokenized URL:`, chalk.white(` → `), chalk.grey(`${finalUrl}`));
+
         return finalUrl;
     } catch (err) {
-        log(`Fatal error fetching token: ${err.message}`);
+        Log.error(`Fatal error fetching token:`, chalk.white(` → `), chalk.grey(`${err.message}`));
         return null;
     }
 }
@@ -321,15 +512,17 @@ async function getTokenizedUrl(channelUrl) {
 async function serveChannelPlaylist(req, res) {
     await semaphore.acquire();
     try {
+
         const urlParam = new URL(req.url, `http://${req.headers.host}`).searchParams.get('url');
         if (!urlParam) {
-            log('Error: Missing URL parameter');
+            Log.error(`Missing parameter`, chalk.white(` → `), chalk.grey(`URL`));
             res.writeHead(400, {
                 'Content-Type': 'text/plain'
             });
             res.end('Error: Missing URL parameter.');
             return;
         }
+
         const decodedUrl = decodeURIComponent(urlParam);
         if (decodedUrl.endsWith('.ts')) {
             res.writeHead(302, {
@@ -338,6 +531,7 @@ async function serveChannelPlaylist(req, res) {
             res.end();
             return;
         }
+
         const cachedUrl = getCache(decodedUrl);
         if (cachedUrl) {
             const rewrittenPlaylist = await rewritePlaylist(cachedUrl, req);
@@ -348,16 +542,21 @@ async function serveChannelPlaylist(req, res) {
             res.end(rewrittenPlaylist);
             return;
         }
-        log(`Fetching stream: ${urlParam}`);
+
+        Log.info(`Fetching stream:`, chalk.white(` → `), chalk.grey(`${urlParam}`));
+
         const finalUrl = await getTokenizedUrl(decodedUrl);
         if (!finalUrl) {
-            log('Error: Failed to retrieve tokenized URL');
+            Log.error(`Failed to retrieve tokenized URL`);
+
             res.writeHead(500, {
                 'Content-Type': 'text/plain'
             });
+
             res.end('Error: Failed to retrieve tokenized URL.');
             return;
         }
+
         setCache(decodedUrl, finalUrl, 4 * 60 * 60 * 1000);
         const hdUrl = finalUrl.replace('tracks-v2a1', 'tracks-v1a1');
         const rewrittenPlaylist = await rewritePlaylist(hdUrl, req);
@@ -365,16 +564,20 @@ async function serveChannelPlaylist(req, res) {
             'Content-Type': 'application/vnd.apple.mpegurl',
             'Content-Disposition': 'inline; filename="playlist.m3u8"',
         });
+
         res.end(rewrittenPlaylist);
-        log('Served playlist');
+        Log.ok(`Served playlist`);
     } catch (error) {
-        log(`Error processing request: ${error.message}`);
+        Log.error(`Error processing request:`, chalk.white(` → `), chalk.grey(`${error.message}`));
+
         if (!res.headersSent) {
             res.writeHead(500, {
                 'Content-Type': 'text/plain'
             });
+
             res.end('Error processing request.');
         }
+
     } finally {
         semaphore.release();
     }
@@ -421,9 +624,11 @@ async function servePlaylist(response, req) {
             'Content-Type': 'application/x-mpegURL',
             'Content-Disposition': 'inline; filename="playlist.m3u8"',
         });
+
         response.end(updatedContent);
 
     } catch (error) {
+        Log.error(`Error in servePlaylist:`, chalk.white(` → `), chalk.grey(`${error.message}`));
 
         console.error('Error in servePlaylist:', error.message);
         response.writeHead(500, {
@@ -448,14 +653,17 @@ async function serveXmltv(response, req) {
             'Content-Type': 'application/xml',
             'Content-Disposition': 'inline; filename="xmltv.1.xml"',
         });
+
         response.end(formattedContent);
 
     } catch (error) {
 
-        console.error('Error in servePlaylist:', error.message);
+        Log.error(`Error in servePlaylist:`, chalk.white(` → `), chalk.grey(`${error.message}`));
+
         response.writeHead(500, {
             'Content-Type': 'text/plain'
         });
+
         response.end(`Error serving playlist: ${error.message}`);
 
     }
@@ -522,7 +730,7 @@ function setCache(key, value, ttl) {
         value,
         expiry
     });
-    log(`Cache set: ${key}, expires in ${ttl / 1000} seconds`);
+
 }
 
 function getCache(key) {
@@ -530,7 +738,9 @@ function getCache(key) {
     if (cached && cached.expiry > Date.now()) {
         return cached.value;
     } else {
-        if (cached) log(`Cache expired for key: ${key}`);
+        if (cached)
+            Log.debug(`Cache expired for key`, chalk.white(` → `), chalk.grey(`${key}`));
+
         cache.delete(key);
         return null;
     }
@@ -538,17 +748,19 @@ function getCache(key) {
 
 async function initialize() {
     try {
-        log('Initializing server...');
-        await ensureFileExists(externalURL, URLS_FILE);
+        Log.info(`Initializing server...`);
+
         await ensureFileExists(externalFORMATTED_1, FORMATTED_FILE);
         await ensureFileExists(externalEPG, EPG_FILE);
+
         urls = fs.readFileSync(URLS_FILE, 'utf-8').split('\n').filter(Boolean);
         if (urls.length === 0) {
             throw new Error(`No valid URLs found in ${URLS_FILE}`);
         }
-        log('Initialization complete.');
+
+        Log.info(`Initializing Complete`);
     } catch (error) {
-        console.error(`Initialization error: ${error.message}`);
+        Log.error(`Initialization error:`, chalk.white(` → `), chalk.grey(`${error.message}`));
     }
 }
 
@@ -678,21 +890,47 @@ const server = http.createServer((req, res) => {
             res.end(htmlContent);
             return;
         }
+
         if (req.url === '/playlist' && req.method === 'GET') {
-            log('Playlist request received');
+            Log.info(
+                `Received request for playlist data`,
+                chalk.white(` → `),
+                chalk.grey(`/playlist`)
+            );
+
             await servePlaylist(res, req);
             return;
         }
+
         if (req.url.startsWith('/channel') && req.method === 'GET') {
+            Log.info(
+                `Received request for channel data`,
+                chalk.white(` → `),
+                chalk.grey(`/channel`)
+            );
+
             await serveChannelPlaylist(req, res);
             return;
         }
+
         if (req.url.startsWith('/key') && req.method === 'GET') {
+            Log.info(
+                `Received request for key data`,
+                chalk.white(` → `),
+                chalk.grey(`/key`)
+            );
+
             await serveKey(req, res);
             return;
         }
+
         if (req.url === '/epg' && req.method === 'GET') {
-            log('Epg request received');
+            Log.info(
+                `Received request for EPG data`,
+                chalk.white(` → `),
+                chalk.grey(`/epg`)
+            );
+
             await serveXmltv(res, req);
             return;
             /*res.writeHead(302, {
@@ -701,16 +939,24 @@ const server = http.createServer((req, res) => {
             res.end();
             return;*/
         }
+
         res.writeHead(404, {
             'Content-Type': 'text/plain'
         });
+
         res.end('Not Found');
     };
     handleRequest().catch((error) => {
-        console.error('Error handling request:', error);
+        Log.error(
+            `Error handling request:`,
+            chalk.white(` → `),
+            chalk.grey(`${error}`)
+        );
+
         res.writeHead(500, {
             'Content-Type': 'text/plain'
         });
+
         res.end('Internal Server Error');
     });
 });
@@ -718,7 +964,7 @@ const server = http.createServer((req, res) => {
 (async () => {
     await initialize();
     const PORT = process.env.WEB_PORT;
-    server.listen(PORT, `${process.env.WEB_IP}`, () => {
+        Log.info(`Server is running on ${envWebIP}:${envWebPort}`)
         log(`Server is running on port ${PORT}`);
     });
 })();
