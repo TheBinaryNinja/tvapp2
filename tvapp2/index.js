@@ -57,6 +57,8 @@ const externalFORMATTED_1 = `${process.env.URL_REPO}/tvapp2-externals/raw/branch
 const externalFORMATTED_2 = '';
 const externalFORMATTED_3 = '';
 const externalEvents = '';
+const envFilePlaylist = process.env.FILE_PLAYLIST || `playlist.m3u8`;
+const envFileEPG = process.env.FILE_EPG || `xmltv.xml`;
 const LOG_LEVEL = process.env.LOG_LEVEL || 8;
 /*
     Define > Logs
@@ -535,9 +537,10 @@ async function serveChannelPlaylist(req, res) {
         const cachedUrl = getCache(decodedUrl);
         if (cachedUrl) {
             const rewrittenPlaylist = await rewritePlaylist(cachedUrl, req);
-            res.writeHead(200, {
+            res.writeHead(200,
+            {
                 'Content-Type': 'application/vnd.apple.mpegurl',
-                'Content-Disposition': 'inline; filename="playlist.m3u8"',
+                'Content-Disposition': 'inline; filename="' + envFilePlaylist,
             });
             res.end(rewrittenPlaylist);
             return;
@@ -562,7 +565,7 @@ async function serveChannelPlaylist(req, res) {
         const rewrittenPlaylist = await rewritePlaylist(hdUrl, req);
         res.writeHead(200, {
             'Content-Type': 'application/vnd.apple.mpegurl',
-            'Content-Disposition': 'inline; filename="playlist.m3u8"',
+            'Content-Disposition': 'inline; filename="' + envFilePlaylist,
         });
 
         res.end(rewrittenPlaylist);
@@ -622,7 +625,7 @@ async function servePlaylist(response, req) {
 
         response.writeHead(200, {
             'Content-Type': 'application/x-mpegURL',
-            'Content-Disposition': 'inline; filename="playlist.m3u8"',
+            'Content-Disposition': 'inline; filename="' + envFilePlaylist,
         });
 
         response.end(updatedContent);
@@ -636,6 +639,7 @@ async function servePlaylist(response, req) {
         });
         response.end(`Error serving playlist: ${error.message}`);
 
+        response.end(`Error serving playlist: ${error.message}`);
     }
 
 }
@@ -731,6 +735,7 @@ function setCache(key, value, ttl) {
         expiry
     });
 
+    Log.debug(`Cache set for key ${key} which expires in`, chalk.white(` → `), chalk.grey(`${ttl / 1000} seconds`));
 }
 
 function getCache(key) {
@@ -853,9 +858,9 @@ const server = http.createServer((req, res) => {
             const baseURL = window.location.origin;
             const playlistURL = baseURL + "/playlist";
             const epgURL = baseURL + "/epg";
-            document.getElementById("playlist-url").textContent = playlistURL;
+            document.getElementById("playlist-url").textContent = "${envFilePlaylist}";
             document.getElementById("playlist-url").href = playlistURL;
-            document.getElementById("epg-url").textContent = epgURL;
+            document.getElementById("epg-url").textContent = "${envFileEPG}";
             document.getElementById("epg-url").href = epgURL;
         </script>
         <script>
