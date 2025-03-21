@@ -214,6 +214,11 @@ services:
         environment:
             - TZ=Etc/UTC
             - DIR_RUN=/usr/bin/app
+            - DIR_RUN=/usr/bin/app
+            - STREAM_QUALITY=hd
+            - FILE_PLAYLIST=playlist.m3u8
+            - FILE_EPG=xmltv.xml
+            - LOG_LEVEL=4
 ```
 
 <br />
