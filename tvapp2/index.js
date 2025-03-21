@@ -60,7 +60,7 @@ const envUrlRepo = process.env.URL_REPO || `https://git.binaryninja.net/binaryni
 const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
 const envFilePlaylist = process.env.FILE_PLAYLIST || `playlist.m3u8`;
 const envFileEPG = process.env.FILE_EPG || `xmltv.xml`;
-const LOG_LEVEL = process.env.LOG_LEVEL || 8;
+const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 
 /*
     Define > Externals
@@ -752,242 +752,242 @@ const server = http.createServer((req, res) => {
             @keyframes scale-in
             {
                 from {
-                    transform: scale(1, 1);
+                    transform:              scale(1, 1);
                 }
                 to {
-                    transform: scale(1.1, 1.1);
+                    transform:              scale(1.1, 1.1);
                 }
             }
 
             .container
             {
-                text-align: left;
+                text-align:                 left;
             }
 
             .container nav
             {
-                margin-left: -8px;
+                margin-left:                -8px;
             }
 
             .container .about
             {
-                padding-left: 8px;
-                padding-bottom: 4vh;
-                font-size: 1.6vmin;
-                line-height: 2.5vmin;
+                padding-left:               8px;
+                padding-bottom:             4vh;
+                font-size:                  1.6vmin;
+                line-height:                2.5vmin;
             }
 
             .breadcrumb
             {
-                background-color: transparent;
-                padding: 0rem 1rem;
+                background-color:           transparent;
+                padding:                    0rem 1rem;
             }
 
             .breadcrumb .breadcrumb-item a
             {
-                color: #4caf50;
+                color:                      #4caf50;
             }
 
             html
             {
-                position: relative;
-                min-height: 100%;
+                position:                   relative;
+                min-height:                 100%;
             }
 
             a
             {
-                color: #FF0E7F !important;
-                text-decoration: underline dotted #606060;
-                font-weight: 600;
+                color:                      #FF0E7F !important;
+                text-decoration:            underline dotted #606060;
+                font-weight:                600;
             }
 
             a:hover
             {
-                color: #FFF !important;
-                text-decoration: underline dotted #FF0048;
-                font-weight: 600;
+                color:                      #FFF !important;
+                text-decoration:            underline dotted #FF0048;
+                font-weight:                600;
             }
 
             p
             {
-                margin-top: 0;
-                margin-bottom: 0;
+                margin-top:                 0;
+                margin-bottom:              0;
             }
 
             .header .logo
             {
-                animation-name: fade-in, scale-in;
-                animation-duration: 1s, 0.5s;
-                animation-timing-function: ease-in, linear;
-                animation-direction: alternate, alternate;
-                animation-iteration-count: infinite, 1;
-                transition: all 0.3s;
-                opacity: 0.5;
-                transform: scale(1.1);
+                animation-name:             fade-in, scale-in;
+                animation-duration:         1s, 0.5s;
+                animation-timing-function:  ease-in, linear;
+                animation-direction:        alternate, alternate;
+                animation-iteration-count:  infinite, 1;
+                transition:                 all 0.3s;
+                opacity:                    0.5;
+                transform:                  scale(1.1);
             }
 
             .footer
             {
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                margin-bottom: 0;
-                padding-bottom: 20px;
-                padding-top: 20px;
-                background-color: #151515;
+                position:                   absolute;
+                bottom:                     0;
+                width:                      100%;
+                margin-bottom:              0;
+                padding-bottom:             20px;
+                padding-top:                20px;
+                background-color:           #151515;
             }
 
             .footer a,
             .footer a:focus,
             .footer a:hover
             {
-                color: #FFFFFF;
+                color:                      #FFFFFF;
             }
 
             .footer a
             {
-                color: #f7296c;
+                color:                      #f7296c;
             }
 
             .navbar
             {
-                padding: 15px 1rem;
+                padding:                    15px 1rem;
             }
 
             .header
             {
-                background-color: #a82147;
-                color: #fff;
-                height: 55px;
+                background-color:           #a82147;
+                color:                      #fff;
+                height:                     55px;
             }
 
             .header .navbar-brand
             {
-                padding: 0 8px;
-                font-size: 16px;
-                line-height: 24px;
-                height: 24px;
+                padding:                    0 8px;
+                font-size:                  16px;
+                line-height:                24px;
+                height:                     24px;
             }
 
             .header a
             {
-                color: #FFF !important;
-                text-decoration: none;
-                padding-left: 7px;
+                color:                      #FFF !important;
+                text-decoration:            none;
+                padding-left:               7px;
             }
 
             #breadcrumbs::before
             {
-                margin-top: 4px;
-                padding-right: 15px;
-                content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' fill='white' width='19px' height='19px'%3E%3Cdefs%3E%3Cstyle%3E.fa-secondary%7Bopacity:.4%7D%3C/style%3E%3C/defs%3E%3Cpath class='fa-primary' d='M160 384H512c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H394.5c-17 0-33.3-6.7-45.3-18.7L322.7 50.7c-12-12-28.3-18.7-45.3-18.7H160c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64z'%3E%3C/path%3E%3Cpath class='fa-secondary' d='M24 96c13.3 0 24 10.7 24 24V344c0 48.6 39.4 88 88 88H456c13.3 0 24 10.7 24 24s-10.7 24-24 24H136C60.9 480 0 419.1 0 344V120c0-13.3 10.7-24 24-24z'%3E%3C/path%3E%3C/svg%3E");
+                margin-top:                 4px;
+                padding-right:              15px;
+                content:                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' fill='white' width='19px' height='19px'%3E%3Cdefs%3E%3Cstyle%3E.fa-secondary%7Bopacity:.4%7D%3C/style%3E%3C/defs%3E%3Cpath class='fa-primary' d='M160 384H512c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H394.5c-17 0-33.3-6.7-45.3-18.7L322.7 50.7c-12-12-28.3-18.7-45.3-18.7H160c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64z'%3E%3C/path%3E%3Cpath class='fa-secondary' d='M24 96c13.3 0 24 10.7 24 24V344c0 48.6 39.4 88 88 88H456c13.3 0 24 10.7 24 24s-10.7 24-24 24H136C60.9 480 0 419.1 0 344V120c0-13.3 10.7-24 24-24z'%3E%3C/path%3E%3C/svg%3E");
             }
 
             .breadcrumb-item.active
             {
-                color: #6c757d;
-                padding-left: 10px;
+                color:                      #6c757d;
+                padding-left:               10px;
             }
 
             .breadcrumb
             {
-                padding-top: 30px;
+                padding-top:                30px;
             }
 
             .header-container
             {
-                padding-top: 30px;
+                padding-top:                30px;
             }
 
             #list a,
             #list a:focus
             {
-                color: #FFF !important;
+                color:                      #FFF !important;
             }
 
             #list a:hover
             {
-                color: #ff275d !important;
+                color:                      #ff275d !important;
             }
 
             #list colgroup
             {
-                display: none;
+                display:                    none;
             }
 
             #list .filename
             {
-                word-break: break-all;
-                white-space: normal;
+                word-break:                 break-all;
+                white-space:                normal;
             }
 
             table
             {
-                margin-bottom: 10vh !important;
+                margin-bottom:              10vh !important;
             }
 
             .table thead th a
             {
-                color: #9b9b9b !important;
-                font-weight: normal;
+                color:                      #9b9b9b !important;
+                font-weight:                normal;
             }
 
             .table td, .table th
             {
-                padding: .75rem;
-                vertical-align: top;
-                border-top: 0px solid #dee2e6;
-                font-size: 1.6vmin;
-                line-height: 2.5vmin;
+                padding:                    .75rem;
+                vertical-align:             top;
+                border-top:                 0px solid #dee2e6;
+                font-size:                  1.6vmin;
+                line-height:                2.5vmin;
             }
 
             .table thead tr
             {
-                border-bottom: 2px solid #575757;
-                background-color: #181818;
-                color: #717171;
+                border-bottom:              2px solid #575757;
+                background-color:           #181818;
+                color:                      #717171;
             }
 
             .table thead th
             {
-                vertical-align: bottom;
-                border-bottom: 0px solid #575757;
-                font-size: 1.6vmin;
-                line-height: 2.5vmin;
+                vertical-align:             bottom;
+                border-bottom:              0px solid #575757;
+                font-size:                  1.6vmin;
+                line-height:                2.5vmin;
             }
 
             .table-hover tbody tr:hover
             {
-                background-color: rgba(155, 155, 155, 0.075);
+                background-color:           rgba(155, 155, 155, 0.075);
             }
 
             .text-accent
             {
-                font-weight: bold;
-                color: #d0c273;
+                font-weight:                bold;
+                color:                      #d0c273;
             }
 
             #warning-firewall
             {
-                background-color: #0F0F0F57;
-                padding: 2vh;
-                margin-bottom: 2vh;
-                font-size: 1.6vmin;
-                font-weight: 100;
-                border: 1px dashed #FF6C00;
-                width: 100%;
-                line-height: 25px;
+                background-color:           #0F0F0F57;
+                padding:                    2vh;
+                margin-bottom:              2vh;
+                font-size:                  1.6vmin;
+                font-weight:                100;
+                border:                     1px dashed #FF6C00;
+                width:                      100%;
+                line-height:                25px;
             }
 
             #warning-localhost
             {
-                background-color: #0F0F0F57;
-                padding: 2vh;
-                font-size: 1.6vmin;
-                font-weight: 100;
-                border: 1px dashed #FF0048;
-                width: 100%;
-                line-height: 25px;
+                background-color:           #0F0F0F57;
+                padding:                    2vh;
+                font-size:                  1.6vmin;
+                font-weight:                100;
+                border:                     1px dashed #FF0048;
+                width:                      100%;
+                line-height:                25px;
             }
 
             span.notice
@@ -1032,11 +1032,11 @@ const server = http.createServer((req, res) => {
 
             code
             {
-                font-size: 96%;
-                color: #ff4985;
-                word-break: break-word;
-                padding-right: 5px;
-                padding-left: 4px;
+                font-size:                  96%;
+                color:                      #ff4985;
+                word-break:                 break-word;
+                padding-right:              5px;
+                padding-left:               4px;
             }
 
             @media (prefers-color-scheme: dark)
@@ -1044,7 +1044,7 @@ const server = http.createServer((req, res) => {
                 #list a,
                 #list a:focus,
                 #list a:hover {
-                    color: #fff;
+                    color:                  #fff;
                 }
             }
         </style>
