@@ -246,7 +246,7 @@ async function downloadFile(url, filePath) {
 
     return new Promise((resolve, reject) => {
         const isHttps = new URL(url).protocol === 'https:';
-        const httpModule = isHttps ? require('https') : require('http');
+        const httpModule = isHttps ? https : http;
         const file = fs.createWriteStream(filePath);
 
         httpModule
@@ -294,7 +294,7 @@ async function ensureFileExists(url, filePath) {
 // TODO: UPDATES TO HANDLER FOR SPORT EVENTS
 async function fetchSportsData() {
     return new Promise((resolve, reject) => {
-        const isHttps = new URL(externalEvents).protocol === 'https:';
+        const isHttps = new URL(extEvents).protocol === 'https:';
         const httpModule = isHttps ? require('https') : require('http');
         httpModule
             .get(url, (response) => {
