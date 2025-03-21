@@ -34,6 +34,7 @@ FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:3.21
 #   Set Args
 # #
 
+ARG ARCH=amd64
 ARG BUILDDATE
 ARG VERSION
 
