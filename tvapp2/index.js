@@ -731,6 +731,34 @@ const server = http.createServer((req, res) => {
                 }
             }
 
+            @-webkit-keyframes fade-in
+            {
+                from { opacity: 0.6; }
+                to { opacity: 1; }
+            }
+
+            @-moz-keyframes fade-in
+            {
+                from { opacity: 0.6; }
+                to { opacity: 1; }
+            }
+
+            @keyframes fade-in
+            {
+                from { opacity: 0.6; }
+                to { opacity: 1; }
+            }
+
+            @keyframes scale-in
+            {
+                from {
+                    transform: scale(1, 1);
+                }
+                to {
+                    transform: scale(1.1, 1.1);
+                }
+            }
+
             .container
             {
                 text-align: left;
@@ -766,10 +794,36 @@ const server = http.createServer((req, res) => {
                 min-height: 100%;
             }
 
+            a
+            {
+                color: #FF0E7F !important;
+                text-decoration: underline dotted #606060;
+                font-weight: 600;
+            }
+
+            a:hover
+            {
+                color: #FFF !important;
+                text-decoration: underline dotted #FF0048;
+                font-weight: 600;
+            }
+
             p
             {
                 margin-top: 0;
                 margin-bottom: 0;
+            }
+
+            .header .logo
+            {
+                animation-name: fade-in, scale-in;
+                animation-duration: 1s, 0.5s;
+                animation-timing-function: ease-in, linear;
+                animation-direction: alternate, alternate;
+                animation-iteration-count: infinite, 1;
+                transition: all 0.3s;
+                opacity: 0.5;
+                transform: scale(1.1);
             }
 
             .footer
@@ -817,7 +871,7 @@ const server = http.createServer((req, res) => {
 
             .header a
             {
-                color: #FFF;
+                color: #FFF !important;
                 text-decoration: none;
                 padding-left: 7px;
             }
@@ -891,6 +945,7 @@ const server = http.createServer((req, res) => {
             {
                 border-bottom: 2px solid #575757;
                 background-color: #181818;
+                color: #717171;
             }
 
             .table thead th
@@ -918,6 +973,7 @@ const server = http.createServer((req, res) => {
                 padding: 2vh;
                 margin-bottom: 2vh;
                 font-size: 1.6vmin;
+                font-weight: 100;
                 border: 1px dashed #FF6C00;
                 width: 100%;
                 line-height: 25px;
@@ -928,6 +984,7 @@ const server = http.createServer((req, res) => {
                 background-color: #0F0F0F57;
                 padding: 2vh;
                 font-size: 1.6vmin;
+                font-weight: 100;
                 border: 1px dashed #FF0048;
                 width: 100%;
                 line-height: 25px;
@@ -935,26 +992,42 @@ const server = http.createServer((req, res) => {
 
             span.notice
             {
-                color: #FFF;
-                background-color: #97950A;
-                padding-left: 7px;
-                padding-right: 7px;
-                padding-top: 2px;
-                padding-bottom: 2px;
-                font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-                margin-right: 8px;
+                color:                      #FFF;
+                background-color:           #97950A;
+                padding-left:               7px;
+                padding-right:              7px;
+                padding-top:                2px;
+                padding-bottom:             2px;
+                font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+                margin-right:               8px;
+                animation-name:             fade-in, scale-in;
+                animation-duration:         1s, 0.5s;
+                animation-timing-function:  ease-in, linear;
+                animation-direction:        alternate, alternate;
+                animation-iteration-count:  infinite, 1;
+                transition:                 all 0.3s;
+                opacity:                    0.5;
+                transform:                  scale(1.1);
             }
 
             span.warning
             {
-                color: #FFF;
-                background-color: #aa102d;
-                padding-left: 7px;
-                padding-right: 7px;
-                padding-top: 2px;
-                padding-bottom: 2px;
-                font-family: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-                margin-right: 8px;
+                color:                      #FFF;
+                background-color:           #aa102d;
+                padding-left:               7px;
+                padding-right:              7px;
+                padding-top:                2px;
+                padding-bottom:             2px;
+                font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+                margin-right:               8px;
+                animation-name:             fade-in, scale-in;
+                animation-duration:         1s, 0.5s;
+                animation-timing-function:  ease-in, linear;
+                animation-direction:        alternate, alternate;
+                animation-iteration-count:  infinite, 1;
+                transition:                 all 0.3s;
+                opacity:                    0.5;
+                transform:                  scale(1.1);
             }
 
             code
@@ -981,8 +1054,8 @@ const server = http.createServer((req, res) => {
         <div class="header">
             <nav class="navbar sticky-top container">
                 <div class="navbar-brand">
-                    <i class="fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
-                    <a href="https://github.com/Aetherinox/thetvapp-docker">TVApp2 for Docker</a>
+                    <i class="logo fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
+                    <a class="header-name" href="https://github.com/Aetherinox/thetvapp-docker">TVApp2 for Docker</a>
                 </div>
             </nav>
         </div>
@@ -1070,9 +1143,9 @@ const server = http.createServer((req, res) => {
                     const warning       = document.createElement("div");
                     warning.innerHTML   = "<p><span class='warning'>Warning</span> If you are accessing this page via 127.0.0.1 or localhost, proxying will not work on other devices.Please load \
                                         this page using your computer's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p> \
-                                        <p> How to locate IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' \
-                                        target = '_blank' > Windows</a> or <a href='https://youtube.com/watch?v=gaIYP4TZfHI' \
-                                        target = '_blank' > Linux</a>.</p>";
+                                        <br> \
+                                        <p> Learn how to locate your IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' target = '_blank' > Windows</a> or \
+                                        <a href='https://youtube.com/watch?v=gaIYP4TZfHI' target = '_blank' > Linux</a>.</p>";
 
                     document.getElementById("warning-localhost").appendChild(warning);
                 } else {
@@ -1083,9 +1156,8 @@ const server = http.createServer((req, res) => {
             document.addEventListener("DOMContentLoaded", function()
             {
                 const port              = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
-                const warningMessage    = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your OS firewall settings \
-                                        (<a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> or \
-                                        <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a>). \
+                const warningMessage    = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your <a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> \
+                                        or <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a> OS firewall settings \
                                         This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
 
                 document.getElementById("warning-firewall").innerHTML = warningMessage;
