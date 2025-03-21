@@ -961,9 +961,16 @@ const server = http.createServer((req, res) => {
     });
 });
 
+/*
+    Initialize Webserver
+*/
+
 (async () => {
+    const envWebIP = process.env.WEB_IP || '0.0.0.0';
+    const envWebPort = process.env.WEB_PORT || `4124`;
+
     await initialize();
-    const PORT = process.env.WEB_PORT;
+    server.listen(envWebPort, envWebIP, () => {
         Log.info(`Server is running on ${envWebIP}:${envWebPort}`)
         log(`Server is running on port ${PORT}`);
     });
