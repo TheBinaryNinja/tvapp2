@@ -213,6 +213,8 @@ services:
             - ./app:/usr/bin/app
         environment:
             - TZ=Etc/UTC
+            - WEB_IP=0.0.0.0
+            - WEB_PORT=4124
             - DIR_RUN=/usr/bin/app
             - DIR_RUN=/usr/bin/app
             - STREAM_QUALITY=hd
@@ -341,16 +343,12 @@ GRAPH_ALPINE --> obj_step20 --> obj_step21 --> obj_step22 --> obj_step23 --> obj
 
 <br />
 
-When building your TVApp2 images with the commands provided below, ensure you create two sets of tags:
+This repository offers two types of docker image; `stable` and `development`. You may create both or just one. We also offer two different architectures which are `amd64` and `arm64`. These architectures are tied to the same release.
 
-| Architecture | Dockerfile                   | Tags                                                            |
-| -------------------- | -------------------- | --------------------------------------------------------------- |
-| `amd64`      | `Dockerfile`         | `tvapp2:latest` <br /> `tvapp2:1.0.0` <br /> `tvapp2:1.0.0-amd64`       |
-| `arm64`      | `Dockerfile`         | `tvapp2:latest` <br /> `tvapp2:1.0.0-arm64`                             |
-
-<br />
-
-The `amd64` arch gets a few extra tags because it should be the default image people clone. 
+| Build                     | Tags                                                                          |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| `Stable`                  | `tvapp2:latest` <br /> `tvapp2:1.0.0` <br /> `tvapp2:1.0` <br /> `tvapp2:1`   |
+| `Development`             | `tvapp2:development`                                                          |
 
 <br />
 
@@ -660,8 +658,8 @@ The run command above has several variables you must specify:
 | Variable | Description |
 | --- | --- |
 | `--VERSION=1.X.X` | The version to assign to the docker image |
-| `--BUILDDATE=20250220` | The date to assign to the docker image. <br /> Date format: `YEAR / MONTH / DAY` |
-
+| `--BUILDDATE=20250220` | The date to assign to the docker image. <br /> Date format: `YYYYMMDD` |
+| `--ARCH=amd64` | Architecture for image<br /> Options: `amd64`, `arm64` |
 
 <br />
 
@@ -765,7 +763,7 @@ This docker container contains the following env variables:
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
-| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`6` Trace & below<br />`5` Debug & below<br />`4` Info & below<br />`3` Notice & below<br />`2` Warn & below<br />`1` Error only |
+| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`6` Trace <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
 
 <br />
 <br />

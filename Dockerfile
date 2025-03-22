@@ -63,10 +63,10 @@ LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
 #   Set Env Var
 # #
 
-ENV DIR_BUILD=/usr/src/app
-ENV DIR_RUN=/usr/bin/app
 ENV NODE_VERSION=22.8.0
 ENV YARN_VERSION=1.22.22
+ENV DIR_BUILD=/usr/src/app
+ENV DIR_RUN=/usr/bin/app
 ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
 ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
