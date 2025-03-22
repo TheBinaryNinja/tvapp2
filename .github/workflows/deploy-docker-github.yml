@@ -497,7 +497,7 @@ jobs:
               with:
                   allow: |
                     network.host
-                  network: dns
+                  network: host
                   context: .
                   file: Dockerfile
                   platforms: linux/arm64
