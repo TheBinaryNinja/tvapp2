@@ -775,6 +775,7 @@ const server = http.createServer((req, res) => {
                 padding-bottom:             4vh;
                 font-size:                  1.6vmin;
                 line-height:                2.5vmin;
+                font-weight:                100;
             }
 
             .breadcrumb
@@ -919,6 +920,7 @@ const server = http.createServer((req, res) => {
             {
                 word-break:                 break-all;
                 white-space:                normal;
+                min-width:                  13vw !important;
             }
 
             table
@@ -954,6 +956,18 @@ const server = http.createServer((req, res) => {
                 border-bottom:              0px solid #575757;
                 font-size:                  1.6vmin;
                 line-height:                2.5vmin;
+            }
+
+            #list .link a
+            {
+                color:                      #ff286e !important;
+            }
+
+            #list .link a:hover
+            {
+                color:                      #FFF !important;
+                text-decoration:            underline dotted #FF0048;
+                font-weight:                100;
             }
 
             .table-hover tbody tr:hover
@@ -1092,11 +1106,11 @@ const server = http.createServer((req, res) => {
                             </svg>
                             <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
                         </td>
-                        <td class="link col filename">
+                        <td class="file col filename">
                             <a id="playlist-url" target="_blank"></a>
                         </td>
-                        <td class="date col-auto d-none d-md-table-cell"><a id="playlist-link" target="_blank"></a></td>
-                        <td class="date col-auto d-none d-md-table-cell">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
+                        <td class="link col-auto d-none d-md-table-cell"><a id="playlist-link" target="_blank"></a></td>
+                        <td class="desc col-auto d-none d-md-table-cell">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
                     </tr>
                     <tr>
                         <td class="col-auto">
@@ -1105,11 +1119,11 @@ const server = http.createServer((req, res) => {
                             </svg>
                             <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
                         </td>
-                        <td class="link col filename">
+                        <td class="file col filename">
                             <a id="epg-url" target="_blank"></a>
                         </td>
-                        <td class="date col-auto d-none d-md-table-cell"><a id="epg-link" target="_blank"></a></td>
-                        <td class="date col-auto d-none d-md-table-cell">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
+                        <td class="link col-auto d-none d-md-table-cell"><a id="epg-link" target="_blank"></a></td>
+                        <td class="desc col-auto d-none d-md-table-cell">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
                     </tr>
                 </tbody>
             </table>
