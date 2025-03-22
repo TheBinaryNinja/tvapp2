@@ -1077,6 +1077,9 @@ const server = http.createServer((req, res) => {
                             File Name
                         </th>
                         <th style="width:25%" class="col-auto d-none d-md-table-cell">
+                            Link
+                        </th>
+                        <th style="width:25%" class="col-auto d-none d-md-table-cell">
                             Description
                         </th>
                     </tr>
@@ -1092,6 +1095,7 @@ const server = http.createServer((req, res) => {
                         <td class="link col filename">
                             <a id="playlist-url" target="_blank"></a>
                         </td>
+                        <td class="date col-auto d-none d-md-table-cell"><a id="playlist-link" target="_blank"></a></td>
                         <td class="date col-auto d-none d-md-table-cell">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
                     </tr>
                     <tr>
@@ -1104,6 +1108,7 @@ const server = http.createServer((req, res) => {
                         <td class="link col filename">
                             <a id="epg-url" target="_blank"></a>
                         </td>
+                        <td class="date col-auto d-none d-md-table-cell"><a id="epg-link" target="_blank"></a></td>
                         <td class="date col-auto d-none d-md-table-cell">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
                     </tr>
                 </tbody>
@@ -1118,7 +1123,7 @@ const server = http.createServer((req, res) => {
         <footer class="footer navbar">
             <div class="container">
                 <div class="col text-center text-muted text-small text-nowrap">
-                    <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2">TVApp2</a></small><br />
+                    <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2">TVApp2</a> v${version}</small><br />
                     <small>This utility is for educational purposes only</small>
                 </div>
             </div>
@@ -1130,8 +1135,13 @@ const server = http.createServer((req, res) => {
             const epgURL = baseURL + "/epg";
             document.getElementById("playlist-url").textContent = "${envFilePlaylist}";
             document.getElementById("playlist-url").href = playlistURL;
+            document.getElementById("playlist-link").textContent = playlistURL;
+            document.getElementById("playlist-link").href = playlistURL;
+
             document.getElementById("epg-url").textContent = "${envFileEPG}";
             document.getElementById("epg-url").href = epgURL;
+            document.getElementById("epg-link").textContent = epgURL;
+            document.getElementById("epg-link").href = epgURL;
         </script>
 
         <script>
