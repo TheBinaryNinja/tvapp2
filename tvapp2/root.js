@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/no-var-requires */
 
 /*
     build by running
@@ -32,8 +31,8 @@
         - npm run env-version
 */
 
-const fs = require('fs')
-const { v5: uuid } = require('uuid')
+import fs from 'fs';
+import { v5 as uuidv5 } from 'uuid';
 
 /*
 *    declarations › package.json
@@ -56,8 +55,8 @@ if (action === 'guid') {
         }
     })
 } else if (action === 'generate') {
-    const buildGuid = uuid(`${repository.url}`, uuid.URL)
-    const buildUuid = uuid(version, buildGuid)
+    const buildGuid = uuidv5(`${repository.url}`, uuidV5.URL)
+    const buildUuid = uuidv5(version, buildGuid)
 
     const ids = `
 VERSION=${version}
