@@ -782,8 +782,8 @@ const server = http.createServer( ( request, response ) =>
 
         request.url returns
                 /
-                /web/css/tvapp2.fonts.min.css
-                /web/css/tvapp2.min.css
+                /www/css/tvapp2.fonts.min.css
+                /www/css/tvapp2.min.css
     */
 
     const method = request.method || 'GET';
@@ -837,7 +837,7 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        fs.readFile( './' + loadAsset, ( err, data ) =>
+        fs.readFile( './www/' + loadAsset, ( err, data ) =>
         {
             if ( !err )
             {
