@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>TVApp2 - v${ version }</title>
+        <meta name="robots" content="noindex, nofollow">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="web/css/tvapp2.fonts.min.css">
+        <link rel="stylesheet" href="web/css/tvapp2.min.css">
+    </head>
+    <body>
+        <div class="header">
+            <nav class="navbar sticky-top container">
+                <div class="navbar-brand">
+                    <i class="logo fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
+                    <a class="header-name" href="https://github.com/Aetherinox/thetvapp-docker">TVApp2 for Docker</a>
+                </div>
+            </nav>
+        </div>
+
+        <div class="container">
+            <div class="container header-container">
+                <div class="row">
+                    <div class="col">
+                        <div class="about">This page displays your most recent copies of the <code>.m3u8</code> playlist and <code>.xml</code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within an IPTV app such as Jellyfin. The <code>.m3u8</code> and <code>.m3u8.gz</code> are identical guide lists, but the <code>.xml.gz</code> is compressed and will import into your IPTV application much faster.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container main-container">
+                <table id="list" class="table table-sm table-hover">
+                    <thead>
+                        <tr class="d-none d-md-table-row">
+                            <td class="icon cell-icon"></td>
+                            <th class="file cell-file">
+                                File Name
+                            </th>
+                            <th class="link cell-link">
+                                Link
+                            </th>
+                            <th class="desc cell-desc">
+                                Description
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="icon cell-icon">
+                                <svg class="svg-inline--fa fa-file-lines fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
+                                    <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
+                                </svg>
+                                <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                            </td>
+                            <td class="file cell-file">
+                                <a id="playlist-url" target="_blank"></a>
+                            </td>
+                            <td class="link cell-link"><a id="playlist-link" target="_blank"></a></td>
+                            <td class="desc cell-desc">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
+                        </tr>
+                        <tr>
+                            <td class="icon cell-icon">
+                                <svg class="svg-inline--fa fa-file-lines fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
+                                    <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
+                                </svg>
+                                <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                            </td>
+                            <td class="file cell-file">
+                                <a id="epg-url" target="_blank"></a>
+                            </td>
+                            <td class="link cell-link"><a id="epg-link" target="_blank"></a></td>
+                            <td class="desc cell-desc">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container" style="padding-bottom:20px;">
+                <div id="warning-firewall" class="sticky-bottom"></div>
+                <div id="warning-localhost" class="sticky-bottom"></div>
+            </div>
+            <div class="footer-inner">
+                <div class="container">
+                    <div class="col text-center text-muted text-small text-nowrap">
+                        <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2">TVApp2</a> - v${ version }</small><br />
+                        <small>This utility is for educational purposes only</small>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            const baseURL = window.location.origin;
+            const playlistURL = baseURL + "/playlist";
+            const epgURL = baseURL + "/epg";
+            document.getElementById("playlist-url").textContent = "${ file_m3u }";
+            document.getElementById("playlist-url").href = playlistURL;
+            document.getElementById("playlist-link").textContent = playlistURL;
+            document.getElementById("playlist-link").href = playlistURL;
+
+            document.getElementById("epg-url").textContent = "${ file_epg }";
+            document.getElementById("epg-url").href = epgURL;
+            document.getElementById("epg-link").textContent = epgURL;
+            document.getElementById("epg-link").href = epgURL;
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function()
+            {
+                const host = window.location.hostname;
+                if (host === "localhost" || host === "127.0.0.1")
+                {
+                    const warning       = document.createElement("div");
+                    warning.innerHTML   = "<p><span class='warning'>Warning</span> If you are accessing this page via 127.0.0.1 or localhost, proxying will not work on other devices.Please load \
+                                        this page using your computer's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p> \
+                                        <br> \
+                                        <p> Learn how to locate your IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' target = '_blank' > Windows</a> or \
+                                        <a href='https://youtube.com/watch?v=gaIYP4TZfHI' target = '_blank' > Linux</a>.</p>";
+
+                    document.getElementById("warning-localhost").appendChild(warning);
+                } else {
+                    document.getElementById("warning-localhost").style.display = "none";
+                }
+            });
+
+            document.addEventListener("DOMContentLoaded", function()
+            {
+                const port              = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+                const warningMessage    = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your <a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> \
+                                        or <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a> OS firewall settings \
+                                        This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
+
+                document.getElementById("warning-firewall").innerHTML = warningMessage;
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/gh/TheBinaryNinja/tvapp2@main/tvapp2/web/js/tvapp2.min.js"></script>
+    </body>
+</html>
