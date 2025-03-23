@@ -791,7 +791,7 @@ const server = http.createServer( ( request, response ) =>
     if ( loadAsset === '/' )
         loadAsset = 'index.html';
 
-    Log.debug( `Web server [GET]`, chalk.white( ` → ` ), chalk.grey( `${ loadAsset }` ) );
+    Log.debug( `www`, chalk.yellow( ` [GET]  ` ), chalk.white( ` → ` ), chalk.grey( `${ loadAsset }` ) );
 
     const handleRequest = async() =>
     {
@@ -880,11 +880,11 @@ const server = http.createServer( ( request, response ) =>
                 response.setHeader( 'Content-type', fileMime );
                 response.end( html );
 
-                Log.debug( `Web server [LOAD]`, chalk.white( ` → ` ), chalk.grey( `${ loadAsset } / ${ fileMime }` ) );
+                Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( ` → ` ), chalk.grey( `asset:${ loadAsset } mime:${ fileMime }` ) );
             }
             else
             {
-                Log.error( `Webserver file not found:`, chalk.white( ` → ` ), chalk.grey( `${ request.url }` ) );
+                Log.error( `www file not found:`, chalk.white( ` → ` ), chalk.grey( `${ request.url }` ) );
 
                 response.writeHead( 404, 'Not Found' );
                 response.end();
