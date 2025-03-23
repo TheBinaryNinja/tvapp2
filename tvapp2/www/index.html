@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>TVApp2 - v${ version }</title>
+        <title><%= appName %> - v<%= appVersion %></title>
         <meta name="robots" content="noindex, nofollow">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/tvapp2.fonts.min.css">
@@ -84,7 +84,7 @@
             <div class="footer-inner">
                 <div class="container">
                     <div class="col text-center text-muted text-small text-nowrap">
-                        <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2">TVApp2</a> - v${ version }</small><br />
+                        <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2"><%= appName %></a> - v<%= appVersion %></small><br />
                         <small>This utility is for educational purposes only</small>
                     </div>
                 </div>
@@ -95,12 +95,12 @@
             const baseURL = window.location.origin;
             const playlistURL = baseURL + "/playlist";
             const epgURL = baseURL + "/epg";
-            document.getElementById("playlist-url").textContent = "${ file_m3u }";
+            document.getElementById("playlist-url").textContent = "<%= fileM3U %>";
             document.getElementById("playlist-url").href = playlistURL;
             document.getElementById("playlist-link").textContent = playlistURL;
             document.getElementById("playlist-link").href = playlistURL;
 
-            document.getElementById("epg-url").textContent = "${ file_epg }";
+            document.getElementById("epg-url").textContent = "<%= fileEPG %>";
             document.getElementById("epg-url").href = epgURL;
             document.getElementById("epg-link").textContent = epgURL;
             document.getElementById("epg-link").href = epgURL;
@@ -135,6 +135,6 @@
                 document.getElementById("warning-firewall").innerHTML = warningMessage;
             });
         </script>
-        <script src="https://cdn.jsdelivr.net/gh/TheBinaryNinja/tvapp2@main/tvapp2/web/js/tvapp2.min.js"></script>
+        <script src="js/tvapp2.min.js"></script>
     </body>
 </html>

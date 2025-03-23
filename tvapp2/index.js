@@ -10,6 +10,7 @@ import path from 'path';
 import http from 'http';
 import zlib from 'zlib';
 import chalk from 'chalk';
+import ejs from 'ejs';
 
 /*
     Old CJS variables converted to ESM
@@ -837,27 +838,11 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        fs.readFile( './www/' + loadAsset, ( err, data ) =>
+        ejs.renderFile( './www/' + loadAsset, { fileEPG: envFilePlaylist, fileM3U: envFileEPG, appName: name, appVersion: version }, ( err, data ) =>
         {
             if ( !err )
             {
-                /*
-                    @todo           currently, the index.html has certain template variables loaded using str.replace;
-                                    this can be more easily managed by using ejs
-
-                                    import ejs from 'ejs';
-                                    app.post("index.html", (req, res) => {
-                                        const token = req.body.data.token;
-                                        ejs.renderFile("./index.ejs", {token: token}, (error, output) => {
-                                            // other functionality
-                                        })
-                                    }
-                */
-
-                const html = data.toString()
-                    .replace( '${ file_m3u }', envFilePlaylist )
-                    .replace( '${ file_epg }', envFileEPG )
-                    .replace( '${ version }', version );
+                const html = data.toString();
 
                 /*
                     This allows us to serve all files locally: css, js, etc.
@@ -885,7 +870,6 @@ const server = http.createServer( ( request, response ) =>
             else
             {
                 Log.error( `www file not found:`, chalk.white( ` → ` ), chalk.grey( `${ request.url }` ) );
-
                 response.writeHead( 404, 'Not Found' );
                 response.end();
             }
