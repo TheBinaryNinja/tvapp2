@@ -57,8 +57,8 @@ let EPG_FILE;
 
 const envUrlRepo = process.env.URL_REPO || `https://git.binaryninja.net/binaryninja`;
 const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
-const envFilePlaylist = process.env.FILE_PLAYLIST || `playlist.m3u8`;
-const envFileEPG = process.env.FILE_EPG || `xmltv.xml`;
+const envFileM3U = process.env.FILE_PLAYLIST || `playlist.m3u8`;
+const envFileXML = process.env.FILE_EPG || `xmltv.xml`;
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
 /*
@@ -169,7 +169,7 @@ if ( process.pkg )
     const basePath = path.dirname( process.execPath );
     URLS_FILE = path.join( basePath, 'urls.txt' );
     FORMATTED_FILE = path.join( basePath, 'formatted.dat' );
-    EPG_FILE = path.join( basePath, 'xmltv.1.xml' );
+    EPG_FILE = path.join( basePath, `${ envFileXML }` );
     EPG_FILE.length;
 }
 else
@@ -177,7 +177,7 @@ else
     Log.info( `Processing Locals` );
     URLS_FILE = path.resolve( __dirname, 'urls.txt' );
     FORMATTED_FILE = path.resolve( __dirname, 'formatted.dat' );
-    EPG_FILE = path.resolve( __dirname, 'xmltv.1.xml' );
+    EPG_FILE = path.resolve( __dirname, `${ envFileXML }` );
 }
 
 /*
@@ -554,7 +554,7 @@ async function serveChannelPlaylist( req, res )
             res.writeHead( 200,
             {
                 'Content-Type': 'application/vnd.apple.mpegurl',
-                'Content-Disposition': 'inline; filename="' + envFilePlaylist
+                'Content-Disposition': 'inline; filename="' + envFileM3U
             });
 
             res.end( rewrittenPlaylist );
@@ -581,7 +581,7 @@ async function serveChannelPlaylist( req, res )
         const rewrittenPlaylist = await rewritePlaylist( hdUrl, req );
         res.writeHead( 200, {
             'Content-Type': 'application/vnd.apple.mpegurl',
-            'Content-Disposition': 'inline; filename="' + envFilePlaylist
+            'Content-Disposition': 'inline; filename="' + envFileM3U
         });
 
         res.end( rewrittenPlaylist );
@@ -659,7 +659,7 @@ async function servePlaylist( response, req )
 
         response.writeHead( 200, {
             'Content-Type': 'application/x-mpegURL',
-            'Content-Disposition': 'inline; filename="' + envFilePlaylist
+            'Content-Disposition': 'inline; filename="' + envFileM3U
         });
 
         response.end( updatedContent );
@@ -691,7 +691,7 @@ async function serveXmltv( response, req )
 
         response.writeHead( 200, {
             'Content-Type': 'application/xml',
-            'Content-Disposition': 'inline; filename="xmltv.1.xml"'
+            'Content-Disposition': 'inline; filename="' + envFileXML
         });
 
         response.end( formattedContent );
@@ -838,7 +838,7 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        ejs.renderFile( './www/' + loadAsset, { fileEPG: envFilePlaylist, fileM3U: envFileEPG, appName: name, appVersion: version }, ( err, data ) =>
+        ejs.renderFile( './www/' + loadAsset, { fileXML: envFileXML, fileM3U: envFileM3U, appName: name, appVersion: version }, ( err, data ) =>
         {
             if ( !err )
             {
