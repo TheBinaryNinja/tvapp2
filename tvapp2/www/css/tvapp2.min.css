@@ -275,7 +275,7 @@ p
 
 .navbar-social svg
 {
-    font-size:                  clamp(0.7em, 2vw, 1.3em);
+    font-size:                  clamp(0.7em, 2vw, 1.1em);
     padding-top:                2px;
     padding-left:               10px;
 }
