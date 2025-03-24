@@ -37,7 +37,10 @@
                                 File Name
                             </th>
                             <th class="link cell-link">
-                                Link
+                                Download
+                            </th>
+                            <th class="size cell-size">
+                                Size
                             </th>
                             <th class="desc cell-desc">
                                 Description
@@ -56,12 +59,13 @@
                                 <a id="m3u-name" target="_blank"></a>
                             </td>
                             <td class="link cell-link"><a id="m3u-link" target="_blank"></a></td>
+                            <td class="size cell-size"><span id="m3u-size"></span></td>
                             <td class="desc cell-desc">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
                         </tr>
                         <tr>
                             <td class="icon cell-icon">
-                                <svg class="svg-inline--fa fa-file-lines fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
-                                    <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
+                                <svg class="svg-inline--fa fa-file-xml fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-xml" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
+                                    <path fill="currentColor" d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM192 368c0 7.3 2.2 14.4 6.2 20.4l9.8 14.7 9.8-14.7c4-6.1 6.2-13.2 6.2-20.4c0-8.8 7.2-16 16-16s16 7.2 16 16c0 13.6-4 26.9-11.6 38.2L227.2 432l17.2 25.8C252 469.1 256 482.4 256 496c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-7.3-2.2-14.4-6.2-20.4L208 460.8l-9.8 14.7c-4 6.1-6.2 13.2-6.2 20.4c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-13.6 4-26.9 11.6-38.2L188.8 432l-17.2-25.8C164 394.9 160 381.6 160 368c0-8.8 7.2-16 16-16s16 7.2 16 16zM448 496V368c0-8.8 7.2-16 16-16s16 7.2 16 16V480h16c8.8 0 16 7.2 16 16s-7.2 16-16 16H464c-8.8 0-16-7.2-16-16zM299.7 352.6c6.9-1.9 14.3 1 18 7.2L352 416.9l34.3-57.1c3.7-6.2 11.1-9.1 18-7.2s11.7 8.2 11.7 15.4V496c0 8.8-7.2 16-16 16s-16-7.2-16-16V425.8l-18.3 30.5c-2.9 4.8-8.1 7.8-13.7 7.8s-10.8-2.9-13.7-7.8L320 425.8V496c0 8.8-7.2 16-16 16s-16-7.2-16-16V368c0-7.2 4.8-13.5 11.7-15.4z"></path>
                                 </svg>
                                 <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
                             </td>
@@ -69,6 +73,7 @@
                                 <a id="xml-name" target="_blank"></a>
                             </td>
                             <td class="link cell-link"><a id="xml-link" target="_blank"></a></td>
+                            <td class="size cell-size"><span id="xml-size"></span></td>
                             <td class="desc cell-desc">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
                         </tr>
                         <tr>
@@ -82,6 +87,7 @@
                                 <a id="tar-name" target="_blank"></a>
                             </td>
                             <td class="link cell-link"><a id="tar-link" target="_blank"></a></td>
+                            <td class="size cell-size"><span id="tar-size"></span></td>
                             <td class="desc cell-desc">XML / EPG guide data compressed into tar.gz</td>
                         </tr>
                     </tbody>
@@ -114,16 +120,19 @@
             document.getElementById("m3u-name").href = urlM3U;
             document.getElementById("m3u-link").textContent = urlM3U;
             document.getElementById("m3u-link").href = urlM3U;
+            document.getElementById("m3u-size").textContent = "<%= sizeM3U %>";
 
             document.getElementById("xml-name").textContent = "<%= fileXML %>";
             document.getElementById("xml-name").href = urlXML;
             document.getElementById("xml-link").textContent = urlXML;
             document.getElementById("xml-link").href = urlXML;
+            document.getElementById("xml-size").textContent = "<%= sizeXML %>";
 
             document.getElementById("tar-name").textContent = "<%= fileTAR %>";
             document.getElementById("tar-name").href = urlTAR;
             document.getElementById("tar-link").textContent = urlTAR;
             document.getElementById("tar-link").href = urlTAR;
+            document.getElementById("tar-size").textContent = "<%= sizeTAR %>";
         </script>
 
         <script>

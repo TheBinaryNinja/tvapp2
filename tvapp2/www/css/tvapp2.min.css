@@ -1,16 +1,16 @@
 body
 {
-    background-color: #f8f9fa;
-    padding-bottom: 20px;
-    overflow: auto;
+    background-color:               #f8f9fa;
+    padding-bottom:                 20px;
+    overflow:                       auto;
 }
 
 @media (prefers-color-scheme: dark)
 {
     body
     {
-        background-color: #262626;
-        color: #fff;
+        background-color:       #262626;
+        color:                  #fff;
     }
 }
 
@@ -56,8 +56,8 @@ body
 {
     padding-left:               8px;
     padding-bottom:             4vh;
-    font-size:                  1.6vmin;
-    line-height:                2.5vmin;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    line-height:                1.6;
     font-weight:                100;
 }
 
@@ -99,10 +99,10 @@ p
 }
 
 .container {
-    width: 100%;
-    padding: 0px;
-    margin-right: auto;
-    margin-left: auto;
+    width:                      100%;
+    padding:                    0px;
+    margin-right:               auto;
+    margin-left:                auto;
 }
 
 .header .logo
@@ -199,12 +199,15 @@ p
 #list a,
 #list a:focus
 {
-    color:                      #FFF !important;
+    color:                      #ff286e !important;
+    font-weight:                100;
 }
 
 #list a:hover
 {
-    color:                      #ff275d !important;
+    color:                      #FFF !important;
+    text-decoration:            underline dotted #FF0048;
+    font-weight:                100;
 }
 
 #list colgroup
@@ -212,25 +215,52 @@ p
     display:                    none;
 }
 
-#list .cell-file
+#list .file
 {
     word-break:                 keep-all;
     white-space:                normal;
-    min-width:                  11vw !important;
+    min-width:                  8vw !important;
     text-wrap:                  nowrap;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-weight:                800;
+    vertical-align:             middle;
 }
 
-#list .cell-link
+#list .file a
+{
+    font-weight:                800;
+}
+
+#list .link
 {
     word-break:                 break-all;
     white-space:                normal;
-    min-width:                  14vw !important;
+    min-width:                  11vw !important;
     text-wrap:                  nowrap;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    vertical-align:             middle;
 }
 
-table
+#list .icon
 {
+    font-size:                  2.2vmin;
+    vertical-align:             middle;
+}
 
+#list .size
+{
+    min-width:                  5vw !important;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    word-break:                 break-all;
+    white-space:                normal;
+    text-wrap:                  nowrap;
+    vertical-align:             middle;
+}
+
+#list .desc
+{
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    vertical-align:             middle;
 }
 
 .table thead th a
@@ -242,10 +272,10 @@ table
 .table td, .table th
 {
     padding:                    .75rem;
-    vertical-align:             top;
+    vertical-align:             baseline;
     border-top:                 0px solid #dee2e6;
-    font-size:                  1.6vmin;
-    line-height:                2.5vmin;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    line-height:                1.6;
 }
 
 .table thead tr
@@ -259,21 +289,8 @@ table
 {
     vertical-align:             bottom;
     border-bottom:              0px solid #575757;
-    font-size:                  1.6vmin;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
     line-height:                2.5vmin;
-}
-
-#list .link a
-{
-    color:                      #ff286e !important;
-    font-weight:                100;
-}
-
-#list .link a:hover
-{
-    color:                      #FFF !important;
-    text-decoration:            underline dotted #FF0048;
-    font-weight:                100;
 }
 
 .table-hover tbody tr:hover
@@ -292,7 +309,7 @@ table
     background-color:           #1A1A1A;
     padding:                    2vh;
     margin-bottom:              1vh;
-    font-size:                  1.6vmin;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
     font-weight:                100;
     border:                     1px dashed #FF6C00;
     width:                      100%;
@@ -303,7 +320,7 @@ table
 {
     background-color:           #1A1A1A;
     padding:                    2vh;
-    font-size:                  1.6vmin;
+    font-size:                  clamp(0.7em, 1vw, 0.9em);
     font-weight:                100;
     border:                     1px dashed #FF0048;
     width:                      100%;
@@ -369,38 +386,38 @@ code
 }
 
 .col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-auto, .col-lg, .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-auto, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-auto, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-auto, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-auto {
-    position: relative;
-    width: auto;
-    min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
+    position:                   relative;
+    width:                      auto;
+    min-height:                 1px;
+    padding-right:              15px;
+    padding-left:               15px;
 }
 
 .fixed-top
 {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 999;
+    position:                   fixed;
+    top:                        0;
+    right:                      0;
+    left:                       0;
+    z-index:                    999;
 }
 
 .fixed-bottom
 {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 999;
+    position:                   fixed;
+    right:                      0;
+    bottom:                     0;
+    left:                       0;
+    z-index:                    999;
 }
 
 .sticky-top
 {
     @supports (position: sticky)
     {
-        position: sticky;
-        top: 0;
-        z-index: 999;
+        position:               sticky;
+        top:                    0;
+        z-index:                999;
     }
 }
 
@@ -408,8 +425,8 @@ code
 {
     @supports (position: sticky)
     {
-        position: sticky;
-        bottom: 0;
-        z-index: 999;
+        position:               sticky;
+        bottom:                 0;
+        z-index:                999;
     }
 }

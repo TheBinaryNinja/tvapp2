@@ -49,9 +49,12 @@ chalk.level = 3;
 */
 
 let FILE_URL;
-let FILE_DAT;
+let FILE_M3U;
 let FILE_XML;
 let FILE_TAR;
+let FILE_M3U_SIZE = 0;
+let FILE_XML_SIZE = 0;
+let FILE_TAR_SIZE = 0;
 
 /*
     Define > Environment Variables || Defaults
@@ -170,7 +173,7 @@ if ( process.pkg )
     Log.info( `Processing Package` );
     const basePath = path.dirname( process.execPath );
     FILE_URL = path.join( basePath, 'urls.txt' );
-    FILE_DAT = path.join( basePath, 'formatted.dat' );
+    FILE_M3U = path.join( basePath, 'formatted.dat' );
     FILE_XML = path.join( basePath, `${ envFileXML }` );
     FILE_XML.length;
     FILE_TAR = path.join( basePath, `${ envFileTAR }` );
@@ -179,7 +182,7 @@ else
 {
     Log.info( `Processing Locals` );
     FILE_URL = path.resolve( __dirname, 'urls.txt' );
-    FILE_DAT = path.resolve( __dirname, 'formatted.dat' );
+    FILE_M3U = path.resolve( __dirname, 'formatted.dat' );
     FILE_XML = path.resolve( __dirname, `${ envFileXML }` );
     FILE_TAR = path.resolve( __dirname, `${ envFileTAR }` );
 }
@@ -265,6 +268,39 @@ async function downloadFile( url, filePath )
                 fs.unlink( filePath, () => reject( err ) );
             });
     });
+}
+
+/*
+    Get Filesize and convert to human readable format
+*/
+
+function getFilesizeHuman( filename, si = true, dp = 1 )
+{
+    const stats = fs.statSync( filename );
+    let bytes = stats.size;
+    const thresh = si ? 1000 : 1024;
+
+    if ( Math.abs( bytes ) < thresh )
+        return bytes + ' B';
+
+    const units = si
+        ? [
+            'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'
+        ]
+        : [
+            'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'
+        ];
+
+    let u = -1;
+    const r = 10 ** dp;
+
+    do
+    {
+        bytes /= thresh;
+        ++u;
+    } while ( Math.round( Math.abs( bytes ) * r ) / r >= thresh && u < units.length - 1 );
+
+    return bytes.toFixed( dp ) + ' ' + units[u];
 }
 
 /*
@@ -650,7 +686,7 @@ async function serveM3U( response, req )
         const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
         const host = req.headers.host;
         const baseUrl = `${ protocol }://${ host }`;
-        const formattedContent = fs.readFileSync( FILE_DAT, 'utf-8' );
+        const formattedContent = fs.readFileSync( FILE_M3U, 'utf-8' );
         const updatedContent = formattedContent
             .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
             {
@@ -779,8 +815,8 @@ async function initialize()
         Log.info( `Initializing server...` );
 
         await ensureFileExists( extURL, FILE_URL );
-        await ensureFileExists( extFormatted, FILE_DAT );
         await ensureFileExists( extXML, FILE_XML );
+        await ensureFileExists( extFormatted, FILE_M3U );
 
         /*
             Create tar.gz of xml data
@@ -812,6 +848,14 @@ async function initialize()
         {
             throw new Error( `No valid URLs found in ${ FILE_URL }` );
         }
+
+        /*
+            Calculate Sizes
+        */
+
+        FILE_M3U_SIZE = getFilesizeHuman( FILE_M3U );
+        FILE_XML_SIZE = getFilesizeHuman( FILE_XML );
+        FILE_TAR_SIZE = getFilesizeHuman( FILE_TAR );
 
         Log.info( `Initializing Complete` );
     }
@@ -907,7 +951,17 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        ejs.renderFile( './www/' + loadAsset, { fileXML: envFileXML, fileM3U: envFileM3U, fileTAR: envFileTAR, appName: name, appVersion: version }, ( err, data ) =>
+        ejs.renderFile( './www/' + loadAsset,
+            {
+                fileXML: envFileXML,
+                sizeXML: FILE_XML_SIZE,
+                fileM3U: envFileM3U,
+                sizeM3U: FILE_M3U_SIZE,
+                fileTAR: envFileTAR,
+                sizeTAR: FILE_TAR_SIZE,
+                appName: name,
+                appVersion: version
+            }, ( err, data ) =>
         {
             if ( !err )
             {
