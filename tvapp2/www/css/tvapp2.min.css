@@ -56,7 +56,7 @@ body
 {
     padding-left:               8px;
     padding-bottom:             4vh;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     line-height:                1.6;
     font-weight:                100;
 }
@@ -219,9 +219,9 @@ p
 {
     word-break:                 keep-all;
     white-space:                normal;
-    min-width:                  8vw !important;
+    min-width:                  7vw !important;
     text-wrap:                  nowrap;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     font-weight:                800;
     vertical-align:             middle;
 }
@@ -235,9 +235,9 @@ p
 {
     word-break:                 break-all;
     white-space:                normal;
-    min-width:                  11vw !important;
+    min-width:                  9vw !important;
     text-wrap:                  nowrap;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     vertical-align:             middle;
 }
 
@@ -250,7 +250,17 @@ p
 #list .size
 {
     min-width:                  5vw !important;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    word-break:                 break-all;
+    white-space:                normal;
+    text-wrap:                  nowrap;
+    vertical-align:             middle;
+}
+
+#list .date
+{
+    min-width:                  5vw !important;
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     word-break:                 break-all;
     white-space:                normal;
     text-wrap:                  nowrap;
@@ -259,8 +269,27 @@ p
 
 #list .desc
 {
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     vertical-align:             middle;
+}
+
+.navbar-social svg
+{
+    font-size:                  clamp(0.7em, 2vw, 1.3em);
+    padding-top:                2px;
+    padding-left:               10px;
+}
+
+.navbar-social svg:hover
+{
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    1;
+    transform:                  scale(1.8);
 }
 
 .table thead th a
@@ -274,7 +303,7 @@ p
     padding:                    .75rem;
     vertical-align:             baseline;
     border-top:                 0px solid #dee2e6;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     line-height:                1.6;
 }
 
@@ -289,7 +318,7 @@ p
 {
     vertical-align:             bottom;
     border-bottom:              0px solid #575757;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     line-height:                2.5vmin;
 }
 
@@ -309,7 +338,7 @@ p
     background-color:           #1A1A1A;
     padding:                    2vh;
     margin-bottom:              1vh;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     font-weight:                100;
     border:                     1px dashed #FF6C00;
     width:                      100%;
@@ -320,7 +349,7 @@ p
 {
     background-color:           #1A1A1A;
     padding:                    2vh;
-    font-size:                  clamp(0.7em, 1vw, 0.9em);
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
     font-weight:                100;
     border:                     1px dashed #FF0048;
     width:                      100%;
