@@ -53,9 +53,9 @@
                                 <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
                             </td>
                             <td class="file cell-file">
-                                <a id="playlist-url" target="_blank"></a>
+                                <a id="m3u-name" target="_blank"></a>
                             </td>
-                            <td class="link cell-link"><a id="playlist-link" target="_blank"></a></td>
+                            <td class="link cell-link"><a id="m3u-link" target="_blank"></a></td>
                             <td class="desc cell-desc">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
                         </tr>
                         <tr>
@@ -66,9 +66,9 @@
                                 <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
                             </td>
                             <td class="file cell-file">
-                                <a id="epg-url" target="_blank"></a>
+                                <a id="xml-name" target="_blank"></a>
                             </td>
-                            <td class="link cell-link"><a id="epg-link" target="_blank"></a></td>
+                            <td class="link cell-link"><a id="xml-link" target="_blank"></a></td>
                             <td class="desc cell-desc">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
                         </tr>
                         <tr>
@@ -105,13 +105,20 @@
         </footer>
 
         <script>
-            const baseURL = window.location.origin;
-            const playlistURL = baseURL + "/playlist";
-            const epgURL = baseURL + "/epg";
+            const urlBase = window.location.origin;
+            const urlM3U = urlBase + "/playlist";
+            const urlXML = urlBase + "/epg";
             const urlTAR = urlBase + "/tar";
-            document.getElementById("playlist-url").href = playlistURL;
-            document.getElementById("playlist-link").textContent = playlistURL;
-            document.getElementById("playlist-link").href = playlistURL;
+
+            document.getElementById("m3u-name").textContent = "<%= fileM3U %>";
+            document.getElementById("m3u-name").href = urlM3U;
+            document.getElementById("m3u-link").textContent = urlM3U;
+            document.getElementById("m3u-link").href = urlM3U;
+
+            document.getElementById("xml-name").textContent = "<%= fileXML %>";
+            document.getElementById("xml-name").href = urlXML;
+            document.getElementById("xml-link").textContent = urlXML;
+            document.getElementById("xml-link").href = urlXML;
 
             document.getElementById("tar-name").textContent = "<%= fileTAR %>";
             document.getElementById("tar-name").href = urlTAR;

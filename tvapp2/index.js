@@ -48,9 +48,9 @@ chalk.level = 3;
     Define > General
 */
 
-let URLS_FILE;
-let FORMATTED_FILE;
-let EPG_FILE;
+let FILE_URL;
+let FILE_DAT;
+let FILE_XML;
 let FILE_TAR;
 
 /*
@@ -69,9 +69,8 @@ const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 */
 
 const extURL = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/urls.txt`;
-const extEPG = `${ envUrlRepo }/XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
+const extXML = `${ envUrlRepo }/XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
 const extFormatted = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
-const extEvents = '';
 
 /*
     Define > Defaults
@@ -170,18 +169,18 @@ if ( process.pkg )
 {
     Log.info( `Processing Package` );
     const basePath = path.dirname( process.execPath );
-    URLS_FILE = path.join( basePath, 'urls.txt' );
-    FORMATTED_FILE = path.join( basePath, 'formatted.dat' );
-    EPG_FILE = path.join( basePath, `${ envFileXML }` );
-    EPG_FILE.length;
+    FILE_URL = path.join( basePath, 'urls.txt' );
+    FILE_DAT = path.join( basePath, 'formatted.dat' );
+    FILE_XML = path.join( basePath, `${ envFileXML }` );
+    FILE_XML.length;
     FILE_TAR = path.join( basePath, `${ envFileTAR }` );
 }
 else
 {
     Log.info( `Processing Locals` );
-    URLS_FILE = path.resolve( __dirname, 'urls.txt' );
-    FORMATTED_FILE = path.resolve( __dirname, 'formatted.dat' );
-    EPG_FILE = path.resolve( __dirname, `${ envFileXML }` );
+    FILE_URL = path.resolve( __dirname, 'urls.txt' );
+    FILE_DAT = path.resolve( __dirname, 'formatted.dat' );
+    FILE_XML = path.resolve( __dirname, `${ envFileXML }` );
     FILE_TAR = path.resolve( __dirname, `${ envFileTAR }` );
 }
 
@@ -526,7 +525,7 @@ async function getTokenizedUrl( channelUrl )
     }
 }
 
-async function serveChannelPlaylist( req, res )
+async function serveM3UPlaylist( req, res )
 {
     await semaphore.acquire();
     try
@@ -555,7 +554,7 @@ async function serveChannelPlaylist( req, res )
         const cachedUrl = getCache( decodedUrl );
         if ( cachedUrl )
         {
-            const rewrittenPlaylist = await rewritePlaylist( cachedUrl, req );
+            const rewrittenPlaylist = await rewriteM3U( cachedUrl, req );
             res.writeHead( 200,
             {
                 'Content-Type': 'application/vnd.apple.mpegurl',
@@ -583,7 +582,7 @@ async function serveChannelPlaylist( req, res )
 
         setCache( decodedUrl, finalUrl, 4 * 60 * 60 * 1000 );
         const hdUrl = finalUrl.replace( 'tracks-v2a1', 'tracks-v1a1' );
-        const rewrittenPlaylist = await rewritePlaylist( hdUrl, req );
+        const rewrittenPlaylist = await rewriteM3U( hdUrl, req );
         res.writeHead( 200, {
             'Content-Type': 'application/vnd.apple.mpegurl',
             'Content-Disposition': 'inline; filename="' + envFileM3U
@@ -615,7 +614,7 @@ async function serveChannelPlaylist( req, res )
     Rewrites the URLs
 */
 
-async function rewritePlaylist( originalUrl, req )
+async function rewriteM3U( originalUrl, req )
 {
     const rawData = await fetchRemote( originalUrl );
     const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
@@ -644,14 +643,14 @@ async function rewritePlaylist( originalUrl, req )
     Serves IPTV .m3u playlist
 */
 
-async function servePlaylist( response, req )
+async function serveM3U( response, req )
 {
     try
     {
         const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
         const host = req.headers.host;
         const baseUrl = `${ protocol }://${ host }`;
-        const formattedContent = fs.readFileSync( FORMATTED_FILE, 'utf-8' );
+        const formattedContent = fs.readFileSync( FILE_DAT, 'utf-8' );
         const updatedContent = formattedContent
             .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
             {
@@ -671,7 +670,7 @@ async function servePlaylist( response, req )
     }
     catch ( error )
     {
-        Log.error( `Error in servePlaylist:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Error in serveM3U:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
@@ -685,14 +684,14 @@ async function servePlaylist( response, req )
     Serves IPTV .xml guide data
 */
 
-async function serveXmltv( response, req )
+async function serveXML( response, req )
 {
     try
     {
         const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
         const host = req.headers.host;
         const baseUrl = `${ protocol }://${ host }`;
-        const formattedContent = fs.readFileSync( EPG_FILE, 'utf-8' );
+        const formattedContent = fs.readFileSync( FILE_XML, 'utf-8' );
 
         response.writeHead( 200, {
             'Content-Type': 'application/xml',
@@ -703,7 +702,7 @@ async function serveXmltv( response, req )
     }
     catch ( error )
     {
-        Log.error( `Error in servePlaylist:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Error in serveM3U:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
@@ -779,9 +778,9 @@ async function initialize()
     {
         Log.info( `Initializing server...` );
 
-        await ensureFileExists( extURL, URLS_FILE );
-        await ensureFileExists( extFormatted, FORMATTED_FILE );
-        await ensureFileExists( extEPG, EPG_FILE );
+        await ensureFileExists( extURL, FILE_URL );
+        await ensureFileExists( extFormatted, FILE_DAT );
+        await ensureFileExists( extXML, FILE_XML );
 
         /*
             Create tar.gz of xml data
@@ -867,7 +866,7 @@ const server = http.createServer( ( request, response ) =>
         {
             Log.info( `Received request for playlist data`, chalk.white( ` → ` ), chalk.grey( `/playlist` ) );
 
-            await servePlaylist( response, request );
+            await serveM3U( response, request );
             return;
         }
 
@@ -875,7 +874,7 @@ const server = http.createServer( ( request, response ) =>
         {
             Log.info( `Received request for channel data`, chalk.white( ` → ` ), chalk.grey( `/channel` ) );
 
-            await serveChannelPlaylist( request, response );
+            await serveM3UPlaylist( request, response );
             return;
         }
 
