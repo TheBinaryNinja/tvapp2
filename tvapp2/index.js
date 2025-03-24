@@ -11,6 +11,7 @@ import http from 'http';
 import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
+import * as tar from 'tar';
 
 /*
     Old CJS variables converted to ESM
@@ -50,6 +51,7 @@ chalk.level = 3;
 let URLS_FILE;
 let FORMATTED_FILE;
 let EPG_FILE;
+let FILE_TAR;
 
 /*
     Define > Environment Variables || Defaults
@@ -59,6 +61,7 @@ const envUrlRepo = process.env.URL_REPO || `https://git.binaryninja.net/binaryni
 const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
 const envFileM3U = process.env.FILE_PLAYLIST || `playlist.m3u8`;
 const envFileXML = process.env.FILE_EPG || `xmltv.xml`;
+const envFileTAR = process.env.FILE_TAR || `xmltv.tar.gz`;
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
 /*
@@ -171,6 +174,7 @@ if ( process.pkg )
     FORMATTED_FILE = path.join( basePath, 'formatted.dat' );
     EPG_FILE = path.join( basePath, `${ envFileXML }` );
     EPG_FILE.length;
+    FILE_TAR = path.join( basePath, `${ envFileTAR }` );
 }
 else
 {
@@ -178,6 +182,7 @@ else
     URLS_FILE = path.resolve( __dirname, 'urls.txt' );
     FORMATTED_FILE = path.resolve( __dirname, 'formatted.dat' );
     EPG_FILE = path.resolve( __dirname, `${ envFileXML }` );
+    FILE_TAR = path.resolve( __dirname, `${ envFileTAR }` );
 }
 
 /*
@@ -708,6 +713,38 @@ async function serveXmltv( response, req )
     }
 };
 
+/*
+    Serves IPTV .tar.gz guide data
+*/
+
+async function serveTAR( response, req )
+{
+    try
+    {
+        const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
+        const host = req.headers.host;
+        const baseUrl = `${ protocol }://${ host }`;
+        const formattedContent = fs.readFileSync( FILE_TAR );
+
+        response.writeHead( 200, {
+            'Content-Type': 'application/gzip',
+            'Content-Disposition': 'inline; filename="' + envFileTAR
+        });
+
+        response.end( formattedContent );
+    }
+    catch ( error )
+    {
+        Log.error( `Error in serveTAR:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+
+        response.writeHead( 500, {
+            'Content-Type': 'text/plain'
+        });
+
+        response.end( `Error serving tar.gz: ${ error.message }` );
+    }
+};
+
 function setCache( key, value, ttl )
 {
     const expiry = Date.now() + ttl;
@@ -746,10 +783,35 @@ async function initialize()
         await ensureFileExists( extFormatted, FORMATTED_FILE );
         await ensureFileExists( extEPG, EPG_FILE );
 
-        urls = fs.readFileSync( URLS_FILE, 'utf-8' ).split( '\n' ).filter( Boolean );
+        /*
+            Create tar.gz of xml data
+            Must specify `cwd` - current working directory; without this, the absolute path to the .tar.gz file
+            will be added to the archive.
+
+            set cwd to the folder where the xmltv.1.xml file is located
+        */
+
+        tar.c(
+            {
+                gzip: true,
+                cwd: path.resolve( __dirname ),
+                mtime: new Date(),
+                strict: false,
+                portable: true,
+                jobs: 2,
+                maxReadSize: 48 * 1024 * 1024,
+                onwarn: ( code, message, data ) =>
+                {
+                    Log.warn( `Tar.gz warning:`, chalk.white( ` → ` ), chalk.grey( `[${ code }] ${ message }` ) );
+                }
+            },
+            [`${ envFileXML }`]
+          ).pipe( fs.createWriteStream( `${ envFileTAR }` ) );
+
+        urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
         if ( urls.length === 0 )
         {
-            throw new Error( `No valid URLs found in ${ URLS_FILE }` );
+            throw new Error( `No valid URLs found in ${ FILE_URL }` );
         }
 
         Log.info( `Initializing Complete` );
@@ -829,7 +891,15 @@ const server = http.createServer( ( request, response ) =>
         {
             Log.info( `Received request for EPG data`, chalk.white( ` → ` ), chalk.grey( `/epg` ) );
 
-            await serveXmltv( response, request );
+            await serveXML( response, request );
+            return;
+        }
+
+        if ( loadAsset === '/tar' && method === 'GET' )
+        {
+            Log.info( `Received request for EPG data`, chalk.white( ` → ` ), chalk.grey( `/epg` ) );
+
+            await serveTAR( response, request );
             return;
         }
 
@@ -838,7 +908,7 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        ejs.renderFile( './www/' + loadAsset, { fileXML: envFileXML, fileM3U: envFileM3U, appName: name, appVersion: version }, ( err, data ) =>
+        ejs.renderFile( './www/' + loadAsset, { fileXML: envFileXML, fileM3U: envFileM3U, fileTAR: envFileTAR, appName: name, appVersion: version }, ( err, data ) =>
         {
             if ( !err )
             {
@@ -859,6 +929,7 @@ const server = http.createServer( ( request, response ) =>
                                     '.png' : 'image/png',
                                     '.gif' : 'image/gif',
                                     '.css' : 'text/css',
+                                    '.gz' : 'application/gzip',
                                     '.js' : 'text/javascript'
                                     }[loadAsset.substr( fileExt )];
 

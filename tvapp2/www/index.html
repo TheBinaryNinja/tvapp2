@@ -71,6 +71,19 @@
                             <td class="link cell-link"><a id="epg-link" target="_blank"></a></td>
                             <td class="desc cell-desc">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
                         </tr>
+                        <tr>
+                            <td class="icon cell-icon">
+                                <svg class="svg-inline--fa fa-file-zipper fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-zipper" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
+                                    <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM96 48c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16zm-6.3 71.8c3.7-14 16.4-23.8 30.9-23.8h14.8c14.5 0 27.2 9.7 30.9 23.8l23.5 88.2c1.4 5.4 2.1 10.9 2.1 16.4c0 35.2-28.8 63.7-64 63.7s-64-28.5-64-63.7c0-5.5 .7-11.1 2.1-16.4l23.5-88.2zM112 336c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H112z"></path>
+                                </svg>
+                                <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                            </td>
+                            <td class="file cell-tar">
+                                <a id="tar-name" target="_blank"></a>
+                            </td>
+                            <td class="link cell-link"><a id="tar-link" target="_blank"></a></td>
+                            <td class="desc cell-desc">XML / EPG guide data compressed into tar.gz</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -95,15 +108,15 @@
             const baseURL = window.location.origin;
             const playlistURL = baseURL + "/playlist";
             const epgURL = baseURL + "/epg";
-            document.getElementById("playlist-url").textContent = "<%= fileM3U %>";
+            const urlTAR = urlBase + "/tar";
             document.getElementById("playlist-url").href = playlistURL;
             document.getElementById("playlist-link").textContent = playlistURL;
             document.getElementById("playlist-link").href = playlistURL;
 
-            document.getElementById("epg-url").textContent = "<%= fileXML %>";
-            document.getElementById("epg-url").href = epgURL;
-            document.getElementById("epg-link").textContent = epgURL;
-            document.getElementById("epg-link").href = epgURL;
+            document.getElementById("tar-name").textContent = "<%= fileTAR %>";
+            document.getElementById("tar-name").href = urlTAR;
+            document.getElementById("tar-link").textContent = urlTAR;
+            document.getElementById("tar-link").href = urlTAR;
         </script>
 
         <script>
