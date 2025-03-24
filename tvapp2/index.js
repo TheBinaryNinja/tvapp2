@@ -1003,8 +1003,6 @@ const server = http.createServer( ( request, response ) =>
         {
             if ( !err )
             {
-                const html = data.toString();
-
                 /*
                     This allows us to serve all files locally: css, js, etc.
                     the file loaded is dependent on what comes to the right of the period.
@@ -1022,10 +1020,17 @@ const server = http.createServer( ( request, response ) =>
                                     '.css' : 'text/css',
                                     '.gz' : 'application/gzip',
                                     '.js' : 'text/javascript'
-                                    }[loadAsset.substr( fileExt )];
+                                    }[loadAsset.substring( fileExt )];
+
+                /*
+                    ejs is only for templates; if we want to load an binary data (like images); we must use fs.readFile
+                */
+
+                if ( fileMime !== 'text/html' )
+                    data = fs.readFileSync( './www/' + loadAsset );
 
                 response.setHeader( 'Content-type', fileMime );
-                response.end( html );
+                response.end( data );
 
                 Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( ` → ` ), chalk.grey( `asset:${ loadAsset } mime:${ fileMime }` ) );
             }
