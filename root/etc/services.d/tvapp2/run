@@ -7,4 +7,6 @@
 cp -r ${DIR_BUILD}/* ${DIR_RUN}
 rm -rf ${DIR_BUILD}/*
 cd ${DIR_RUN}
+npm install --omit=dev
 npm start
+
