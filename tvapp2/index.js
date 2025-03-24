@@ -5,12 +5,13 @@
 */
 
 import fs from 'fs';
-import https from 'https';
 import path from 'path';
+import https from 'https';
 import http from 'http';
 import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
+import moment from 'moment';
 import * as tar from 'tar';
 
 /*
@@ -24,7 +25,7 @@ const cache = new Map();
     Import package.json values
 */
 
-const { name, author, version, repository } = JSON.parse( fs.readFileSync( './package.json' ) );
+const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
 const __filename = fileURLToPath( import.meta.url ); // get resolved path to file
 const __dirname = path.dirname( __filename ); // get name of directory
 
@@ -55,6 +56,9 @@ let FILE_TAR;
 let FILE_M3U_SIZE = 0;
 let FILE_XML_SIZE = 0;
 let FILE_TAR_SIZE = 0;
+let FILE_M3U_MODIFIED = 0;
+let FILE_XML_MODIFIED = 0;
+let FILE_TAR_MODIFIED = 0;
 
 /*
     Define > Environment Variables || Defaults
@@ -235,7 +239,7 @@ const semaphore = new Semaphore( 5 );
 
     @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
     @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
-    @return     Promise<>
+    @ret        Promise<>
 */
 
 async function downloadFile( url, filePath )
@@ -272,9 +276,30 @@ async function downloadFile( url, filePath )
 
 /*
     Get Filesize and convert to human readable format
+
+    @arg        str filename                    filename to get size in bytes for
+    @ret        str                             2025-03-23 04:11 am
 */
 
-function getFilesizeHuman( filename, si = true, dp = 1 )
+function getFileModified( filename )
+{
+    return moment( fs.statSync( filename ).mtime ).format( 'YYYY-MM-DD h:mm a' );
+}
+
+/*
+    Func > Get Human Readable Filesize
+
+    Takes the total number of bytes in a file's size and converts it into
+    a human readable format.
+
+    @arg        str filename                    filename to get size in bytes for
+    @arg        bool si                         divides the bytes of a file by 1000 instead of 2024
+    @arg        int decimal                     specifies the decimal point
+    @ret        str                             111.9 KB
+
+*/
+
+function getFilesizeHuman( filename, si = true, decimal = 1 )
 {
     const stats = fs.statSync( filename );
     let bytes = stats.size;
@@ -292,7 +317,7 @@ function getFilesizeHuman( filename, si = true, dp = 1 )
         ];
 
     let u = -1;
-    const r = 10 ** dp;
+    const r = 10 ** decimal;
 
     do
     {
@@ -300,7 +325,7 @@ function getFilesizeHuman( filename, si = true, dp = 1 )
         ++u;
     } while ( Math.round( Math.abs( bytes ) * r ) / r >= thresh && u < units.length - 1 );
 
-    return bytes.toFixed( dp ) + ' ' + units[u];
+    return bytes.toFixed( decimal ) + ' ' + units[u];
 }
 
 /*
@@ -313,7 +338,7 @@ function getFilesizeHuman( filename, si = true, dp = 1 )
 
     @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
     @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
-    @return     none
+    @ret        none
 */
 
 async function ensureFileExists( url, filePath )
@@ -857,6 +882,10 @@ async function initialize()
         FILE_XML_SIZE = getFilesizeHuman( FILE_XML );
         FILE_TAR_SIZE = getFilesizeHuman( FILE_TAR );
 
+        FILE_M3U_MODIFIED = getFileModified( FILE_M3U );
+        FILE_XML_MODIFIED = getFileModified( FILE_XML );
+        FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
+
         Log.info( `Initializing Complete` );
     }
     catch ( error )
@@ -953,14 +982,23 @@ const server = http.createServer( ( request, response ) =>
 
         ejs.renderFile( './www/' + loadAsset,
             {
-                fileXML: envFileXML,
-                sizeXML: FILE_XML_SIZE,
                 fileM3U: envFileM3U,
                 sizeM3U: FILE_M3U_SIZE,
+                dateM3U: FILE_M3U_MODIFIED,
+
+                fileXML: envFileXML,
+                sizeXML: FILE_XML_SIZE,
+                dateXML: FILE_XML_MODIFIED,
+
                 fileTAR: envFileTAR,
                 sizeTAR: FILE_TAR_SIZE,
+                dateTAR: FILE_TAR_MODIFIED,
+
                 appName: name,
-                appVersion: version
+                appVersion: version,
+                appUrlGithub: repository.url,
+                appUrlDiscord: discord.url,
+                appUrlDocs: docs.url
             }, ( err, data ) =>
         {
             if ( !err )
