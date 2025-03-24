@@ -851,42 +851,50 @@ async function initialize()
             set cwd to the folder where the xmltv.1.xml file is located
         */
 
-        tar.c(
-            {
-                gzip: true,
-                cwd: path.resolve( __dirname ),
-                mtime: new Date(),
-                strict: false,
-                portable: true,
-                jobs: 2,
-                maxReadSize: 48 * 1024 * 1024,
-                onwarn: ( code, message, data ) =>
-                {
-                    Log.warn( `Tar.gz warning:`, chalk.white( ` → ` ), chalk.grey( `[${ code }] ${ message }` ) );
-                }
-            },
-            [`${ envFileXML }`]
-          ).pipe( fs.createWriteStream( `${ envFileTAR }` ) );
-
-        urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
-        if ( urls.length === 0 )
+        const tarFiles = [];
+        await tar.c(
         {
-            throw new Error( `No valid URLs found in ${ FILE_URL }` );
-        }
+            gzip: true,
+            cwd: path.resolve( __dirname ),
+            noPax: true,
+            onWriteEntry( entry )
+            {
+                Log.debug( `tar.gz: adding`, chalk.yellow( ` ${ entry.path } ` ), chalk.white( ` → ` ), chalk.grey( `${ entry.stat.mode.toString( 8 ) }` ) );
+                entry.path = entry.path.toLowerCase();
+                tarFiles.push([ entry.path, entry.stat.mode.toString( 8 ) ]);
+            },
+            onwarn: ( code, message, data ) =>
+            {
+                Log.warn( `tar.gz warning:`, chalk.white( ` → ` ), chalk.grey( `[${ code }] ${ message }` ) );
+            }
+        },
+        [`${ envFileXML }`]
+        )
+        .pipe( fs.createWriteStream( `${ envFileTAR }` ) )
+        .on( 'finish', () =>
+        {
+            urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
+            if ( urls.length === 0 )
+                throw new Error( `No valid URLs found in ${ FILE_URL }` );
 
-        /*
-            Calculate Sizes
-        */
+            /*
+                Calculate Sizes
+            */
 
-        FILE_M3U_SIZE = getFilesizeHuman( FILE_M3U );
-        FILE_XML_SIZE = getFilesizeHuman( FILE_XML );
-        FILE_TAR_SIZE = getFilesizeHuman( FILE_TAR );
+            FILE_M3U_SIZE = getFilesizeHuman( FILE_M3U );
+            FILE_XML_SIZE = getFilesizeHuman( FILE_XML );
+            FILE_TAR_SIZE = getFilesizeHuman( FILE_TAR );
 
-        FILE_M3U_MODIFIED = getFileModified( FILE_M3U );
-        FILE_XML_MODIFIED = getFileModified( FILE_XML );
-        FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
+            FILE_M3U_MODIFIED = getFileModified( FILE_M3U );
+            FILE_XML_MODIFIED = getFileModified( FILE_XML );
+            FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
 
-        Log.info( `Initializing Complete` );
+            Log.info( `Initializing Complete` );
+        })
+        .on( 'error', ( err ) =>
+        {
+            Log.error( `Could not create tar:`, chalk.white( ` → ` ), chalk.grey( `${ err }` ) );
+        });
     }
     catch ( error )
     {
