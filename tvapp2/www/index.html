@@ -6,7 +6,6 @@
         <title><%= appName %> - v<%= appVersion %></title>
         <meta name="robots" content="noindex, nofollow">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/tvapp2.fonts.min.css">
         <link rel="stylesheet" href="css/tvapp2.min.css">
     </head>
     <body>
@@ -16,6 +15,11 @@
                     <i class="logo fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
                     <a class="header-name" href="https://github.com/Aetherinox/thetvapp-docker">TVApp2 for Docker</a>
                 </div>
+                <div class="navbar-social">
+                    <a href="<%= appUrlDocs %>"><i class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                    <a href="<%= appUrlGithub %>"><i class="logo fa-logos fa-github" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                    <a href="<%= appUrlDiscord %>"><i class="logo fa-logos fa-discord" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                </div>
             </nav>
         </div>
 
@@ -23,7 +27,7 @@
             <div class="container header-container">
                 <div class="row">
                     <div class="col">
-                        <div class="about">This page displays your most recent copies of the <code>.m3u8</code> playlist and <code>.xml</code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within an IPTV app such as Jellyfin. The <code>.m3u8</code> and <code>.m3u8.gz</code> are identical guide lists, but the <code>.xml.gz</code> is compressed and will import into your IPTV application much faster.</div>
+                        <div class="about">This page displays your most recent copies of the <code><%= fileM3U %></code> playlist and <code><%= fileXML %></code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within an IPTV app such as Jellyfin. The <code><%= fileXML %></code> and <code><%= fileTAR %></code> have identical guide data, however the <code><%= fileTAR %></code> is compressed and will import into your IPTV application much faster.</div>
                     </div>
                 </div>
             </div>
@@ -41,6 +45,9 @@
                             </th>
                             <th class="size cell-size">
                                 Size
+                            </th>
+                            <th class="date cell-size">
+                                Date
                             </th>
                             <th class="desc cell-desc">
                                 Description
@@ -60,6 +67,7 @@
                             </td>
                             <td class="link cell-link"><a id="m3u-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="m3u-size"></span></td>
+                            <td class="date cell-date"><span id="m3u-date"></span></td>
                             <td class="desc cell-desc">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
                         </tr>
                         <tr>
@@ -74,6 +82,7 @@
                             </td>
                             <td class="link cell-link"><a id="xml-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="xml-size"></span></td>
+                            <td class="date cell-date"><span id="xml-date"></span></td>
                             <td class="desc cell-desc">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
                         </tr>
                         <tr>
@@ -88,6 +97,7 @@
                             </td>
                             <td class="link cell-link"><a id="tar-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="tar-size"></span></td>
+                            <td class="date cell-date"><span id="tar-date"></span></td>
                             <td class="desc cell-desc">XML / EPG guide data compressed into tar.gz</td>
                         </tr>
                     </tbody>
@@ -121,18 +131,21 @@
             document.getElementById("m3u-link").textContent = urlM3U;
             document.getElementById("m3u-link").href = urlM3U;
             document.getElementById("m3u-size").textContent = "<%= sizeM3U %>";
+            document.getElementById("m3u-date").textContent = "<%= dateM3U %>";
 
             document.getElementById("xml-name").textContent = "<%= fileXML %>";
             document.getElementById("xml-name").href = urlXML;
             document.getElementById("xml-link").textContent = urlXML;
             document.getElementById("xml-link").href = urlXML;
             document.getElementById("xml-size").textContent = "<%= sizeXML %>";
+            document.getElementById("xml-date").textContent = "<%= dateXML %>";
 
             document.getElementById("tar-name").textContent = "<%= fileTAR %>";
             document.getElementById("tar-name").href = urlTAR;
             document.getElementById("tar-link").textContent = urlTAR;
             document.getElementById("tar-link").href = urlTAR;
             document.getElementById("tar-size").textContent = "<%= sizeTAR %>";
+            document.getElementById("tar-date").textContent = "<%= dateTAR %>";
         </script>
 
         <script>
