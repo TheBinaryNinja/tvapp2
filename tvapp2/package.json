@@ -16,6 +16,11 @@
         "type": "git",
         "url": "https://github.com/TheBinaryNinja/tvapp2.git"
     },
+    "discord": {
+        "type": "invite",
+        "code": "HGv4eGr2kg",
+        "url": "https://discord.gg/HGv4eGr2kg"
+    },
     "contributors": [
         {
             "name": "Aetherinox",
@@ -70,7 +75,8 @@
         "user-agents": "^1.1.480",
         "chalk": "^5.3.0",
         "ejs": "^3.1.10",
-        "tar": "^7.4.3"
+        "tar": "^7.4.3",
+        "moment": "2.30.1"
     },
     "devDependencies": {
         "@types/uuid": "^10.0.0",
