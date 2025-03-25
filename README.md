@@ -53,17 +53,15 @@
     - [LF over CRLF](#lf-over-crlf)
     - [Set `+x / 0755` Permissions](#set-x--0755-permissions)
   - [Build `tvapp` Image](#build-tvapp-image)
-    - [Option 1: Using `docker build`](#option-1-using-docker-build)
+    - [Build Single Architecture](#build-single-architecture)
       - [amd64](#amd64)
-      - [arm64 / aarch64](#arm64--aarch64)
-    - [Option 2: Using `docker buildx`](#option-2-using-docker-buildx)
-      - [Build \& Save Local Image](#build--save-local-image)
-        - [amd64](#amd64-1)
-        - [arm64 / aarch64](#arm64--aarch64-1)
-      - [Build \& Upload to Registry](#build--upload-to-registry)
-        - [amd64](#amd64-2)
-        - [arm64 / aarch64](#arm64--aarch64-2)
-    - [Option 3: Using `package.json`](#option-3-using-packagejson)
+      - [arm64](#arm64)
+    - [Build All Architectures \& Manifest](#build-all-architectures--manifest)
+      - [Stable - amd64](#stable---amd64)
+      - [Stable - arm64](#stable---arm64)
+      - [Development - amd64](#development---amd64)
+      - [Development - arm64](#development---arm64)
+    - [Build Using `package.json`](#build-using-packagejson)
       - [Platform Commands](#platform-commands)
       - [Available Variables](#available-variables)
 - [Using `tvapp` Image](#using-tvapp-image)
@@ -157,7 +155,7 @@ For the [environment variables](#environment-variables), you may specify these i
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_PLAYLIST` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
-| `FILE_TAR` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
+| `FILE_GZIP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
@@ -416,7 +414,7 @@ find ./ -name 'run' -exec sudo chmod +x {} \;
 
 <br />
 
-**[Optional]**: If you want to set the permissions manually, run the following below. If you executed the `find` command above, you don't need to run the list of commands below:
+<sub><sup>Optional - </sup></sub> If you want to set the permissions manually, run the following below. If you executed the `find` command above, you don't need to run the list of commands below:
 
 ```shell
 sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
@@ -436,130 +434,234 @@ sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
 
 ### Build `tvapp` Image
 
-After completing the items above, you can now build the **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image. You can now build the TvApp2 docker image. Pick your platform below and run the associated command. Most people will want to use [amd64](#amd64).
+After completing the steps above; we will now build the **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image.
 
 <br />
 
-Instructions have been provided below on two different ways you can build the TvApp2 docker image. You can use either one, it depends on what tools you have available on the system you're.
+Before you build the TVApp2 image; open the `Dockerfile` and ensure you are pulling the correct Alpine base image. This instruction is located near the top of the `Dockerfile`:
 
-- [Using docker build commands](#option-1-using-docker-build)
-- [Using docker buildx commands](#option-2-using-docker-buildx)
-- [Using available node commands](#option-3-using-packagejson)
+```dockerfile
+ARG ARCH=amd64
+FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:3.21
+```
 
 <br />
 
-#### Option 1: Using `docker build`
+> [!NOTE]
+> The `ARCH` argument supports two options; which you will specify by using the argument `--build-arg ARCH=amd64` in your buildx command:
+> 
+> - `amd64`
+> - `arm64`
 
-This method will show you how to build the TVApp2 docker image using `docker build`; this is typically what most people should use.
+<br />
+
+Next, select which type of image you want to build below.
+
+- [Build Single Architecture](#build-single-architecture)
+- [Build All Architectures & Manifest](#build-all-architectures--manifest)
+
+<br />
+<br />
+
+#### Build Single Architecture
+
+All of the needed Docker files already exist in the repository. To get started, clone the repo to a folder
+
+```shell
+mkdir tvapp2 && cd tvapp2
+
+# to clone from our gitea website
+git clone https://git.binaryninja.net/binarynina/tvapp2.git ./
+
+# to clone from our github website
+git clone https://github.com/thebinaryninja/tvapp2.git ./
+```
+
+<br />
+
+If you do not need to build both `amd64` and `arm64`, you can simply build one architecture. First, create a new buildx container:
+
+```shell
+docker buildx create --driver docker-container --name container --bootstrap --use
+```
+
+<br />
+
+<sub><sup>Optional - </sup></sub> If you first need to remove the provider container because you created it previously, run the command:
+
+```shell
+docker buildx rm container
+docker buildx create --driver docker-container --name container --bootstrap --use
+```
+
+<br />
+
+To list all buildx build containers, run:
+
+```shell
+docker buildx ls
+```
+
+<br />
+
+Before you can push the image, ensure you are signed into Docker CLI. Open your Linux terminal and see if you are already signed in:
+
+```shell
+docker info | grep Username
+```
+
+<br />
+
+If nothing is printed; then you are not signed in. Initiate the web login:
+
+```shell
+docker login
+```
+
+<br />
+
+Some text will appear on-screen, copy the code, open your browser, and go to https://login.docker.com/activate
+
+```console
+USING WEB BASED LOGIN
+To sign in with credentials on the command line, use 'docker login -u <username>'
+
+Your one-time device confirmation code is: XXXX-XXXX
+Press ENTER to open your browser or submit your device code here: https://login.docker.com/activate
+
+Waiting for authentication in the browser…
+```
+
+<br />
+
+Once you are finished in your browser, you can return to your Linux terminal, and it should bring you back to where you can type a command. You can now verify again if you are signed in:
+
+```shell
+docker info | grep Username
+```
+
+<br />
+
+You should see your name:
+
+```console
+ Username: Aetherinox
+```
+
+<br />
+
+You are ready to build the TVApp2 docker image, run the command for your platform:
 
 <br />
 
 ##### amd64
 
-```shell ignore
+Creates the TVApp2 `amd64` docker image:
+
+```shell
 # Build tvapp2 amd64
-docker build --network=host --build-arg ARCH=amd64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
+docker buildx build \
+  --build-arg ARCH=amd64 \
+  --build-arg VERSION=1.1.0 \
+  --build-arg BUILDDATE=20250325 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:latest \
+  --attest type=provenance,disabled=true \
+  --attest type=sbom,disabled=true \
+  --file Dockerfile \
+  --platform linux/amd64 \
+  --output type=docker \
+  --allow network.host \
+  --network host \
+  --no-cache \
+  --push \
+  .
 ```
 
 <br />
 
-##### arm64 / aarch64
+##### arm64
 
-```shell ignore
+Creates the TVApp2 `arm64` docker image:
+
+```shell
 # Build tvapp2 arm64
-docker build --network=host --build-arg ARCH=arm64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:1.0.0-arm64 -f Dockerfile.aarch64 .
+docker buildx build \
+  --build-arg ARCH=arm64 \
+  --build-arg VERSION=1.1.0 \
+  --build-arg BUILDDATE=20250325 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:latest \
+  --attest type=provenance,disabled=true \
+  --attest type=sbom,disabled=true \
+  --file Dockerfile \
+  --platform linux/arm64 \
+  --output type=docker \
+  --allow network.host \
+  --network host \
+  --no-cache \
+  --push \
+  .
 ```
 
 <br />
-<br />
 
-#### Option 2: Using `docker buildx`
-
-This section explains how to build the TVApp2 docker image using `docker buildx` instead of `docker build`. It is useful when generating your app's image for multiple platforms.
+> [!NOTE]
+> If you want to only build the TVApp2 docker image locally; remove `--push`.
 
 <br />
+
+After building the image, you can now use the image either with `docker run` or a `docker-compose.yml` file. These instructions are available elsewhere in this readme.
+
+<br />
+<br />
+
+#### Build All Architectures & Manifest
+
+These instructions tell you how to build the `stable` and `development` releases for both the `amd64` and `arm64` architectures. Then you will combine all manifests into one release.
 
 All of the needed Docker files already exist in the repository. To get started, clone the repo to a folder
 
-```shell ignore
+```shell
 mkdir tvapp2 && cd tvapp2
 
 # to clone from our gitea website
-git clone https://git.binaryninja.net/BinaryNinja/tvapp2.git ./
+git clone https://git.binaryninja.net/binarynina/tvapp2.git ./
 
 # to clone from our github website
-git clone https://github.com/TheBinaryNinja/tvapp2.git ./
+git clone https://github.com/thebinaryninja/tvapp2.git ./
 ```
 
 <br />
 
-Once the files are downloaded, create a new container for **buildx**
+First, create a new buildx container:
 
-```shell ignore
+```shell
 docker buildx create --driver docker-container --name container --bootstrap --use
 ```
 
 <br />
 
-**Optional** : If you have previously created this image and have not restarted your system, clean up the original container before you build again:
+<sub><sup>Optional - </sup></sub> If you first need to remove the container because you created it previously, run the command:
 
-```shell ignore
+```shell
 docker buildx rm container
-
 docker buildx create --driver docker-container --name container --bootstrap --use
 ```
 
 <br />
 
-You are now ready to build the TVApp2 docker image. Two different options are provided below:
-- **Option 1:** [Build & Save Local Image](#build--save-local-image)
-  - Use this option if you only wish to build the image and use it.
-- **Option 2:** [Build & Upload to Registry](#build--upload-to-registry)
-  - Use this option if you wish to build the image and publish it to a registry online for others to use.
+To list all buildx build containers, run:
 
-<br />
-
-##### Build & Save Local Image
-
-The command below will build your TVApp2 docker image, and save a local copy of your docker app, which can be immediately used, or seen using `docker ps`.
-
-<br />
-
-
-###### amd64
-
-```shell ignore
-# Build tvapp2 amd64
-docker buildx build --no-cache --pull --build-arg ARCH=amd64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
+```shell
+docker buildx ls
 ```
 
 <br />
-
-###### arm64 / aarch64
-
-```shell ignore
-# Build tvapp2 arm64
-docker buildx build --no-cache --pull --build-arg ARCH=arm64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
-```
-
-<br />
-
-If we list our docker images, we should see our new one:
-
-```
-$ docker images
-
-tvapp2        1.0.0           122e9b2c6046   1 minute ago     107MB
-tvapp2        1.0.0-amd64     122e9b2c6046   1 minute ago     107MB
-tvapp2        latest          122e9b2c6046   1 minute ago     107MB
-```
-
-<br />
-<br />
-
-##### Build & Upload to Registry
-
-This option builds your TVApp2 docker image, and then pushes the new image to a registry such as hub.docker.com or Github's registry ghcr. 
 
 Before you can push the image, ensure you are signed into Docker CLI. Open your Linux terminal and see if you are already signed in:
 
@@ -607,32 +709,272 @@ You should see your name:
 
 <br />
 
-You are ready to build the TVApp2 docker image, run the command for your platform:
+Next, in order to build the `amd64` and `arm64` images on the same machine; you must install **QEMU** using:
 
-<br />
-
-###### amd64
-
-```shell ignore
-docker buildx build --no-cache --pull --build-arg ARCH=amd64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --provenance=true --sbom=true --builder=container --push .
+```shell
+docker run --privileged --rm tonistiigi/binfmt --install all
 ```
 
 <br />
 
-###### arm64 / aarch64
+Once the emulator is installed; we will now build two images. When building these two images; we will ensure the `--tag` value is different for each one, by adding the architecture to the end. This ensures we don't overwrite one image with the newer one. We need to have two seperate docker images with two different tags.
 
-```shell ignore
-docker buildx build --no-cache --pull --build-arg ARCH=arm64 --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250728 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --provenance=true --sbom=true --builder=container --push .
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+
+<br />
+
+> [!NOTE]
+> The build commands below will push the docker image to Github's GHCR registry. If you wish to use another registry, edit the **--tag**:
+>
+> The `--tag <registry>` argument is what determines what registry your image will be pushed to. You can change this to any registry:
+> 
+> | Registry | Tag |
+> | --- | --- |
+> | Dockerhub | `--tag thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag thebinaryninja/tvapp2:1.1.0-arm64` |
+> | Github (GHCR) | `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64` |
+> | Registry v2 | `--tag registry.domain.lan/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag registry.domain.lan/thebinaryninja/tvapp2:1.1.0-arm64` |
+> | Gitea | `--tag gitea.domain.lan/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag gitea.domain.lan/thebinaryninja/tvapp2:1.1.0-arm64` |
+
+<br />
+
+After we built these two images and push them to a registry online, we will merge them into a single docker image which contains both arcitectures.
+
+<br />
+
+> ![WARNING]
+> In order to merge the two architecture images into one; you **MUST** `--push` each of the two docker images to a registry first. You cannot modify the manifests locally.
+
+<br />
+
+##### Stable - amd64
+
+Creates the TVApp2 **Stable** release `amd64` docker image:
+
+```shell
+# Build Tvapp2 amd64 - (stable release)
+docker buildx build \
+  --build-arg ARCH=amd64 \
+  --build-arg VERSION=1.1.0 \
+  --build-arg BUILDDATE=20250325 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64 \
+  --attest type=provenance,disabled=true \
+  --attest type=sbom,disabled=true \
+  --file Dockerfile \
+  --platform linux/amd64 \
+  --output type=docker \
+  --allow network.host \
+  --network host \
+  --no-cache \
+  --pull \
+  --push \
+  .
+```
+
+<br />
+
+##### Stable - arm64
+
+Creates the TVApp2 **Stable** release `arm64` docker image:
+
+```shell
+# Build Tvapp2 arm64 - (stable release)
+docker buildx build \
+  --build-arg ARCH=arm64 \
+  --build-arg VERSION=1.1.0 \
+  --build-arg BUILDDATE=20250325 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64 \
+  --attest type=provenance,disabled=true \
+  --attest type=sbom,disabled=true \
+  --file Dockerfile \
+  --platform linux/arm64 \
+  --output type=docker \
+  --allow network.host \
+  --network host \
+  --no-cache \
+  --pull \
+  --push \
+  .
+```
+
+<br />
+
+##### Development - amd64
+
+Creates the TVApp2 **Development** release `amd64` docker image:
+
+```shell
+# Build Tvapp2 amd64 - (development release)
+docker buildx build \
+  --build-arg ARCH=amd64 \
+  --build-arg VERSION=1.1.0 \
+  --build-arg BUILDDATE=20250325 \
+  --tag ghcr.io/thebinaryninja/tvapp2:development-amd64 \
+  --attest type=provenance,disabled=true \
+  --attest type=sbom,disabled=true \
+  --file Dockerfile \
+  --platform linux/amd64 \
+  --output type=docker \
+  --allow network.host \
+  --network host \
+  --no-cache \
+  --pull \
+  --push \
+  .
+```
+
+<br />
+
+##### Development - arm64
+
+Creates the TVApp2 **Development** release `arm64` docker image:
+
+```shell
+# Build Tvapp2 arm64 - (development release)
+docker buildx build \
+  --build-arg ARCH=arm64 \
+  --build-arg VERSION=1.1.0 \
+  --build-arg BUILDDATE=20250325 \
+  --tag ghcr.io/thebinaryninja/tvapp2:development-arm64 \
+  --attest type=provenance,disabled=true \
+  --attest type=sbom,disabled=true \
+  --file Dockerfile \
+  --platform linux/arm64 \
+  --output type=docker \
+  --allow network.host \
+  --network host \
+  --no-cache \
+  --pull \
+  --push \
+  .
+```
+
+<br />
+
+After completing the `docker buildx` commands above; you should now have a few new images. Each image should have its own separate docker tags which do not conflict. If you decided to not build the **development** releases below; that is fine.
+
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:development-amd64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:development-arm64`
+
+<br />
+
+Next, we need to take these two images, and merge them into one so that both architectures are available without having to push separate images. You need to obtain the SHA256 hash digest for the `amd64` and `arm64` images. You can go to the registry where you uploaded the images and then copy them. Or you can run the following commands:
+
+```shell
+$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
+
+Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
+MediaType: application/vnd.docker.distribution.manifest.v2+json
+Digest:    sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+
+$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
+
+Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
+MediaType: application/vnd.docker.distribution.manifest.v2+json
+Digest:    sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda
 ```
 
 <br />
 <br />
 
-#### Option 3: Using `package.json`
+> [!WARNING]
+> **Wrong Digest Hashes**
+> 
+> Be warned that when you push docker images to your docker registry; the `SHA256` hash digest will be different than what you have locally. If you use the following command; these digests will be **incorrect**:
+> 
+> ```shell
+> $ docker images --all --no-trunc | grep thebinaryninja
+> 
+> ghcr.io/thebinaryninja/tvapp2   1.1.0-arm64        sha256:bb425429e98ab467fd91474701da2e5c0a7cb4a5f218a710d950eb0ff595486c   3 minutes ago   38.8MB
+> 
+> ghcr.io/thebinaryninja/tvapp2   1.1.0-amd64        sha256:dea4cb91379dba289d8d3e8842d4fb7b7857faa7f3d02d5b9a043a1ee58e61d7   4 minutes ago   27.3MB
+> ```
+
+<br />
+<br />
+
+Once you have the correct `SHA256` hash digests; paste them into the command below. This command is where you can specify the real `--tag` that the public image will have. The previous tags were simply placeholders and no longer matter.
+
+```shell
+# #
+#    Image > Stable
+# #
+
+docker buildx imagetools create \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:latest \
+  sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda \
+  sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+```
+
+<br />
+
+For the **development** release, use:
+
+```shell
+# #
+#    Image > Development
+# #
+
+docker buildx imagetools create \
+  --tag ghcr.io/thebinaryninja/tvapp2:development \
+  sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda \
+  sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+```
+
+
+<br />
+
+Alternatively, you could use the `manifest create` command; as an example, you can merge multiple architecture images together into a single image. The top line with `thebinaryninja/tvapp2:latest` can be any name. However, all images after `--amend` MUST be already existing images uploaded to the registry.
+
+```shell
+docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
+    --amend ghcr.io/thebinaryninja/tvapp2:latest-amd64 \
+    --amend ghcr.io/thebinaryninja/tvapp2:latest-arm32v7 \
+    --amend ghcr.io/thebinaryninja/tvapp2:latest-arm64v8
+
+docker manifest push ghcr.io/thebinaryninja/tvapp2:latest
+```
+
+<br />
+
+In this example, we take the existing two files we created earlier, and merge them into one. You can either specify the image by `SHA256 digest`, or tag:
+
+```shell
+# Example 1 (using tag)
+docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
+    --amend ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64 \
+    --amend ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
+
+# Example 2 (using sha256 hash)
+docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
+    --amend ghcr.io/thebinaryninja/tvapp2@sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda \
+    --amend ghcr.io/thebinaryninja/tvapp2@sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+
+# Push manifest changes to registry
+docker manifest push ghcr.io/thebinaryninja/tvapp2:latest
+```
+
+<br />
+
+If you go back to your registry; you should now see multiple new entries, all with different tags. Two of the images are your old `amd64` and `arm64` images, and then you should have your official one with the four tags specified above. You can delete the two original images if you do not want them.
+
+<br />
+
+<p align="center"><img style="width: 60%;text-align: center;" src="https://raw.githubusercontent.com/Aetherinox/docker-base-alpine/docker/alpine-base/docs/readme/img/02.jpg"><br><sub><sup><b>Registry v2:</b> Newly created <code>amd64</code> and <code>arm64</code> images, and merged containers with both architectures</sup></sub></p>
+
+<br />
+<br />
+
+#### Build Using `package.json`
 
 This node project includes build commands. In order to use them you must install node on your machine.
 
-```shell ignore
+```shell
 sudo apt-get install node
 ```
 
@@ -640,10 +982,9 @@ sudo apt-get install node
 
 To build the project, `cd` into the project folder and run the build command:
 
-```shell ignore
+```shell
 cd /home/docker/tvapp2/
-
-npm run docker:build:amd64 --VERSION=1.0.1 --BUILDDATE=20250220
+npm run docker:build:amd64 --VERSION=1.1.0 --BUILDDATE=20250325
 ```
 
 <br />
@@ -668,7 +1009,7 @@ The run command above has several variables you must specify:
 | Variable | Description |
 | --- | --- |
 | `--VERSION=1.X.X` | The version to assign to the docker image |
-| `--BUILDDATE=20250220` | The date to assign to the docker image. <br /> Date format: `YYYYMMDD` |
+| `--BUILDDATE=20250325` | The date to assign to the docker image. <br /> Date format: `YYYYMMDD` |
 | `--ARCH=amd64` | Architecture for image<br /> Options: `amd64`, `arm64` |
 
 <br />
@@ -770,7 +1111,7 @@ This docker container contains the following env variables:
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_PLAYLIST` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
-| `FILE_TAR` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
+| `FILE_GZIP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
