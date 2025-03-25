@@ -55,7 +55,7 @@ if (action === 'guid') {
         }
     })
 } else if (action === 'generate') {
-    const buildGuid = uuidv5(`${repository.url}`, uuidV5.URL)
+    const buildGuid = uuidv5(`${repository.url}`, uuidv5.URL)
     const buildUuid = uuidv5(version, buildGuid)
 
     const ids = `
