@@ -12,7 +12,6 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
-import * as tar from 'tar';
 
 /*
     Old CJS variables converted to ESM
@@ -67,8 +66,8 @@ let FILE_TAR_MODIFIED = 0;
 const envUrlRepo = process.env.URL_REPO || `https://git.binaryninja.net/binaryninja`;
 const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
 const envFileM3U = process.env.FILE_PLAYLIST || `playlist.m3u8`;
-const envFileXML = process.env.FILE_EPG || `xmltv.xml`;
-const envFileTAR = process.env.FILE_TAR || `xmltv.tar.gz`;
+const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
+const envFileTAR = process.env.FILE_TAR || 'xmltv.xml.gz';
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
 /*
@@ -103,7 +102,7 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
         Log.warn(`This is warn`)
         Log.error(
             `Error fetching sports data with error:`,
-            chalk.white(` → `),
+            chalk.white(`→`),
             chalk.grey(`This is the error message`)
         );
 
@@ -128,43 +127,43 @@ class Log
     static trace( ...msg )
     {
         if ( LOG_LEVEL >= 6 )
-            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
+            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
     }
 
     static debug( ...msg )
     {
         if ( LOG_LEVEL >= 5 )
-            console.debug( chalk.white.bgGray.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
+            console.debug( chalk.white.bgGray.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
     static info( ...msg )
     {
         if ( LOG_LEVEL >= 4 )
-            console.info( chalk.white.bgBlueBright.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.blueBright( msg.join( ' ' ) ) );
+            console.info( chalk.white.bgBlueBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.blueBright( msg.join( ' ' ) ) );
     }
 
     static ok( ...msg )
     {
         if ( LOG_LEVEL >= 4 )
-            console.log( chalk.white.bgGreen.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.greenBright( msg.join( ' ' ) ) );
+            console.log( chalk.white.bgGreen.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.greenBright( msg.join( ' ' ) ) );
     }
 
     static notice( ...msg )
     {
         if ( LOG_LEVEL >= 3 )
-            console.log( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
+            console.log( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
     }
 
     static warn( ...msg )
     {
         if ( LOG_LEVEL >= 2 )
-            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.yellow( msg.join( ' ' ) ) );
+            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.yellow( msg.join( ' ' ) ) );
     }
 
     static error( ...msg )
     {
         if ( LOG_LEVEL >= 1 )
-            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( ` → ` ), this.now(), chalk.red( msg.join( ' ' ) ) );
+            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.red( msg.join( ' ' ) ) );
     }
 }
 
@@ -244,7 +243,7 @@ const semaphore = new Semaphore( 5 );
 
 async function downloadFile( url, filePath )
 {
-    Log.info( `Fetching ${ url }` );
+    Log.info( `Fetching`, chalk.white( `→` ), chalk.grey( `${ url }` ) );
 
     return new Promise( ( resolve, reject ) =>
     {
@@ -256,19 +255,19 @@ async function downloadFile( url, filePath )
             {
                 if ( response.statusCode !== 200 )
                 {
-                    Log.error( `Failed to download file: ${ url }`, chalk.white( ` → ` ), chalk.grey( `Status code: ${ response.statusCode }` ) );
+                    Log.error( `Failed to download file: ${ url }`, chalk.white( `→` ), chalk.grey( `Status code: ${ response.statusCode }` ) );
                     return reject( new Error( `Failed to download file: ${ url }. Status code: ${ response.statusCode }` ) );
                 }
                 response.pipe( file );
                 file.on( 'finish', () =>
                 {
-                    Log.ok( `Successfully fetched ${ filePath }` );
+                    Log.ok( `Received`, chalk.white( `→` ), `${ filePath }` );
                     file.close( () => resolve( true ) );
                 });
             })
             .on( 'error', ( err ) =>
             {
-                Log.error( `Error downloading file: ${ url }`, chalk.white( ` → ` ), chalk.grey( `Status code: ${ err.message }` ) );
+                Log.error( `Error downloading file: ${ url }`, chalk.white( `→` ), chalk.grey( `Status code: ${ err.message }` ) );
                 fs.unlink( filePath, () => reject( err ) );
             });
     });
@@ -299,9 +298,13 @@ function getFileModified( filename )
 
 */
 
-function getFilesizeHuman( filename, si = true, decimal = 1 )
+function getFileSizeHuman( filename, si = true, decimal = 1 )
 {
-    const stats = fs.statSync( filename );
+    let stats = [];
+    stats.size = 0;
+    if ( fs.existsSync( filename ) )
+        stats = fs.statSync( filename );
+
     let bytes = stats.size;
     const thresh = si ? 1000 : 1024;
 
@@ -341,22 +344,105 @@ function getFilesizeHuman( filename, si = true, decimal = 1 )
     @ret        none
 */
 
-async function ensureFileExists( url, filePath )
+async function getFile( url, filePath )
 {
     try
     {
         await downloadFile( url, filePath );
     }
-    catch ( error )
+    catch ( err )
     {
         if ( fs.existsSync( filePath ) )
         {
-            Log.warn( `Using existing local file ${ filePath }, download failed`, chalk.white( ` → ` ), chalk.grey( `${ url }` ) );
+            Log.warn( `Using existing local file ${ filePath }, download failed`, chalk.white( `→` ), chalk.grey( `${ url }` ) );
         }
         else
         {
-            Log.error( `Failed to download file, and no local file exists; aborting`, chalk.white( ` → ` ), chalk.grey( `${ url }` ) );
-            throw error;
+            Log.error( `Failed to download file, and no local file exists; aborting`, chalk.white( `→` ), chalk.grey( `${ url }` ) );
+            throw err;
+        }
+    }
+}
+
+/*
+    Func > Package GZip
+
+    locates the xmltv.xml and packages it into a xmltv.gz archive
+*/
+
+async function createGzip( )
+{
+    Log.debug( `Preparing to gzip`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ) );
+
+    return new Promise( ( resolve, reject ) =>
+    {
+        Log.debug( `createGzip[promise]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ) );
+
+        fs.readFile( FILE_XML, ( err, buf ) =>
+        {
+            Log.debug( `createGzip[fs.readFile]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ) );
+
+            if ( err )
+            {
+                Log.error( `Could not read file ${ envFileXML }. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
+                return reject( new Error( `Could not read file ${ envFileXML }. Error: ${ err }` ) );
+            }
+
+            zlib.gzip( buf, ( err, buf ) =>
+            {
+                Log.debug( `createGzip[zlib.gzip]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ), chalk.white( `→` ), chalk.grey( `${ envFileTAR }` ) );
+                if ( err )
+                {
+                    Log.error( `Could not write to archive. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
+                    return reject( new Error( `Could not create ${ envFileTAR }. Error: ${ err }` ) );
+                }
+
+                Log.info( `Compressing`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_TAR }` );
+                fs.writeFile( `${ FILE_TAR }`, buf, ( err ) =>
+                {
+                    if ( err )
+                    {
+                        Log.error( `Could not write XML file to archive. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
+                        return reject( new Error( `Could not write XML file ${ envFileXML } to ${ envFileTAR }. Error: ${ err }` ) );
+                    }
+
+                    Log.ok( `Compressed`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_TAR }` );
+                    resolve( true );
+                });
+            });
+        });
+    });
+}
+
+/*
+    Func > Ensure File Exists
+
+    if file exists; start download from external website utilizing url and file path arguments; or
+    throw error to user that file does not exist via the URL.
+
+    If file cannot be obtained from external url; use local copy if available
+
+    @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
+    @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
+    @ret        none
+*/
+
+async function prepareGzip( )
+{
+    try
+    {
+        await createGzip( );
+    }
+    catch ( err )
+    {
+        if ( fs.existsSync( FILE_XML ) )
+        {
+            Log.warn( `XML file found, but gzip failed to compress XML`, chalk.white( `→` ), chalk.grey( `${ FILE_XML }` ) );
+        }
+        else
+        {
+            Log.error( `XML file not found`, chalk.white( `→` ), chalk.grey( `${ FILE_XML }` ) );
+            throw err;
         }
     }
 }
@@ -375,7 +461,7 @@ async function fetchRemote( url )
             {
                 if ( resp.statusCode !== 200 )
                 {
-                    Log.error( `Server returned status code other than 200`, chalk.white( ` → ` ), chalk.grey( `${ url } - ${ resp.statusCode }` ) );
+                    Log.error( `Server returned status code other than 200`, chalk.white( `→` ), chalk.grey( `${ url } - ${ resp.statusCode }` ) );
                     return reject( new Error( `HTTP ${ resp.statusCode } for ${ url }` ) );
                 }
 
@@ -432,7 +518,7 @@ async function serveKey( req, res )
                 'Content-Type': 'text/plain'
             });
 
-            Log.error( `Missing "uri" parameter for key download`, chalk.white( ` → ` ), chalk.grey( `${ req.url }` ) );
+            Log.error( `Missing "uri" parameter for key download`, chalk.white( `→` ), chalk.grey( `${ req.url }` ) );
 
             return res.end( 'Error: Missing "uri" parameter for key download.' );
         }
@@ -446,7 +532,7 @@ async function serveKey( req, res )
     }
     catch ( err )
     {
-        Log.error( `ServeKey Error:`, chalk.white( ` → ` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `ServeKey Error:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
         res.writeHead( 500, {
             'Content-Type': 'text/plain'
@@ -538,7 +624,7 @@ async function getTokenizedUrl( channelUrl )
             const streamNameMatch = html.match( /id="stream_name" name="([^"]+)"/ );
             if ( !streamNameMatch )
             {
-                Log.error( `Cannot find "stream_name"`, chalk.white( ` → ` ), chalk.grey( `${ channelUrl }` ) );
+                Log.error( `Cannot find "stream_name"`, chalk.white( `→` ), chalk.grey( `${ channelUrl }` ) );
                 return null;
             }
             streamName = streamNameMatch[1];
@@ -565,23 +651,23 @@ async function getTokenizedUrl( channelUrl )
         }
         catch ( err )
         {
-            Log.error( `Failed to parse token JSON for channel`, chalk.white( ` → ` ), chalk.grey( `${ channelUrl } - ${ err.message }` ) );
+            Log.error( `Failed to parse token JSON for channel`, chalk.white( `→` ), chalk.grey( `${ channelUrl } - ${ err.message }` ) );
             return null;
         }
 
         if ( !finalUrl )
         {
-            Log.error( `No URL found in token JSON for channel`, chalk.white( ` → ` ), chalk.grey( `${ channelUrl }` ) );
+            Log.error( `No URL found in token JSON for channel`, chalk.white( `→` ), chalk.grey( `${ channelUrl }` ) );
             return null;
         }
 
-        Log.debug( `Tokenized URL:`, chalk.white( ` → ` ), chalk.grey( `${ finalUrl }` ) );
+        Log.debug( `Tokenized URL:`, chalk.white( `→` ), chalk.grey( `${ finalUrl }` ) );
 
         return finalUrl;
     }
     catch ( err )
     {
-        Log.error( `Fatal error fetching token:`, chalk.white( ` → ` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `Fatal error fetching token:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
         return null;
     }
 }
@@ -594,7 +680,7 @@ async function serveM3UPlaylist( req, res )
         const urlParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'url' );
         if ( !urlParam )
         {
-            Log.error( `Missing parameter`, chalk.white( ` → ` ), chalk.grey( `URL` ) );
+            Log.error( `Missing parameter`, chalk.white( `→` ), chalk.grey( `URL` ) );
             res.writeHead( 400, {
                 'Content-Type': 'text/plain'
             });
@@ -626,7 +712,7 @@ async function serveM3UPlaylist( req, res )
             return;
         }
 
-        Log.info( `Fetching stream:`, chalk.white( ` → ` ), chalk.grey( `${ urlParam }` ) );
+        Log.info( `Fetching stream:`, chalk.white( `→` ), chalk.grey( `${ urlParam }` ) );
 
         const finalUrl = await getTokenizedUrl( decodedUrl );
         if ( !finalUrl )
@@ -652,9 +738,9 @@ async function serveM3UPlaylist( req, res )
         res.end( rewrittenPlaylist );
         Log.ok( `Served playlist` );
     }
-    catch ( error )
+    catch ( err )
     {
-        Log.error( `Error processing request:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Error processing request:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
         if ( !res.headersSent )
         {
@@ -729,15 +815,15 @@ async function serveM3U( response, req )
 
         response.end( updatedContent );
     }
-    catch ( error )
+    catch ( err )
     {
-        Log.error( `Error in serveM3U:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Error in serveM3U:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
 
-        response.end( `Error serving playlist: ${ error.message }` );
+        response.end( `Error serving playlist: ${ err.message }` );
     }
 }
 
@@ -761,15 +847,15 @@ async function serveXML( response, req )
 
         response.end( formattedContent );
     }
-    catch ( error )
+    catch ( err )
     {
-        Log.error( `Error in serveM3U:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Error in serveM3U:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
 
-        response.end( `Error serving playlist: ${ error.message }` );
+        response.end( `Error serving playlist: ${ err.message }` );
     }
 };
 
@@ -793,15 +879,15 @@ async function serveTAR( response, req )
 
         response.end( formattedContent );
     }
-    catch ( error )
+    catch ( err )
     {
-        Log.error( `Error in serveTAR:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Error in serveTAR:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
 
-        response.end( `Error serving tar.gz: ${ error.message }` );
+        response.end( `Error serving tar.gz: ${ err.message }` );
     }
 };
 
@@ -813,7 +899,7 @@ function setCache( key, value, ttl )
         expiry
     });
 
-    Log.debug( `Cache set for key ${ key } which expires in`, chalk.white( ` → ` ), chalk.grey( `${ ttl / 1000 } seconds` ) );
+    Log.debug( `Cache set for key ${ key } which expires in`, chalk.white( `→` ), chalk.grey( `${ ttl / 1000 } seconds` ) );
 }
 
 function getCache( key )
@@ -826,79 +912,51 @@ function getCache( key )
     else
     {
         if ( cached )
-            Log.debug( `Cache expired for key`, chalk.white( ` → ` ), chalk.grey( `${ key }` ) );
+            Log.debug( `Cache expired for key`, chalk.white( `→` ), chalk.grey( `${ key }` ) );
 
         cache.delete( key );
         return null;
     }
 }
 
+/*
+    Initialization
+
+    this is the starting method to prepare tvapp2
+*/
+
 async function initialize()
 {
     try
     {
-        Log.info( `Initializing server...` );
+        Log.info( `Initialization Started` );
 
-        await ensureFileExists( extURL, FILE_URL );
-        await ensureFileExists( extXML, FILE_XML );
-        await ensureFileExists( extFormatted, FILE_M3U );
+        await getFile( extURL, FILE_URL );
+        await getFile( extXML, FILE_XML );
+        await getFile( extFormatted, FILE_M3U );
+        await prepareGzip();
+
+        urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
+        if ( urls.length === 0 )
+            throw new Error( `No valid URLs found in ${ FILE_URL }` );
 
         /*
-            Create tar.gz of xml data
-            Must specify `cwd` - current working directory; without this, the absolute path to the .tar.gz file
-            will be added to the archive.
-
-            set cwd to the folder where the xmltv.1.xml file is located
+            Calculate Sizes
         */
 
-        const tarFiles = [];
-        await tar.c(
-        {
-            gzip: true,
-            cwd: path.resolve( __dirname ),
-            noPax: true,
-            onWriteEntry( entry )
-            {
-                Log.debug( `tar.gz: adding`, chalk.yellow( ` ${ entry.path } ` ), chalk.white( ` → ` ), chalk.grey( `${ entry.stat.mode.toString( 8 ) }` ) );
-                entry.path = entry.path.toLowerCase();
-                tarFiles.push([ entry.path, entry.stat.mode.toString( 8 ) ]);
-            },
-            onwarn: ( code, message, data ) =>
-            {
-                Log.warn( `tar.gz warning:`, chalk.white( ` → ` ), chalk.grey( `[${ code }] ${ message }` ) );
-            }
-        },
-        [`${ envFileXML }`]
-        )
-        .pipe( fs.createWriteStream( `${ envFileTAR }` ) )
-        .on( 'finish', () =>
-        {
-            urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
-            if ( urls.length === 0 )
-                throw new Error( `No valid URLs found in ${ FILE_URL }` );
+        FILE_M3U_SIZE = getFileSizeHuman( FILE_M3U );
+        FILE_XML_SIZE = getFileSizeHuman( FILE_XML );
+        FILE_TAR_SIZE = getFileSizeHuman( FILE_TAR );
 
-            /*
-                Calculate Sizes
-            */
+        FILE_M3U_MODIFIED = getFileModified( FILE_M3U );
+        FILE_XML_MODIFIED = getFileModified( FILE_XML );
+        FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
 
-            FILE_M3U_SIZE = getFilesizeHuman( FILE_M3U );
-            FILE_XML_SIZE = getFilesizeHuman( FILE_XML );
-            FILE_TAR_SIZE = getFilesizeHuman( FILE_TAR );
-
-            FILE_M3U_MODIFIED = getFileModified( FILE_M3U );
-            FILE_XML_MODIFIED = getFileModified( FILE_XML );
-            FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
-
-            Log.info( `Initializing Complete` );
-        })
-        .on( 'error', ( err ) =>
-        {
-            Log.error( `Could not create tar:`, chalk.white( ` → ` ), chalk.grey( `${ err }` ) );
-        });
+        Log.info( `Initialization Complete` );
     }
-    catch ( error )
+    catch ( err )
     {
-        Log.error( `Initialization error:`, chalk.white( ` → ` ), chalk.grey( `${ error.message }` ) );
+        Log.error( `Initialization error:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
     }
 }
 
@@ -934,7 +992,7 @@ const server = http.createServer( ( request, response ) =>
     if ( loadAsset === '/' )
         loadAsset = 'index.html';
 
-    Log.debug( `www`, chalk.yellow( ` [GET]  ` ), chalk.white( ` → ` ), chalk.grey( `${ loadAsset }` ) );
+    Log.debug( `www`, chalk.yellow( ` [GET]  ` ), chalk.white( `→` ), chalk.grey( `${ loadAsset }` ) );
 
     const handleRequest = async() =>
     {
@@ -945,7 +1003,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( loadAsset === '/playlist' && method === 'GET' )
         {
-            Log.info( `Received request for playlist data`, chalk.white( ` → ` ), chalk.grey( `/playlist` ) );
+            Log.info( `Received request for playlist data`, chalk.white( `→` ), chalk.grey( `/playlist` ) );
 
             await serveM3U( response, request );
             return;
@@ -953,7 +1011,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( loadAsset.startsWith( '/channel' ) && method === 'GET' )
         {
-            Log.info( `Received request for channel data`, chalk.white( ` → ` ), chalk.grey( `/channel` ) );
+            Log.info( `Received request for channel data`, chalk.white( `→` ), chalk.grey( `/channel` ) );
 
             await serveM3UPlaylist( request, response );
             return;
@@ -961,7 +1019,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( loadAsset.startsWith( '/key' ) && method === 'GET' )
         {
-            Log.info( `Received request for key data`, chalk.white( ` → ` ), chalk.grey( `/key` ) );
+            Log.info( `Received request for key data`, chalk.white( `→` ), chalk.grey( `/key` ) );
 
             await serveKey( request, response );
             return;
@@ -969,7 +1027,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( loadAsset === '/epg' && method === 'GET' )
         {
-            Log.info( `Received request for EPG data`, chalk.white( ` → ` ), chalk.grey( `/epg` ) );
+            Log.info( `Received request for EPG data`, chalk.white( `→` ), chalk.grey( `/epg` ) );
 
             await serveXML( response, request );
             return;
@@ -977,7 +1035,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( loadAsset === '/tar' && method === 'GET' )
         {
-            Log.info( `Received request for EPG data`, chalk.white( ` → ` ), chalk.grey( `/epg` ) );
+            Log.info( `Received request for EPG data`, chalk.white( `→` ), chalk.grey( `/epg` ) );
 
             await serveTAR( response, request );
             return;
@@ -1040,19 +1098,19 @@ const server = http.createServer( ( request, response ) =>
                 response.setHeader( 'Content-type', fileMime );
                 response.end( data );
 
-                Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( ` → ` ), chalk.grey( `asset:${ loadAsset } mime:${ fileMime }` ) );
+                Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( `→` ), chalk.grey( `asset:${ loadAsset } mime:${ fileMime }` ) );
             }
             else
             {
-                Log.error( `www file not found:`, chalk.white( ` → ` ), chalk.grey( `${ request.url }` ) );
+                Log.error( `www file not found:`, chalk.white( `→` ), chalk.grey( `${ request.url }` ) );
                 response.writeHead( 404, 'Not Found' );
                 response.end();
             }
         });
     };
-    handleRequest().catch( ( error ) =>
+    handleRequest().catch( ( err ) =>
     {
-        Log.error( `Error handling request:`, chalk.white( ` → ` ), chalk.grey( `${ error }` ) );
+        Log.error( `Error handling request:`, chalk.white( `→` ), chalk.grey( `${ err }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
