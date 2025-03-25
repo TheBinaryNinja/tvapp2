@@ -592,12 +592,15 @@ jobs:
 
             - name: "🎛️ Status › Print"
               id: task_release_status_print
+              env:
+                  CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
               run: |
                   echo "Printing Variables"
                   echo
                   echo "---- CHANGELOG ---------------------------------------------------------------"
-                  echo "${{ steps.task_release_changelog_categorized.outputs.changelog }}"
-                  echo "${{ steps.task_release_changelog_uncategorized.outputs.changelog }}"
+                  echo "$CHANGELOG_CATEGORIZED"
+                  echo "$CHANGELOG_UNCATEGORIZED"
                   echo "---- CHANGELOG ---------------------------------------------------------------"
                   echo ""
                   echo ""
