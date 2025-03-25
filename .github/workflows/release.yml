@@ -526,7 +526,8 @@ jobs:
                   startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, false )
               run: |
-                  echo "${{ env.CHANGELOG_CATEGORIZED }}"
+                  echo "$CHANGELOG_CATEGORIZED"
+                  echo "CHANGELOG_CATEGORIZED=${CHANGELOG_CATEGORIZED}" >> $GITHUB_ENV
 
             - name: '📝 Changelog › Print (Uncategorized)'
               id: task_release_changelog_print_uncategorized
@@ -534,7 +535,8 @@ jobs:
                   startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, true )
               run: |
-                  echo "${{ env.CHANGELOG_UNCATEGORIZED }}"
+                  echo "$CHANGELOG_UNCATEGORIZED"
+                  echo "CHANGELOG_UNCATEGORIZED=${CHANGELOG_UNCATEGORIZED}" >> $GITHUB_ENV
 
             # #
             #   artifacts > download
