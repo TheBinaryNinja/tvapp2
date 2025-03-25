@@ -6,8 +6,8 @@
 
 import fs from 'fs';
 import path from 'path';
-import https from 'https';
 import http from 'http';
+import https from 'https';
 import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
@@ -46,6 +46,9 @@ chalk.level = 3;
 
 /*
     Define > General
+
+    @note       if you change `FOLDER_WWW`; ensure you re-name the folder where the
+                website assets are stored.
 */
 
 let FILE_URL;
@@ -58,14 +61,15 @@ let FILE_TAR_SIZE = 0;
 let FILE_M3U_MODIFIED = 0;
 let FILE_XML_MODIFIED = 0;
 let FILE_TAR_MODIFIED = 0;
+const FOLDER_WWW = 'www';
 
 /*
     Define > Environment Variables || Defaults
 */
 
-const envUrlRepo = process.env.URL_REPO || `https://git.binaryninja.net/binaryninja`;
-const envStreamQuality = process.env.STREAM_QUALITY || `hd`;
-const envFileM3U = process.env.FILE_PLAYLIST || `playlist.m3u8`;
+const envUrlRepo = process.env.URL_REPO || 'https://git.binaryninja.net/binaryninja';
+const envStreamQuality = process.env.STREAM_QUALITY || 'hd';
+const envFileM3U = process.env.FILE_PLAYLIST || 'playlist.m3u8';
 const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
 const envFileTAR = process.env.FILE_TAR || 'xmltv.xml.gz';
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
@@ -76,7 +80,7 @@ const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
 const extURL = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/urls.txt`;
 const extXML = `${ envUrlRepo }/XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
-const extFormatted = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
+const extM3U = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
 
 /*
     Define > Defaults
@@ -85,6 +89,24 @@ const extFormatted = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted
 let urls = [];
 const gCookies = {};
 const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+
+/*
+    Web url shortcuts
+
+    using any of the following subdomains / subpaths will trigger the download for that specific file
+
+    @example    http://127.0.0.1:4124/gzip
+                http://127.0.0.1:4124/gz
+                http://127.0.0.1:4124/playlist
+                http://127.0.0.1:4124/key
+                http://127.0.0.1:4124/channel
+*/
+
+const subdomainGZ = [ 'gzip', 'gz' ];
+const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
+const subdomainEPG = [ 'guide', 'epg', 'xml' ];
+const subdomainKey = [ 'key', 'keys' ];
+const subdomainChan = [ 'channels', 'channel' ];
 
 /*
     Define > Logs
@@ -860,7 +882,7 @@ async function serveXML( response, req )
 };
 
 /*
-    Serves IPTV .tar.gz guide data
+    Serves IPTV .gz guide data
 */
 
 async function serveTAR( response, req )
@@ -887,7 +909,7 @@ async function serveTAR( response, req )
             'Content-Type': 'text/plain'
         });
 
-        response.end( `Error serving tar.gz: ${ err.message }` );
+        response.end( `Error serving gzip: ${ err.message }` );
     }
 };
 
@@ -933,7 +955,7 @@ async function initialize()
 
         await getFile( extURL, FILE_URL );
         await getFile( extXML, FILE_XML );
-        await getFile( extFormatted, FILE_M3U );
+        await getFile( extM3U, FILE_M3U );
         await prepareGzip();
 
         urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
@@ -988,11 +1010,17 @@ const server = http.createServer( ( request, response ) =>
     */
 
     const method = request.method || 'GET';
-    let loadAsset = request.url;
-    if ( loadAsset === '/' )
-        loadAsset = 'index.html';
+    let reqUrl = request.url;
+    if ( reqUrl === '/' )
+        reqUrl = 'index.html';
 
-    Log.debug( `www`, chalk.yellow( ` [GET]  ` ), chalk.white( `→` ), chalk.grey( `${ loadAsset }` ) );
+    /*
+        Remove leading forward slash
+    */
+
+    const loadFile = reqUrl.replace( /^\/+/, '' );
+
+    Log.debug( `www`, chalk.yellow( ` [GET]  ` ), chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
     const handleRequest = async() =>
     {
@@ -1001,41 +1029,41 @@ const server = http.createServer( ( request, response ) =>
             Place the template system last. Getting TVApp data should take priority.
         */
 
-        if ( loadAsset === '/playlist' && method === 'GET' )
+        if ( subdomainM3U.includes( `${ loadFile }` ) && method === 'GET' )
         {
-            Log.info( `Received request for playlist data`, chalk.white( `→` ), chalk.grey( `/playlist` ) );
+            Log.info( `Received request for m3u playlist data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveM3U( response, request );
             return;
         }
 
-        if ( loadAsset.startsWith( '/channel' ) && method === 'GET' )
+        if ( subdomainChan.includes( `${ loadFile }` ) && method === 'GET' )
         {
-            Log.info( `Received request for channel data`, chalk.white( `→` ), chalk.grey( `/channel` ) );
+            Log.info( `Received request for channel data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveM3UPlaylist( request, response );
             return;
         }
 
-        if ( loadAsset.startsWith( '/key' ) && method === 'GET' )
+        if ( subdomainKey.includes( `${ loadFile }` ) && method === 'GET' )
         {
-            Log.info( `Received request for key data`, chalk.white( `→` ), chalk.grey( `/key` ) );
+            Log.info( `Received request for key data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveKey( request, response );
             return;
         }
 
-        if ( loadAsset === '/epg' && method === 'GET' )
+        if ( subdomainEPG.includes( `${ loadFile }` ) && method === 'GET' )
         {
-            Log.info( `Received request for EPG data`, chalk.white( `→` ), chalk.grey( `/epg` ) );
+            Log.info( `Received request for raw EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveXML( response, request );
             return;
         }
 
-        if ( loadAsset === '/tar' && method === 'GET' )
+        if ( subdomainGZ.includes( `${ loadFile }` ) && method === 'GET' )
         {
-            Log.info( `Received request for EPG data`, chalk.white( `→` ), chalk.grey( `/epg` ) );
+            Log.info( `Received request for compressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveTAR( response, request );
             return;
@@ -1046,7 +1074,7 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        ejs.renderFile( './www/' + loadAsset,
+        ejs.renderFile( `./${ FOLDER_WWW }/${ loadFile }`,
             {
                 fileM3U: envFileM3U,
                 sizeM3U: FILE_M3U_SIZE,
@@ -1074,7 +1102,7 @@ const server = http.createServer( ( request, response ) =>
                     the file loaded is dependent on what comes to the right of the period.
                 */
 
-                const fileExt = loadAsset.lastIndexOf( '.' );
+                const fileExt = loadFile.lastIndexOf( '.' );
                 const fileMime = fileExt === -1
                                 ? 'text/plain'
                                 : {
@@ -1086,19 +1114,19 @@ const server = http.createServer( ( request, response ) =>
                                     '.css' : 'text/css',
                                     '.gz' : 'application/gzip',
                                     '.js' : 'text/javascript'
-                                    }[loadAsset.substring( fileExt )];
+                                    }[loadFile.substring( fileExt )];
 
                 /*
                     ejs is only for templates; if we want to load an binary data (like images); we must use fs.readFile
                 */
 
                 if ( fileMime !== 'text/html' )
-                    data = fs.readFileSync( './www/' + loadAsset );
+                    data = fs.readFileSync( `./${ FOLDER_WWW }/${ loadFile }` );
 
                 response.setHeader( 'Content-type', fileMime );
                 response.end( data );
 
-                Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( `→` ), chalk.grey( `asset:${ loadAsset } mime:${ fileMime }` ) );
+                Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( `→` ), chalk.grey( `asset:${ loadFile } mime:${ fileMime }` ) );
             }
             else
             {
