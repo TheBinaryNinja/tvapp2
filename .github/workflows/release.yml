@@ -502,21 +502,15 @@ jobs:
             #   By converting the step into an env var, we quote the text, and it fixes the issue.
             # #
 
-            - name: "🙊 Changelog › Step to Env › Categorized"
-              id: task_release_changelog_escape_categorized
+            - name: "Echo Changelog - Categorized"
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
-              run:
-                  CHANGELOG_CAT="${CHANGELOG_CATEGORIZED}"
-                  echo get-changelog-cat=${CHANGELOG_CAT} >> $GITHUB_OUTPUT
-                  echo "$CHANGELOG_CATEGORIZED"
+              run: echo "CHANGELOG_CATEGORIZED"
 
-            - name: "🙊 Changelog › Step to Env › Uncategorized"
-              id: task_release_changelog_escape_uncategorized
+            - name: "Echo Changelog - Uncategorized"
               env:
-                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
-              run:
-                  echo "$CHANGELOG_UNCATEGORIZED"
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+              run: echo "CHANGELOG_UNCATEGORIZED"
 
             # #
             #   Changelog › Fetch
