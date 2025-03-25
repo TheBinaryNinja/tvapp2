@@ -507,6 +507,8 @@ jobs:
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
               run:
+                  changelog_categorized="${{ steps.task_release_changelog_categorized.outputs.changelog }}"
+                  echo "CHANGELOG_CATEGORIZED=${changelog_categorized}" >> $GITHUB_ENV
                   echo "$CHANGELOG_CATEGORIZED"
 
             - name: "🙊 Changelog › Step to Env › Uncategorized"
@@ -514,6 +516,8 @@ jobs:
               env:
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
               run:
+                  changelog_uncategorized="${{ steps.task_release_changelog_uncategorized.outputs.changelog }}"
+                  echo "CHANGELOG_UNCATEGORIZED=${changelog_uncategorized}" >> $GITHUB_ENV
                   echo "$CHANGELOG_UNCATEGORIZED"
 
             # #
