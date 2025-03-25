@@ -155,8 +155,13 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
+| `FILE_PLAYLIST` | `playlist.m3u8` | Filename for M3U playlist file |
+| `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
+| `FILE_TAR` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
+| `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
+| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`6` Trace <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
 
 <br />
 <br />
@@ -765,6 +770,7 @@ This docker container contains the following env variables:
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_PLAYLIST` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
+| `FILE_TAR` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
