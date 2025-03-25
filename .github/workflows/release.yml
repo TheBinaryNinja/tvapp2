@@ -578,8 +578,8 @@ jobs:
                       SHA256SUMS.txt
                   prerelease: false
                   body: |
-                      ${{ env.CHANGELOG_CATEGORIZED }}
-                      ${{ env.CHANGELOG_UNCATEGORIZED }}
+                      ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                      ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
 
             - name: "🏳️ Post › Release Candidate"
               id: task_release_bundle_rc
