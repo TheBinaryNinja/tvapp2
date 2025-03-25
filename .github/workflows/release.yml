@@ -537,7 +537,8 @@ jobs:
                   startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, true )
               run: |
-                  echo "${{ CHANGELOG_UNCATEGORIZED }}"
+                  echo "CHANGELOG_UNCATEGORIZED"
+                  echo "$ {{ env.CHANGELOG_UNCATEGORIZED }}"
 
             # #
             #   artifacts > download
