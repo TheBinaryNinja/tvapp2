@@ -503,35 +503,20 @@ jobs:
             # #
 
             - name: "🙊 Changelog › Step to Env › Categorized"
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, false )
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
               run: echo "$CHANGELOG_CATEGORIZED"
 
             - name: "🙊 Changelog › Step to Env › Uncategorized"
-              env:
-                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
-              run: echo "$CHANGELOG_UNCATEGORIZED"
-
-            # #
-            #   Changelog › Fetch
-            # #
-
-            - name: '📝 Changelog › Print (Categorized)'
-              id: task_release_changelog_print_categorized
-              if: |
-                  startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
-                  startsWith( env.SHOW_UNCATEGORIZED, false )
-              run: |
-                  echo "$CHANGELOG_CATEGORIZED"
-
-            - name: '📝 Changelog › Print (Uncategorized)'
-              id: task_release_changelog_print_uncategorized
               if: |
                   startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, true )
-              run: |
-                  echo "CHANGELOG_UNCATEGORIZED"
-                  echo "$ {{ env.CHANGELOG_UNCATEGORIZED }}"
+              env:
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+              run: echo "$CHANGELOG_UNCATEGORIZED"
 
             # #
             #   artifacts > download
@@ -598,8 +583,8 @@ jobs:
                       > [!WARNING]
                       > This is a **release candidate**, which means it is not a stable release and could contain bugs. You should download it at your own risk.
 
-                      ${{ env.CHANGELOG_CATEGORIZED }}
-                      ${{ env.CHANGELOG_UNCATEGORIZED }}
+                      ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                      ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
 
             # #
             #   Print Status
@@ -611,8 +596,8 @@ jobs:
                   echo "Printing Variables"
                   echo
                   echo "---- CHANGELOG ---------------------------------------------------------------"
-                  echo "${{ env.CHANGELOG_CATEGORIZED }}"
-                  echo "${{ env.CHANGELOG_UNCATEGORIZED }}"
+                  echo "${{ steps.task_release_changelog_categorized.outputs.changelog }}"
+                  echo "${{ steps.task_release_changelog_uncategorized.outputs.changelog }}"
                   echo "---- CHANGELOG ---------------------------------------------------------------"
                   echo ""
                   echo ""
