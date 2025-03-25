@@ -388,7 +388,7 @@ jobs:
             - name: '🆔 Checksum › Print'
               id: task_release_checksum_st_get
               run: |
-                  echo ${{ env.SHA256SUM }}
+                  echo "${{ env.SHA256SUM }}"
 
             # #
             #   Release › Contributor Images
@@ -403,7 +403,7 @@ jobs:
                   avatarSize: 42
 
             # #
-            #   Release › Checksum › Add › Stable
+            #   Release › Checksum › Add (Stable)
             # #
 
             - name: '📦 Zip › Add Checksum › Stable'
@@ -415,7 +415,7 @@ jobs:
                   ls
 
             # #
-            #   Release › Checksum › Add › Release Candidate
+            #   Release › Checksum › Add (Release Candidate)
             # #
 
             - name: '📦 Zip › Add Checksum › RC'
@@ -426,21 +426,22 @@ jobs:
                   zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip SHA256SUMS.txt
                   ls
 
-            # #
-            #   Release › Changelog › Generate
-            #
-            #   generates a changelog from the github api. requires a PREVIOUS_TAG in order to figure
-            #   out the changes made between the two versions.
-            #
-            #   outputs:
-            #     ${{ steps.changelog.outputs.changelog }}
-            # #
 
             - name: '📝 Changelog › Pre Setup (Categorized Commits)'
               id: task_release_changelog_categorized_sha_set
               run: |
                   echo "TAG_LAST=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
                   echo "COMMIT_LAST=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+            # #
+            #   Release › Changelog › Build (Categorized)
+            #
+            #   generates a changelog from the github api. requires a TAG_LAST in order to figure
+            #   out the changes made between the two versions.
+            #
+            #   outputs:
+            #       ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+            # #
 
             - name: '📝 Changelog › Build (Categorized)'
               id: task_release_changelog_categorized
@@ -465,6 +466,14 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.ADMINSERV_TOKEN }}
 
             # #
+            #   Release › Changelog › Build (Uncategorized)
+            #
+            #   generates a changelog from the github api. requires a TAG_LAST in order to figure
+            #   out the changes made between the two versions.
+            #
+            #   outputs:
+            #       ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+            #
             #   shows only categorized commits using the commit standards
             #                type(scope): description
             #                type: description
@@ -493,49 +502,61 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.ADMINSERV_TOKEN }}
 
             # #
-            #   Changelog > Convert step into ENV
+            #   Release › Changelog › Convert step into ENV
             #
             #   This is a requirement in order for the action mikepenz/release-changelog-builder-action@v5 to work properly.
             #   If you use special characters like quotes and tildes in your push comments, bash will have no way of knowing
             #   if it's part of the changelog, or code itself.
             #
             #   By converting the step into an env var, we quote the text, and it fixes the issue.
+            #
+            #   For every step that you need to print the changelog text, first define the env var
+            #   env:
+            #       CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+            #
+            #   Then you can call the changelog in the body / run command with
+            #       echo "$CHANGELOG_CATEGORIZED"
             # #
 
-            - name: "🙊 Changelog › Step to Env › Categorized"
+            - name: '🙊 Changelog › Step to Env › Categorized'
+              id: task_release_changelog_escape_categorized
               if: |
                   startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, false )
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
-              run: echo "$CHANGELOG_CATEGORIZED"
+              run: |
+                  echo "$CHANGELOG_CATEGORIZED"
 
-            - name: "🙊 Changelog › Step to Env › Uncategorized"
+            - name: '🙊 Changelog › Step to Env › Uncategorized'
+              id: task_release_changelog_escape_uncategorized
               if: |
                   startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, true )
               env:
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
-              run: echo "$CHANGELOG_UNCATEGORIZED"
+              run: |
+                  echo "$CHANGELOG_UNCATEGORIZED"
 
             # #
-            #   artifacts > download
+            #   Release › List Tree
             # #
 
-            - name: "⚙️ Debug › Clean Dist Folder"
+            - name: '⚙️ Debug › Clean Dist Folder'
+              id: task_release_debug_tree
               run: |
                   tree
 
             # #
-            #   [ Release ]: Post Release
+            #   Release › Post Release (Stable)
             #
             #   outputs:
-            #     [RELEASE ID]:
-            #       ${{ steps.task_release_bundle_rc.outputs.id
-            #       ${{ steps.task_release_bundle_st.outputs.id
+            #       [RELEASE ID]:
+            #           ${{ steps.task_release_bundle_rc.outputs.id
+            #           ${{ steps.task_release_bundle_st.outputs.id
             # #
 
-            - name: "🏳️ Post › Stable"
+            - name: '🏳️ Post › Stable'
               id: task_release_bundle_st
               if: |
                   startsWith( inputs.PRERELEASE, false ) ||
@@ -558,6 +579,15 @@ jobs:
                   body: |
                       ${{ steps.task_release_changelog_categorized.outputs.changelog }}
                       ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
+
+            # #
+            #   Release › Post Release (Release Candidate)
+            #
+            #   outputs:
+            #       [RELEASE ID]:
+            #           ${{ steps.task_release_bundle_rc.outputs.id
+            #           ${{ steps.task_release_bundle_st.outputs.id
+            # #
 
             - name: "🏳️ Post › Release Candidate"
               id: task_release_bundle_rc
@@ -587,7 +617,14 @@ jobs:
                       ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
 
             # #
-            #   Print Status
+            #   Release › Print Status
+            #
+            #   For every step that you need to print the changelog text, first define the env var
+            #   env:
+            #       CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+            #
+            #   Then you can call the changelog in the body / run command with
+            #       echo "$CHANGELOG_CATEGORIZED"
             # #
 
             - name: "🎛️ Status › Print"
@@ -614,7 +651,7 @@ jobs:
                   echo "---- CHANGELOG ---------------------------------------------------------------"
 
             # #
-            #   Upload artifacts > release files
+            #   Release › Upload Artifacts › Release Files
             # #
 
             - name: >-
@@ -643,7 +680,7 @@ jobs:
         steps:
 
             # #
-            #   Job › Complete › Download Artifacts
+            #   Complete › Download Artifacts
             # #
 
             - name: "📁 Download › Saved Artifacts"
@@ -651,7 +688,7 @@ jobs:
               uses: actions/download-artifact@v4
 
             # #
-            #   Job › Complete › Get publish timestamp
+            #   Complete › Get publish timestamp
             # #
 
             - name: >-
@@ -664,7 +701,7 @@ jobs:
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
             # #
-            #   Job > Complete > Set ENVs
+            #   Complete › Set ENVs
             # #
 
             - name: "🕛 Get Env Vars"
@@ -677,7 +714,7 @@ jobs:
                   echo "SHA_STABLE=${release_stable_sha256}" >> $GITHUB_ENV
 
             # #
-            #   Job › Complete › Summary of publish
+            #   Complete › Summary of publish
             # #
 
             - name: "🆗 Completed: ${{ env.NOW }}"
