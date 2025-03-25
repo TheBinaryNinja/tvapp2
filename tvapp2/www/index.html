@@ -99,7 +99,7 @@
                             <td class="link cell-link"><a id="tar-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="tar-size"></span></td>
                             <td class="date cell-date"><span id="tar-date"></span></td>
-                            <td class="desc cell-desc">XML / EPG guide data compressed into tar.gz</td>
+                            <td class="desc cell-desc">XML / EPG guide data in compressed gzip format</td>
                         </tr>
                     </tbody>
                 </table>
@@ -125,7 +125,7 @@
             const urlBase = window.location.origin;
             const urlM3U = urlBase + "/playlist";
             const urlXML = urlBase + "/epg";
-            const urlTAR = urlBase + "/tar";
+            const urlTAR = urlBase + "/gzip";
 
             document.getElementById("m3u-name").textContent = "<%= fileM3U %>";
             document.getElementById("m3u-name").href = urlM3U;
