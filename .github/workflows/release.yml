@@ -507,8 +507,8 @@ jobs:
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
               run:
-                  changelog_categorized="${{ steps.task_release_changelog_categorized.outputs.changelog }}"
-                  echo "CHANGELOG_CATEGORIZED=${changelog_categorized}" >> $GITHUB_ENV
+                  CHANGELOG_CAT="${CHANGELOG_CATEGORIZED}"
+                  echo get-changelog-cat=${CHANGELOG_CAT} >> $GITHUB_OUTPUT
                   echo "$CHANGELOG_CATEGORIZED"
 
             - name: "🙊 Changelog › Step to Env › Uncategorized"
@@ -516,8 +516,6 @@ jobs:
               env:
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_uncategorized.outputs.changelog }}
               run:
-                  changelog_uncategorized="${{ steps.task_release_changelog_uncategorized.outputs.changelog }}"
-                  echo "CHANGELOG_UNCATEGORIZED=${changelog_uncategorized}" >> $GITHUB_ENV
                   echo "$CHANGELOG_UNCATEGORIZED"
 
             # #
@@ -531,7 +529,7 @@ jobs:
                   startsWith( env.SHOW_UNCATEGORIZED, false )
               run: |
                   echo "$CHANGELOG_CATEGORIZED"
-                  echo "CHANGELOG_CATEGORIZED=${CHANGELOG_CATEGORIZED}" >> $GITHUB_ENV
+                  echo "${{ steps.task_release_changelog_escape_categorized.outputs.get-changelog-cat }}"
 
             - name: '📝 Changelog › Print (Uncategorized)'
               id: task_release_changelog_print_uncategorized
@@ -539,8 +537,7 @@ jobs:
                   startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
                   startsWith( env.SHOW_UNCATEGORIZED, true )
               run: |
-                  echo "$CHANGELOG_UNCATEGORIZED"
-                  echo "CHANGELOG_UNCATEGORIZED=${CHANGELOG_UNCATEGORIZED}" >> $GITHUB_ENV
+                  echo "${{ CHANGELOG_UNCATEGORIZED }}"
 
             # #
             #   artifacts > download
