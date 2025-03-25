@@ -7,6 +7,11 @@
 
 <div align="center">
 
+<img src="docs/img/screenshots/01.png" height="320">
+
+<br />
+<br />
+
 <!-- prettier-ignore-start -->
 [![Version][github-version-img]][github-version-uri]
 [![Downloads][github-downloads-img]][github-downloads-uri]
