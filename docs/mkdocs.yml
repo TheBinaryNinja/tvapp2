@@ -3,6 +3,7 @@ repo_url: https://github.com/TheBinaryNinja/tvapp2
 repo_name: TheBinaryNinja/tvapp2
 edit_uri: edit/main/docs/docs/
 site_author: TheBinaryNinja
+site_url: 'https://thebinaryninja.github.io/tvapp2/'
 
 markdown_extensions:
   - markdown.extensions.extra
@@ -245,8 +246,9 @@ extra:
     CSS: css
   generator: false
   version:
-    default: stable
+    default: latest
     provider: mike
+    alias: true
   consent:
     title: Cookie Consent
     description: >-
