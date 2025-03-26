@@ -242,7 +242,7 @@
     --md-typeset-table-color--light:    hsla(var(--md-hue),15%,95%,0.035);
     --md-admonition-fg-color:           var(--md-default-fg-color);
     --md-admonition-bg-color:           var(--md-default-bg-color);
-    --md-footer-bg-color:               rgba( 34, 34, 34, 1 );
+    --md-footer-bg-color:               rgba( 21, 21, 21, 1 );
     --md-footer-bg-color--dark:         rgba( 15, 15, 15, 1 );
     --md-shadow-z1:                     0 0.2rem 0.5rem #0000000d,0 0 0.05rem #0000001a;
     --md-shadow-z2:                     0 0.2rem 0.5rem #00000040,0 0 0.05rem #00000040;
@@ -277,6 +277,12 @@
     .md-main
     {
         background-color: hsla(140, 0%, 5%, 1) !important;
+    }
+
+    .md-nav--primary .md-nav__title
+    {
+        background: none;
+        box-shadow: none;
     }
 
     .md-typeset table:not([ class ] ) tbody tr
@@ -528,7 +534,7 @@ h4:has(.twemoji) .twemoji
     Add a gap between the last "File" item in nav menu, and the folders under.
 */
 
-li:has(a[href*="about_patcher"])
+.md-sidebar--primary li:has(a[href*="about_tvapp2"]), .md-sidebar--primary li:has(a[href*="about"])
 {
     margin-bottom: 28px !important;
 }
@@ -818,32 +824,18 @@ figure img
     padding: 8px 10px;
 }
 
-@media ( min-width: 360px )
-{
-    .mkde-right
-    {
-        padding: 12px 15px;
-    }
-}
-
-@media ( min-width: 600px )
-{
-    .mkde-right
-    {
-        padding: 12px 12px;
-    }
-}
-
 /*
     Left container
 */
 
 ._lc._sm:not( .xd ) .mkde-left
 {
-    min-width: 100px;
-    width: 100px;
-    min-height: 100px;
-    padding: 10px;
+    min-width: 70px;
+    width: 70px;
+    min-height: 70px;
+    height: 70px;
+    padding: 5px;
+    align-self: center;
     background: rgba( 255, 255, 255, 0.10 );
 }
 
@@ -851,9 +843,11 @@ figure img
 {
     ._lc._sm:not( .xd ) .mkde-left
     {
-        min-width: 110px;
-        width: 110px;
-        min-height: 110px;
+        min-width: 80px;
+        width: 80px;
+        min-height: 80px;
+        height: 80px;
+        align-self: center;
     }
 }
 
@@ -861,9 +855,11 @@ figure img
 {
     ._lc._sm:not( .xd ) .mkde-left
     {
-        min-width: 140px;
-        width: 140px;
-        min-height: 140px;
+        min-width: 110px;
+        width: 110px;
+        min-height: 110px;
+        height: 110px;
+        align-self: center;
     }
 }
 
@@ -871,9 +867,11 @@ figure img
 {
     ._lc._sm:not( .xd ) .mkde-left
     {
-        min-width: 160px;
-        width: 160px;
-        min-height: 160px;
+        min-width: 110px;
+        width: 110px;
+        min-height: 110px;
+        height: 110px;
+        align-self: center;
     }
 }
 
@@ -992,6 +990,8 @@ figure img
     padding: 0;
     background: none transparent;
     text-align: left;
+    padding-left: 2px;
+    border-radius: 10px;
 }
 
 .mkde-sub .item-footer-format:last-child
@@ -1141,7 +1141,7 @@ figure img
 
     .mkde-left-s2
     {
-        border: 1px solid rgba( 255, 255, 255, 0.35 )
+        border: 1px solid rgba( 255, 255, 255, 0.35 );
     }
 }
 
@@ -1150,7 +1150,8 @@ figure img
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 1px solid rgba( 255, 255, 255, 0.10 )
+    border: 1px solid rgba( 255, 255, 255, 0.10 );
+    background-color: #272728;
 }
 
 .mkde-link-favicon
