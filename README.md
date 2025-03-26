@@ -2025,6 +2025,9 @@ The following people have helped get this project going:
 <br />
 <br />
 
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+
 <!-- BADGE > GENERAL -->
   [general-npmjs-uri]: https://npmjs.com
   [general-nodejs-uri]: https://nodejs.org
@@ -2081,3 +2084,10 @@ The following people have helped get this project going:
 <!-- BADGE > Gitea 2 > Docker Image -->
   [gitea2-docker-version-img]: https://img.shields.io/gitea/v/release/binaryninja/tvapp2?gitea_url=https%3A%2F%2Fgit.binaryninja.net
   [gitea2-docker-version-uri]: https://git.binaryninja.net/BinaryNinja/-/packages/container/tvapp2/latest
+
+<!-- BADGE > BUTTON > SUBMIT ISSUES -->
+  [btn-github-submit-img]: https://img.shields.io/badge/submit%20new%20issue-de1f5c?style=for-the-badge&logo=github&logoColor=FFFFFF
+  [btn-github-submit-uri]: https://github.com/TheBinaryNinja/tvapp2/issues
+
+<!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->

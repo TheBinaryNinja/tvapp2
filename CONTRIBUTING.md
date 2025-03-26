@@ -259,7 +259,8 @@ Use `4 spaces` per indentation level.
 
 <br />
 
-> [!TIP] Correct
+> [!TIP]
+> ✅ Correct
 > ```python
 > def Encrypt( key : int, bytestr : bytes ):
 >     res = b''
@@ -268,7 +269,8 @@ Use `4 spaces` per indentation level.
 
 <br />
 
-> [!CAUTION] Wrong
+> [!CAUTION]
+> ❌ Wrong
 > ```python
 > def encrypt( key : int, byteStr : bytes ):
 >   Res = b''
@@ -299,7 +301,8 @@ Imports should usually be on separate lines:
 
 <br />
 
-> [!TIP] Correct
+> [!TIP]
+> ✅ Correct
 > ```python
 > import os
 > import sys
@@ -307,18 +310,20 @@ Imports should usually be on separate lines:
 
 <br />
 
-> [!CAUTION] Wrong
+> [!CAUTION]
+> ❌ Wrong
 > ```python
 > import sys, os
 > ```
 
 <br />
 
-The following is ok to do:
+The following is acceptable:
 
 <br />
 
-> [!TIP] Correct
+> [!TIP]
+> ✅ Correct
 > ```python
 > from mypkg import siblingA, siblingB, siblingC
 > ```
@@ -346,27 +351,29 @@ def Encrypt( key : int, byteString : bytes ):
 
 ##### Casing
 
-- Stick to `snake_case`; unless:
+- Stick to `camelCase`; unless:
   - naming functions, capitalize the first letter
   - Capitalize enums
 - If you see code not conforming with this, please revise it in your pull request.
 
 <br />
 
-> [!TIP] Correct
+> [!TIP]
+> ✅ Correct
 > ```python
-> def Encrypt( key : int, bytestr : bytes ):
+> def Encrypt( key : int, byteStr : bytes ):
 >     res = b''
->     i_blk, left_bytes = divmod( len(bytestr), 3 )
+>     iBlock, leftBytes = divmod( len(byteStr), 3 )
 > ```
 
 <br />
 
-> [!CAUTION] Wrong
+> [!CAUTION]
+> ❌ Wrong
 > ```python
-> def encrypt( key : int, byteStr : bytes ):
->     Res = b''
->     iBlk, leftBytes = divmod( len(byteStr), 3 )
+> def encrypt( key : int, bytestr : bytes ):
+>     res = b''
+>     i_blk, left_bytes = divmod( len(bytestr), 3 )
 > ```
 
 <br />
