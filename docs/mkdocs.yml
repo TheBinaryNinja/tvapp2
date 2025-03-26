@@ -158,13 +158,10 @@ nav:
     - Conventions: 'about/conventions.md'
     - Tags: 'about/tags.md'
     - Changelog: 'about/changelog.md'
-    - Backers: 'backers/index.md'
 
 plugins:
   - search:
       separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
-  - tags:
-      tags_file: about/tags.md
   - group:
       plugins:
         - optimize
