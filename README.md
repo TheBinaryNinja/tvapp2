@@ -112,8 +112,8 @@
 
 This project contains several repositories which all share the same code; use them as backups:
 
-- [https://github.com/TheBinaryNinja/tvapp2](https://github.com/TheBinaryNinja/tvapp2)
-- [https://git.binaryninja.net/BinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)
+- [🔀 github:thebinaryninja/tvapp2](https://github.com/thebinaryninja/tvapp2)
+- [🔀 gitea:git.binaryninja.net/binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2)
 
 <br />
 <br />
@@ -383,7 +383,7 @@ Prior to building the  docker image, you **must** ensure the sections below are 
 
 You cannot utilize Windows' `Carriage Return Line Feed`. All files must be converted to Unix' `Line Feed`.  This can be done with **[Visual Studio Code](https://code.visualstudio.com/)**. OR; you can run the Linux terminal command `🗔 dos2unix` to convert these files.
 
-If you cloned the files from the official repository **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** and have not edited them, then you should not need to do this step.
+If you cloned the files from the official repository [🔆 gitea:binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2) and have not edited them, then you should not need to do this step.
 
 <br />
 
@@ -434,7 +434,7 @@ sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
 
 ### Build `tvapp` Image
 
-After completing the steps above; we will now build the **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** image.
+After completing the steps above; we will now build the [🔆 gitea:binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2) image.
 
 <br />
 
@@ -617,8 +617,8 @@ docker buildx build \
 
 After building the image, you can now use the image either with `🗔 docker run` or a `📄 docker-compose.yml` file. These instructions are available by skipping down to the sections:
 
-- [Docker Run](#docker-run-1)
-- [Docker Compose](#docker-compose-1)
+- [🗔 Docker Run](#docker-run-1)
+- [📄 Docker Compose](#docker-compose-1)
 
 <br />
 <br />
@@ -1891,7 +1891,7 @@ docker exec -it tvapp2 bash
 
 <br />
 
-The `🔀 TheBinaryNinja/tvapp2` image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `📁 /root` folder
+The [🔀 thebinaryninja/tvapp2](https://github.com/thebinaryninja/tvapp2) image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `📁 /root` folder
 
 ```shell
 mkdir -p /root/custom-cont-init.d/
@@ -1939,7 +1939,7 @@ services:
 
 <br />
 
-The `🔀 TheBinaryNinja/tvapp2` image already contains a custom script called `📄 /root/custom-cont-init.d/plugins`. Do **NOT** edit this script. It is what automatically downloads the official TVApp2 plugins and adds them to the container.
+The [🔀 thebinaryninja/tvapp2](https://github.com/thebinaryninja/tvapp2) image already contains a custom script called `📄 /root/custom-cont-init.d/plugins`. Do **NOT** edit this script. It is what automatically downloads the official TVApp2 plugins and adds them to the container.
 
 <br />
 

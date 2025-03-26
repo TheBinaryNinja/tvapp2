@@ -58,17 +58,20 @@ const compat = new FlatCompat({
 
 export default
 [
-    ...compat.extends('eslint:recommended'),
     {
         ignores: [
             'coverage/**',
             'node_modules/**',
-            '**/node_modules/**',
             '**/dist/**/*',
             '**/__tmp__/**/*',
-            'eslint.config.cjs'
-        ],
-        files: ['index.js'],
+            'eslint.config.mjs',
+            'eslint.config.cjs',
+            "root.js",
+            "www/**/*"
+        ]
+    },
+    ...compat.extends('eslint:recommended'),
+    {
         plugins: {
             'n': pluginNode,
             'import': pluginImport,
@@ -266,17 +269,5 @@ export default
                 }
             }],
         },
-    },
-    {
-        files: ['root.js'],
-        languageOptions: {
-            sourceType: 'module',
-            ecmaVersion: 'latest',
-        },
-        rules: {
-            'no-console': 'off',
-            'no-undef': 'off',
-            'no-var': 'off'
-        }
     }
 ];
