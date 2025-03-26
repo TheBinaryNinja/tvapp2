@@ -60,7 +60,8 @@
           "env:root": "npx --quiet env-cmd --no-override node root.js",
           "env:uuid": "npx --quiet env-cmd --no-override node root.js uuid",
           "env:guid": "npx --quiet env-cmd --no-override node root.js guid",
-          "env:version": "node -p require('./package.json').version;"
+          "env:version": "node -p require('./package.json').version;",
+          "lint": "npx eslint"
     },
     "keywords": [
         "nodejs",
