@@ -120,17 +120,17 @@ This project contains several repositories which all share the same code; use th
 
 ### Quick Install
 
-To install TVApp2 in docker; you will need to use either the `docker run` command, or create a `docker-compose.yml` file which contains information about how to pull and start up.
+To install TVApp2 in docker; you will need to use either the `🗔 docker run` command, or create a `📄 docker-compose.yml` file which contains information about how to pull and start up.
 
 <br />
 
-Type out your `docker run` command, or prepare a `docker-compose.yml` script. Examples are provided below. We have also provided charts with a list of the registries you can pull the image from, and a list of all the available environment variables you can use. 
+Type out your `🗔 docker run` command, or prepare a `📄 docker-compose.yml` script. Examples are provided below. We have also provided charts with a list of the registries you can pull the image from, and a list of all the available environment variables you can use. 
 
 <br />
 
-Pick one registry URL from the list [Registry URLs](#registry-urls) and put it in your `docker run` command, or in your `docker-compose.yml`.
+Pick one registry URL from the list [Registry URLs](#registry-urls) and put it in your `🗔 docker run` command, or in your `📄 docker-compose.yml`.
 
-For the [environment variables](#environment-variables), you may specify these in your `docker run` command or `docker-compose.yml` file. See the examples below.
+For the [environment variables](#environment-variables), you may specify these in your `🗔 docker run` command or `📄 docker-compose.yml` file. See the examples below.
 
 <br />
 
@@ -138,9 +138,9 @@ For the [environment variables](#environment-variables), you may specify these i
 
 | Pull URL | Registry | Architecture | Version |
 | --- | --- | --- | --- |
-| `ghcr.io/thebinaryninja/tvapp2:latest` | Github | amd64 / arm64 | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
-| `thebinaryninja/tvapp2:latest` | Dockerhub | amd64 / arm64 | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
-| `git.binaryninja.net/binaryninja/tvapp2:latest` | Gitea | amd64 / arm64 | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
+| `ghcr.io/thebinaryninja/tvapp2:latest`<br />`ghcr.io/thebinaryninja/tvapp2:development` | Github | amd64 / arm64 | [![Github - Version][github-docker-version-img]][github-docker-version-uri] |
+| `thebinaryninja/tvapp2:latest`<br />`thebinaryninja/tvapp2:development` | Dockerhub | amd64 / arm64 | [![Github - Version][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
+| `git.binaryninja.net/binaryninja/tvapp2:latest`<br />`git.binaryninja.net/binaryninja/tvapp2:development` | Gitea | amd64 / arm64 | [![Gitea - Version][gitea-docker-version-img]][gitea-docker-version-uri] |
 
 <br />
 <br />
@@ -170,8 +170,8 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 
 | Container Path | Description |
 | --- | --- |
-| `/usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sub> |
-| `/config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sub> |
+| `📁 /usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `📄 formatted.dat`, `📄 xmltv.1.xml`, `📄 urls.txt`, `📁 node_modules`, and `📄 package.json`</sub> |
+| `📁 /config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `🔑 cert.key` and `🪪 cert.crt`</sub> |
 
 <br />
 <br />
@@ -187,9 +187,9 @@ These are quick instructions on how to start the TVApp2 docker container once yo
 
 #### Docker Run
 
-If you want to bring the container up using `docker run`; execute the following:
+If you want to bring the container up using `🗔 docker run`; execute the following:
 
-```shell ignore
+```shell
 docker run -d --restart=unless-stopped \
   --name tvapp2 \
   -p 4124:4124 \
@@ -203,7 +203,7 @@ docker run -d --restart=unless-stopped \
 
 #### Docker Compose
 
-If you want to use a `docker-compose.yml` to bring TVApp2 up; you may use the following example:
+If you want to use a `📄 docker-compose.yml` to bring TVApp2 up; you may use the following example:
 
 ```yml ignore
 services:
@@ -355,8 +355,8 @@ This repository offers two types of docker image; `stable` and `development`. Yo
 
 | Build                     | Tags                                                                          |
 | ------------------------- | ----------------------------------------------------------------------------- |
-| `Stable`                  | `tvapp2:latest` <br /> `tvapp2:1.0.0` <br /> `tvapp2:1.0` <br /> `tvapp2:1`   |
-| `Development`             | `tvapp2:development`                                                          |
+| `Stable`                  | `🔖 tvapp2:latest` <br /> `🔖 tvapp2:1.1.0` <br /> `🔖 tvapp2:1.1` <br /> `🔖 tvapp2:1`   |
+| `Development`             | `🔖 tvapp2:development`                                                          |
 
 <br />
 
@@ -381,16 +381,16 @@ Prior to building the  docker image, you **must** ensure the sections below are 
 
 #### LF over CRLF
 
-You cannot utilize Windows' `Carriage Return Line Feed`. All files must be converted to Unix' `Line Feed`.  This can be done with **[Visual Studio Code](https://code.visualstudio.com/)**. OR; you can run the Linux terminal command `dos2unix` to convert these files.
+You cannot utilize Windows' `Carriage Return Line Feed`. All files must be converted to Unix' `Line Feed`.  This can be done with **[Visual Studio Code](https://code.visualstudio.com/)**. OR; you can run the Linux terminal command `🗔 dos2unix` to convert these files.
 
 If you cloned the files from the official repository **[TheBinaryNinja/tvapp2](https://git.binaryninja.net/BinaryNinja/tvapp2)** and have not edited them, then you should not need to do this step.
 
 <br />
 
 > [!CAUTION]
-> Be careful using the command to change **ALL** files. You should **NOT** change the files in your `.git` folder, otherwise you will corrupt your git indexes.
+> Be careful using the command to change **ALL** files. You should **NOT** change the files in your `📁 .git` folder, otherwise you will corrupt your git indexes.
 >
-> If you accidentally run dos2unix on your `.git` folder, do NOT push anything to git. Pull a new copy from the repo.
+> If you accidentally run `🗔 dos2unix` on your `📁 .git` folder, do NOT push anything to git. Pull a new copy from the repo.
 
 <br />
 
@@ -438,7 +438,7 @@ After completing the steps above; we will now build the **[TheBinaryNinja/tvapp2
 
 <br />
 
-Before you build the TVApp2 image; open the `Dockerfile` and ensure you are pulling the correct Alpine base image. This instruction is located near the top of the `Dockerfile`:
+Before you build the TVApp2 image; open the `📄 Dockerfile` and ensure you are pulling the correct Alpine base image. This instruction is located near the top of the `📄 Dockerfile`:
 
 ```dockerfile
 ARG ARCH=amd64
@@ -615,7 +615,7 @@ docker buildx build \
 
 <br />
 
-After building the image, you can now use the image either with `docker run` or a `docker-compose.yml` file. These instructions are available by skipping down to the sections:
+After building the image, you can now use the image either with `🗔 docker run` or a `📄 docker-compose.yml` file. These instructions are available by skipping down to the sections:
 
 - [Docker Run](#docker-run-1)
 - [Docker Compose](#docker-compose-1)
@@ -668,7 +668,7 @@ docker buildx ls
 
 Before you can push the image, ensure you are signed into Docker CLI. Open your Linux terminal and see if you are already signed in:
 
-```shell ignore
+```shell
 docker info | grep Username
 ```
 
@@ -676,7 +676,7 @@ docker info | grep Username
 
 If nothing is printed; then you are not signed in. Initiate the web login:
 
-```shell ignore
+```shell
 docker login
 ```
 
@@ -698,7 +698,7 @@ Waiting for authentication in the browser…
 
 Once you are finished in your browser, you can return to your Linux terminal, and it should bring you back to where you can type a command. You can now verify again if you are signed in:
 
-```shell ignore
+```shell
 docker info | grep Username
 ```
 
@@ -1003,7 +1003,7 @@ docker buildx imagetools create \
 
 <br />
 
-Alternatively, you could use the `manifest create` command; as an example, you can merge multiple architecture images together into a single image. The top line with `thebinaryninja/tvapp2:latest` can be any name. However, all images after `--amend` MUST be already existing images uploaded to the registry.
+Alternatively, you could use the `🗔 manifest create` command; as an example, you can merge multiple architecture images together into a single image. The top line with `🔖 thebinaryninja/tvapp2:latest` can be any name. However, all images after `--amend` MUST be already existing images uploaded to the registry.
 
 ```shell
 docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
@@ -1059,7 +1059,7 @@ sudo apt-get install node
 
 <br />
 
-To build the project, `cd` into the project folder and run the build command:
+To build the project, `🗔 cd` into the project folder and run the build command:
 
 ```shell
 cd /home/docker/tvapp2/
@@ -1099,15 +1099,15 @@ The run command above has several variables you must specify:
 
 ## Using `tvapp` Image
 
-To use the new TVApp2 image, you can either call it with the `docker run` command, or create a new `docker-compose.yml` and specify the image:
+To use the new TVApp2 image, you can either call it with the `🗔 docker run` command, or create a new `📄 docker-compose.yml` and specify the image:
 
 <br />
 
 ### Docker Run
 
-If you want to use the tvapp docker image in the `docker run` command, execute the following:
+If you want to use the tvapp docker image in the `🗔 docker run` command, execute the following:
 
-```shell ignore
+```shell
 docker run -d --restart=unless-stopped \
   --name tvapp2 \
   -p 4124:4124 \
@@ -1120,23 +1120,23 @@ docker run -d --restart=unless-stopped \
 
 ### Docker Compose
 
-If you'd much rather use a `docker-compose.yml` file and call the tvapp image that way, create a new folder somewhere:
+If you'd much rather use a `📄 docker-compose.yml` file and call the tvapp image that way, create a new folder somewhere:
 
-```shell ignore
+```shell
 mkdir -p /home/docker/tvapp2
 ```
 
 <br />
 
-Then create a new `docker-compose.yml`:
+Then create a new `📄 docker-compose.yml`:
 
-```shell ignore
+```shell
 sudo nano /home/docker/tvapp2/docker-compose.yml
 ```
 
 <br />
 
-Add the following to your `docker-compose.yml`:
+Add the following to your `📄 docker-compose.yml`:
 
 ```yml ignore
 services:
@@ -1160,9 +1160,9 @@ services:
 
 <br />
 
-Once the `docker-compose.yml` is set up, you can now start your TVApp2 container:
+Once the `📄 docker-compose.yml` is set up, you can now start your TVApp2 container:
 
-```shell ignore
+```shell
 cd /home/docker/tvapp2/
 docker compose up -d
 ```
@@ -1171,7 +1171,7 @@ docker compose up -d
 
 TVApp2 should now be running as a container. You can access it by opening your browser and going to:
 
-```shell ignore
+```shell
 http://container-ip:4124
 ```
 
@@ -1205,8 +1205,8 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 
 | Container Path | Description |
 | --- | --- |
-| `/usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `formatted.dat`, `xmltv.1.xml`, `urls.txt`, `node_modules`, and `package.json`</sub> |
-| `/config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `cert.key` and `cert.crt`</sub> |
+| `📁 /usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `📄 formatted.dat`, `📄 xmltv.1.xml`, `📄 urls.txt`, `📁 node_modules`, and `📄 package.json`</sub> |
+| `📁 /config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `🔑 cert.key` and `🪪 cert.crt`</sub> |
 
 <br />
 
@@ -1223,9 +1223,9 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 
 <br />
 
-Our first step is to tell Traefik about our TVApp2 container. We highly recommend you utilize a Traefik **[dynamic file](#dynamicyml)**, instead of **[labels](#labels)**. Using a dynamic file allows for automatic refreshing without the need to restart Traefik when a change is made.
+Our first step is to tell Traefik about our TVApp2 container. We highly recommend you utilize a Traefik [📄 dynamic file](#dynamicyml), instead of **[labels](#labels)**. Using a [📄 dynamic file](#dynamicyml) allows for automatic refreshing without the need to restart Traefik when a change is made.
 
-If you decide to use **[labels](#labels)** instead of a **[dynamic file](#dynamicyml)**, any changes you want to make to your labels will require a restart of Traefik.
+If you decide to use **[labels](#labels)** instead of a [📄 dynamic file](#dynamicyml), any changes you want to make to your labels will require a restart of Traefik.
 
 <br />
 
@@ -1289,14 +1289,14 @@ services:
 
 <br />
 
-After you've added the labels above, skip the [dynamic.yml](#dynamicyml) section and go straight to the **[static.yml](#staticyml)** section.
+After you've added the labels above, skip the [📄 dynamic.yml](#dynamicyml) section and go straight to the **[📄 static.yml](#staticyml)** section.
 
 <br />
 <br />
 
 ### Dynamic.yml
 
-If you decide to not use **[labels](#labels)** and want to use a dynamic file, you will first need to create your dynamic file. the Traefik dynamic file is usually named `dynamic.yml`. We need to add a new `middleware`, `router`, and `service` to our Traefik dynamic file so that it knows about our new TVApp2 container and where it is.
+If you decide to not use **[labels](#labels)** and want to use a [📄 dynamic file](#dynamicyml), you will first need to create your [📄 dynamic file](#dynamicyml). the Traefik [📄 dynamic file](#dynamicyml) is usually named `📄 dynamic.yml`. We need to add a new `middleware`, `router`, and `service` to our Traefik [📄 dynamic file](#dynamicyml) so that it knows about our new TVApp2 container and where it is.
 
 ```yml
 http:
@@ -1338,20 +1338,20 @@ http:
 
 ### Static.yml
 
-These entries will go in your Traefik `static.yml` file. Any changes made to this file requires that you restart Traefik afterward.
+These entries will go in your Traefik `📄 static.yml` file. Any changes made to this file requires that you restart Traefik afterward.
 
 <br />
 
 #### Providers
 
 > [!NOTE]
-> This step is only for users who opted to use the **[dynamic file](#dynamicyml)** method.
+> This step is only for users who opted to use the **[📄 dynamic file](#dynamicyml)** method.
 >
 > Users who opted to use [labels](#labels) can skip to the section **[certificatesResolvers](#certificatesresolvers)**
 
 <br />
 
-Ensure you add the following new section to your `static.yml`:
+Ensure you add the following new section to your `📄 static.yml`:
 
 <br />
 
@@ -1369,7 +1369,7 @@ providers:
 
 <br />
 
-The code above is what enables the use of a **[dynamic file](#dynamicyml)** instead of labels. Change `/etc/traefik/dynamic.yml` if you are placing your dynamic file in a different location. This path is relative to inside the container, not your host machine mounted volume path. Traefik keeps most files in the `/etc/traefik/` folder.
+The code above is what enables the use of a **[📄 dynamic file](#dynamicyml)** instead of labels. Change `📄 /etc/traefik/dynamic.yml` if you are placing your dynamic file in a different location. This path is relative to inside the container, not your host machine mounted volume path. Traefik keeps most files in the `📁 /etc/traefik/` folder.
 
 <br />
 
@@ -1397,7 +1397,7 @@ You must ensure you add a new volume like shown above:
 
 <br />
 
-On your host machine, make sure you place the `dynamic.yml` file in a sub-folder called **config**, which should be inside the same folder where your Traefik's `📄 docker-compose.yml` file is. If you want to change this location, ensure you change the mounted volume path above.
+On your host machine, make sure you place the `📄 dynamic.yml` file in a sub-folder called **config**, which should be inside the same folder where your Traefik's `📄 docker-compose.yml` file is. If you want to change this location, ensure you change the mounted volume path above.
 
 <br />
 
@@ -1408,11 +1408,11 @@ After you have completed this, proceed to the section **[certificatesResolvers](
 #### certificatesResolvers
 
 > [!NOTE]
-> This step is required no matter which option you picked above, both for **[dynamic file](#dynamicyml)** setups, as well as people using **[labels](#labels)**.
+> This step is required no matter which option you picked above, both for **[📄 dynamic file](#dynamicyml)** setups, as well as people using **[labels](#labels)**.
 
 <br />
 
-Open your Traefik `static.yml` file. We need to define the `certResolver` that we added above either in your dynamic file, or label. To define the `certResolver`, we will be adding a new section labeled `certificatesResolvers`. We are going to use Cloudflare in this example, you can use whatever from the list at:
+Open your Traefik `📄 static.yml` file. We need to define the `certResolver` that we added above either in your dynamic file, or label. To define the `certResolver`, we will be adding a new section labeled `certificatesResolvers`. We are going to use Cloudflare in this example, you can use whatever from the list at:
 
 - https://doc.traefik.io/traefik/https/acme/#providers
 
@@ -1457,15 +1457,15 @@ CF_API_KEY=Your-Cloudflare-API-Key
 
 <br />
 
-Save the `.env` file and exit. For these environment variables to be detected by Traefik, you must give your Traefik container a restart. Until you restart Traefik, it will not be able to generate your new SSL certificates. Before doing the restart, we need to create one more folder and file; this is where Traefik will store your SSL certificate generated by Cloudflare.
+Save the `📄 .env` file and exit. For these environment variables to be detected by Traefik, you must give your Traefik container a restart. Until you restart Traefik, it will not be able to generate your new SSL certificates. Before doing the restart, we need to create one more folder and file; this is where Traefik will store your SSL certificate generated by Cloudflare.
 
 <br />
 
 Run the commands below, which will do the following:
 
 - Create a new folder called `cloudflare`
-- Create a new file named `acme.json`
-- Set the permission for the `acme.json` file to `chmod 600`.
+- Create a new file named `📄 acme.json`
+- Set the permission for the `📄 acme.json` file to `chmod 600`.
   - If you do not do this step, Traefik will fail to start. You must change the permissions in order to protect the file.
 
 ```shell
@@ -1476,13 +1476,13 @@ chmod 0600 /home/docker/traefik/cloudflare/acme.json
 
 <br />
 
-The `acme.json` file will not be populated with an SSL certificate until the next time you restart Traefik. You can wait and restart in a moment after you finish editing the `static.yml` file, as there are more items to add below.
+The `📄 acme.json` file will not be populated with an SSL certificate until the next time you restart Traefik. You can wait and restart in a moment after you finish editing the `📄 static.yml` file, as there are more items to add below.
 
 <br />
 
 #### entryPoints (Normal)
 
-Finally, inside the Traefik `static.yml`, we need to make sure we have our `entryPoints` configured. Add the following to the Traefik `static.yml` file only if you **DON'T** have entry points set yet:
+Finally, inside the Traefik `📄 static.yml`, we need to make sure we have our `entryPoints` configured. Add the following to the Traefik `📄 static.yml` file only if you **DON'T** have entry points set yet:
 
 ```yml
 entryPoints:
@@ -1672,7 +1672,7 @@ Move `TVApp2 IPTV` to the right side **Selected Applications** box.
 
 <br />
 
-If you followed our [Traefik](#traefik-integration) guide above, you were shown how to add your TVApp2 container to Traefik using either the **[📄 dynamic file](#dynamicyml)** or **[labels](#labels)**. Depending on which option you picked, follow that section's guide below.
+If you followed our [Traefik](#traefik-integration) guide above, you were shown how to add your TVApp2 container to Traefik using either the [📄 dynamic file](#dynamicyml) or **[labels](#labels)**. Depending on which option you picked, follow that section's guide below.
 
 - For **label** users, go to the section [Labels](#labels-1) below.
 - For **dynamic file** users, go to the section [📄 dynamic file](#dynamicyml-1) below.
@@ -1730,7 +1730,7 @@ services:
 
 ### Dynamic.yml
 
-If you opted to use the **[📄 dynamic file](#dynamicyml)**, open your Traefik's `📄 dynamic.yml` file and apply the `authentik@file` middleware to look something like the following:
+If you opted to use the [📄 dynamic file](#dynamicyml), open your Traefik's `📄 dynamic.yml` file and apply the `authentik@file` middleware to look something like the following:
 
 <br />
 
@@ -1798,7 +1798,7 @@ s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be one
 
 <br />
 
-To correct this issue, `cd` into the folder with the TVApp2 files, and then convert them to `LF` using the library `dos2unix`. The command below will convert all files to LF, but will EXCLUDE the following:
+To correct this issue, `🗔 cd` into the folder with the TVApp2 files, and then convert them to `LF` using the library `🗔 dos2unix`. The command below will convert all files to LF, but will EXCLUDE the following:
 
 - `.git` folder
 - `.jpg` images
@@ -1811,9 +1811,9 @@ find ./ -type f | grep -Ev '.git|*.jpg|*.jpeg|*.png' | sudo xargs dos2unix --
 ```
 
 > [!WARNING]
-> Do not run `dos2unix` on your `.git` folder or you will corrupt your git indexes and will be unable to push commits.
+> Do not run `🗔 dos2unix` on your `📁 .git` folder or you will corrupt your git indexes and will be unable to push commits.
 >
-> If you accidentally run dos2unix on your .git folder, do NOT push anything to git. Pull a new copy from the repo.
+> If you accidentally run `🗔 dos2unix` on your .git folder, do NOT push anything to git. Pull a new copy from the repo.
 
 <br />
 <br />
@@ -1855,7 +1855,7 @@ The following are other things to take into consideration when creating the TVAp
 
 ### Accessing Container Shell
 
-The TVApp2 docker image is built on Alpine Linux, but also includes the `bash` package. Use one of the following to access the shell for this container:
+The TVApp2 docker image is built on Alpine Linux, but also includes the `📦 bash` package. Use one of the following to access the shell for this container:
 
 <br />
 
@@ -1891,7 +1891,7 @@ docker exec -it tvapp2 bash
 
 <br />
 
-The `🔀 TheBinaryNinja/tvapp2` image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `/root` folder
+The `🔀 TheBinaryNinja/tvapp2` image supports the ability of adding custom scripts that will be ran when the container is started. To create / add a new custom script to the container, you need to create a new folder in the container source files `📁 /root` folder
 
 ```shell
 mkdir -p /root/custom-cont-init.d/
@@ -1935,7 +1935,7 @@ services:
 > if using compose, we recommend mounting them **read-only** (`:ro`) so that container processes cannot write to the location.
 
 > [!WARNING]
-> The folder `📂 /root/custom-cont-init.d` **MUST** be owned by `root`. If this is not the case, this folder will be renamed and a new empty folder will be created. This is to prevent remote code execution by putting scripts in the aforesaid folder.
+> The folder `📂 /root/custom-cont-init.d` **MUST** be owned by `👥 root`. If this is not the case, this folder will be renamed and a new empty folder will be created. This is to prevent remote code execution by putting scripts in the aforesaid folder.
 
 <br />
 
