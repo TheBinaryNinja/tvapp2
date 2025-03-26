@@ -863,11 +863,24 @@ After completing the `docker buildx` commands above; you should now have a few n
 
 <br />
 
+Next, we need to take these two images, and merge them into one so that both architectures are available without having to push separate images. You need to obtain the SHA256 hash digest for the `amd64` and `arm64` images. You can go to the registry where you uploaded the images and then copy them. Or you can run the following commands:
+
+<br />
+<br />
+
+**Stable Release**
+
+If you are building the **stable release** images; you should see the following:
+
+<br />
+
 <p align="center"><img style="width: 70%;text-align: center;" src="docs/img/core/01.png"><br><sub><sup><b>Registry v2:</b> Newly created <code>amd64</code> and <code>arm64</code> images</sup></sub></p>
 
 <br />
 
-Next, we need to take these two images, and merge them into one so that both architectures are available without having to push separate images. You need to obtain the SHA256 hash digest for the `amd64` and `arm64` images. You can go to the registry where you uploaded the images and then copy them. Or you can run the following commands:
+You can also get the hash digests by running the commands:
+
+<br />
 
 ```shell
 $ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
@@ -881,6 +894,36 @@ $ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
 Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
 MediaType: application/vnd.docker.distribution.manifest.v2+json
 Digest:    sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c473
+```
+
+<br />
+
+**Development Release**
+
+If you are building the **development release** images; you should see the following:
+
+<br />
+
+<p align="center"><img style="width: 70%;text-align: center;" src="docs/img/core/04.png"><br><sub><sup><b>Registry v2:</b> Newly created <code>development-amd64</code> and <code>development-arm64</code> images</sup></sub></p>
+
+<br />
+
+You can also get the hash digests by running the commands:
+
+<br />
+
+```shell
+$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-amd64
+
+Name:      ghcr.io/thebinaryninja/tvapp2:development-amd64
+MediaType: application/vnd.docker.distribution.manifest.v2+json
+Digest:    sha256:8f36385a28c8f6eb7394d903c9a7a2765b06f94266b32628389ee9e3e3d7e69d
+
+$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-arm64
+
+Name:      ghcr.io/thebinaryninja/tvapp2:development-arm64
+MediaType: application/vnd.docker.distribution.manifest.v2+json
+Digest:    sha256:c719ccb034946e3f0625003f25026d001768794e38a1ba8aafc9146291d548c5
 ```
 
 <br />
@@ -902,12 +945,18 @@ Digest:    sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c4
 > To get the correct sha256 digest, use:
 > - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
 > - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-amd64`
+> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-arm64`
 > 
 
 <br />
 <br />
 
 Once you have the correct `SHA256` hash digests; paste them into the command below. This command is where you can specify the real `--tag` that the public image will have. The previous tags were simply placeholders and no longer matter.
+
+<br />
+
+For the **stable** releases, use:
 
 ```shell
 # #
@@ -931,7 +980,7 @@ docker buildx imagetools create \
 
 <br />
 
-For the **development** release, use:
+For the **development** releases, use:
 
 ```shell
 # #
@@ -940,10 +989,17 @@ For the **development** release, use:
 
 docker buildx imagetools create \
   --tag ghcr.io/thebinaryninja/tvapp2:development \
-  sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda \
-  sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+  sha256:8f36385a28c8f6eb7394d903c9a7a2765b06f94266b32628389ee9e3e3d7e69d \
+  sha256:c719ccb034946e3f0625003f25026d001768794e38a1ba8aafc9146291d548c5
+
+[+] Building 0.1s (1/1) FINISHED
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:development   0.1s
 ```
 
+<br />
+
+> [!NOTE]
+> Compared to the **stable** release which has 4 tags; the **development** release only has one tag.
 
 <br />
 
@@ -970,8 +1026,8 @@ docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
 
 # Example 2 (using sha256 hash)
 docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
-    --amend ghcr.io/thebinaryninja/tvapp2@sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda \
-    --amend ghcr.io/thebinaryninja/tvapp2@sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+    --amend ghcr.io/thebinaryninja/tvapp2@sha256:0abe1b1c119959b3b1ccc23c56a7ee2c4c908c6aaef290d4ab2993859d807a3b \
+    --amend ghcr.io/thebinaryninja/tvapp2@sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c473
 
 # Push manifest changes to registry
 docker manifest push ghcr.io/thebinaryninja/tvapp2:latest
