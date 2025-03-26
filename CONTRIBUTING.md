@@ -447,16 +447,9 @@ We use the following packages for linting and prettier.
 
 You can add the following to your `package.json` file:
 
-```yml
-"devDependencies": {
-    "eslint": "9.17.0",
-    "eslint-plugin-chai-friendly": "^1.0.1",
-    "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-n": "17.15.0",
-    "eslint-plugin-promise": "7.2.1",
-    "@stylistic/eslint-plugin-js": "^3.1.0"
-},
-```
+https://github.com/TheBinaryNinja/tvapp2/blob/1c75f11e9f0506ad3dd05133fdafc3aeb87686ca/tvapp2/package.json#L81-L92
+
+
 
 <br />
 <br />
