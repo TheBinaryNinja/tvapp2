@@ -153,12 +153,12 @@ extra_javascript:
   - javascripts/tablesort.js
 nav:
   - Home: 'home.md'
-  - About TVApp2: 'about_tvapp2.md'
-  - About:
-    - License: 'about/license.md'
-    - Conventions: 'about/conventions.md'
-    - Tags: 'about/tags.md'
-    - Changelog: 'about/changelog.md'
+  - About: 'about.md'
+  - Resources:
+    - License: 'resources/license.md'
+    - Conventions: 'resources/conventions.md'
+    - Tags: 'resources/tags.md'
+    - Changelog: 'resources/changelog.md'
 
 plugins:
   - search:

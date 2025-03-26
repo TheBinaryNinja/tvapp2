@@ -81,9 +81,9 @@ class clr():
 #   these must be configured to a valid page path; otherwise the script will error
 # #
 
-PAGE_CHANGELOG ="about/changelog.md"
-PAGE_BACKERS = "about/backers.md"
-PAGE_CONVENTIONS = "about/conventions.md"
+PAGE_CHANGELOG ="resources/changelog.md"
+PAGE_BACKERS = "resources/backers.md"
+PAGE_CONVENTIONS = "resources/conventions.md"
 
 # #
 #   Hooks > on_page_markdown
