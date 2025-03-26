@@ -545,7 +545,7 @@ docker info | grep Username
 You should see your name:
 
 ```console
- Username: Aetherinox
+ Username: thebinaryninja
 ```
 
 <br />
@@ -615,7 +615,10 @@ docker buildx build \
 
 <br />
 
-After building the image, you can now use the image either with `docker run` or a `docker-compose.yml` file. These instructions are available elsewhere in this readme.
+After building the image, you can now use the image either with `docker run` or a `docker-compose.yml` file. These instructions are available by skipping down to the sections:
+
+- [Docker Run](#docker-run-1)
+- [Docker Compose](#docker-compose-1)
 
 <br />
 <br />
@@ -704,7 +707,7 @@ docker info | grep Username
 You should see your name:
 
 ```console
- Username: Aetherinox
+ Username: thebinaryninja
 ```
 
 <br />
@@ -734,7 +737,7 @@ Once the emulator is installed; we will now build two images. When building thes
 > | Dockerhub | `--tag thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag thebinaryninja/tvapp2:1.1.0-arm64` |
 > | Github (GHCR) | `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64` |
 > | Registry v2 | `--tag registry.domain.lan/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag registry.domain.lan/thebinaryninja/tvapp2:1.1.0-arm64` |
-> | Gitea | `--tag gitea.domain.lan/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag gitea.domain.lan/thebinaryninja/tvapp2:1.1.0-arm64` |
+> | Gitea | `--tag git.binaryninja.net/binaryninja/tvapp2:1.1.0-amd64`<br>`--tag git.binaryninja.net/binaryninja/tvapp2:1.1.0-arm64` |
 
 <br />
 
@@ -742,7 +745,7 @@ After we built these two images and push them to a registry online, we will merg
 
 <br />
 
-> ![WARNING]
+> [!WARNING]
 > In order to merge the two architecture images into one; you **MUST** `--push` each of the two docker images to a registry first. You cannot modify the manifests locally.
 
 <br />
@@ -860,6 +863,10 @@ After completing the `docker buildx` commands above; you should now have a few n
 
 <br />
 
+<p align="center"><img style="width: 70%;text-align: center;" src="docs/img/core/01.png"><br><sub><sup><b>Registry v2:</b> Newly created <code>amd64</code> and <code>arm64</code> images</sup></sub></p>
+
+<br />
+
 Next, we need to take these two images, and merge them into one so that both architectures are available without having to push separate images. You need to obtain the SHA256 hash digest for the `amd64` and `arm64` images. You can go to the registry where you uploaded the images and then copy them. Or you can run the following commands:
 
 ```shell
@@ -867,13 +874,13 @@ $ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
 
 Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
 MediaType: application/vnd.docker.distribution.manifest.v2+json
-Digest:    sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+Digest:    sha256:0abe1b1c119959b3b1ccc23c56a7ee2c4c908c6aaef290d4ab2993859d807a3b
 
 $ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
 
 Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
 MediaType: application/vnd.docker.distribution.manifest.v2+json
-Digest:    sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda
+Digest:    sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c473
 ```
 
 <br />
@@ -887,10 +894,15 @@ Digest:    sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75d
 > ```shell
 > $ docker images --all --no-trunc | grep thebinaryninja
 > 
-> ghcr.io/thebinaryninja/tvapp2   1.1.0-arm64        sha256:bb425429e98ab467fd91474701da2e5c0a7cb4a5f218a710d950eb0ff595486c   3 minutes ago   38.8MB
+> ghcr.io/thebinaryninja/tvapp2   1.1.0-arm64       sha256:48520ca15fed6483d2d5b79993126c311f833002345b0e12b8eceb5bf9def966   42 minutes ago   46MB
 > 
-> ghcr.io/thebinaryninja/tvapp2   1.1.0-amd64        sha256:dea4cb91379dba289d8d3e8842d4fb7b7857faa7f3d02d5b9a043a1ee58e61d7   4 minutes ago   27.3MB
+> ghcr.io/thebinaryninja/tvapp2   1.1.0-amd64       sha256:54a9b7d390199532d5667fae67120d77e2f459bd6108b27ce94e0cfec8f3c41f   43 minutes ago   45MB
 > ```
+>
+> To get the correct sha256 digest, use:
+> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
+> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+> 
 
 <br />
 <br />
@@ -907,8 +919,14 @@ docker buildx imagetools create \
   --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
   --tag ghcr.io/thebinaryninja/tvapp2:1 \
   --tag ghcr.io/thebinaryninja/tvapp2:latest \
-  sha256:2750bb927d8e4434d21c9f9941632310b98bbb2729389af236888ebbc4d75dda \
-  sha256:657fd74ebfa6577c069d1d74fec291b8b5309f762e7ad2d0d14b51de64a841b8
+  sha256:0abe1b1c119959b3b1ccc23c56a7ee2c4c908c6aaef290d4ab2993859d807a3b \
+  sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c473
+
+[+] Building 0.2s (4/4) FINISHED                                                                                                                                                                                                      
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:latest   0.2s
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1.1      0.2s
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1        0.2s
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1.1.0    0.2s
 ```
 
 <br />
@@ -963,9 +981,14 @@ docker manifest push ghcr.io/thebinaryninja/tvapp2:latest
 
 If you go back to your registry; you should now see multiple new entries, all with different tags. Two of the images are your old `amd64` and `arm64` images, and then you should have your official one with the four tags specified above. You can delete the two original images if you do not want them.
 
+<p align="center"><img style="width: 70%;text-align: center;" src="docs/img/core/02.png"><br><sub><sup><b>Registry v2:</b> Existing <code>amd64</code> and <code>arm64</code> images combined into a single docker image with multiple architectures.</sup></sub></p>
+
+<br />
 <br />
 
-<p align="center"><img style="width: 60%;text-align: center;" src="https://raw.githubusercontent.com/Aetherinox/docker-base-alpine/docker/alpine-base/docs/readme/img/02.jpg"><br><sub><sup><b>Registry v2:</b> Newly created <code>amd64</code> and <code>arm64</code> images, and merged containers with both architectures</sup></sub></p>
+If you are pushing to Github's GHCR; the interface will look different, as Github merges all tags into a single listing, instead of Registry v2 listing each tag on its own:
+
+<p align="center"><img style="width: 70%;text-align: center;" src="docs/img/core/03.png"><br><sub><sup><b>Github GHCR:</b> Existing <code>amd64</code> and <code>arm64</code> images combined into a single docker image with multiple architectures.</sup></sub></p>
 
 <br />
 <br />
@@ -1010,7 +1033,7 @@ The run command above has several variables you must specify:
 | --- | --- |
 | `--VERSION=1.X.X` | The version to assign to the docker image |
 | `--BUILDDATE=20250325` | The date to assign to the docker image. <br /> Date format: `YYYYMMDD` |
-| `--ARCH=amd64` | Architecture for image<br /> Options: `amd64`, `arm64` |
+| `--ARCH=amd64` | Architecture for image<br /> <sub><sup>Options:</sup></sub> `amd64`, `arm64` |
 
 <br />
 
