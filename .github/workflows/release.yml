@@ -243,11 +243,12 @@ jobs:
             #   Release › Install package via NPM
             # #
 
-            - name: '🪪 NPM › Install'
+            - name: '🪪 NPM › Install & Lint'
               id: task_release_npm_install
               working-directory: ./tvapp2
               run: |
                   npm ci
+                  npm run lint
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.SELF_TOKEN_CL }}
 
@@ -426,6 +427,9 @@ jobs:
                   zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip SHA256SUMS.txt
                   ls
 
+            # #
+            #   Release › Generate Tags
+            # #
 
             - name: '📝 Changelog › Pre Setup (Categorized Commits)'
               id: task_release_changelog_categorized_sha_set
@@ -542,7 +546,7 @@ jobs:
             #   Release › List Tree
             # #
 
-            - name: '⚙️ Debug › Clean Dist Folder'
+            - name: '⚙️ Debug › Tree Listing'
               id: task_release_debug_tree
               run: |
                   tree

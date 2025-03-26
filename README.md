@@ -47,12 +47,12 @@
     - [Docker Run](#docker-run)
     - [Docker Compose](#docker-compose)
   - [How It Works](#how-it-works)
-- [Building `tvapp` Image](#building-tvapp-image)
+- [Building `TVApp2` Image](#building-tvapp2-image)
   - [How It Works](#how-it-works-1)
   - [Before Building](#before-building)
     - [LF over CRLF](#lf-over-crlf)
     - [Set `+x / 0755` Permissions](#set-x--0755-permissions)
-  - [Build `tvapp` Image](#build-tvapp-image)
+  - [Build Images](#build-images)
     - [Build Single Architecture](#build-single-architecture)
       - [amd64](#amd64)
       - [arm64](#arm64)
@@ -275,7 +275,7 @@ C(XMLTV-EPG) ---> E{Pull Dynamic EPG}
 
 <br />
 
-## Building `tvapp` Image
+## Building `TVApp2` Image
 
 These instructions outline how the TVApp2 docker image is set up, and how to build your own TVApp2 docker image.
 
@@ -289,7 +289,7 @@ The TVApp2 application requires one dependency docker image, which is utilized a
 
 <br />
 
-This base Alpine image contains [s6-overlay](https://github.com/just-containers/s6-overlay) and comes with several features such as plugins, service management, migration tools, etc.
+This base Alpine image contains [📦 s6-overlay](https://github.com/just-containers/s6-overlay) and comes with several features such as plugins, service management, migration tools, etc.
 
 <br />
 
@@ -432,7 +432,7 @@ sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
 
 <br />
 
-### Build `tvapp` Image
+### Build Images
 
 After completing the steps above; we will now build the [🔆 gitea:binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2) image.
 
