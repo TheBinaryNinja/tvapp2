@@ -43,13 +43,55 @@ run-name: "📒 Docs › Build"
 # #
 
 on:
+
+    # #
+    #   Trigger › Release
+    #
+    #   update documentation every time a release is made
+    # #
+
     release:
         types:
             - published
+
+    # #
+    #   Trigger › Push
+    #
+    #   update documentation every time a file in docs/ folder is modified
+    # #
+
     push:
         paths:
             - docs/**
+
+    # #
+    #   Trigger › Workflow Dispatch
+    #
+    #   If any values are not provided, will use fallback env variable
+    # #
+
     workflow_dispatch:
+        inputs:
+
+            # #
+            #   Image Name
+            #
+            #   used in github image path
+            #       ghcr.io/${{ env.IMAGE_GHCR_AUTHOR }}/${{ env.IMAGE_NAME }}
+            # #
+
+            WORKING_DIR:
+                description:    '📁 Docs Folder'
+                required:       true
+                default:        './docs/site'
+                type:           string
+
+    # #
+    #   Trigger › Cron
+    #
+    #   update documentation every X hours
+    # #
+
     schedule:
         - cron: "0 */12 * * *"
 
@@ -58,11 +100,12 @@ on:
 # #
 
 env:
-    ASSIGN_USER:                    Aetherinox
-    BOT_NAME_1:                     EuropaServ
-    BOT_NAME_2:                     BinaryServ
-    BOT_NAME_DEPENDABOT:            dependabot[bot]
-    BOT_NAME_RENOVATE:              renovate[bot]
+    WORKING_DIR:                ${{ github.event.inputs.WORKING_DIR || './docs/site' }}
+    ASSIGN_USER:                Aetherinox
+    BOT_NAME_1:                 EuropaServ
+    BOT_NAME_2:                 BinaryServ
+    BOT_NAME_DEPENDABOT:        dependabot[bot]
+    BOT_NAME_RENOVATE:          renovate[bot]
 
 # #
 #   jobs
@@ -106,7 +149,8 @@ jobs:
             #   Documentation › Setup Python
             # #
 
-            - name: "🐍 Setup Python"
+            - name: >-
+                🐍 Setup Python
               id: task_docs_python_setup
               uses: actions/setup-python@v5
               with:
@@ -141,12 +185,13 @@ jobs:
             #   Documentation › Deploy
             # #
 
-            - name: "💽 Deploy"
+            - name: >-
+                💽 Deploy
               id: task_docs_deploy
               uses: peaceiris/actions-gh-pages@v4
               with:
                   personal_token: ${{ secrets.ADMINSERV_TOKEN_CL }}
-                  publish_dir: ./docs/site
+                  publish_dir: "${{ env.WORKING_DIR }}"
 
 
             # #
