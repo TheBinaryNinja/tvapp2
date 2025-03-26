@@ -48,11 +48,8 @@
     ],
       "scripts": {
           "start": "node index.js",
-          "docker:build:amd64": "docker build --network=host --build-arg ARCH=amd64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version -t tvapp2:$npm_config_version-amd64 -f Dockerfile .",
-          "docker:build:arm64": "docker build --network=host --build-arg ARCH=arm64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:$npm_config_version-arm64 -f Dockerfile.aarch64 .",
-          "docker:buildx:amd64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --no-cache --pull --build-arg ARCH=amd64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version --platform=linux/amd64 --output type=docker --output type=docker .",
-          "docker:buildx:arm64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --no-cache --pull --build-arg ARCH=arm64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate -t tvapp2:latest -t tvapp2:$npm_config_version --platform=linux/arm64 --output type=docker --output type=docker .",
-          "env-version": "node -p require('./package.json').version;",
+          "docker:buildx:amd64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate --tag tvapp2:$npm_config_version-amd64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --pull .",
+          "docker:buildx:arm64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --build-arg ARCH=arm64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate --tag tvapp2:$npm_config_version-arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/arm64 --output type=docker --allow network.host --network host --no-cache --pull .",
           "contrib:add": "all-contributors add",
           "contrib:generate": "all-contributors generate",
           "root": "node root.js",
