@@ -14,8 +14,8 @@ start due to misconfigurations.
 
 ## TZ
 <!-- md:control env -->
-<!-- md:default `Etc/UTC` -->
 <!-- md:version stable-1.0.0 -->
+<!-- md:default `Etc/UTC` -->
 
 The `TZ` environment variable specifies the timezone that your docker container will
 utilize. This is useful for syncing your local time with console outputs such as
@@ -121,8 +121,8 @@ our logging system.
 
 ## WEB_IP
 <!-- md:control env -->
-<!-- md:default `0.0.0.0` -->
 <!-- md:version stable-1.0.0 -->
+<!-- md:default `0.0.0.0` -->
 
 The `WEB_IP` environment variable allows you to define what IP address will be
 bound to the TVApp2 docker image.
@@ -149,8 +149,8 @@ services:
 
 ## WEB_PORT
 <!-- md:control env -->
-<!-- md:default `4124` -->
 <!-- md:version stable-1.0.0 -->
+<!-- md:default `4124` -->
 
 The `WEB_PORT` environment variable allows you to define what port the TVApp2
 docker container will listen to.
@@ -177,8 +177,9 @@ services:
 
 ## URL_REPO
 <!-- md:control env -->
-<!-- md:default `https://git.binaryninja.net/binaryninja` -->
 <!-- md:version stable-1.0.0 -->
+<!-- md:default `https://git.binaryninja.net/binaryninja` -->
+<!-- md:flag dangerous -->
 
 The `URL_REPO` environment variable allows you to specify what Github repo is used to communicate 
 with in order to fetch IPTV data. This is used as an internal environment variable by the developers 
@@ -208,8 +209,9 @@ services:
 
 ## DIR_BUILD
 <!-- md:control env -->
-<!-- md:default `/usr/src/app` -->
 <!-- md:version stable-1.0.0 -->
+<!-- md:default `/usr/src/app` -->
+<!-- md:flag dangerous -->
 
 The `DIR_BUILD` environment variable specifies what local folder will be utilized
 by the TVApp2 docker container when the container builds the app.
@@ -236,8 +238,9 @@ services:
 
 ## DIR_RUN
 <!-- md:control env -->
-<!-- md:default `/usr/src/app` -->
 <!-- md:version stable-1.0.0 -->
+<!-- md:default `/usr/src/app` -->
+<!-- md:flag dangerous -->
 
 The `DIR_RUN` environment variable specifies what local folder will be utilized
 by the TVApp2 docker container when the container has built the app and placed it
@@ -265,8 +268,8 @@ services:
 
 ## STREAM_QUALITY
 <!-- md:control env -->
-<!-- md:default `hd` -->
 <!-- md:version stable-1.1.0 -->
+<!-- md:default `hd` -->
 
 The `STREAM_QUALITY` environment variable specifies the default stream quality that will 
 be used when you initiate a new channel to view.
@@ -300,8 +303,8 @@ services:
 
 ## FILE_PLAYLIST
 <!-- md:control env -->
-<!-- md:default `playlist.m3u8` -->
 <!-- md:version stable-1.1.0 -->
+<!-- md:default `playlist.m3u8` -->
 
 The `FILE_PLAYLIST` environment variable specifies the filename that will be utilized when
 your .m3u playlist file is generated.
@@ -329,8 +332,8 @@ services:
 
 ## FILE_EPG
 <!-- md:control env -->
-<!-- md:default `xmltv.xml` -->
 <!-- md:version stable-1.1.0 -->
+<!-- md:default `xmltv.xml` -->
 
 The `FILE_EPG` environment variable specifies the filename that will be utilized when
 your .xml EPG playlist file is generated.
@@ -358,8 +361,8 @@ services:
 
 ## FILE_GZIP
 <!-- md:control env -->
-<!-- md:default `xmltv.xml.gz` -->
 <!-- md:version stable-1.1.0 -->
+<!-- md:default `xmltv.xml.gz` -->
 
 The `FILE_GZIP` environment variable specifies the filename that will be utilized when
 a compressed `.gzip` is generated and when you download the file.
@@ -388,8 +391,8 @@ services:
 
 ## LOG_LEVEL
 <!-- md:control env -->
-<!-- md:default `4` -->
 <!-- md:version stable-1.1.0 -->
+<!-- md:default `4` -->
 
 The `LOG_LEVEL` environment variable allows you specify how deep logs should go
 when being output to your console.
