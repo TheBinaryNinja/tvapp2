@@ -7,8 +7,8 @@ tags:
 # About
 
 <figure markdown="span">
-    ![Image settings](https://raw.githubusercontent.com/TheBinaryNinja/tvapp2/main/docs/img/screenshots/01.png){ width="100%" }
-    <figcaption>TVApp2 Main Interest</figcaption>
+    ![Image settings](https://raw.githubusercontent.com/TheBinaryNinja/tvapp2/main/docs/img/screenshots/01.png){ width="60%" }
+    <figcaption>TVApp2 Main Interface</figcaption>
 </figure>
 
 <br />
@@ -22,7 +22,7 @@ tags:
 [![Downloads][github-downloads-img]][github-downloads-uri]
 [![Size][github-size-img]][github-size-img]
 [![Last Commit][github-commit-img]][github-commit-img]
-[![Contributors][contribs-all-img]](#contributors-)
+[![Contributors][contribs-all-img]](#contributors)
 <!-- prettier-ignore-end -->
 
 </p>
@@ -46,36 +46,6 @@ All channels contain multiple sources so that you have a reliable streaming expe
 
 Check out the following websites for additional resources for the TVApp2 docker image below.
 
-```embed
-url:            https://github.com/TheBinaryNinja/tvapp2
-image:          https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjFUDe-vdiprKpCsiLoRmfCdUq0WS5tqUR9fyEzJjQ0g&s
-name:           Github: TVApp2
-desc:           Official github repository for the TVApp2 docker container.
-favicon:        https://github.com/Aetherinox/mkdocs-link-embeds/assets/118329232/6433449b-2988-4da3-9d43-ff4c992a9fcf
-favicon_size:   25
-```
-
-<br />
-
-```embed
-url:            https://hub.docker.com/repository/docker/thebinaryninja/tvapp2/general
-image:          https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPt5TDzKi3PTTqLCyeXvnJ3Mj2y5speGcrvw&s
-name:           Dockerhub: TVApp2
-desc:           TVApp2 docker images hosted through Dockerhub.
-favicon:        https://github.com/Aetherinox/mkdocs-link-embeds/assets/118329232/6433449b-2988-4da3-9d43-ff4c992a9fcf
-favicon_size:   25
-```
-
-<br />
-
-```embed
-url:            https://git.binaryninja.net/BinaryNinja/
-image:          https://avatars.githubusercontent.com/u/200161462?s=400&u=1ce7cfadace57652a2a2f76ef2fd5751fccbbe77&v=4
-name:           Gitea: TVApp2
-desc:           Official TVApp2 docker image hosted on Gitea.
-favicon:        https://github.com/Aetherinox/mkdocs-link-embeds/assets/118329232/6433449b-2988-4da3-9d43-ff4c992a9fcf
-favicon_size:   25
-```
 
 <br />
 
@@ -112,6 +82,67 @@ The following is a small list of the features available with the TVApp2 containe
 - Small docker image size; based on Alpine 3.x which averages `40MB`.
 - Compatible with architectures `amd64` and `arm64/aarm64`.
 - Example configurations for 3rd party apps such as Traefik and Authentik.
+
+<br />
+
+---
+
+<br />
+
+## ✨ Contributors
+
+We are always looking for contributors. If you feel that you can provide something useful to Gistr, then we'd love to review your suggestion. Before submitting your contribution, please review the following resources:
+
+- [Pull Request Procedure](https://github.com/TheBinaryNinja/tvapp2/blob/main/.github/PULL_REQUEST_TEMPLATE.md)
+- [Contributor Policy](https://github.com/TheBinaryNinja/tvapp2/blob/main/CONTRIBUTING.md)
+
+<br />
+
+Want to help but can't write code?
+- Review [active questions by our community](https://github.com/TheBinaryNinja/tvapp2/labels/help%20wanted) and answer the ones you know.
+
+<br />
+
+<div align="center" markdown="1">
+
+![Alt](https://repobeats.axiom.co/api/embed/fb7e11f0bc61b125f923a0ee3eb0bd8aba79b8d5.svg "Repobeats analytics image")
+
+</div>
+
+<br />
+
+The following people have helped get this project going:
+
+<br />
+
+<div align="center" markdown="1">
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![Contributors][contribs-all-img]](#contributors)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+    <tbody>
+        <tr>
+            <td align="center" valign="top"><a href="https://github.com/Aetherinox">
+                <img src="https://avatars.githubusercontent.com/u/118329232?v=4?s=40" width="80px;" alt="Aetherinox"/><br /><sub><b>Aetherinox</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=Aetherinox" title="Code">💻</a>
+            </td>
+            <td align="center" valign="top"><a href="https://github.com/iFlip721">
+                <img src="https://avatars.githubusercontent.com/u/28721588?v=4" width="80px;" alt="iFlip721"/><br /><sub><b>iFlip721</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=iFlip721" title="Code">💻</a>
+            </td>
+            <td align="center" valign="top"><a href="https://github.com/Nvmdfth">
+                <img src="https://avatars.githubusercontent.com/u/32874812?v=4" width="80px;" alt="Nvmdfth"/><br /><sub><b>Optx</b></sub></a><br /><a href="https://github.com/TheBinaryNinja/tvapp2/commits?author=Nvmdfth" title="Code">💻</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 <br />
 

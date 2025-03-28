@@ -17,7 +17,7 @@ tags:
 
 ### <!-- md:version stable- --> 1.0.0 <small>Feb 24, 2025</small> { id="1.0.0" }
 
-
+- Initial release
 
 <br />
 
