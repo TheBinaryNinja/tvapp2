@@ -172,6 +172,7 @@ jobs:
                   pip install mkdocs
                   pip install mkdocs-material
                   pip install mike
+                  pip install external-markdown
                   pip install mkdocs-git-committers-plugin-2
                   pip install mkdocs-encryptcontent-plugin
                   pip install mkdocs-redirects mkdocs-glightbox pymdown-extensions mkdocs-git-revision-date-localized-plugin mkdocs-git-authors-plugin mkdocs-link-embeds-plugin
