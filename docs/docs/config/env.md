@@ -7,7 +7,7 @@ tags:
 # Environment Variables
 
 Environment variables allow you to modify how TVApp2 functions within a docker container. Ensure that
-you understand the setting you are changing before you apply the change, otherwise, TVApp2 may fail to
+you understand the setting you are changing before you modify these values, otherwise, TVApp2 may fail to
 start due to misconfigurations.
 
 <br />
@@ -415,9 +415,7 @@ when being output to your console.
                 - LOG_LEVEL=4 # (1)
     ```
 
-    1.  :information: Changing this file only changes the filename locally for
-        generation and downloading. It does not affect the server-side fetching
-        mechanism.
+    1.  :information: The default log level is `4` (info).
 
 === "Logging Options"
 
