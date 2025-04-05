@@ -4,35 +4,34 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Connection = void 0;
+var _eventEmitter = require("./eventEmitter");
+var _android = require("./android");
+var _artifact = require("./artifact");
 var _browser = require("./browser");
 var _browserContext = require("./browserContext");
 var _browserType = require("./browserType");
+var _cdpSession = require("./cdpSession");
 var _channelOwner = require("./channelOwner");
+var _clientInstrumentation = require("./clientInstrumentation");
+var _dialog = require("./dialog");
+var _electron = require("./electron");
 var _elementHandle = require("./elementHandle");
+var _errors = require("./errors");
+var _fetch = require("./fetch");
 var _frame = require("./frame");
 var _jsHandle = require("./jsHandle");
+var _jsonPipe = require("./jsonPipe");
+var _localUtils = require("./localUtils");
 var _network = require("./network");
 var _page = require("./page");
-var _worker = require("./worker");
-var _dialog = require("./dialog");
-var _errors = require("./errors");
-var _cdpSession = require("./cdpSession");
 var _playwright = require("./playwright");
-var _electron = require("./electron");
-var _stream = require("./stream");
-var _writableStream = require("./writableStream");
-var _debugLogger = require("../utils/debugLogger");
 var _selectors = require("./selectors");
-var _android = require("./android");
-var _artifact = require("./artifact");
-var _events = require("events");
-var _jsonPipe = require("./jsonPipe");
-var _fetch = require("./fetch");
-var _localUtils = require("./localUtils");
+var _stream = require("./stream");
 var _tracing = require("./tracing");
+var _worker = require("./worker");
+var _writableStream = require("./writableStream");
 var _validator = require("../protocol/validator");
-var _clientInstrumentation = require("./clientInstrumentation");
-var _utils = require("../utils");
+var _stackTrace = require("../utils/isomorphic/stackTrace");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -60,9 +59,9 @@ class Root extends _channelOwner.ChannelOwner {
   }
 }
 class DummyChannelOwner extends _channelOwner.ChannelOwner {}
-class Connection extends _events.EventEmitter {
-  constructor(localUtils, instrumentation) {
-    super();
+class Connection extends _eventEmitter.EventEmitter {
+  constructor(platform, localUtils, instrumentation, headers = []) {
+    super(platform);
     this._objects = new Map();
     this.onmessage = message => {};
     this._lastId = 0;
@@ -76,9 +75,12 @@ class Connection extends _events.EventEmitter {
     this.toImpl = void 0;
     this._tracingCount = 0;
     this._instrumentation = void 0;
+    // Used from @playwright/test fixtures -> TODO remove?
+    this.headers = void 0;
     this._instrumentation = instrumentation || (0, _clientInstrumentation.createInstrumentation)();
     this._localUtils = localUtils;
     this._rootObject = new Root(this);
+    this.headers = headers;
   }
   markAsRemote() {
     this._isRemote = true;
@@ -117,9 +119,9 @@ class Connection extends _events.EventEmitter {
       method,
       params
     };
-    if (_debugLogger.debugLogger.isEnabled('channel')) {
+    if (this._platform.isLogEnabled('channel')) {
       // Do not include metadata in debug logs to avoid noise.
-      _debugLogger.debugLogger.log('channel', 'SEND> ' + JSON.stringify(message));
+      this._platform.log('channel', 'SEND> ' + JSON.stringify(message));
     }
     const location = frames[0] ? {
       file: frames[0].file,
@@ -132,7 +134,7 @@ class Connection extends _events.EventEmitter {
       internal: !apiName,
       stepId
     };
-    if (this._tracingCount && frames && type !== 'LocalUtils') (_this$_localUtils = this._localUtils) === null || _this$_localUtils === void 0 || _this$_localUtils._channel.addStackToTracingNoReply({
+    if (this._tracingCount && frames && type !== 'LocalUtils') (_this$_localUtils = this._localUtils) === null || _this$_localUtils === void 0 || _this$_localUtils.addStackToTracingNoReply({
       callData: {
         stack: frames,
         id
@@ -140,7 +142,7 @@ class Connection extends _events.EventEmitter {
     }).catch(() => {});
     // We need to exit zones before calling into the server, otherwise
     // when we receive events from the server, we would be in an API zone.
-    _utils.zones.empty().run(() => this.onmessage({
+    this._platform.zones.empty.run(() => this.onmessage({
       ...message,
       metadata
     }));
@@ -151,6 +153,13 @@ class Connection extends _events.EventEmitter {
       type,
       method
     }));
+  }
+  _validatorFromWireContext() {
+    return {
+      tChannelImpl: this._tChannelImplFromWire.bind(this),
+      binary: this._rawBuffers ? 'buffer' : 'fromBase64',
+      isUnderTest: () => this._platform.isUnderTest()
+    };
   }
   dispatch(message) {
     if (this._closedError) return;
@@ -164,24 +173,21 @@ class Connection extends _events.EventEmitter {
       log
     } = message;
     if (id) {
-      if (_debugLogger.debugLogger.isEnabled('channel')) _debugLogger.debugLogger.log('channel', '<RECV ' + JSON.stringify(message));
+      if (this._platform.isLogEnabled('channel')) this._platform.log('channel', '<RECV ' + JSON.stringify(message));
       const callback = this._callbacks.get(id);
       if (!callback) throw new Error(`Cannot find command to respond: ${id}`);
       this._callbacks.delete(id);
       if (error && !result) {
         const parsedError = (0, _errors.parseError)(error);
-        (0, _utils.rewriteErrorMessage)(parsedError, parsedError.message + (0, _utils.formatCallLog)(log));
+        (0, _stackTrace.rewriteErrorMessage)(parsedError, parsedError.message + formatCallLog(this._platform, log));
         callback.reject(parsedError);
       } else {
         const validator = (0, _validator.findValidator)(callback.type, callback.method, 'Result');
-        callback.resolve(validator(result, '', {
-          tChannelImpl: this._tChannelImplFromWire.bind(this),
-          binary: this._rawBuffers ? 'buffer' : 'fromBase64'
-        }));
+        callback.resolve(validator(result, '', this._validatorFromWireContext()));
       }
       return;
     }
-    if (_debugLogger.debugLogger.isEnabled('channel')) _debugLogger.debugLogger.log('channel', '<EVENT ' + JSON.stringify(message));
+    if (this._platform.isLogEnabled('channel')) this._platform.log('channel', '<EVENT ' + JSON.stringify(message));
     if (method === '__create__') {
       this._createRemoteObject(guid, params.type, params.guid, params.initializer);
       return;
@@ -199,10 +205,7 @@ class Connection extends _events.EventEmitter {
       return;
     }
     const validator = (0, _validator.findValidator)(object._type, method, 'Event');
-    object._channel.emit(method, validator(params, '', {
-      tChannelImpl: this._tChannelImplFromWire.bind(this),
-      binary: this._rawBuffers ? 'buffer' : 'fromBase64'
-    }));
+    object._channel.emit(method, validator(params, '', this._validatorFromWireContext()));
   }
   close(cause) {
     if (this._closedError) return;
@@ -225,10 +228,7 @@ class Connection extends _events.EventEmitter {
     if (!parent) throw new Error(`Cannot find parent object ${parentGuid} to create ${guid}`);
     let result;
     const validator = (0, _validator.findValidator)(type, '', 'Initializer');
-    initializer = validator(initializer, '', {
-      tChannelImpl: this._tChannelImplFromWire.bind(this),
-      binary: this._rawBuffers ? 'buffer' : 'fromBase64'
-    });
+    initializer = validator(initializer, '', this._validatorFromWireContext());
     switch (type) {
       case 'Android':
         result = new _android.Android(parent, type, guid, initializer);
@@ -331,3 +331,10 @@ class Connection extends _events.EventEmitter {
   }
 }
 exports.Connection = Connection;
+function formatCallLog(platform, log) {
+  if (!log || !log.some(l => !!l)) return '';
+  return `
+Call log:
+${platform.colors.dim(log.join('\n'))}
+`;
+}

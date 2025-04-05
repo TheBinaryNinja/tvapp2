@@ -4,12 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AdbBackend = void 0;
-var _utilsBundle = require("../../utilsBundle");
-var net = _interopRequireWildcard(require("net"));
 var _events = require("events");
-var _utils = require("../../utils");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+var _net = _interopRequireDefault(require("net"));
+var _assert = require("../../utils/isomorphic/assert");
+var _crypto = require("../utils/crypto");
+var _utilsBundle = require("../../utilsBundle");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright Microsoft Corporation. All rights reserved.
  *
@@ -66,7 +66,7 @@ class AdbDevice {
 }
 async function runCommand(command, host = '127.0.0.1', port = 5037, serial) {
   (0, _utilsBundle.debug)('pw:adb:runCommand')(command, serial);
-  const socket = new BufferedSocketWrapper(command, net.createConnection({
+  const socket = new BufferedSocketWrapper(command, _net.default.createConnection({
     host,
     port
   }));
@@ -74,11 +74,11 @@ async function runCommand(command, host = '127.0.0.1', port = 5037, serial) {
     if (serial) {
       await socket.write(encodeMessage(`host:transport:${serial}`));
       const status = await socket.read(4);
-      (0, _utils.assert)(status.toString() === 'OKAY', status.toString());
+      (0, _assert.assert)(status.toString() === 'OKAY', status.toString());
     }
     await socket.write(encodeMessage(command));
     const status = await socket.read(4);
-    (0, _utils.assert)(status.toString() === 'OKAY', status.toString());
+    (0, _assert.assert)(status.toString() === 'OKAY', status.toString());
     let commandOutput;
     if (!command.startsWith('shell:')) {
       const remainingLength = parseInt((await socket.read(4)).toString(), 16);
@@ -92,18 +92,18 @@ async function runCommand(command, host = '127.0.0.1', port = 5037, serial) {
   }
 }
 async function open(command, host = '127.0.0.1', port = 5037, serial) {
-  const socket = new BufferedSocketWrapper(command, net.createConnection({
+  const socket = new BufferedSocketWrapper(command, _net.default.createConnection({
     host,
     port
   }));
   if (serial) {
     await socket.write(encodeMessage(`host:transport:${serial}`));
     const status = await socket.read(4);
-    (0, _utils.assert)(status.toString() === 'OKAY', status.toString());
+    (0, _assert.assert)(status.toString() === 'OKAY', status.toString());
   }
   await socket.write(encodeMessage(command));
   const status = await socket.read(4);
-  (0, _utils.assert)(status.toString() === 'OKAY', status.toString());
+  (0, _assert.assert)(status.toString() === 'OKAY', status.toString());
   return socket;
 }
 function encodeMessage(message) {
@@ -114,7 +114,7 @@ function encodeMessage(message) {
 class BufferedSocketWrapper extends _events.EventEmitter {
   constructor(command, socket) {
     super();
-    this.guid = (0, _utils.createGuid)();
+    this.guid = (0, _crypto.createGuid)();
     this._socket = void 0;
     this._buffer = Buffer.from([]);
     this._isSocket = false;
@@ -154,7 +154,7 @@ class BufferedSocketWrapper extends _events.EventEmitter {
   }
   async read(length) {
     await this._connectPromise;
-    (0, _utils.assert)(!this._isSocket, 'Can not read by length in socket mode');
+    (0, _assert.assert)(!this._isSocket, 'Can not read by length in socket mode');
     while (this._buffer.length < length) await new Promise(f => this._notifyReader = f);
     const result = this._buffer.slice(0, length);
     this._buffer = this._buffer.slice(length);
@@ -166,7 +166,7 @@ class BufferedSocketWrapper extends _events.EventEmitter {
     return this._buffer;
   }
   becomeSocket() {
-    (0, _utils.assert)(!this._buffer.length);
+    (0, _assert.assert)(!this._buffer.length);
     this._isSocket = true;
   }
 }

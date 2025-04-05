@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.kPageProxyMessageReceived = exports.kBrowserCloseMessageId = exports.WKSession = exports.WKConnection = void 0;
 var _events = require("events");
 var _utils = require("../../utils");
-var _debugLogger = require("../../utils/debugLogger");
+var _debugLogger = require("../utils/debugLogger");
 var _helper = require("../helper");
 var _protocolError = require("../protocolError");
 /**

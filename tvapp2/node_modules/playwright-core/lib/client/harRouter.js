@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.HarRouter = void 0;
-var _debugLogger = require("../utils/debugLogger");
-let _Symbol$asyncDispose;
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -21,13 +19,13 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-_Symbol$asyncDispose = Symbol.asyncDispose;
+
 class HarRouter {
   static async create(localUtils, file, notFoundAction, options) {
     const {
       harId,
       error
-    } = await localUtils._channel.harOpen({
+    } = await localUtils.harOpen({
       file
     });
     if (error) throw new Error(error);
@@ -45,7 +43,7 @@ class HarRouter {
   }
   async _handle(route) {
     const request = route.request();
-    const response = await this._localUtils._channel.harLookup({
+    const response = await this._localUtils.harLookup({
       harId: this._harId,
       url: request.url(),
       method: request.method(),
@@ -54,7 +52,7 @@ class HarRouter {
       isNavigationRequest: request.isNavigationRequest()
     });
     if (response.action === 'redirect') {
-      _debugLogger.debugLogger.log('api', `HAR: ${route.request().url()} redirected to ${response.redirectURL}`);
+      route._platform.log('api', `HAR: ${route.request().url()} redirected to ${response.redirectURL}`);
       await route._redirectNavigationRequest(response.redirectURL);
       return;
     }
@@ -72,7 +70,7 @@ class HarRouter {
       });
       return;
     }
-    if (response.action === 'error') _debugLogger.debugLogger.log('api', 'HAR: ' + response.message);
+    if (response.action === 'error') route._platform.log('api', 'HAR: ' + response.message);
     // Report the error, but fall through to the default handler.
 
     if (this._notFoundAction === 'abort') {
@@ -87,11 +85,11 @@ class HarRouter {
   async addPageRoute(page) {
     await page.route(this._options.urlMatch || '**/*', route => this._handle(route));
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.dispose();
   }
   dispose() {
-    this._localUtils._channel.harClose({
+    this._localUtils.harClose({
       harId: this._harId
     }).catch(() => {});
   }

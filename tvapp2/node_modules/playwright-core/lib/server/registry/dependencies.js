@@ -11,19 +11,19 @@ exports.transformCommandsForRoot = transformCommandsForRoot;
 exports.validateDependenciesLinux = validateDependenciesLinux;
 exports.validateDependenciesWindows = validateDependenciesWindows;
 exports.writeDockerVersion = writeDockerVersion;
+var childProcess = _interopRequireWildcard(require("child_process"));
 var _fs = _interopRequireDefault(require("fs"));
+var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
-var os = _interopRequireWildcard(require("os"));
-var _child_process = _interopRequireDefault(require("child_process"));
-var utils = _interopRequireWildcard(require("../../utils"));
-var _spawnAsync = require("../../utils/spawnAsync");
-var _hostPlatform = require("../../utils/hostPlatform");
-var _ = require(".");
 var _nativeDeps = require("./nativeDeps");
-var _userAgent = require("../../utils/userAgent");
+var _ascii = require("../utils/ascii");
+var _hostPlatform = require("../utils/hostPlatform");
+var _spawnAsync = require("../utils/spawnAsync");
+var _userAgent = require("../utils/userAgent");
+var _ = require(".");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -73,8 +73,8 @@ const checkExecutable = filePath => {
   return _fs.default.promises.access(filePath, _fs.default.constants.X_OK).then(() => true).catch(() => false);
 };
 function isSupportedWindowsVersion() {
-  if (os.platform() !== 'win32' || os.arch() !== 'x64') return false;
-  const [major, minor] = os.release().split('.').map(token => parseInt(token, 10));
+  if (_os.default.platform() !== 'win32' || _os.default.arch() !== 'x64') return false;
+  const [major, minor] = _os.default.release().split('.').map(token => parseInt(token, 10));
   // This is based on: https://stackoverflow.com/questions/42524606/how-to-get-windows-version-using-node-js/44916050#44916050
   // The table with versions is taken from: https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw#remarks
   // Windows 7 is not supported and is encoded as `6.1`.
@@ -124,7 +124,7 @@ async function installDependenciesLinux(targets, dryRun) {
     return;
   }
   if (elevatedPermissions) console.log('Switching to root user to install dependencies...'); // eslint-disable-line no-console
-  const child = _child_process.default.spawn(command, args, {
+  const child = childProcess.spawn(command, args, {
     stdio: 'inherit'
   });
   await new Promise((resolve, reject) => {
@@ -192,7 +192,7 @@ async function validateDependenciesLinux(sdkLanguage, linuxLddDirectories, dlOpe
       missingDeps.delete(missingDep);
     }
   }
-  const maybeSudo = (_process$getuid = (_process = process).getuid) !== null && _process$getuid !== void 0 && _process$getuid.call(_process) && os.platform() !== 'win32' ? 'sudo ' : '';
+  const maybeSudo = (_process$getuid = (_process = process).getuid) !== null && _process$getuid !== void 0 && _process$getuid.call(_process) && _os.default.platform() !== 'win32' ? 'sudo ' : '';
   const dockerInfo = readDockerVersionSync();
   const errorLines = [`Host system is missing dependencies to run browsers.`];
   // Ignore patch versions when comparing docker container version and Playwright version:
@@ -213,10 +213,10 @@ async function validateDependenciesLinux(sdkLanguage, linuxLddDirectories, dlOpe
     // Print missing libraries only:
     errorLines.push(...[`Missing libraries:`, ...[...allMissingDeps].map(dep => '    ' + dep)]);
   }
-  throw new Error('\n' + utils.wrapInASCIIBox(errorLines.join('\n'), 1));
+  throw new Error('\n' + (0, _ascii.wrapInASCIIBox)(errorLines.join('\n'), 1));
 }
 function isSharedLib(basename) {
-  switch (os.platform()) {
+  switch (_os.default.platform()) {
     case 'linux':
       return basename.endsWith('.so') || basename.includes('.so.');
     case 'win32':

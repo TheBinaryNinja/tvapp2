@@ -7,7 +7,7 @@ exports.SdkObject = void 0;
 exports.createInstrumentation = createInstrumentation;
 exports.serverSideCallMetadata = serverSideCallMetadata;
 var _events = require("events");
-var _utils = require("../utils");
+var _crypto = require("./utils/crypto");
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
  *
@@ -30,7 +30,7 @@ class SdkObject extends _events.EventEmitter {
     this.guid = void 0;
     this.attribution = void 0;
     this.instrumentation = void 0;
-    this.guid = guid || `${guidPrefix || ''}@${(0, _utils.createGuid)()}`;
+    this.guid = guid || `${guidPrefix || ''}@${(0, _crypto.createGuid)()}`;
     this.setMaxListeners(0);
     this.attribution = {
       ...parent.attribution

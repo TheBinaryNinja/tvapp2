@@ -4,11 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Playwright = void 0;
-var _errors = require("./errors");
 var _android = require("./android");
+var _browser = require("./browser");
 var _browserType = require("./browserType");
 var _channelOwner = require("./channelOwner");
 var _electron = require("./electron");
+var _errors = require("./errors");
 var _fetch = require("./fetch");
 var _selectors = require("./selectors");
 /**
@@ -42,6 +43,11 @@ class Playwright extends _channelOwner.ChannelOwner {
     this.selectors = void 0;
     this.request = void 0;
     this.errors = void 0;
+    // Instrumentation.
+    this._defaultLaunchOptions = void 0;
+    this._defaultContextOptions = void 0;
+    this._defaultContextTimeout = void 0;
+    this._defaultContextNavigationTimeout = void 0;
     this.request = new _fetch.APIRequest(this);
     this.chromium = _browserType.BrowserType.from(initializer.chromium);
     this.chromium._playwright = this;
@@ -75,6 +81,20 @@ class Playwright extends _channelOwner.ChannelOwner {
   }
   static from(channel) {
     return channel._object;
+  }
+  _browserTypes() {
+    return [this.chromium, this.firefox, this.webkit, this._bidiChromium, this._bidiFirefox];
+  }
+  _preLaunchedBrowser() {
+    const browser = _browser.Browser.from(this._initializer.preLaunchedBrowser);
+    browser._browserType = this[browser._name];
+    return browser;
+  }
+  _allContexts() {
+    return this._browserTypes().flatMap(type => [...type._contexts]);
+  }
+  _allPages() {
+    return this._allContexts().flatMap(context => context.pages());
   }
 }
 exports.Playwright = Playwright;

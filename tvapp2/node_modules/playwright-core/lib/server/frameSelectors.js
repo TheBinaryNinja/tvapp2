@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FrameSelectors = void 0;
-var _selectorParser = require("../utils/isomorphic/selectorParser");
 var _utils = require("../utils");
+var _selectorParser = require("../utils/isomorphic/selectorParser");
 /**
  * Copyright (c) Microsoft Corporation.
  *

@@ -4,12 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PlaywrightServer = void 0;
-var _playwright = require("../server/playwright");
 var _playwrightConnection = require("./playwrightConnection");
-var _semaphore = require("../utils/semaphore");
-var _debugLogger = require("../utils/debugLogger");
-var _utils = require("../utils");
-var _wsServer = require("../utils/wsServer");
+var _playwright = require("../server/playwright");
+var _debugLogger = require("../server/utils/debugLogger");
+var _semaphore = require("../utils/isomorphic/semaphore");
+var _wsServer = require("../server/utils/wsServer");
+var _ascii = require("../server/utils/ascii");
+var _userAgent = require("../server/utils/userAgent");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -39,7 +40,7 @@ class PlaywrightServer {
     const reuseBrowserSemaphore = new _semaphore.Semaphore(1);
     this._wsServer = new _wsServer.WSServer({
       onUpgrade: (request, socket) => {
-        const uaError = (0, _utils.userAgentVersionMatchesErrorMessage)(request.headers['user-agent'] || '');
+        const uaError = userAgentVersionMatchesErrorMessage(request.headers['user-agent'] || '');
         if (uaError) return {
           error: `HTTP/${request.httpVersion} 428 Precondition Required\r\n\r\n${uaError}`
         };
@@ -109,3 +110,15 @@ class PlaywrightServer {
   }
 }
 exports.PlaywrightServer = PlaywrightServer;
+function userAgentVersionMatchesErrorMessage(userAgent) {
+  const match = userAgent.match(/^Playwright\/(\d+\.\d+\.\d+)/);
+  if (!match) {
+    // Cannot parse user agent - be lax.
+    return;
+  }
+  const received = match[1].split('.').slice(0, 2).join('.');
+  const expected = (0, _userAgent.getPlaywrightVersion)(true);
+  if (received !== expected) {
+    return (0, _ascii.wrapInASCIIBox)([`Playwright version mismatch:`, `  - server version: v${expected}`, `  - client version: v${received}`, ``, `If you are using VSCode extension, restart VSCode.`, ``, `If you are connecting to a remote service,`, `keep your local Playwright version in sync`, `with the remote service version.`, ``, `<3 Playwright Team`].join('\n'), 1);
+  }
+}

@@ -4,9 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Waiter = void 0;
-var _stackTrace = require("../utils/stackTrace");
 var _errors = require("./errors");
-var _utils = require("../utils");
+var _stackTrace = require("../utils/isomorphic/stackTrace");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -33,9 +32,9 @@ class Waiter {
     this._waitId = void 0;
     this._error = void 0;
     this._savedZone = void 0;
-    this._waitId = (0, _utils.createGuid)();
+    this._waitId = channelOwner._platform.createGuid();
     this._channelOwner = channelOwner;
-    this._savedZone = _utils.zones.current().without('apiZone');
+    this._savedZone = channelOwner._platform.zones.current().pop();
     this._channelOwner._channel.waitForEventInfo({
       info: {
         waitId: this._waitId,
@@ -111,8 +110,8 @@ class Waiter {
           phase: 'log',
           message: s
         }
-      }).catch(() => {});
-    }, true);
+      });
+    }, true).catch(() => {});
   }
   _rejectOn(promise, dispose) {
     this._failures.push(promise);

@@ -4,15 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.BrowserServerLauncherImpl = void 0;
-var _utilsBundle = require("./utilsBundle");
-var _clientHelper = require("./client/clientHelper");
-var _utils = require("./utils");
-var _instrumentation = require("./server/instrumentation");
-var _playwright = require("./server/playwright");
+var _socksProxy = require("./server/utils/socksProxy");
 var _playwrightServer = require("./remote/playwrightServer");
 var _helper = require("./server/helper");
-var _stackTrace = require("./utils/stackTrace");
-var _socksProxy = require("./common/socksProxy");
+var _instrumentation = require("./server/instrumentation");
+var _playwright = require("./server/playwright");
+var _crypto = require("./server/utils/crypto");
+var _stackTrace = require("./utils/isomorphic/stackTrace");
+var _utilsBundle = require("./utilsBundle");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -49,13 +48,13 @@ class BrowserServerLauncherImpl {
       ...options,
       ignoreDefaultArgs: Array.isArray(options.ignoreDefaultArgs) ? options.ignoreDefaultArgs : undefined,
       ignoreAllDefaultArgs: !!options.ignoreDefaultArgs && !Array.isArray(options.ignoreDefaultArgs),
-      env: options.env ? (0, _clientHelper.envObjectToArray)(options.env) : undefined
+      env: options.env ? envObjectToArray(options.env) : undefined
     }, toProtocolLogger(options.logger)).catch(e => {
       const log = _helper.helper.formatBrowserLogs(metadata.log);
       (0, _stackTrace.rewriteErrorMessage)(e, `${e.message} Failed to launch browser.${log}`);
       throw e;
     });
-    const path = options.wsPath ? options.wsPath.startsWith('/') ? options.wsPath : `/${options.wsPath}` : `/${(0, _utils.createGuid)()}`;
+    const path = options.wsPath ? options.wsPath.startsWith('/') ? options.wsPath : `/${options.wsPath}` : `/${(0, _crypto.createGuid)()}`;
 
     // 2. Start the server
     const server = new _playwrightServer.PlaywrightServer({
@@ -89,4 +88,14 @@ function toProtocolLogger(logger) {
   return logger ? (direction, message) => {
     if (logger.isEnabled('protocol', 'verbose')) logger.log('protocol', 'verbose', (direction === 'send' ? 'SEND ► ' : '◀ RECV ') + JSON.stringify(message), [], {});
   } : undefined;
+}
+function envObjectToArray(env) {
+  const result = [];
+  for (const name in env) {
+    if (!Object.is(env[name], undefined)) result.push({
+      name,
+      value: String(env[name])
+    });
+  }
+  return result;
 }

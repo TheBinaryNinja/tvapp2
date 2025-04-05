@@ -4,13 +4,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.start = start;
-var _connection = require("./client/connection");
-var _transport = require("./protocol/transport");
 var childProcess = _interopRequireWildcard(require("child_process"));
-var path = _interopRequireWildcard(require("path"));
-var _manualPromise = require("./utils/manualPromise");
+var _path = _interopRequireDefault(require("path"));
+var _connection = require("./client/connection");
+var _pipeTransport = require("./server/utils/pipeTransport");
+var _manualPromise = require("./utils/isomorphic/manualPromise");
+var _nodePlatform = require("./server/utils/nodePlatform");
+var _selectors = require("./client/selectors");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -28,6 +31,7 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
  */
 
 async function start(env = {}) {
+  (0, _selectors.setPlatformForSelectors)(_nodePlatform.nodePlatform);
   const client = new PlaywrightClient(env);
   const playwright = await client._playwright;
   playwright.driverProcess = client._driverProcess;
@@ -41,7 +45,7 @@ class PlaywrightClient {
     this._playwright = void 0;
     this._driverProcess = void 0;
     this._closePromise = new _manualPromise.ManualPromise();
-    this._driverProcess = childProcess.fork(path.join(__dirname, '..', 'cli.js'), ['run-driver'], {
+    this._driverProcess = childProcess.fork(_path.default.join(__dirname, '..', 'cli.js'), ['run-driver'], {
       stdio: 'pipe',
       detached: true,
       env: {
@@ -51,8 +55,8 @@ class PlaywrightClient {
     });
     this._driverProcess.unref();
     this._driverProcess.stderr.on('data', data => process.stderr.write(data));
-    const connection = new _connection.Connection(undefined, undefined);
-    const transport = new _transport.PipeTransport(this._driverProcess.stdin, this._driverProcess.stdout);
+    const connection = new _connection.Connection(_nodePlatform.nodePlatform);
+    const transport = new _pipeTransport.PipeTransport(this._driverProcess.stdin, this._driverProcess.stdout);
     connection.onmessage = message => transport.send(JSON.stringify(message));
     transport.onmessage = message => connection.dispatch(JSON.parse(message));
     transport.onclose = () => this._closePromise.resolve();

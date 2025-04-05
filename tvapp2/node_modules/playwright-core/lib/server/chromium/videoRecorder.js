@@ -5,10 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.VideoRecorder = void 0;
 var _utils = require("../../utils");
-var _page = require("../page");
-var _processLauncher = require("../../utils/processLauncher");
-var _progress = require("../progress");
 var _instrumentation = require("../instrumentation");
+var _page = require("../page");
+var _processLauncher = require("../utils/processLauncher");
+var _progress = require("../progress");
 /**
  * Copyright (c) Microsoft Corporation.
  *

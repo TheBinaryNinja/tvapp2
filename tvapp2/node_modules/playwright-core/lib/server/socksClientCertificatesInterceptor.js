@@ -6,18 +6,18 @@ Object.defineProperty(exports, "__esModule", {
 exports.ClientCertificatesProxy = void 0;
 exports.getMatchingTLSOptionsForOrigin = getMatchingTLSOptionsForOrigin;
 exports.rewriteOpenSSLErrorIfNeeded = rewriteOpenSSLErrorIfNeeded;
-var _net = _interopRequireDefault(require("net"));
-var _http = _interopRequireDefault(require("http2"));
-var _tls = _interopRequireDefault(require("tls"));
-var _stream = _interopRequireDefault(require("stream"));
-var _happyEyeballs = require("../utils/happy-eyeballs");
-var _utils = require("../utils");
-var _socksProxy = require("../common/socksProxy");
-var _debugLogger = require("../utils/debugLogger");
-var _fetch = require("./fetch");
 var _events = require("events");
+var _http = _interopRequireDefault(require("http2"));
+var _net = _interopRequireDefault(require("net"));
+var _stream = _interopRequireDefault(require("stream"));
+var _tls = _interopRequireDefault(require("tls"));
+var _socksProxy = require("./utils/socksProxy");
+var _utils = require("../utils");
 var _browserContext = require("./browserContext");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _fetch = require("./fetch");
+var _debugLogger = require("./utils/debugLogger");
+var _happyEyeballs = require("./utils/happyEyeballs");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *

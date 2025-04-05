@@ -4,18 +4,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AndroidWebView = exports.AndroidSocket = exports.AndroidInput = exports.AndroidDevice = exports.Android = void 0;
-var _fs = _interopRequireDefault(require("fs"));
-var _utils = require("../utils");
-var _events = require("./events");
+var _eventEmitter = require("./eventEmitter");
 var _browserContext = require("./browserContext");
 var _channelOwner = require("./channelOwner");
-var _timeoutSettings = require("../common/timeoutSettings");
-var _waiter = require("./waiter");
-var _events2 = require("events");
-var _connection = require("./connection");
 var _errors = require("./errors");
-var _timeoutRunner = require("../utils/timeoutRunner");
-let _Symbol$asyncDispose;
+var _events = require("./events");
+var _waiter = require("./waiter");
+var _timeoutSettings = require("./timeoutSettings");
+var _rtti = require("../utils/isomorphic/rtti");
+var _time = require("../utils/isomorphic/time");
+var _timeoutRunner = require("../utils/isomorphic/timeoutRunner");
+var _webSocket = require("./webSocket");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -31,7 +30,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 class Android extends _channelOwner.ChannelOwner {
   static from(android) {
     return android._object;
@@ -40,13 +39,15 @@ class Android extends _channelOwner.ChannelOwner {
     super(parent, type, guid, initializer);
     this._timeoutSettings = void 0;
     this._serverLauncher = void 0;
-    this._timeoutSettings = new _timeoutSettings.TimeoutSettings();
+    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(this._platform);
   }
   setDefaultTimeout(timeout) {
     this._timeoutSettings.setDefaultTimeout(timeout);
-    this._channel.setDefaultTimeoutNoReply({
-      timeout
-    });
+    this._wrapApiCall(async () => {
+      await this._channel.setDefaultTimeoutNoReply({
+        timeout
+      });
+    }, true).catch(() => {});
   }
   async devices(options = {}) {
     const {
@@ -60,68 +61,44 @@ class Android extends _channelOwner.ChannelOwner {
   }
   async connect(wsEndpoint, options = {}) {
     return await this._wrapApiCall(async () => {
-      const deadline = options.timeout ? (0, _utils.monotonicTime)() + options.timeout : 0;
+      const deadline = options.timeout ? (0, _time.monotonicTime)() + options.timeout : 0;
       const headers = {
         'x-playwright-browser': 'android',
         ...options.headers
       };
-      const localUtils = this._connection.localUtils();
       const connectParams = {
         wsEndpoint,
         headers,
         slowMo: options.slowMo,
         timeout: options.timeout
       };
-      const {
-        pipe
-      } = await localUtils._channel.connect(connectParams);
-      const closePipe = () => pipe.close().catch(() => {});
-      const connection = new _connection.Connection(localUtils, this._instrumentation);
-      connection.markAsRemote();
-      connection.on('close', closePipe);
+      const connection = await (0, _webSocket.connectOverWebSocket)(this._connection, connectParams);
       let device;
-      let closeError;
-      const onPipeClosed = () => {
+      connection.on('close', () => {
         var _device;
         (_device = device) === null || _device === void 0 || _device._didClose();
-        connection.close(closeError);
-      };
-      pipe.on('closed', onPipeClosed);
-      connection.onmessage = message => pipe.send({
-        message
-      }).catch(onPipeClosed);
-      pipe.on('message', ({
-        message
-      }) => {
-        try {
-          connection.dispatch(message);
-        } catch (e) {
-          closeError = String(e);
-          closePipe();
-        }
       });
       const result = await (0, _timeoutRunner.raceAgainstDeadline)(async () => {
         const playwright = await connection.initializePlaywright();
         if (!playwright._initializer.preConnectedAndroidDevice) {
-          closePipe();
+          connection.close();
           throw new Error('Malformed endpoint. Did you use Android.launchServer method?');
         }
         device = AndroidDevice.from(playwright._initializer.preConnectedAndroidDevice);
         device._shouldCloseConnectionOnClose = true;
-        device.on(_events.Events.AndroidDevice.Close, closePipe);
+        device.on(_events.Events.AndroidDevice.Close, () => connection.close());
         return device;
       }, deadline);
       if (!result.timedOut) {
         return result.result;
       } else {
-        closePipe();
+        connection.close();
         throw new Error(`Timeout ${options.timeout}ms exceeded`);
       }
     });
   }
 }
 exports.Android = Android;
-_Symbol$asyncDispose = Symbol.asyncDispose;
 class AndroidDevice extends _channelOwner.ChannelOwner {
   static from(androidDevice) {
     return androidDevice._object;
@@ -133,7 +110,7 @@ class AndroidDevice extends _channelOwner.ChannelOwner {
     this._shouldCloseConnectionOnClose = false;
     this.input = void 0;
     this.input = new AndroidInput(this);
-    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(parent._timeoutSettings);
+    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(this._platform, parent._timeoutSettings);
     this._channel.on('webViewAdded', ({
       webView
     }) => this._onWebViewAdded(webView));
@@ -154,9 +131,11 @@ class AndroidDevice extends _channelOwner.ChannelOwner {
   }
   setDefaultTimeout(timeout) {
     this._timeoutSettings.setDefaultTimeout(timeout);
-    this._channel.setDefaultTimeoutNoReply({
-      timeout
-    });
+    this._wrapApiCall(async () => {
+      await this._channel.setDefaultTimeoutNoReply({
+        timeout
+      });
+    }, true).catch(() => {});
   }
   serial() {
     return this._initializer.serial;
@@ -262,10 +241,10 @@ class AndroidDevice extends _channelOwner.ChannelOwner {
     const {
       binary
     } = await this._channel.screenshot();
-    if (options.path) await _fs.default.promises.writeFile(options.path, binary);
+    if (options.path) await this._platform.fs().promises.writeFile(options.path, binary);
     return binary;
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.close();
   }
   async close() {
@@ -294,19 +273,19 @@ class AndroidDevice extends _channelOwner.ChannelOwner {
   }
   async installApk(file, options) {
     await this._channel.installApk({
-      file: await loadFile(file),
+      file: await loadFile(this._platform, file),
       args: options && options.args
     });
   }
   async push(file, path, options) {
     await this._channel.push({
-      file: await loadFile(file),
+      file: await loadFile(this._platform, file),
       path,
       mode: options ? options.mode : undefined
     });
   }
   async launchBrowser(options = {}) {
-    const contextOptions = await (0, _browserContext.prepareBrowserContextParams)(options);
+    const contextOptions = await (0, _browserContext.prepareBrowserContextParams)(this._platform, options);
     const result = await this._channel.launchBrowser(contextOptions);
     const context = _browserContext.BrowserContext.from(result.context);
     context._setOptions(contextOptions, {});
@@ -350,8 +329,8 @@ class AndroidSocket extends _channelOwner.ChannelOwner {
   }
 }
 exports.AndroidSocket = AndroidSocket;
-async function loadFile(file) {
-  if ((0, _utils.isString)(file)) return await _fs.default.promises.readFile(file);
+async function loadFile(platform, file) {
+  if ((0, _rtti.isString)(file)) return await platform.fs().promises.readFile(file);
   return file;
 }
 class AndroidInput {
@@ -411,7 +390,7 @@ function toSelectorChannel(selector) {
   } = selector;
   const toRegex = value => {
     if (value === undefined) return undefined;
-    if ((0, _utils.isRegExp)(value)) return value.source;
+    if ((0, _rtti.isRegExp)(value)) return value.source;
     return '^' + value.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d') + '$';
   };
   return {
@@ -439,9 +418,9 @@ function toSelectorChannel(selector) {
     selected
   };
 }
-class AndroidWebView extends _events2.EventEmitter {
+class AndroidWebView extends _eventEmitter.EventEmitter {
   constructor(device, data) {
-    super();
+    super(device._platform);
     this._device = void 0;
     this._data = void 0;
     this._pagePromise = void 0;

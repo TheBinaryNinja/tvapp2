@@ -7,13 +7,14 @@ exports.WorkerDispatcher = exports.PageDispatcher = exports.BindingCallDispatche
 var _page = require("../page");
 var _dispatcher = require("./dispatcher");
 var _errors = require("../errors");
-var _frameDispatcher = require("./frameDispatcher");
-var _networkDispatchers = require("./networkDispatchers");
-var _jsHandleDispatcher = require("./jsHandleDispatcher");
-var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
 var _artifactDispatcher = require("./artifactDispatcher");
-var _utils = require("../../utils");
+var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
+var _frameDispatcher = require("./frameDispatcher");
+var _jsHandleDispatcher = require("./jsHandleDispatcher");
+var _networkDispatchers = require("./networkDispatchers");
 var _webSocketRouteDispatcher = require("./webSocketRouteDispatcher");
+var _crypto = require("../utils/crypto");
+var _urlMatch = require("../../utils/isomorphic/urlMatch");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -155,7 +156,8 @@ class PageDispatcher extends _dispatcher.Dispatcher {
       media: params.media,
       colorScheme: params.colorScheme,
       reducedMotion: params.reducedMotion,
-      forcedColors: params.forcedColors
+      forcedColors: params.forcedColors,
+      contrast: params.contrast
     });
   }
   async setViewportSize(params, metadata) {
@@ -171,7 +173,7 @@ class PageDispatcher extends _dispatcher.Dispatcher {
     }
     const urlMatchers = params.patterns.map(pattern => pattern.regexSource ? new RegExp(pattern.regexSource, pattern.regexFlags) : pattern.glob);
     await this._page.setClientRequestInterceptor((route, request) => {
-      const matchesSome = urlMatchers.some(urlMatch => (0, _utils.urlMatches)(this._page._browserContext._options.baseURL, request.url(), urlMatch));
+      const matchesSome = urlMatchers.some(urlMatch => (0, _urlMatch.urlMatches)(this._page._browserContext._options.baseURL, request.url(), urlMatch));
       if (!matchesSome) return false;
       this._dispatchEvent('route', {
         route: _networkDispatchers.RouteDispatcher.from(_networkDispatchers.RequestDispatcher.from(this.parentScope(), request), route)
@@ -336,7 +338,7 @@ exports.WorkerDispatcher = WorkerDispatcher;
 class BindingCallDispatcher extends _dispatcher.Dispatcher {
   constructor(scope, name, needsHandle, source, args) {
     super(scope, {
-      guid: 'bindingCall@' + (0, _utils.createGuid)()
+      guid: 'bindingCall@' + (0, _crypto.createGuid)()
     }, 'BindingCall', {
       frame: _frameDispatcher.FrameDispatcher.from(scope.parentScope(), source.frame),
       name,

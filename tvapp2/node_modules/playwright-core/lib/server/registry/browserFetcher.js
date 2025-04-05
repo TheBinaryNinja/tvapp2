@@ -5,17 +5,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.downloadBrowserWithProgressBar = downloadBrowserWithProgressBar;
 exports.logPolitely = logPolitely;
+var childProcess = _interopRequireWildcard(require("child_process"));
 var _fs = _interopRequireDefault(require("fs"));
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
-var _child_process = _interopRequireDefault(require("child_process"));
-var _fileUtils = require("../../utils/fileUtils");
-var _debugLogger = require("../../utils/debugLogger");
-var _manualPromise = require("../../utils/manualPromise");
+var _debugLogger = require("../utils/debugLogger");
+var _manualPromise = require("../../utils/isomorphic/manualPromise");
+var _userAgent = require("../utils/userAgent");
 var _utilsBundle = require("../../utilsBundle");
+var _fileUtils = require("../utils/fileUtils");
 var _ = require(".");
-var _userAgent = require("../../utils/userAgent");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -78,7 +80,7 @@ async function downloadBrowserWithProgressBar(title, browserDirectory, executabl
  * https://github.com/microsoft/playwright/issues/17394
  */
 function downloadBrowserWithProgressBarOutOfProcess(title, browserDirectory, url, zipPath, executablePath, connectionTimeout) {
-  const cp = _child_process.default.fork(_path.default.join(__dirname, 'oopDownloadBrowserMain.js'));
+  const cp = childProcess.fork(_path.default.join(__dirname, 'oopDownloadBrowserMain.js'));
   const promise = new _manualPromise.ManualPromise();
   const progress = getDownloadProgress();
   cp.on('message', message => {

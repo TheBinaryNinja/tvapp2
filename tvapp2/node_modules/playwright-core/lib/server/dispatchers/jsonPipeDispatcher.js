@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.JsonPipeDispatcher = void 0;
 var _dispatcher = require("./dispatcher");
-var _utils = require("../../utils");
+var _crypto = require("../utils/crypto");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -25,7 +25,7 @@ var _utils = require("../../utils");
 class JsonPipeDispatcher extends _dispatcher.Dispatcher {
   constructor(scope) {
     super(scope, {
-      guid: 'jsonPipe@' + (0, _utils.createGuid)()
+      guid: 'jsonPipe@' + (0, _crypto.createGuid)()
     }, 'JsonPipe', {});
     this._type_JsonPipe = true;
   }

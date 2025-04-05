@@ -6,31 +6,33 @@ Object.defineProperty(exports, "__esModule", {
 exports.BrowserContext = void 0;
 exports.prepareBrowserContextParams = prepareBrowserContextParams;
 exports.toClientCertificatesProtocol = toClientCertificatesProtocol;
-var _page = require("./page");
-var _frame = require("./frame");
-var network = _interopRequireWildcard(require("./network"));
-var _fs = _interopRequireDefault(require("fs"));
-var _path = _interopRequireDefault(require("path"));
+var _artifact = require("./artifact");
+var _browser = require("./browser");
+var _cdpSession = require("./cdpSession");
 var _channelOwner = require("./channelOwner");
 var _clientHelper = require("./clientHelper");
-var _browser = require("./browser");
-var _worker = require("./worker");
-var _events = require("./events");
-var _timeoutSettings = require("../common/timeoutSettings");
-var _waiter = require("./waiter");
-var _utils = require("../utils");
-var _cdpSession = require("./cdpSession");
-var _tracing = require("./tracing");
-var _artifact = require("./artifact");
-var _fetch = require("./fetch");
-var _stackTrace = require("../utils/stackTrace");
-var _harRouter = require("./harRouter");
+var _clock = require("./clock");
 var _consoleMessage = require("./consoleMessage");
 var _dialog = require("./dialog");
-var _webError = require("./webError");
 var _errors = require("./errors");
-var _clock = require("./clock");
-let _Symbol$asyncDispose;
+var _events = require("./events");
+var _fetch = require("./fetch");
+var _frame = require("./frame");
+var _harRouter = require("./harRouter");
+var network = _interopRequireWildcard(require("./network"));
+var _page = require("./page");
+var _tracing = require("./tracing");
+var _waiter = require("./waiter");
+var _webError = require("./webError");
+var _worker = require("./worker");
+var _timeoutSettings = require("./timeoutSettings");
+var _fileUtils = require("./fileUtils");
+var _headers = require("../utils/isomorphic/headers");
+var _urlMatch = require("../utils/isomorphic/urlMatch");
+var _rtti = require("../utils/isomorphic/rtti");
+var _stackTrace = require("../utils/isomorphic/stackTrace");
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -47,10 +49,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-_Symbol$asyncDispose = Symbol.asyncDispose;
+
 class BrowserContext extends _channelOwner.ChannelOwner {
   static from(context) {
     return context._object;
@@ -67,7 +66,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     this._browser = null;
     this._browserType = void 0;
     this._bindings = new Map();
-    this._timeoutSettings = new _timeoutSettings.TimeoutSettings();
+    this._timeoutSettings = void 0;
     this._ownerPage = void 0;
     this._closedPromise = void 0;
     this._options = {};
@@ -81,6 +80,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     this._closeWasCalled = false;
     this._closeReason = void 0;
     this._harRouters = [];
+    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(this._platform);
     if (parent instanceof _browser.Browser) this._browser = parent;
     (_this$_browser = this._browser) === null || _this$_browser === void 0 || _this$_browser._contexts.add(this);
     this._isChromium = ((_this$_browser2 = this._browser) === null || _this$_browser2 === void 0 ? void 0 : _this$_browser2._name) === 'chromium';
@@ -116,7 +116,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
       this.emit(_events.Events.BrowserContext.ServiceWorker, serviceWorker);
     });
     this._channel.on('console', event => {
-      const consoleMessage = new _consoleMessage.ConsoleMessage(event);
+      const consoleMessage = new _consoleMessage.ConsoleMessage(this._platform, event);
       this.emit(_events.Events.BrowserContext.Console, consoleMessage);
       const page = consoleMessage.page();
       if (page) page.emit(_events.Events.Page.Console, consoleMessage);
@@ -233,18 +233,18 @@ class BrowserContext extends _channelOwner.ChannelOwner {
   setDefaultNavigationTimeout(timeout) {
     this._timeoutSettings.setDefaultNavigationTimeout(timeout);
     this._wrapApiCall(async () => {
-      this._channel.setDefaultNavigationTimeoutNoReply({
+      await this._channel.setDefaultNavigationTimeoutNoReply({
         timeout
-      }).catch(() => {});
-    }, true);
+      });
+    }, true).catch(() => {});
   }
   setDefaultTimeout(timeout) {
     this._timeoutSettings.setDefaultTimeout(timeout);
     this._wrapApiCall(async () => {
-      this._channel.setDefaultTimeoutNoReply({
+      await this._channel.setDefaultTimeoutNoReply({
         timeout
-      }).catch(() => {});
-    }, true);
+      });
+    }, true).catch(() => {});
   }
   browser() {
     return this._browser;
@@ -270,15 +270,15 @@ class BrowserContext extends _channelOwner.ChannelOwner {
   }
   async clearCookies(options = {}) {
     await this._channel.clearCookies({
-      name: (0, _utils.isString)(options.name) ? options.name : undefined,
-      nameRegexSource: (0, _utils.isRegExp)(options.name) ? options.name.source : undefined,
-      nameRegexFlags: (0, _utils.isRegExp)(options.name) ? options.name.flags : undefined,
-      domain: (0, _utils.isString)(options.domain) ? options.domain : undefined,
-      domainRegexSource: (0, _utils.isRegExp)(options.domain) ? options.domain.source : undefined,
-      domainRegexFlags: (0, _utils.isRegExp)(options.domain) ? options.domain.flags : undefined,
-      path: (0, _utils.isString)(options.path) ? options.path : undefined,
-      pathRegexSource: (0, _utils.isRegExp)(options.path) ? options.path.source : undefined,
-      pathRegexFlags: (0, _utils.isRegExp)(options.path) ? options.path.flags : undefined
+      name: (0, _rtti.isString)(options.name) ? options.name : undefined,
+      nameRegexSource: (0, _rtti.isRegExp)(options.name) ? options.name.source : undefined,
+      nameRegexFlags: (0, _rtti.isRegExp)(options.name) ? options.name.flags : undefined,
+      domain: (0, _rtti.isString)(options.domain) ? options.domain : undefined,
+      domainRegexSource: (0, _rtti.isRegExp)(options.domain) ? options.domain.source : undefined,
+      domainRegexFlags: (0, _rtti.isRegExp)(options.domain) ? options.domain.flags : undefined,
+      path: (0, _rtti.isString)(options.path) ? options.path : undefined,
+      pathRegexSource: (0, _rtti.isRegExp)(options.path) ? options.path.source : undefined,
+      pathRegexFlags: (0, _rtti.isRegExp)(options.path) ? options.path.flags : undefined
     });
   }
   async grantPermissions(permissions, options) {
@@ -298,7 +298,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
   async setExtraHTTPHeaders(headers) {
     network.validateHeaders(headers);
     await this._channel.setExtraHTTPHeaders({
-      headers: (0, _utils.headersObjectToArray)(headers)
+      headers: (0, _headers.headersObjectToArray)(headers)
     });
   }
   async setOffline(offline) {
@@ -312,7 +312,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     });
   }
   async addInitScript(script, arg) {
-    const source = await (0, _clientHelper.evaluationScript)(script, arg);
+    const source = await (0, _clientHelper.evaluationScript)(this._platform, script, arg);
     await this._channel.addInitScript({
       source
     });
@@ -332,7 +332,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     this._bindings.set(name, binding);
   }
   async route(url, handler, options = {}) {
-    this._routes.unshift(new network.RouteHandler(this._options.baseURL, url, handler, options.times));
+    this._routes.unshift(new network.RouteHandler(this._platform, this._options.baseURL, url, handler, options.times));
     await this._updateInterceptionPatterns();
   }
   async routeWebSocket(url, handler) {
@@ -358,11 +358,13 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     });
   }
   async routeFromHAR(har, options = {}) {
+    const localUtils = this._connection.localUtils();
+    if (!localUtils) throw new Error('Route from har is not supported in thin clients');
     if (options.update) {
       await this._recordIntoHAR(har, null, options);
       return;
     }
-    const harRouter = await _harRouter.HarRouter.create(this._connection.localUtils(), har, options.notFound || 'abort', {
+    const harRouter = await _harRouter.HarRouter.create(localUtils, har, options.notFound || 'abort', {
       urlMatch: options.url
     });
     this._harRouters.push(harRouter);
@@ -380,7 +382,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     const removed = [];
     const remaining = [];
     for (const route of this._routes) {
-      if ((0, _utils.urlMatchesEqual)(route.url, url) && (!handler || route.handler === handler)) removed.push(route);else remaining.push(route);
+      if ((0, _urlMatch.urlMatchesEqual)(route.url, url) && (!handler || route.handler === handler)) removed.push(route);else remaining.push(route);
     }
     await this._unrouteInternal(removed, remaining, 'default');
   }
@@ -420,10 +422,12 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     });
   }
   async storageState(options = {}) {
-    const state = await this._channel.storageState();
+    const state = await this._channel.storageState({
+      indexedDB: options.indexedDB
+    });
     if (options.path) {
-      await (0, _utils.mkdirIfNeeded)(options.path);
-      await _fs.default.promises.writeFile(options.path, JSON.stringify(state, undefined, 2), 'utf8');
+      await (0, _fileUtils.mkdirIfNeeded)(this._platform, options.path);
+      await this._platform.fs().promises.writeFile(options.path, JSON.stringify(state, undefined, 2), 'utf8');
     }
     return state;
   }
@@ -451,7 +455,7 @@ class BrowserContext extends _channelOwner.ChannelOwner {
     this.tracing._resetStackCounter();
     this.emit(_events.Events.BrowserContext.Close, this);
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.close();
   }
   async close(options = {}) {
@@ -473,8 +477,10 @@ class BrowserContext extends _channelOwner.ChannelOwner {
         const isCompressed = harParams.content === 'attach' || harParams.path.endsWith('.zip');
         const needCompressed = harParams.path.endsWith('.zip');
         if (isCompressed && !needCompressed) {
+          const localUtils = this._connection.localUtils();
+          if (!localUtils) throw new Error('Uncompressed har is not supported in thin clients');
           await artifact.saveAs(harParams.path + '.tmp');
-          await this._connection.localUtils()._channel.harUnzip({
+          await localUtils.harUnzip({
             zipFile: harParams.path + '.tmp',
             harFile: harParams.path
           });
@@ -492,10 +498,10 @@ class BrowserContext extends _channelOwner.ChannelOwner {
   }
 }
 exports.BrowserContext = BrowserContext;
-async function prepareStorageState(options) {
+async function prepareStorageState(platform, options) {
   if (typeof options.storageState !== 'string') return options.storageState;
   try {
-    return JSON.parse(await _fs.default.promises.readFile(options.storageState, 'utf8'));
+    return JSON.parse(await platform.fs().promises.readFile(options.storageState, 'utf8'));
   } catch (e) {
     (0, _stackTrace.rewriteErrorMessage)(e, `Error reading storage state from ${options.storageState}:\n` + e.message);
     throw e;
@@ -506,28 +512,29 @@ function prepareRecordHarOptions(options) {
   return {
     path: options.path,
     content: options.content || (options.omitContent ? 'omit' : undefined),
-    urlGlob: (0, _utils.isString)(options.urlFilter) ? options.urlFilter : undefined,
-    urlRegexSource: (0, _utils.isRegExp)(options.urlFilter) ? options.urlFilter.source : undefined,
-    urlRegexFlags: (0, _utils.isRegExp)(options.urlFilter) ? options.urlFilter.flags : undefined,
+    urlGlob: (0, _rtti.isString)(options.urlFilter) ? options.urlFilter : undefined,
+    urlRegexSource: (0, _rtti.isRegExp)(options.urlFilter) ? options.urlFilter.source : undefined,
+    urlRegexFlags: (0, _rtti.isRegExp)(options.urlFilter) ? options.urlFilter.flags : undefined,
     mode: options.mode
   };
 }
-async function prepareBrowserContextParams(options) {
+async function prepareBrowserContextParams(platform, options) {
   if (options.videoSize && !options.videosPath) throw new Error(`"videoSize" option requires "videosPath" to be specified`);
   if (options.extraHTTPHeaders) network.validateHeaders(options.extraHTTPHeaders);
   const contextParams = {
     ...options,
     viewport: options.viewport === null ? undefined : options.viewport,
     noDefaultViewport: options.viewport === null,
-    extraHTTPHeaders: options.extraHTTPHeaders ? (0, _utils.headersObjectToArray)(options.extraHTTPHeaders) : undefined,
-    storageState: await prepareStorageState(options),
+    extraHTTPHeaders: options.extraHTTPHeaders ? (0, _headers.headersObjectToArray)(options.extraHTTPHeaders) : undefined,
+    storageState: await prepareStorageState(platform, options),
     serviceWorkers: options.serviceWorkers,
     recordHar: prepareRecordHarOptions(options.recordHar),
     colorScheme: options.colorScheme === null ? 'no-override' : options.colorScheme,
     reducedMotion: options.reducedMotion === null ? 'no-override' : options.reducedMotion,
     forcedColors: options.forcedColors === null ? 'no-override' : options.forcedColors,
+    contrast: options.contrast === null ? 'no-override' : options.contrast,
     acceptDownloads: toAcceptDownloadsProtocol(options.acceptDownloads),
-    clientCertificates: await toClientCertificatesProtocol(options.clientCertificates)
+    clientCertificates: await toClientCertificatesProtocol(platform, options.clientCertificates)
   };
   if (!contextParams.recordVideo && options.videosPath) {
     contextParams.recordVideo = {
@@ -535,7 +542,7 @@ async function prepareBrowserContextParams(options) {
       size: options.videoSize
     };
   }
-  if (contextParams.recordVideo && contextParams.recordVideo.dir) contextParams.recordVideo.dir = _path.default.resolve(process.cwd(), contextParams.recordVideo.dir);
+  if (contextParams.recordVideo && contextParams.recordVideo.dir) contextParams.recordVideo.dir = platform.path().resolve(contextParams.recordVideo.dir);
   return contextParams;
 }
 function toAcceptDownloadsProtocol(acceptDownloads) {
@@ -543,11 +550,11 @@ function toAcceptDownloadsProtocol(acceptDownloads) {
   if (acceptDownloads) return 'accept';
   return 'deny';
 }
-async function toClientCertificatesProtocol(certs) {
+async function toClientCertificatesProtocol(platform, certs) {
   if (!certs) return undefined;
   const bufferizeContent = async (value, path) => {
     if (value) return value;
-    if (path) return await _fs.default.promises.readFile(path);
+    if (path) return await platform.fs().promises.readFile(path);
   };
   return await Promise.all(certs.map(async cert => ({
     origin: cert.origin,

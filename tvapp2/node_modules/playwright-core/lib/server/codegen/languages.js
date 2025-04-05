@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.languageSet = languageSet;
+var _csharp = require("./csharp");
 var _java = require("./java");
 var _javascript = require("./javascript");
 var _jsonl = require("./jsonl");
-var _csharp = require("./csharp");
 var _python = require("./python");
 /**
  * Copyright (c) Microsoft Corporation.
@@ -26,5 +26,5 @@ var _python = require("./python");
  */
 
 function languageSet() {
-  return new Set([new _java.JavaLanguageGenerator('junit'), new _java.JavaLanguageGenerator('library'), new _javascript.JavaScriptLanguageGenerator( /* isPlaywrightTest */false), new _javascript.JavaScriptLanguageGenerator( /* isPlaywrightTest */true), new _python.PythonLanguageGenerator( /* isAsync */false, /* isPytest */true), new _python.PythonLanguageGenerator( /* isAsync */false, /* isPytest */false), new _python.PythonLanguageGenerator( /* isAsync */true, /* isPytest */false), new _csharp.CSharpLanguageGenerator('mstest'), new _csharp.CSharpLanguageGenerator('nunit'), new _csharp.CSharpLanguageGenerator('library'), new _jsonl.JsonlLanguageGenerator()]);
+  return new Set([new _java.JavaLanguageGenerator('junit'), new _java.JavaLanguageGenerator('library'), new _javascript.JavaScriptLanguageGenerator(/* isPlaywrightTest */false), new _javascript.JavaScriptLanguageGenerator(/* isPlaywrightTest */true), new _python.PythonLanguageGenerator(/* isAsync */false, /* isPytest */true), new _python.PythonLanguageGenerator(/* isAsync */false, /* isPytest */false), new _python.PythonLanguageGenerator(/* isAsync */true, /* isPytest */false), new _csharp.CSharpLanguageGenerator('mstest'), new _csharp.CSharpLanguageGenerator('nunit'), new _csharp.CSharpLanguageGenerator('library'), new _jsonl.JsonlLanguageGenerator()]);
 }

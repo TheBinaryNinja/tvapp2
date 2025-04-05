@@ -8,10 +8,10 @@ var _fs = _interopRequireDefault(require("fs"));
 var _path = _interopRequireDefault(require("path"));
 var _artifact = require("../artifact");
 var _harTracer = require("./harTracer");
+var _crypto = require("../utils/crypto");
+var _manualPromise = require("../../utils/isomorphic/manualPromise");
 var _zipBundle = require("../../zipBundle");
-var _manualPromise = require("../../utils/manualPromise");
-var _utils = require("../../utils");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -36,7 +36,7 @@ class HarRecorder {
     this._entries = [];
     this._zipFile = null;
     this._writtenZipEntries = new Set();
-    this._artifact = new _artifact.Artifact(context, _path.default.join(context._browser.options.artifactsDir, `${(0, _utils.createGuid)()}.har`));
+    this._artifact = new _artifact.Artifact(context, _path.default.join(context._browser.options.artifactsDir, `${(0, _crypto.createGuid)()}.har`));
     const urlFilterRe = options.urlRegexSource !== undefined && options.urlRegexFlags !== undefined ? new RegExp(options.urlRegexSource, options.urlRegexFlags) : undefined;
     const expectsZip = options.path.endsWith('.zip');
     const content = options.content || (expectsZip ? 'attach' : 'embed');

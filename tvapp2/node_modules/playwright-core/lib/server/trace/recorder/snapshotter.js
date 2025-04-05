@@ -4,13 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Snapshotter = void 0;
+var _snapshotterInjected = require("./snapshotterInjected");
+var _time = require("../../../utils/isomorphic/time");
+var _crypto = require("../../utils/crypto");
+var _debugLogger = require("../../utils/debugLogger");
+var _eventsHelper = require("../../utils/eventsHelper");
+var _utilsBundle = require("../../../utilsBundle");
 var _browserContext = require("../../browserContext");
 var _page = require("../../page");
-var _eventsHelper = require("../../../utils/eventsHelper");
-var _debugLogger = require("../../../utils/debugLogger");
-var _snapshotterInjected = require("./snapshotterInjected");
-var _utils = require("../../../utils");
-var _utilsBundle = require("../../../utilsBundle");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -37,7 +38,7 @@ class Snapshotter {
     this._started = false;
     this._context = context;
     this._delegate = delegate;
-    const guid = (0, _utils.createGuid)();
+    const guid = (0, _crypto.createGuid)();
     this._snapshotStreamer = '__playwright_snapshot_streamer_' + guid;
   }
   started() {
@@ -99,7 +100,7 @@ class Snapshotter {
         doctype: data.doctype,
         html: data.html,
         viewport: data.viewport,
-        timestamp: (0, _utils.monotonicTime)(),
+        timestamp: (0, _time.monotonicTime)(),
         wallTime: data.wallTime,
         collectionTime: data.collectionTime,
         resourceOverrides: [],
@@ -112,7 +113,7 @@ class Snapshotter {
       } of data.resourceOverrides) {
         if (typeof content === 'string') {
           const buffer = Buffer.from(content);
-          const sha1 = (0, _utils.calculateSha1)(buffer) + '.' + (_utilsBundle.mime.getExtension(contentType) || 'dat');
+          const sha1 = (0, _crypto.calculateSha1)(buffer) + '.' + (_utilsBundle.mime.getExtension(contentType) || 'dat');
           this._delegate.onSnapshotterBlob({
             sha1,
             buffer

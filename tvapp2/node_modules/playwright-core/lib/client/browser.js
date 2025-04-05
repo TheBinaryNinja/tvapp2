@@ -4,15 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Browser = void 0;
-var _fs = _interopRequireDefault(require("fs"));
-var _browserContext = require("./browserContext");
-var _channelOwner = require("./channelOwner");
-var _events = require("./events");
-var _errors = require("./errors");
-var _cdpSession = require("./cdpSession");
 var _artifact = require("./artifact");
-var _utils = require("../utils");
-let _Symbol$asyncDispose;
+var _browserContext = require("./browserContext");
+var _cdpSession = require("./cdpSession");
+var _channelOwner = require("./channelOwner");
+var _errors = require("./errors");
+var _events = require("./events");
+var _fileUtils = require("./fileUtils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -28,8 +26,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-_Symbol$asyncDispose = Symbol.asyncDispose;
+
 class Browser extends _channelOwner.ChannelOwner {
   static from(browser) {
     return browser._object;
@@ -44,8 +41,6 @@ class Browser extends _channelOwner.ChannelOwner {
     this._options = {};
     this._name = void 0;
     this._path = void 0;
-    // Used from @playwright/test fixtures.
-    this._connectHeaders = void 0;
     this._closeReason = void 0;
     this._name = initializer.name;
     this._channel.on('close', () => this._didClose());
@@ -76,10 +71,10 @@ class Browser extends _channelOwner.ChannelOwner {
   }
   async _innerNewContext(options = {}, forReuse) {
     options = {
-      ...this._browserType._defaultContextOptions,
+      ...this._browserType._playwright._defaultContextOptions,
       ...options
     };
-    const contextOptions = await (0, _browserContext.prepareBrowserContextParams)(options);
+    const contextOptions = await (0, _browserContext.prepareBrowserContextParams)(this._platform, options);
     const response = forReuse ? await this._channel.newContextForReuse(contextOptions) : await this._channel.newContext(contextOptions);
     const context = _browserContext.BrowserContext.from(response.context);
     await this._browserType._didCreateContext(context, contextOptions, this._options, options.logger || this._logger);
@@ -118,13 +113,13 @@ class Browser extends _channelOwner.ChannelOwner {
     const buffer = await artifact.readIntoBuffer();
     await artifact.delete();
     if (this._path) {
-      await (0, _utils.mkdirIfNeeded)(this._path);
-      await _fs.default.promises.writeFile(this._path, buffer);
+      await (0, _fileUtils.mkdirIfNeeded)(this._platform, this._path);
+      await this._platform.fs().promises.writeFile(this._path, buffer);
       this._path = undefined;
     }
     return buffer;
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.close();
   }
   async close(options = {}) {

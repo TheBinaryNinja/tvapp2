@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Video = void 0;
-var _utils = require("../utils");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -24,7 +24,7 @@ var _utils = require("../utils");
 class Video {
   constructor(page, connection) {
     this._artifact = null;
-    this._artifactReadyPromise = new _utils.ManualPromise();
+    this._artifactReadyPromise = new _manualPromise.ManualPromise();
     this._isRemote = false;
     this._isRemote = connection.isRemote();
     this._artifact = page._closedOrCrashedScope.safeRace(this._artifactReadyPromise);

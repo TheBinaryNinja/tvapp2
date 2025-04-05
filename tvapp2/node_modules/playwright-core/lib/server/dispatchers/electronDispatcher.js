@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ElectronDispatcher = exports.ElectronApplicationDispatcher = void 0;
-var _dispatcher = require("./dispatcher");
-var _electron = require("../electron/electron");
 var _browserContextDispatcher = require("./browserContextDispatcher");
-var _jsHandleDispatcher = require("./jsHandleDispatcher");
+var _dispatcher = require("./dispatcher");
 var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
+var _jsHandleDispatcher = require("./jsHandleDispatcher");
+var _electron = require("../electron/electron");
 /**
  * Copyright (c) Microsoft Corporation.
  *

@@ -4,14 +4,17 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PlaywrightConnection = void 0;
+var _socksProxy = require("../server/utils/socksProxy");
 var _server = require("../server");
-var _browser = require("../server/browser");
-var _instrumentation = require("../server/instrumentation");
-var _socksProxy = require("../common/socksProxy");
-var _utils = require("../utils");
 var _android = require("../server/android/android");
+var _browser = require("../server/browser");
 var _debugControllerDispatcher = require("../server/dispatchers/debugControllerDispatcher");
-var _debugLogger = require("../utils/debugLogger");
+var _instrumentation = require("../server/instrumentation");
+var _assert = require("../utils/isomorphic/assert");
+var _debug = require("../server/utils/debug");
+var _profiler = require("../server/utils/profiler");
+var _utils = require("../utils");
+var _debugLogger = require("../server/utils/debugLogger");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -44,8 +47,8 @@ class PlaywrightConnection {
     this._preLaunched = preLaunched;
     this._options = options;
     options.launchOptions = filterLaunchOptions(options.launchOptions, options.allowFSPaths);
-    if (clientType === 'reuse-browser' || clientType === 'pre-launched-browser-or-android') (0, _utils.assert)(preLaunched.playwright);
-    if (clientType === 'pre-launched-browser-or-android') (0, _utils.assert)(preLaunched.browser || preLaunched.androidDevice);
+    if (clientType === 'reuse-browser' || clientType === 'pre-launched-browser-or-android') (0, _assert.assert)(preLaunched.playwright);
+    if (clientType === 'pre-launched-browser-or-android') (0, _assert.assert)(preLaunched.browser || preLaunched.androidDevice);
     this._onClose = onClose;
     this._id = id;
     this._profileName = `${new Date().toISOString()}-${clientType}`;
@@ -74,7 +77,7 @@ class PlaywrightConnection {
       return;
     }
     this._root = new _server.RootDispatcher(this._dispatcherConnection, async (scope, options) => {
-      await (0, _utils.startProfiling)();
+      await (0, _profiler.startProfiling)();
       if (clientType === 'reuse-browser') return await this._initReuseBrowsersMode(scope);
       if (clientType === 'pre-launched-browser-or-android') return this._preLaunched.browser ? await this._initPreLaunchedBrowserMode(scope) : await this._initPreLaunchedAndroidMode(scope);
       if (clientType === 'launch-browser') return await this._initLaunchBrowserMode(scope, options);
@@ -88,7 +91,12 @@ class PlaywrightConnection {
       isServer: true
     });
     const ownedSocksProxy = await this._createOwnedSocksProxy(playwright);
-    const browser = await playwright[this._options.browserName].launch((0, _instrumentation.serverSideCallMetadata)(), this._options.launchOptions);
+    let browserName = this._options.browserName;
+    if ('bidi' === browserName) {
+      var _this$_options$launch;
+      if ((_this$_options$launch = this._options.launchOptions) !== null && _this$_options$launch !== void 0 && (_this$_options$launch = _this$_options$launch.channel) !== null && _this$_options$launch !== void 0 && _this$_options$launch.toLocaleLowerCase().includes('firefox')) browserName = 'bidiFirefox';else browserName = 'bidiChromium';
+    }
+    const browser = await playwright[browserName].launch((0, _instrumentation.serverSideCallMetadata)(), this._options.launchOptions);
     this._cleanups.push(async () => {
       for (const browser of playwright.allBrowsers()) await browser.close({
         reason: 'Connection terminated'
@@ -214,7 +222,7 @@ class PlaywrightConnection {
     this._root._dispose();
     _debugLogger.debugLogger.log('server', `[${this._id}] starting cleanup`);
     for (const cleanup of this._cleanups) await cleanup().catch(() => {});
-    await (0, _utils.stopProfiling)(this._profileName);
+    await (0, _profiler.stopProfiling)(this._profileName);
     this._onClose();
     _debugLogger.debugLogger.log('server', `[${this._id}] finished cleanup`);
   }
@@ -260,7 +268,7 @@ function filterLaunchOptions(options, allowFSPaths) {
     chromiumSandbox: options.chromiumSandbox,
     firefoxUserPrefs: options.firefoxUserPrefs,
     slowMo: options.slowMo,
-    executablePath: (0, _utils.isUnderTest)() || allowFSPaths ? options.executablePath : undefined,
+    executablePath: (0, _debug.isUnderTest)() || allowFSPaths ? options.executablePath : undefined,
     downloadsPath: allowFSPaths ? options.downloadsPath : undefined
   };
 }

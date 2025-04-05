@@ -4,26 +4,26 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.BrowserContextDispatcher = void 0;
+var _fs = _interopRequireDefault(require("fs"));
+var _path = _interopRequireDefault(require("path"));
 var _browserContext = require("../browserContext");
-var _dispatcher = require("./dispatcher");
-var _pageDispatcher = require("./pageDispatcher");
-var _networkDispatchers = require("./networkDispatchers");
-var _crBrowser = require("../chromium/crBrowser");
-var _cdpSessionDispatcher = require("./cdpSessionDispatcher");
-var _recorder = require("../recorder");
 var _artifactDispatcher = require("./artifactDispatcher");
-var _tracingDispatcher = require("./tracingDispatcher");
-var fs = _interopRequireWildcard(require("fs"));
-var path = _interopRequireWildcard(require("path"));
-var _utils = require("../../utils");
-var _writableStreamDispatcher = require("./writableStreamDispatcher");
+var _cdpSessionDispatcher = require("./cdpSessionDispatcher");
 var _dialogDispatcher = require("./dialogDispatcher");
-var _errors = require("../errors");
+var _dispatcher = require("./dispatcher");
 var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
-var _recorderApp = require("../recorder/recorderApp");
+var _networkDispatchers = require("./networkDispatchers");
+var _pageDispatcher = require("./pageDispatcher");
+var _crBrowser = require("../chromium/crBrowser");
+var _errors = require("../errors");
+var _recorder = require("../recorder");
+var _tracingDispatcher = require("./tracingDispatcher");
 var _webSocketRouteDispatcher = require("./webSocketRouteDispatcher");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+var _writableStreamDispatcher = require("./writableStreamDispatcher");
+var _crypto = require("../utils/crypto");
+var _urlMatch = require("../../utils/isomorphic/urlMatch");
+var _recorderApp = require("../recorder/recorderApp");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -186,19 +186,19 @@ class BrowserContextDispatcher extends _dispatcher.Dispatcher {
   }
   async createTempFiles(params) {
     const dir = this._context._browser.options.artifactsDir;
-    const tmpDir = path.join(dir, 'upload-' + (0, _utils.createGuid)());
-    const tempDirWithRootName = params.rootDirName ? path.join(tmpDir, path.basename(params.rootDirName)) : tmpDir;
-    await fs.promises.mkdir(tempDirWithRootName, {
+    const tmpDir = _path.default.join(dir, 'upload-' + (0, _crypto.createGuid)());
+    const tempDirWithRootName = params.rootDirName ? _path.default.join(tmpDir, _path.default.basename(params.rootDirName)) : tmpDir;
+    await _fs.default.promises.mkdir(tempDirWithRootName, {
       recursive: true
     });
     this._context._tempDirs.push(tmpDir);
     return {
       rootDir: params.rootDirName ? new _writableStreamDispatcher.WritableStreamDispatcher(this, tempDirWithRootName) : undefined,
       writableStreams: await Promise.all(params.items.map(async item => {
-        await fs.promises.mkdir(path.dirname(path.join(tempDirWithRootName, item.name)), {
+        await _fs.default.promises.mkdir(_path.default.dirname(_path.default.join(tempDirWithRootName, item.name)), {
           recursive: true
         });
-        const file = fs.createWriteStream(path.join(tempDirWithRootName, item.name));
+        const file = _fs.default.createWriteStream(_path.default.join(tempDirWithRootName, item.name));
         return new _writableStreamDispatcher.WritableStreamDispatcher(this, file, item.lastModifiedMs);
       }))
     };
@@ -273,7 +273,7 @@ class BrowserContextDispatcher extends _dispatcher.Dispatcher {
     }
     const urlMatchers = params.patterns.map(pattern => pattern.regexSource ? new RegExp(pattern.regexSource, pattern.regexFlags) : pattern.glob);
     await this._context.setRequestInterceptor((route, request) => {
-      const matchesSome = urlMatchers.some(urlMatch => (0, _utils.urlMatches)(this._context._options.baseURL, request.url(), urlMatch));
+      const matchesSome = urlMatchers.some(urlMatch => (0, _urlMatch.urlMatches)(this._context._options.baseURL, request.url(), urlMatch));
       if (!matchesSome) return false;
       this._dispatchEvent('route', {
         route: _networkDispatchers.RouteDispatcher.from(_networkDispatchers.RequestDispatcher.from(this, request), route)
@@ -286,7 +286,7 @@ class BrowserContextDispatcher extends _dispatcher.Dispatcher {
     if (params.patterns.length) await _webSocketRouteDispatcher.WebSocketRouteDispatcher.installIfNeeded(this._context);
   }
   async storageState(params, metadata) {
-    return await this._context.storageState();
+    return await this._context.storageState(params.indexedDB);
   }
   async close(params, metadata) {
     metadata.potentiallyClosesScope = true;

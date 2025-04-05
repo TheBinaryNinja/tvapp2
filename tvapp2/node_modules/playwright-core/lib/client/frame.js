@@ -5,22 +5,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Frame = void 0;
 exports.verifyLoadState = verifyLoadState;
-var _utils = require("../utils");
+var _eventEmitter = require("./eventEmitter");
 var _channelOwner = require("./channelOwner");
-var _locator = require("./locator");
-var _locatorUtils = require("../utils/isomorphic/locatorUtils");
-var _elementHandle = require("./elementHandle");
-var _jsHandle = require("./jsHandle");
-var _fs = _interopRequireDefault(require("fs"));
-var network = _interopRequireWildcard(require("./network"));
-var _events = require("events");
-var _waiter = require("./waiter");
-var _events2 = require("./events");
-var _types = require("./types");
 var _clientHelper = require("./clientHelper");
+var _elementHandle = require("./elementHandle");
+var _events = require("./events");
+var _jsHandle = require("./jsHandle");
+var _locator = require("./locator");
+var network = _interopRequireWildcard(require("./network"));
+var _types = require("./types");
+var _waiter = require("./waiter");
+var _assert = require("../utils/isomorphic/assert");
+var _locatorUtils = require("../utils/isomorphic/locatorUtils");
+var _urlMatch = require("../utils/isomorphic/urlMatch");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -55,7 +54,7 @@ class Frame extends _channelOwner.ChannelOwner {
     this._detached = false;
     this._childFrames = new Set();
     this._page = void 0;
-    this._eventEmitter = new _events.EventEmitter();
+    this._eventEmitter = new _eventEmitter.EventEmitter(parent._platform);
     this._eventEmitter.setMaxListeners(0);
     this._parentFrame = Frame.fromNullable(initializer.parentFrame);
     if (this._parentFrame) this._parentFrame._childFrames.add(this);
@@ -68,14 +67,14 @@ class Frame extends _channelOwner.ChannelOwner {
         this._eventEmitter.emit('loadstate', event.add);
       }
       if (event.remove) this._loadStates.delete(event.remove);
-      if (!this._parentFrame && event.add === 'load' && this._page) this._page.emit(_events2.Events.Page.Load, this._page);
-      if (!this._parentFrame && event.add === 'domcontentloaded' && this._page) this._page.emit(_events2.Events.Page.DOMContentLoaded, this._page);
+      if (!this._parentFrame && event.add === 'load' && this._page) this._page.emit(_events.Events.Page.Load, this._page);
+      if (!this._parentFrame && event.add === 'domcontentloaded' && this._page) this._page.emit(_events.Events.Page.DOMContentLoaded, this._page);
     });
     this._channel.on('navigated', event => {
       this._url = event.url;
       this._name = event.name;
       this._eventEmitter.emit('navigated', event);
-      if (!event.error && this._page) this._page.emit(_events2.Events.Page.FrameNavigated, this);
+      if (!event.error && this._page) this._page.emit(_events.Events.Page.FrameNavigated, this);
     });
   }
   page() {
@@ -92,9 +91,9 @@ class Frame extends _channelOwner.ChannelOwner {
   _setupNavigationWaiter(options) {
     const waiter = new _waiter.Waiter(this._page, '');
     if (this._page.isClosed()) waiter.rejectImmediately(this._page._closeErrorWithReason());
-    waiter.rejectOnEvent(this._page, _events2.Events.Page.Close, () => this._page._closeErrorWithReason());
-    waiter.rejectOnEvent(this._page, _events2.Events.Page.Crash, new Error('Navigation failed because page crashed!'));
-    waiter.rejectOnEvent(this._page, _events2.Events.Page.FrameDetached, new Error('Navigating frame was detached!'), frame => frame === this);
+    waiter.rejectOnEvent(this._page, _events.Events.Page.Close, () => this._page._closeErrorWithReason());
+    waiter.rejectOnEvent(this._page, _events.Events.Page.Crash, new Error('Navigation failed because page crashed!'));
+    waiter.rejectOnEvent(this._page, _events.Events.Page.FrameDetached, new Error('Navigating frame was detached!'), frame => frame === this);
     const timeout = this._page._timeoutSettings.navigationTimeout(options);
     waiter.rejectOnTimeout(timeout, `Timeout ${timeout}ms exceeded.`);
     return waiter;
@@ -110,7 +109,7 @@ class Frame extends _channelOwner.ChannelOwner {
         // Any failed navigation results in a rejection.
         if (event.error) return true;
         waiter.log(`  navigated to "${event.url}"`);
-        return (0, _utils.urlMatches)((_this$_page = this._page) === null || _this$_page === void 0 ? void 0 : _this$_page.context()._options.baseURL, event.url, options.url);
+        return (0, _urlMatch.urlMatches)((_this$_page = this._page) === null || _this$_page === void 0 ? void 0 : _this$_page.context()._options.baseURL, event.url, options.url);
       });
       if (navigatedEvent.error) {
         const e = new Error(navigatedEvent.error);
@@ -146,7 +145,7 @@ class Frame extends _channelOwner.ChannelOwner {
   }
   async waitForURL(url, options = {}) {
     var _this$_page2;
-    if ((0, _utils.urlMatches)((_this$_page2 = this._page) === null || _this$_page2 === void 0 ? void 0 : _this$_page2.context()._options.baseURL, this.url(), url)) return await this.waitForLoadState(options.waitUntil, options);
+    if ((0, _urlMatch.urlMatches)((_this$_page2 = this._page) === null || _this$_page2 === void 0 ? void 0 : _this$_page2.context()._options.baseURL, this.url(), url)) return await this.waitForLoadState(options.waitUntil, options);
     await this.waitForNavigation({
       url,
       ...options
@@ -268,7 +267,7 @@ class Frame extends _channelOwner.ChannelOwner {
       ...options
     };
     if (copy.path) {
-      copy.content = (await _fs.default.promises.readFile(copy.path)).toString();
+      copy.content = (await this._platform.fs().promises.readFile(copy.path)).toString();
       copy.content = (0, _clientHelper.addSourceUrlToScript)(copy.content, copy.path);
     }
     return _elementHandle.ElementHandle.from((await this._channel.addScriptTag({
@@ -280,7 +279,7 @@ class Frame extends _channelOwner.ChannelOwner {
       ...options
     };
     if (copy.path) {
-      copy.content = (await _fs.default.promises.readFile(copy.path)).toString();
+      copy.content = (await this._platform.fs().promises.readFile(copy.path)).toString();
       copy.content += '/*# sourceURL=' + copy.path.replace(/\n/g, '') + '*/';
     }
     return _elementHandle.ElementHandle.from((await this._channel.addStyleTag({
@@ -440,7 +439,7 @@ class Frame extends _channelOwner.ChannelOwner {
     })).values;
   }
   async setInputFiles(selector, files, options = {}) {
-    const converted = await (0, _elementHandle.convertInputFiles)(files, this.page().context());
+    const converted = await (0, _elementHandle.convertInputFiles)(this._platform, files, this.page().context());
     await this._channel.setInputFiles({
       selector,
       ...converted,
@@ -482,7 +481,7 @@ class Frame extends _channelOwner.ChannelOwner {
     });
   }
   async waitForFunction(pageFunction, arg, options = {}) {
-    if (typeof options.polling === 'string') (0, _utils.assert)(options.polling === 'raf', 'Unknown polling option: ' + options.polling);
+    if (typeof options.polling === 'string') (0, _assert.assert)(options.polling === 'raf', 'Unknown polling option: ' + options.polling);
     const result = await this._channel.waitForFunction({
       ...options,
       pollingInterval: options.polling === 'raf' ? undefined : options.polling,

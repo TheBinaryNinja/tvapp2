@@ -5,25 +5,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.kNoXServerRunningError = exports.BrowserType = exports.BrowserReadyState = void 0;
 var _fs = _interopRequireDefault(require("fs"));
-var os = _interopRequireWildcard(require("os"));
+var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
 var _browserContext = require("./browserContext");
-var _registry = require("./registry");
-var _transport = require("./transport");
-var _processLauncher = require("../utils/processLauncher");
-var _pipeTransport = require("./pipeTransport");
-var _progress = require("./progress");
-var _timeoutSettings = require("../common/timeoutSettings");
-var _utils = require("../utils");
-var _fileUtils = require("../utils/fileUtils");
+var _timeoutSettings = require("./timeoutSettings");
+var _debug = require("./utils/debug");
+var _assert = require("../utils/isomorphic/assert");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
+var _fileUtils = require("./utils/fileUtils");
 var _helper = require("./helper");
-var _debugLogger = require("../utils/debugLogger");
 var _instrumentation = require("./instrumentation");
+var _pipeTransport = require("./pipeTransport");
+var _processLauncher = require("./utils/processLauncher");
+var _progress = require("./progress");
 var _protocolError = require("./protocolError");
+var _registry = require("./registry");
 var _socksClientCertificatesInterceptor = require("./socksClientCertificatesInterceptor");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _transport = require("./transport");
+var _debugLogger = require("./utils/debugLogger");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -43,7 +43,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const kNoXServerRunningError = exports.kNoXServerRunningError = 'Looks like you launched a headed browser without having a XServer running.\n' + 'Set either \'headless: true\' or use \'xvfb-run <your-playwright-app>\' before running Playwright.\n\n<3 Playwright Team';
 class BrowserReadyState {
   constructor() {
-    this._wsEndpoint = new _utils.ManualPromise();
+    this._wsEndpoint = new _manualPromise.ManualPromise();
   }
   onBrowserExit() {
     // Unblock launch when browser prematurely exits.
@@ -178,16 +178,17 @@ class BrowserType extends _instrumentation.SdkObject {
     const env = options.env ? (0, _processLauncher.envArrayToObject)(options.env) : process.env;
     await this._createArtifactDirs(options);
     const tempDirectories = [];
-    const artifactsDir = await _fs.default.promises.mkdtemp(_path.default.join(os.tmpdir(), 'playwright-artifacts-'));
+    const artifactsDir = await _fs.default.promises.mkdtemp(_path.default.join(_os.default.tmpdir(), 'playwright-artifacts-'));
     tempDirectories.push(artifactsDir);
     if (userDataDir) {
+      (0, _assert.assert)(_path.default.isAbsolute(userDataDir), 'userDataDir must be an absolute path');
       // Firefox bails if the profile directory does not exist, Chrome creates it. We ensure consistent behavior here.
       if (!(await (0, _fileUtils.existsAsync)(userDataDir))) await _fs.default.promises.mkdir(userDataDir, {
         recursive: true,
         mode: 0o700
       });
     } else {
-      userDataDir = await _fs.default.promises.mkdtemp(_path.default.join(os.tmpdir(), `playwright_${this._name}dev_profile-`));
+      userDataDir = await _fs.default.promises.mkdtemp(_path.default.join(_os.default.tmpdir(), `playwright_${this._name}dev_profile-`));
       tempDirectories.push(userDataDir);
     }
     await this.prepareUserDataDir(options, userDataDir);
@@ -293,7 +294,7 @@ class BrowserType extends _instrumentation.SdkObject {
       downloadsPath,
       proxy
     } = options;
-    if ((0, _utils.debugMode)()) headless = false;
+    if ((0, _debug.debugMode)()) headless = false;
     if (downloadsPath && !_path.default.isAbsolute(downloadsPath)) downloadsPath = _path.default.join(process.cwd(), downloadsPath);
     if (this.attribution.playwright.options.socksProxyPort) proxy = {
       server: `socks5://127.0.0.1:${this.attribution.playwright.options.socksProxyPort}`

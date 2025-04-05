@@ -4,10 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ConsoleMessage = void 0;
-var util = _interopRequireWildcard(require("util"));
 var _jsHandle = require("./jsHandle");
 var _page = require("./page");
-let _util$inspect$custom;
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -23,15 +21,14 @@ let _util$inspect$custom;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-_util$inspect$custom = util.inspect.custom;
+
 class ConsoleMessage {
-  constructor(event) {
+  constructor(platform, event) {
     this._page = void 0;
     this._event = void 0;
     this._page = 'page' in event && event.page ? _page.Page.from(event.page) : null;
     this._event = event;
+    if (platform.inspectCustom) this[platform.inspectCustom] = () => this._inspect();
   }
   page() {
     return this._page;
@@ -48,7 +45,7 @@ class ConsoleMessage {
   location() {
     return this._event.location;
   }
-  [_util$inspect$custom]() {
+  _inspect() {
     return this.text();
   }
 }

@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CRCoverage = void 0;
-var _eventsHelper = require("../../utils/eventsHelper");
 var _utils = require("../../utils");
+var _eventsHelper = require("../utils/eventsHelper");
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

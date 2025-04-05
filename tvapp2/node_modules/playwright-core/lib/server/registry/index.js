@@ -15,23 +15,24 @@ Object.defineProperty(exports, "writeDockerVersion", {
     return _dependencies.writeDockerVersion;
   }
 });
-var os = _interopRequireWildcard(require("os"));
+var _fs = _interopRequireDefault(require("fs"));
+var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
 var util = _interopRequireWildcard(require("util"));
-var fs = _interopRequireWildcard(require("fs"));
-var _utilsBundle = require("../../utilsBundle");
-var _network = require("../../utils/network");
-var _userAgent = require("../../utils/userAgent");
-var _utils = require("../../utils");
-var _fileUtils = require("../../utils/fileUtils");
-var _hostPlatform = require("../../utils/hostPlatform");
-var _spawnAsync = require("../../utils/spawnAsync");
-var _dependencies = require("./dependencies");
 var _browserFetcher = require("./browserFetcher");
-var _debugLogger = require("../../utils/debugLogger");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _dependencies = require("./dependencies");
+var _utils = require("../../utils");
+var _ascii = require("../utils/ascii");
+var _debugLogger = require("../utils/debugLogger");
+var _hostPlatform = require("../utils/hostPlatform");
+var _network = require("../utils/network");
+var _spawnAsync = require("../utils/spawnAsync");
+var _userAgent = require("../utils/userAgent");
+var _utilsBundle = require("../../utilsBundle");
+var _fileUtils = require("../utils/fileUtils");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -402,7 +403,7 @@ const registryDirectory = exports.registryDirectory = (() => {
     result = envDefined;
   } else {
     let cacheDirectory;
-    if (process.platform === 'linux') cacheDirectory = process.env.XDG_CACHE_HOME || _path.default.join(os.homedir(), '.cache');else if (process.platform === 'darwin') cacheDirectory = _path.default.join(os.homedir(), 'Library', 'Caches');else if (process.platform === 'win32') cacheDirectory = process.env.LOCALAPPDATA || _path.default.join(os.homedir(), 'AppData', 'Local');else throw new Error('Unsupported platform: ' + process.platform);
+    if (process.platform === 'linux') cacheDirectory = process.env.XDG_CACHE_HOME || _path.default.join(_os.default.homedir(), '.cache');else if (process.platform === 'darwin') cacheDirectory = _path.default.join(_os.default.homedir(), 'Library', 'Caches');else if (process.platform === 'win32') cacheDirectory = process.env.LOCALAPPDATA || _path.default.join(_os.default.homedir(), 'AppData', 'Local');else throw new Error('Unsupported platform: ' + process.platform);
     result = _path.default.join(cacheDirectory, 'ms-playwright');
   }
   if (!_path.default.isAbsolute(result)) {
@@ -423,14 +424,7 @@ function isBrowserDirectory(browserDirectory) {
   return false;
 }
 function readDescriptors(browsersJSON) {
-  const headlessShells = [];
-  for (const browserName of ['chromium', 'chromium-tip-of-tree']) {
-    headlessShells.push({
-      ...browsersJSON.browsers.find(browser => browser.name === browserName),
-      name: `${browserName}-headless-shell`
-    });
-  }
-  return [...browsersJSON.browsers, ...headlessShells].map(obj => {
+  return browsersJSON['browsers'].map(obj => {
     const name = obj.name;
     const revisionOverride = (obj.revisionOverrides || {})[_hostPlatform.hostPlatform];
     const revision = revisionOverride || obj.revision;
@@ -470,7 +464,7 @@ class Registry {
         const preferredDockerVersion = currentDockerVersion ? (0, _dependencies.dockerVersion)(currentDockerVersion.dockerImageNameTemplate) : null;
         const isOutdatedDockerImage = currentDockerVersion && preferredDockerVersion && currentDockerVersion.dockerImageName !== preferredDockerVersion.dockerImageName;
         const prettyMessage = isOutdatedDockerImage ? [`Looks like ${sdkLanguage === 'javascript' ? 'Playwright Test or ' : ''}Playwright was just updated to ${preferredDockerVersion.driverVersion}.`, `Please update docker image as well.`, `-  current: ${currentDockerVersion.dockerImageName}`, `- required: ${preferredDockerVersion.dockerImageName}`, ``, `<3 Playwright Team`].join('\n') : [`Looks like ${sdkLanguage === 'javascript' ? 'Playwright Test or ' : ''}Playwright was just installed or updated.`, `Please run the following command to download new browser${installByDefault ? 's' : ''}:`, ``, `    ${installCommand}`, ``, `<3 Playwright Team`].join('\n');
-        throw new Error(`Executable doesn't exist at ${e}\n${(0, _utils.wrapInASCIIBox)(prettyMessage, 1)}`);
+        throw new Error(`Executable doesn't exist at ${e}\n${(0, _ascii.wrapInASCIIBox)(prettyMessage, 1)}`);
       }
       return e;
     };
@@ -797,7 +791,7 @@ class Registry {
       const folder = _path.default.resolve('firefox');
       let channelName = 'stable';
       if (name.includes('beta')) channelName = 'beta';else if (name.includes('nightly')) channelName = 'nightly';
-      const installedVersions = fs.readdirSync(folder);
+      const installedVersions = _fs.default.readdirSync(folder);
       const found = installedVersions.filter(e => e.includes(channelName));
       if (found.length === 1) return _path.default.join(folder, found[0], suffix);
       if (found.length > 1) {
@@ -862,8 +856,8 @@ class Registry {
     return Array.from(new Set(executables));
   }
   async _validateHostRequirements(sdkLanguage, browserDirectory, linuxLddDirectories, dlOpenLibraries, windowsExeAndDllDirectories) {
-    if (os.platform() === 'linux') return await (0, _dependencies.validateDependenciesLinux)(sdkLanguage, linuxLddDirectories.map(d => _path.default.join(browserDirectory, d)), dlOpenLibraries);
-    if (os.platform() === 'win32' && os.arch() === 'x64') return await (0, _dependencies.validateDependenciesWindows)(sdkLanguage, windowsExeAndDllDirectories.map(d => _path.default.join(browserDirectory, d)));
+    if (_os.default.platform() === 'linux') return await (0, _dependencies.validateDependenciesLinux)(sdkLanguage, linuxLddDirectories.map(d => _path.default.join(browserDirectory, d)), dlOpenLibraries);
+    if (_os.default.platform() === 'win32' && _os.default.arch() === 'x64') return await (0, _dependencies.validateDependenciesWindows)(sdkLanguage, windowsExeAndDllDirectories.map(d => _path.default.join(browserDirectory, d)));
   }
   async installDeps(executablesToInstallDeps, dryRun) {
     const executables = this._dedupe(executablesToInstallDeps);
@@ -872,12 +866,12 @@ class Registry {
       if (executable._dependencyGroup) targets.add(executable._dependencyGroup);
     }
     targets.add('tools');
-    if (os.platform() === 'win32') return await (0, _dependencies.installDependenciesWindows)(targets, dryRun);
-    if (os.platform() === 'linux') return await (0, _dependencies.installDependenciesLinux)(targets, dryRun);
+    if (_os.default.platform() === 'win32') return await (0, _dependencies.installDependenciesWindows)(targets, dryRun);
+    if (_os.default.platform() === 'linux') return await (0, _dependencies.installDependenciesLinux)(targets, dryRun);
   }
   async install(executablesToInstall, forceReinstall) {
     const executables = this._dedupe(executablesToInstall);
-    await fs.promises.mkdir(registryDirectory, {
+    await _fs.default.promises.mkdir(registryDirectory, {
       recursive: true
     });
     const lockfilePath = _path.default.join(registryDirectory, '__dirlock');
@@ -898,10 +892,10 @@ class Registry {
         lockfilePath
       });
       // Create a link first, so that cache validation does not remove our own browsers.
-      await fs.promises.mkdir(linksDir, {
+      await _fs.default.promises.mkdir(linksDir, {
         recursive: true
       });
-      await fs.promises.writeFile(_path.default.join(linksDir, (0, _utils.calculateSha1)(PACKAGE_PATH)), PACKAGE_PATH);
+      await _fs.default.promises.writeFile(_path.default.join(linksDir, (0, _utils.calculateSha1)(PACKAGE_PATH)), PACKAGE_PATH);
 
       // Remove stale browsers.
       await this._validateInstallationCache(linksDir);
@@ -914,14 +908,14 @@ class Registry {
         } = (0, _userAgent.getEmbedderName)();
         if (!(0, _utils.getAsBooleanFromENV)('CI') && !executable._isHermeticInstallation && !forceReinstall && executable.executablePath(embedderName)) {
           const command = buildPlaywrightCLICommand(embedderName, 'install --force ' + executable.name);
-          throw new Error('\n' + (0, _utils.wrapInASCIIBox)([`ATTENTION: "${executable.name}" is already installed on the system!`, ``, `"${executable.name}" installation is not hermetic; installing newer version`, `requires *removal* of a current installation first.`, ``, `To *uninstall* current version and re-install latest "${executable.name}":`, ``, `- Close all running instances of "${executable.name}", if any`, `- Use "--force" to install browser:`, ``, `    ${command}`, ``, `<3 Playwright Team`].join('\n'), 1));
+          throw new Error('\n' + (0, _ascii.wrapInASCIIBox)([`ATTENTION: "${executable.name}" is already installed on the system!`, ``, `"${executable.name}" installation is not hermetic; installing newer version`, `requires *removal* of a current installation first.`, ``, `To *uninstall* current version and re-install latest "${executable.name}":`, ``, `- Close all running instances of "${executable.name}", if any`, `- Use "--force" to install browser:`, ``, `    ${command}`, ``, `<3 Playwright Team`].join('\n'), 1));
         }
         await executable._install();
       }
     } catch (e) {
       if (e.code === 'ELOCKED') {
         const rmCommand = process.platform === 'win32' ? 'rm -R' : 'rm -rf';
-        throw new Error('\n' + (0, _utils.wrapInASCIIBox)([`An active lockfile is found at:`, ``, `  ${lockfilePath}`, ``, `Either:`, `- wait a few minutes if other Playwright is installing browsers in parallel`, `- remove lock manually with:`, ``, `    ${rmCommand} ${lockfilePath}`, ``, `<3 Playwright Team`].join('\n'), 1));
+        throw new Error('\n' + (0, _ascii.wrapInASCIIBox)([`An active lockfile is found at:`, ``, `  ${lockfilePath}`, ``, `Either:`, `- wait a few minutes if other Playwright is installing browsers in parallel`, `- remove lock manually with:`, ``, `    ${rmCommand} ${lockfilePath}`, ``, `<3 Playwright Team`].join('\n'), 1));
       } else {
         throw e;
       }
@@ -932,16 +926,16 @@ class Registry {
   async uninstall(all) {
     const linksDir = _path.default.join(registryDirectory, '.links');
     if (all) {
-      const links = await fs.promises.readdir(linksDir).catch(() => []);
-      for (const link of links) await fs.promises.unlink(_path.default.join(linksDir, link));
+      const links = await _fs.default.promises.readdir(linksDir).catch(() => []);
+      for (const link of links) await _fs.default.promises.unlink(_path.default.join(linksDir, link));
     } else {
-      await fs.promises.unlink(_path.default.join(linksDir, (0, _utils.calculateSha1)(PACKAGE_PATH))).catch(() => {});
+      await _fs.default.promises.unlink(_path.default.join(linksDir, (0, _utils.calculateSha1)(PACKAGE_PATH))).catch(() => {});
     }
 
     // Remove stale browsers.
     await this._validateInstallationCache(linksDir);
     return {
-      numberOfBrowsersLeft: (await fs.promises.readdir(registryDirectory).catch(() => [])).filter(browserDirectory => isBrowserDirectory(browserDirectory)).length
+      numberOfBrowsersLeft: (await _fs.default.promises.readdir(registryDirectory).catch(() => [])).filter(browserDirectory => isBrowserDirectory(browserDirectory)).length
     };
   }
   async validateHostRequirementsForExecutablesIfNeeded(executables, sdkLanguage) {
@@ -957,7 +951,7 @@ class Registry {
     if (!executable.directory) return;
     const markerFile = _path.default.join(executable.directory, 'DEPENDENCIES_VALIDATED');
     // Executable is already validated.
-    if (await fs.promises.stat(markerFile).then(stat => Date.now() - stat.mtime.getTime() < kMaximumReValidationPeriod).catch(() => false)) return;
+    if (await _fs.default.promises.stat(markerFile).then(stat => Date.now() - stat.mtime.getTime() < kMaximumReValidationPeriod).catch(() => false)) return;
     _debugLogger.debugLogger.log('install', `validating host requirements for "${executable.name}"`);
     try {
       await executable._validateHostRequirements(sdkLanguage);
@@ -966,7 +960,7 @@ class Registry {
       _debugLogger.debugLogger.log('install', `validation failed for ${executable.name}`);
       throw error;
     }
-    await fs.promises.writeFile(markerFile, '').catch(() => {});
+    await _fs.default.promises.writeFile(markerFile, '').catch(() => {});
   }
   _downloadURLs(descriptor) {
     const paths = DOWNLOAD_PATHS[descriptor.name];
@@ -1063,11 +1057,11 @@ class Registry {
   async _validateInstallationCache(linksDir) {
     // 1. Collect used downloads and package descriptors.
     const usedBrowserPaths = new Set();
-    for (const fileName of await fs.promises.readdir(linksDir)) {
+    for (const fileName of await _fs.default.promises.readdir(linksDir)) {
       const linkPath = _path.default.join(linksDir, fileName);
       let linkTarget = '';
       try {
-        linkTarget = (await fs.promises.readFile(linkPath)).toString();
+        linkTarget = (await _fs.default.promises.readFile(linkPath)).toString();
         const browsersJSON = require(_path.default.join(linkTarget, 'browsers.json'));
         const descriptors = readDescriptors(browsersJSON);
         for (const browserName of allDownloadable) {
@@ -1088,13 +1082,13 @@ class Registry {
           if (!shouldHaveMarkerFile || (await (0, _fileUtils.existsAsync)(browserDirectoryToMarkerFilePath(usedBrowserPath)))) usedBrowserPaths.add(usedBrowserPath);
         }
       } catch (e) {
-        await fs.promises.unlink(linkPath).catch(e => {});
+        await _fs.default.promises.unlink(linkPath).catch(e => {});
       }
     }
 
     // 2. Delete all unused browsers.
     if (!(0, _utils.getAsBooleanFromENV)('PLAYWRIGHT_SKIP_BROWSER_GC')) {
-      let downloadedBrowsers = (await fs.promises.readdir(registryDirectory)).map(file => _path.default.join(registryDirectory, file));
+      let downloadedBrowsers = (await _fs.default.promises.readdir(registryDirectory)).map(file => _path.default.join(registryDirectory, file));
       downloadedBrowsers = downloadedBrowsers.filter(file => isBrowserDirectory(file));
       const directories = new Set(downloadedBrowsers);
       for (const browserDirectory of usedBrowserPaths) directories.delete(browserDirectory);
@@ -1151,7 +1145,7 @@ function findChromiumChannel(sdkLanguage) {
   if (channel === null) {
     const installCommand = buildPlaywrightCLICommand(sdkLanguage, `install chromium`);
     const prettyMessage = [`No chromium-based browser found on the system.`, `Please run the following command to download one:`, ``, `    ${installCommand}`, ``, `<3 Playwright Team`].join('\n');
-    throw new Error('\n' + (0, _utils.wrapInASCIIBox)(prettyMessage, 1));
+    throw new Error('\n' + (0, _ascii.wrapInASCIIBox)(prettyMessage, 1));
   }
   return channel;
 }

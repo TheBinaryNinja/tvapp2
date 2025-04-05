@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CRPDF = void 0;
-var _utils = require("../../utils");
 var _crProtocolHelper = require("./crProtocolHelper");
+var _utils = require("../../utils");
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

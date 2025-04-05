@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.kBrowserCloseMessageId = exports.FFSession = exports.FFConnection = exports.ConnectionEvents = void 0;
 var _events = require("events");
-var _debugLogger = require("../../utils/debugLogger");
+var _debugLogger = require("../utils/debugLogger");
 var _helper = require("../helper");
 var _protocolError = require("../protocolError");
 /**

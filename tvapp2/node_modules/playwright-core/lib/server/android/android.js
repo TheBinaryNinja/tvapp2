@@ -4,25 +4,28 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AndroidDevice = exports.Android = void 0;
-var _utilsBundle = require("../../utilsBundle");
 var _events = require("events");
 var _fs = _interopRequireDefault(require("fs"));
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
-var _utils = require("../../utils");
-var _fileUtils = require("../../utils/fileUtils");
+var _timeoutSettings = require("../timeoutSettings");
+var _pipeTransport = require("../utils/pipeTransport");
+var _crypto = require("../utils/crypto");
+var _debug = require("../utils/debug");
+var _env = require("../utils/env");
+var _task = require("../utils/task");
+var _debugLogger = require("../utils/debugLogger");
+var _utilsBundle = require("../../utilsBundle");
 var _browserContext = require("../browserContext");
-var _progress = require("../progress");
-var _crBrowser = require("../chromium/crBrowser");
-var _helper = require("../helper");
-var _transport = require("../../protocol/transport");
-var _debugLogger = require("../../utils/debugLogger");
-var _processLauncher = require("../../utils/processLauncher");
-var _timeoutSettings = require("../../common/timeoutSettings");
-var _instrumentation = require("../instrumentation");
 var _chromiumSwitches = require("../chromium/chromiumSwitches");
+var _crBrowser = require("../chromium/crBrowser");
+var _fileUtils = require("../utils/fileUtils");
+var _helper = require("../helper");
+var _instrumentation = require("../instrumentation");
+var _processLauncher = require("../utils/processLauncher");
+var _progress = require("../progress");
 var _registry = require("../registry");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright Microsoft Corporation. All rights reserved.
  *
@@ -140,7 +143,7 @@ class AndroidDevice extends _instrumentation.SdkObject {
       await this.shell(`cmd package uninstall com.microsoft.playwright.androiddriver.test`);
       (0, _utilsBundle.debug)('pw:android')('Installing the new driver');
       const executable = _registry.registry.findExecutable('android');
-      const packageManagerCommand = (0, _utils.getPackageManagerExecCommand)();
+      const packageManagerCommand = (0, _env.getPackageManagerExecCommand)();
       for (const file of ['android-driver.apk', 'android-driver-target.apk']) {
         const fullName = _path.default.join(executable.directory, file);
         if (!_fs.default.existsSync(fullName)) throw new Error(`Please install Android driver apk using '${packageManagerCommand} playwright install android'`);
@@ -152,7 +155,7 @@ class AndroidDevice extends _instrumentation.SdkObject {
     (0, _utilsBundle.debug)('pw:android')('Starting the new driver');
     this.shell('am instrument -w com.microsoft.playwright.androiddriver.test/androidx.test.runner.AndroidJUnitRunner').catch(e => (0, _utilsBundle.debug)('pw:android')(e));
     const socket = await this._waitForLocalAbstract('playwright_android_driver_socket');
-    const transport = new _transport.PipeTransport(socket, socket, socket, 'be');
+    const transport = new _pipeTransport.PipeTransport(socket, socket, socket, 'be');
     transport.onmessage = message => {
       const response = JSON.parse(message);
       const {
@@ -213,7 +216,7 @@ class AndroidDevice extends _instrumentation.SdkObject {
   async launchBrowser(pkg = 'com.android.chrome', options) {
     (0, _utilsBundle.debug)('pw:android')('Force-stopping', pkg);
     await this._backend.runCommand(`shell:am force-stop ${pkg}`);
-    const socketName = (0, _utils.isUnderTest)() ? 'webview_devtools_remote_playwright_test' : 'playwright_' + (0, _utils.createGuid)() + '_devtools_remote';
+    const socketName = (0, _debug.isUnderTest)() ? 'webview_devtools_remote_playwright_test' : 'playwright_' + (0, _crypto.createGuid)() + '_devtools_remote';
     const commandLine = this._defaultArgs(options, socketName).join(' ');
     (0, _utilsBundle.debug)('pw:android')('Starting', pkg, commandLine);
     // encode commandLine to base64 to avoid issues (bash encoding) with special characters
@@ -381,7 +384,7 @@ class AndroidBrowser extends _events.EventEmitter {
     this.device = void 0;
     this._socket = void 0;
     this._receiver = void 0;
-    this._waitForNextTask = (0, _utils.makeWaitForNextTask)();
+    this._waitForNextTask = (0, _task.makeWaitForNextTask)();
     this.onmessage = void 0;
     this.onclose = void 0;
     this.setMaxListeners(0);

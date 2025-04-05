@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Worker = void 0;
-var _events = require("./events");
 var _channelOwner = require("./channelOwner");
-var _jsHandle = require("./jsHandle");
-var _utils = require("../utils");
 var _errors = require("./errors");
+var _events = require("./events");
+var _jsHandle = require("./jsHandle");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -35,7 +35,7 @@ class Worker extends _channelOwner.ChannelOwner {
     // Set for web workers.
     this._context = void 0;
     // Set for service workers.
-    this._closedScope = new _utils.LongStandingScope();
+    this._closedScope = new _manualPromise.LongStandingScope();
     this._channel.on('close', () => {
       if (this._page) this._page._workers.delete(this);
       if (this._context) this._context._serviceWorkers.delete(this);

@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ArtifactDispatcher = void 0;
+var _fs = _interopRequireDefault(require("fs"));
 var _dispatcher = require("./dispatcher");
 var _streamDispatcher = require("./streamDispatcher");
-var _fs = _interopRequireDefault(require("fs"));
-var _fileUtils = require("../../utils/fileUtils");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _fileUtils = require("../utils/fileUtils");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *

@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WKWorkers = void 0;
-var _eventsHelper = require("../../utils/eventsHelper");
+var _eventsHelper = require("../utils/eventsHelper");
 var _page = require("../page");
 var _wkConnection = require("./wkConnection");
 var _wkExecutionContext = require("./wkExecutionContext");
@@ -91,7 +91,7 @@ class WKWorkers {
     let derivedType = type || '';
     if (type === 'log') derivedType = level;else if (type === 'timing') derivedType = 'timeEnd';
     const handles = (parameters || []).map(p => {
-      return worker._existingExecutionContext.createHandle(p);
+      return (0, _wkExecutionContext.createHandle)(worker._existingExecutionContext, p);
     });
     const location = {
       url: url || '',

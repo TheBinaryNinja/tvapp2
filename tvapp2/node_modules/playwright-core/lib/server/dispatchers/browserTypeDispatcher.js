@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.BrowserTypeDispatcher = void 0;
+var _browserContextDispatcher = require("./browserContextDispatcher");
 var _browserDispatcher = require("./browserDispatcher");
 var _dispatcher = require("./dispatcher");
-var _browserContextDispatcher = require("./browserContextDispatcher");
 /**
  * Copyright (c) Microsoft Corporation.
  *

@@ -7,27 +7,27 @@ exports.Chromium = void 0;
 var _fs = _interopRequireDefault(require("fs"));
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
+var _chromiumSwitches = require("./chromiumSwitches");
 var _crBrowser = require("./crBrowser");
-var _processLauncher = require("../../utils/processLauncher");
 var _crConnection = require("./crConnection");
+var _timeoutSettings = require("../timeoutSettings");
+var _utils = require("../../utils");
+var _ascii = require("../utils/ascii");
+var _debugLogger = require("../utils/debugLogger");
+var _manualPromise = require("../../utils/isomorphic/manualPromise");
+var _network = require("../utils/network");
+var _userAgent = require("../utils/userAgent");
+var _browserContext = require("../browserContext");
 var _browserType = require("../browserType");
+var _helper = require("../helper");
+var _registry = require("../registry");
 var _transport = require("../transport");
 var _crDevTools = require("./crDevTools");
 var _browser = require("../browser");
-var _network = require("../../utils/network");
-var _userAgent = require("../../utils/userAgent");
-var _ascii = require("../../utils/ascii");
-var _utils = require("../../utils");
-var _fileUtils = require("../../utils/fileUtils");
-var _debugLogger = require("../../utils/debugLogger");
+var _fileUtils = require("../utils/fileUtils");
+var _processLauncher = require("../utils/processLauncher");
 var _progress = require("../progress");
-var _timeoutSettings = require("../../common/timeoutSettings");
-var _helper = require("../helper");
-var _registry = require("../registry");
-var _manualPromise = require("../../utils/manualPromise");
-var _browserContext = require("../browserContext");
-var _chromiumSwitches = require("./chromiumSwitches");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

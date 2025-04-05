@@ -8,17 +8,21 @@ exports.shouldCaptureSnapshot = shouldCaptureSnapshot;
 var _fs = _interopRequireDefault(require("fs"));
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
+var _snapshotter = require("./snapshotter");
 var _debug = require("../../../protocol/debug");
-var _utils = require("../../../utils");
+var _assert = require("../../../utils/isomorphic/assert");
+var _time = require("../../../utils/isomorphic/time");
+var _eventsHelper = require("../../utils/eventsHelper");
+var _crypto = require("../../utils/crypto");
 var _artifact = require("../../artifact");
 var _browserContext = require("../../browserContext");
-var _instrumentation = require("../../instrumentation");
-var _page = require("../../page");
-var _harTracer = require("../../har/harTracer");
-var _snapshotter = require("./snapshotter");
 var _dispatcher = require("../../dispatchers/dispatcher");
 var _errors = require("../../errors");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _fileUtils = require("../../utils/fileUtils");
+var _harTracer = require("../../har/harTracer");
+var _instrumentation = require("../../instrumentation");
+var _page = require("../../page");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -44,7 +48,7 @@ const kScreencastOptions = {
 class Tracing extends _instrumentation.SdkObject {
   constructor(context, tracesDir) {
     super(context, 'tracing');
-    this._fs = new _utils.SerializedFS();
+    this._fs = new _fileUtils.SerializedFS();
     this._snapshotter = void 0;
     this._harTracer = void 0;
     this._screencastListeners = [];
@@ -77,11 +81,12 @@ class Tracing extends _instrumentation.SdkObject {
       wallTime: 0,
       monotonicTime: 0,
       sdkLanguage: context.attribution.playwright.options.sdkLanguage,
-      testIdAttributeName
+      testIdAttributeName,
+      contextId: context.guid
     };
     if (context instanceof _browserContext.BrowserContext) {
       this._snapshotter = new _snapshotter.Snapshotter(context, this);
-      (0, _utils.assert)(tracesDir, 'tracesDir must be specified for BrowserContext');
+      (0, _assert.assert)(tracesDir, 'tracesDir must be specified for BrowserContext');
       this._contextCreatedEvent.browserName = context._browser.options.name;
       this._contextCreatedEvent.channel = context._browser.options.channel;
       this._contextCreatedEvent.options = context._options;
@@ -105,7 +110,7 @@ class Tracing extends _instrumentation.SdkObject {
 
     // TODO: passing the same name for two contexts makes them write into a single file
     // and conflict.
-    const traceName = options.name || (0, _utils.createGuid)();
+    const traceName = options.name || (0, _crypto.createGuid)();
     const tracesDir = this._createTracesDirIfNeeded();
 
     // Init the state synchronously.
@@ -139,17 +144,23 @@ class Tracing extends _instrumentation.SdkObject {
     if (this._isStopping) throw new Error('Cannot start a trace chunk while stopping');
     this._state.recording = true;
     this._state.callIds.clear();
-    if (options.name && options.name !== this._state.traceName) this._changeTraceName(this._state, options.name);else this._allocateNewTraceFile(this._state);
+
+    // - Browser context network trace is shared across chunks as it contains resources
+    // used to serve page snapshots, so make a copy with the new name.
+    // - APIRequestContext network traces are chunk-specific, always start from scratch.
+    const preserveNetworkResources = this._context instanceof _browserContext.BrowserContext;
+    if (options.name && options.name !== this._state.traceName) this._changeTraceName(this._state, options.name, preserveNetworkResources);else this._allocateNewTraceFile(this._state);
+    if (!preserveNetworkResources) this._fs.writeFile(this._state.networkFile, '');
     this._fs.mkdir(_path.default.dirname(this._state.traceFile));
     const event = {
       ...this._contextCreatedEvent,
       title: options.title,
       wallTime: Date.now(),
-      monotonicTime: (0, _utils.monotonicTime)()
+      monotonicTime: (0, _time.monotonicTime)()
     };
     this._appendTraceEvent(event);
     this._context.instrumentation.addListener(this, this._context);
-    this._eventListeners.push(_utils.eventsHelper.addEventListener(this._context, _browserContext.BrowserContext.Events.Console, this._onConsoleMessage.bind(this)), _utils.eventsHelper.addEventListener(this._context, _browserContext.BrowserContext.Events.PageError, this._onPageError.bind(this)));
+    this._eventListeners.push(_eventsHelper.eventsHelper.addEventListener(this._context, _browserContext.BrowserContext.Events.Console, this._onConsoleMessage.bind(this)), _eventsHelper.eventsHelper.addEventListener(this._context, _browserContext.BrowserContext.Events.PageError, this._onPageError.bind(this)));
     if (this._state.options.screenshots) this._startScreencast();
     if (this._state.options.snapshots) await ((_this$_snapshotter2 = this._snapshotter) === null || _this$_snapshotter2 === void 0 ? void 0 : _this$_snapshotter2.start());
     return {
@@ -198,17 +209,17 @@ class Tracing extends _instrumentation.SdkObject {
     const event = {
       type: 'after',
       callId,
-      endTime: (0, _utils.monotonicTime)()
+      endTime: (0, _time.monotonicTime)()
     };
     this._appendTraceEvent(event);
   }
   _startScreencast() {
     if (!(this._context instanceof _browserContext.BrowserContext)) return;
     for (const page of this._context.pages()) this._startScreencastInPage(page);
-    this._screencastListeners.push(_utils.eventsHelper.addEventListener(this._context, _browserContext.BrowserContext.Events.Page, this._startScreencastInPage.bind(this)));
+    this._screencastListeners.push(_eventsHelper.eventsHelper.addEventListener(this._context, _browserContext.BrowserContext.Events.Page, this._startScreencastInPage.bind(this)));
   }
   _stopScreencast() {
-    _utils.eventsHelper.removeEventListeners(this._screencastListeners);
+    _eventsHelper.eventsHelper.removeEventListeners(this._screencastListeners);
     if (!(this._context instanceof _browserContext.BrowserContext)) return;
     for (const page of this._context.pages()) page.setScreencastOptions(null);
   }
@@ -217,14 +228,12 @@ class Tracing extends _instrumentation.SdkObject {
     state.chunkOrdinal++;
     state.traceFile = _path.default.join(state.tracesDir, `${state.traceName}${suffix}.trace`);
   }
-  _changeTraceName(state, name) {
+  _changeTraceName(state, name, preserveNetworkResources) {
     state.traceName = name;
     state.chunkOrdinal = 0; // Reset ordinal for the new name.
     this._allocateNewTraceFile(state);
-
-    // Network file survives across chunks, so make a copy with the new name.
     const newNetworkFile = _path.default.join(state.tracesDir, name + '.network');
-    this._fs.copyFile(state.networkFile, newNetworkFile);
+    if (preserveNetworkResources) this._fs.copyFile(state.networkFile, newNetworkFile);
     state.networkFile = newNetworkFile;
   }
   async stop() {
@@ -238,7 +247,7 @@ class Tracing extends _instrumentation.SdkObject {
     this._state = undefined;
   }
   async deleteTmpTracesDir() {
-    if (this._tracesTmpDir) await (0, _utils.removeFolders)([this._tracesTmpDir]);
+    if (this._tracesTmpDir) await (0, _fileUtils.removeFolders)([this._tracesTmpDir]);
   }
   _createTracesDirIfNeeded() {
     if (this._precreatedTracesDir) return this._precreatedTracesDir;
@@ -268,7 +277,7 @@ class Tracing extends _instrumentation.SdkObject {
     }
     this._closeAllGroups();
     this._context.instrumentation.removeListener(this);
-    _utils.eventsHelper.removeEventListeners(this._eventListeners);
+    _eventsHelper.eventsHelper.removeEventListeners(this._eventListeners);
     if (this._state.options.screenshots) this._stopScreencast();
     if (this._state.options.snapshots) await ((_this$_snapshotter4 = this._snapshotter) === null || _this$_snapshotter4 === void 0 ? void 0 : _this$_snapshotter4.stop());
     this.flushHarEntries();
@@ -421,7 +430,7 @@ class Tracing extends _instrumentation.SdkObject {
         value: a.rawValue()
       })),
       location: message.location(),
-      time: (0, _utils.monotonicTime)(),
+      time: (0, _time.monotonicTime)(),
       pageId: (_message$page = message.page()) === null || _message$page === void 0 ? void 0 : _message$page.guid
     };
     this._appendTraceEvent(event);
@@ -429,7 +438,7 @@ class Tracing extends _instrumentation.SdkObject {
   onDialog(dialog) {
     const event = {
       type: 'event',
-      time: (0, _utils.monotonicTime)(),
+      time: (0, _time.monotonicTime)(),
       class: 'BrowserContext',
       method: 'dialog',
       params: {
@@ -444,7 +453,7 @@ class Tracing extends _instrumentation.SdkObject {
   onDownload(page, download) {
     const event = {
       type: 'event',
-      time: (0, _utils.monotonicTime)(),
+      time: (0, _time.monotonicTime)(),
       class: 'BrowserContext',
       method: 'download',
       params: {
@@ -459,7 +468,7 @@ class Tracing extends _instrumentation.SdkObject {
     var _page$opener;
     const event = {
       type: 'event',
-      time: (0, _utils.monotonicTime)(),
+      time: (0, _time.monotonicTime)(),
       class: 'BrowserContext',
       method: 'page',
       params: {
@@ -472,7 +481,7 @@ class Tracing extends _instrumentation.SdkObject {
   onPageClose(page) {
     const event = {
       type: 'event',
-      time: (0, _utils.monotonicTime)(),
+      time: (0, _time.monotonicTime)(),
       class: 'BrowserContext',
       method: 'pageClosed',
       params: {
@@ -484,7 +493,7 @@ class Tracing extends _instrumentation.SdkObject {
   _onPageError(error, page) {
     const event = {
       type: 'event',
-      time: (0, _utils.monotonicTime)(),
+      time: (0, _time.monotonicTime)(),
       class: 'BrowserContext',
       method: 'pageError',
       params: {
@@ -497,7 +506,7 @@ class Tracing extends _instrumentation.SdkObject {
   _startScreencastInPage(page) {
     page.setScreencastOptions(kScreencastOptions);
     const prefix = page.guid;
-    this._screencastListeners.push(_utils.eventsHelper.addEventListener(page, _page.Page.Events.ScreencastFrame, params => {
+    this._screencastListeners.push(_eventsHelper.eventsHelper.addEventListener(page, _page.Page.Events.ScreencastFrame, params => {
       const suffix = params.timestamp || Date.now();
       const sha1 = `${prefix}-${suffix}.jpeg`;
       const event = {
@@ -506,7 +515,7 @@ class Tracing extends _instrumentation.SdkObject {
         sha1,
         width: params.width,
         height: params.height,
-        timestamp: (0, _utils.monotonicTime)(),
+        timestamp: (0, _time.monotonicTime)(),
         frameSwapWallTime: params.frameSwapWallTime
       };
       // Make sure to write the screencast frame before adding a reference to it.
@@ -578,7 +587,7 @@ function createActionLogTraceEvent(metadata, message) {
   return {
     type: 'log',
     callId: metadata.id,
-    time: (0, _utils.monotonicTime)(),
+    time: (0, _time.monotonicTime)(),
     message
   };
 }

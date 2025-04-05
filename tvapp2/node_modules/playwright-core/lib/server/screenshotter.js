@@ -7,7 +7,7 @@ exports.Screenshotter = void 0;
 exports.validateScreenshotOptions = validateScreenshotOptions;
 var _helper = require("./helper");
 var _utils = require("../utils");
-var _multimap = require("../utils/multimap");
+var _multimap = require("../utils/isomorphic/multimap");
 /**
  * Copyright 2019 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

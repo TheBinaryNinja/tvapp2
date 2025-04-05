@@ -6,11 +6,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.BidiChromium = void 0;
 var _os = _interopRequireDefault(require("os"));
 var _utils = require("../../utils");
+var _ascii = require("../utils/ascii");
 var _browserType = require("../browserType");
-var _chromiumSwitches = require("../chromium/chromiumSwitches");
 var _bidiBrowser = require("./bidiBrowser");
 var _bidiConnection = require("./bidiConnection");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _chromiumSwitches = require("../chromium/chromiumSwitches");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -42,7 +43,7 @@ class BidiChromium extends _browserType.BrowserType {
   }
   doRewriteStartupLog(error) {
     if (!error.logs) return error;
-    if (error.logs.includes('Missing X server')) error.logs = '\n' + (0, _utils.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
+    if (error.logs.includes('Missing X server')) error.logs = '\n' + (0, _ascii.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
     // These error messages are taken from Chromium source code as of July, 2020:
     // https://github.com/chromium/chromium/blob/70565f67e79f79e17663ad1337dc6e63ee207ce9/content/browser/zygote_host/zygote_host_impl_linux.cc
     if (!error.logs.includes('crbug.com/357670') && !error.logs.includes('No usable sandbox!') && !error.logs.includes('crbug.com/638180')) return error;

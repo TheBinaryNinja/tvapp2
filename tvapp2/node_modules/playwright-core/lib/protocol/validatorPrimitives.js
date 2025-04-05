@@ -8,7 +8,6 @@ exports.createMetadataValidator = createMetadataValidator;
 exports.findValidator = findValidator;
 exports.maybeFindValidator = maybeFindValidator;
 exports.tUndefined = exports.tType = exports.tString = exports.tOptional = exports.tObject = exports.tNumber = exports.tEnum = exports.tChannel = exports.tBoolean = exports.tBinary = exports.tArray = exports.tAny = exports.scheme = void 0;
-var _utils = require("../utils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -107,7 +106,7 @@ const tObject = s => {
       const value = v(arg[key], path ? path + '.' + key : key, context);
       if (!Object.is(value, undefined)) result[key] = value;
     }
-    if ((0, _utils.isUnderTest)()) {
+    if (context.isUnderTest()) {
       for (const [key, value] of Object.entries(arg)) {
         if (key.startsWith('__testHook')) result[key] = value;
       }

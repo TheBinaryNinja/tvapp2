@@ -70,15 +70,16 @@ class Tracing extends _channelOwner.ChannelOwner {
     }, false);
   }
   async _startCollectingStacks(traceName) {
+    var _this$_connection$loc;
     if (!this._isTracing) {
       this._isTracing = true;
       this._connection.setIsTracing(true);
     }
-    const result = await this._connection.localUtils()._channel.tracingStarted({
+    const result = await ((_this$_connection$loc = this._connection.localUtils()) === null || _this$_connection$loc === void 0 ? void 0 : _this$_connection$loc.tracingStarted({
       tracesDir: this._tracesDir,
       traceName
-    });
-    this._stacksId = result.stacksId;
+    }));
+    this._stacksId = result === null || result === void 0 ? void 0 : result.stacksId;
   }
   async stopChunk(options = {}) {
     await this._doStopChunk(options.path);
@@ -94,17 +95,19 @@ class Tracing extends _channelOwner.ChannelOwner {
       await this._channel.tracingStopChunk({
         mode: 'discard'
       });
-      if (this._stacksId) await this._connection.localUtils()._channel.traceDiscarded({
+      if (this._stacksId) await this._connection.localUtils().traceDiscarded({
         stacksId: this._stacksId
       });
       return;
     }
+    const localUtils = this._connection.localUtils();
+    if (!localUtils) throw new Error('Cannot save trace in thin clients');
     const isLocal = !this._connection.isRemote();
     if (isLocal) {
       const result = await this._channel.tracingStopChunk({
         mode: 'entries'
       });
-      await this._connection.localUtils()._channel.zip({
+      await localUtils.zip({
         zipFile: filePath,
         entries: result.entries,
         mode: 'write',
@@ -119,7 +122,7 @@ class Tracing extends _channelOwner.ChannelOwner {
 
     // The artifact may be missing if the browser closed while stopping tracing.
     if (!result.artifact) {
-      if (this._stacksId) await this._connection.localUtils()._channel.traceDiscarded({
+      if (this._stacksId) await localUtils.traceDiscarded({
         stacksId: this._stacksId
       });
       return;
@@ -129,7 +132,7 @@ class Tracing extends _channelOwner.ChannelOwner {
     const artifact = _artifact.Artifact.from(result.artifact);
     await artifact.saveAs(filePath);
     await artifact.delete();
-    await this._connection.localUtils()._channel.zip({
+    await localUtils.zip({
       zipFile: filePath,
       entries: [],
       mode: 'append',

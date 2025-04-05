@@ -4,11 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Page = exports.BindingCall = void 0;
-var _fs = _interopRequireDefault(require("fs"));
-var _path = _interopRequireDefault(require("path"));
-var _errors = require("./errors");
-var _timeoutSettings = require("../common/timeoutSettings");
-var _utils = require("../utils");
 var _accessibility = require("./accessibility");
 var _artifact = require("./artifact");
 var _channelOwner = require("./channelOwner");
@@ -16,17 +11,25 @@ var _clientHelper = require("./clientHelper");
 var _coverage = require("./coverage");
 var _download = require("./download");
 var _elementHandle = require("./elementHandle");
+var _errors = require("./errors");
 var _events = require("./events");
 var _fileChooser = require("./fileChooser");
 var _frame = require("./frame");
+var _harRouter = require("./harRouter");
 var _input = require("./input");
 var _jsHandle = require("./jsHandle");
 var _network = require("./network");
 var _video = require("./video");
 var _waiter = require("./waiter");
 var _worker = require("./worker");
-var _harRouter = require("./harRouter");
-let _Symbol$asyncDispose;
+var _timeoutSettings = require("./timeoutSettings");
+var _assert = require("../utils/isomorphic/assert");
+var _fileUtils = require("./fileUtils");
+var _headers = require("../utils/isomorphic/headers");
+var _stringUtils = require("../utils/isomorphic/stringUtils");
+var _urlMatch = require("../utils/isomorphic/urlMatch");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
+var _rtti = require("../utils/isomorphic/rtti");
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -43,8 +46,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-_Symbol$asyncDispose = Symbol.asyncDispose;
+
 class Page extends _channelOwner.ChannelOwner {
   static from(page) {
     return page._object;
@@ -60,7 +62,7 @@ class Page extends _channelOwner.ChannelOwner {
     this._frames = new Set();
     this._workers = new Set();
     this._closed = false;
-    this._closedOrCrashedScope = new _utils.LongStandingScope();
+    this._closedOrCrashedScope = new _manualPromise.LongStandingScope();
     this._viewportSize = void 0;
     this._routes = [];
     this._webSocketRoutes = [];
@@ -80,7 +82,7 @@ class Page extends _channelOwner.ChannelOwner {
     this._harRouters = [];
     this._locatorHandlers = new Map();
     this._browserContext = parent;
-    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(this._browserContext._timeoutSettings);
+    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(this._platform, this._browserContext._timeoutSettings);
     this.accessibility = new _accessibility.Accessibility(this._channel);
     this.keyboard = new _input.Keyboard(this);
     this.mouse = new _input.Mouse(this);
@@ -208,12 +210,12 @@ class Page extends _channelOwner.ChannelOwner {
     return this._mainFrame;
   }
   frame(frameSelector) {
-    const name = (0, _utils.isString)(frameSelector) ? frameSelector : frameSelector.name;
-    const url = (0, _utils.isObject)(frameSelector) ? frameSelector.url : undefined;
-    (0, _utils.assert)(name || url, 'Either name or url matcher should be specified');
+    const name = (0, _rtti.isString)(frameSelector) ? frameSelector : frameSelector.name;
+    const url = (0, _rtti.isObject)(frameSelector) ? frameSelector.url : undefined;
+    (0, _assert.assert)(name || url, 'Either name or url matcher should be specified');
     return this.frames().find(f => {
       if (name) return f.name() === name;
-      return (0, _utils.urlMatches)(this._browserContext._options.baseURL, f.url(), url);
+      return (0, _urlMatch.urlMatches)(this._browserContext._options.baseURL, f.url(), url);
     }) || null;
   }
   frames() {
@@ -222,18 +224,18 @@ class Page extends _channelOwner.ChannelOwner {
   setDefaultNavigationTimeout(timeout) {
     this._timeoutSettings.setDefaultNavigationTimeout(timeout);
     this._wrapApiCall(async () => {
-      this._channel.setDefaultNavigationTimeoutNoReply({
+      await this._channel.setDefaultNavigationTimeoutNoReply({
         timeout
-      }).catch(() => {});
-    }, true);
+      });
+    }, true).catch(() => {});
   }
   setDefaultTimeout(timeout) {
     this._timeoutSettings.setDefaultTimeout(timeout);
     this._wrapApiCall(async () => {
-      this._channel.setDefaultTimeoutNoReply({
+      await this._channel.setDefaultTimeoutNoReply({
         timeout
-      }).catch(() => {});
-    }, true);
+      });
+    }, true).catch(() => {});
   }
   _forceVideo() {
     if (!this._video) this._video = new _video.Video(this, this._connection);
@@ -293,7 +295,7 @@ class Page extends _channelOwner.ChannelOwner {
   async setExtraHTTPHeaders(headers) {
     (0, _network.validateHeaders)(headers);
     await this._channel.setExtraHTTPHeaders({
-      headers: (0, _utils.headersObjectToArray)(headers)
+      headers: (0, _headers.headersObjectToArray)(headers)
     });
   }
   url() {
@@ -368,7 +370,7 @@ class Page extends _channelOwner.ChannelOwner {
   }
   async waitForRequest(urlOrPredicate, options = {}) {
     const predicate = async request => {
-      if ((0, _utils.isString)(urlOrPredicate) || (0, _utils.isRegExp)(urlOrPredicate)) return (0, _utils.urlMatches)(this._browserContext._options.baseURL, request.url(), urlOrPredicate);
+      if ((0, _rtti.isString)(urlOrPredicate) || (0, _rtti.isRegExp)(urlOrPredicate)) return (0, _urlMatch.urlMatches)(this._browserContext._options.baseURL, request.url(), urlOrPredicate);
       return await urlOrPredicate(request);
     };
     const trimmedUrl = trimUrl(urlOrPredicate);
@@ -380,7 +382,7 @@ class Page extends _channelOwner.ChannelOwner {
   }
   async waitForResponse(urlOrPredicate, options = {}) {
     const predicate = async response => {
-      if ((0, _utils.isString)(urlOrPredicate) || (0, _utils.isRegExp)(urlOrPredicate)) return (0, _utils.urlMatches)(this._browserContext._options.baseURL, response.url(), urlOrPredicate);
+      if ((0, _rtti.isString)(urlOrPredicate) || (0, _rtti.isRegExp)(urlOrPredicate)) return (0, _urlMatch.urlMatches)(this._browserContext._options.baseURL, response.url(), urlOrPredicate);
       return await urlOrPredicate(response);
     };
     const trimmedUrl = trimUrl(urlOrPredicate);
@@ -432,7 +434,8 @@ class Page extends _channelOwner.ChannelOwner {
       media: options.media === null ? 'no-override' : options.media,
       colorScheme: options.colorScheme === null ? 'no-override' : options.colorScheme,
       reducedMotion: options.reducedMotion === null ? 'no-override' : options.reducedMotion,
-      forcedColors: options.forcedColors === null ? 'no-override' : options.forcedColors
+      forcedColors: options.forcedColors === null ? 'no-override' : options.forcedColors,
+      contrast: options.contrast === null ? 'no-override' : options.contrast
     });
   }
   async setViewportSize(viewportSize) {
@@ -449,21 +452,23 @@ class Page extends _channelOwner.ChannelOwner {
     return await this._mainFrame.evaluate(pageFunction, arg);
   }
   async addInitScript(script, arg) {
-    const source = await (0, _clientHelper.evaluationScript)(script, arg);
+    const source = await (0, _clientHelper.evaluationScript)(this._platform, script, arg);
     await this._channel.addInitScript({
       source
     });
   }
   async route(url, handler, options = {}) {
-    this._routes.unshift(new _network.RouteHandler(this._browserContext._options.baseURL, url, handler, options.times));
+    this._routes.unshift(new _network.RouteHandler(this._platform, this._browserContext._options.baseURL, url, handler, options.times));
     await this._updateInterceptionPatterns();
   }
   async routeFromHAR(har, options = {}) {
+    const localUtils = this._connection.localUtils();
+    if (!localUtils) throw new Error('Route from har is not supported in thin clients');
     if (options.update) {
       await this._browserContext._recordIntoHAR(har, this, options);
       return;
     }
-    const harRouter = await _harRouter.HarRouter.create(this._connection.localUtils(), har, options.notFound || 'abort', {
+    const harRouter = await _harRouter.HarRouter.create(localUtils, har, options.notFound || 'abort', {
       urlMatch: options.url
     });
     this._harRouters.push(harRouter);
@@ -485,7 +490,7 @@ class Page extends _channelOwner.ChannelOwner {
     const removed = [];
     const remaining = [];
     for (const route of this._routes) {
-      if ((0, _utils.urlMatchesEqual)(route.url, url) && (!handler || route.handler === handler)) removed.push(route);else remaining.push(route);
+      if ((0, _urlMatch.urlMatchesEqual)(route.url, url) && (!handler || route.handler === handler)) removed.push(route);else remaining.push(route);
     }
     await this._unrouteInternal(removed, remaining, 'default');
   }
@@ -509,21 +514,22 @@ class Page extends _channelOwner.ChannelOwner {
     });
   }
   async screenshot(options = {}) {
+    const mask = options.mask;
     const copy = {
       ...options,
       mask: undefined
     };
     if (!copy.type) copy.type = (0, _elementHandle.determineScreenshotType)(options);
-    if (options.mask) {
-      copy.mask = options.mask.map(locator => ({
+    if (mask) {
+      copy.mask = mask.map(locator => ({
         frame: locator._frame._channel,
         selector: locator._selector
       }));
     }
     const result = await this._channel.screenshot(copy);
     if (options.path) {
-      await (0, _utils.mkdirIfNeeded)(options.path);
-      await _fs.default.promises.writeFile(options.path, result.binary);
+      await (0, _fileUtils.mkdirIfNeeded)(this._platform, options.path);
+      await this._platform.fs().promises.writeFile(options.path, result.binary);
     }
     return result.binary;
   }
@@ -549,7 +555,7 @@ class Page extends _channelOwner.ChannelOwner {
   async bringToFront() {
     await this._channel.bringToFront();
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.close();
   }
   async close(options = {}) {
@@ -678,7 +684,7 @@ class Page extends _channelOwner.ChannelOwner {
   }
   async pause(_options) {
     var _this$_instrumentatio;
-    if (require('inspector').url()) return;
+    if (this._platform.isJSDebuggerAttached()) return;
     const defaultNavigationTimeout = this._browserContext._timeoutSettings.defaultNavigationTimeout();
     const defaultTimeout = this._browserContext._timeoutSettings.defaultTimeout();
     this._browserContext.setDefaultNavigationTimeout(0);
@@ -705,10 +711,11 @@ class Page extends _channelOwner.ChannelOwner {
     }
     const result = await this._channel.pdf(transportOptions);
     if (options.path) {
-      await _fs.default.promises.mkdir(_path.default.dirname(options.path), {
+      const platform = this._platform;
+      await platform.fs().promises.mkdir(platform.path().dirname(options.path), {
         recursive: true
       });
-      await _fs.default.promises.writeFile(options.path, result.pdf);
+      await platform.fs().promises.writeFile(options.path, result.pdf);
     }
     return result.pdf;
   }
@@ -743,6 +750,6 @@ class BindingCall extends _channelOwner.ChannelOwner {
 }
 exports.BindingCall = BindingCall;
 function trimUrl(param) {
-  if ((0, _utils.isRegExp)(param)) return `/${(0, _utils.trimStringWithEllipsis)(param.source, 50)}/${param.flags}`;
-  if ((0, _utils.isString)(param)) return `"${(0, _utils.trimStringWithEllipsis)(param, 50)}"`;
+  if ((0, _rtti.isRegExp)(param)) return `/${(0, _stringUtils.trimStringWithEllipsis)(param.source, 50)}/${param.flags}`;
+  if ((0, _rtti.isString)(param)) return `"${(0, _stringUtils.trimStringWithEllipsis)(param, 50)}"`;
 }

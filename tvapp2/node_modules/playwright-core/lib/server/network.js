@@ -13,10 +13,10 @@ exports.singleHeader = singleHeader;
 exports.statusText = statusText;
 exports.stripFragmentFromUrl = stripFragmentFromUrl;
 var _utils = require("../utils");
-var _manualPromise = require("../utils/manualPromise");
-var _instrumentation = require("./instrumentation");
-var _fetch = require("./fetch");
 var _browserContext = require("./browserContext");
+var _fetch = require("./fetch");
+var _instrumentation = require("./instrumentation");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
 /**
  * Copyright (c) Microsoft Corporation.
  *

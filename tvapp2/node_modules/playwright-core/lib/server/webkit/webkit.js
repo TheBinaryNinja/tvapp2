@@ -4,12 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WebKit = void 0;
-var _wkBrowser = require("../webkit/wkBrowser");
 var _path = _interopRequireDefault(require("path"));
 var _wkConnection = require("./wkConnection");
+var _ascii = require("../utils/ascii");
 var _browserType = require("../browserType");
-var _utils = require("../../utils");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _wkBrowser = require("../webkit/wkBrowser");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -42,7 +42,7 @@ class WebKit extends _browserType.BrowserType {
   }
   doRewriteStartupLog(error) {
     if (!error.logs) return error;
-    if (error.logs.includes('Failed to open display') || error.logs.includes('cannot open display')) error.logs = '\n' + (0, _utils.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
+    if (error.logs.includes('Failed to open display') || error.logs.includes('cannot open display')) error.logs = '\n' + (0, _ascii.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
     return error;
   }
   attemptToGracefullyCloseBrowser(transport) {

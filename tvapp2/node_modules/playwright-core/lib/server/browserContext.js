@@ -9,26 +9,29 @@ exports.normalizeProxySettings = normalizeProxySettings;
 exports.validateBrowserContextOptions = validateBrowserContextOptions;
 exports.verifyClientCertificates = verifyClientCertificates;
 exports.verifyGeolocation = verifyGeolocation;
-var _timeoutSettings = require("../common/timeoutSettings");
-var _utils = require("../utils");
-var _fileUtils = require("../utils/fileUtils");
+var _fs = _interopRequireDefault(require("fs"));
+var _path = _interopRequireDefault(require("path"));
+var _timeoutSettings = require("./timeoutSettings");
+var _crypto = require("./utils/crypto");
+var _debug = require("./utils/debug");
+var _clock = require("./clock");
+var _debugger = require("./debugger");
+var _fetch = require("./fetch");
+var _fileUtils = require("./utils/fileUtils");
+var _harRecorder = require("./har/harRecorder");
 var _helper = require("./helper");
+var _instrumentation = require("./instrumentation");
+var utilityScriptSerializers = _interopRequireWildcard(require("./isomorphic/utilityScriptSerializers"));
 var network = _interopRequireWildcard(require("./network"));
 var _page6 = require("./page");
-var _path = _interopRequireDefault(require("path"));
-var _fs = _interopRequireDefault(require("fs"));
-var _instrumentation = require("./instrumentation");
-var _debugger = require("./debugger");
-var _tracing = require("./trace/recorder/tracing");
-var _harRecorder = require("./har/harRecorder");
 var _recorder = require("./recorder");
-var consoleApiSource = _interopRequireWildcard(require("../generated/consoleApiSource"));
-var _fetch = require("./fetch");
-var _clock = require("./clock");
 var _recorderApp = require("./recorder/recorderApp");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var storageScript = _interopRequireWildcard(require("./storageScript"));
+var consoleApiSource = _interopRequireWildcard(require("../generated/consoleApiSource"));
+var _tracing = require("./trace/recorder/tracing");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -102,7 +105,7 @@ class BrowserContext extends _instrumentation.SdkObject {
     this._debugger = new _debugger.Debugger(this);
 
     // When PWDEBUG=1, show inspector for each context.
-    if ((0, _utils.debugMode)() === 'inspector') await _recorder.Recorder.show(this, _recorderApp.RecorderApp.factory(this), {
+    if ((0, _debug.debugMode)() === 'inspector') await _recorder.Recorder.show(this, _recorderApp.RecorderApp.factory(this), {
       pauseOnNextStatement: true
     });
 
@@ -111,7 +114,7 @@ class BrowserContext extends _instrumentation.SdkObject {
     this._debugger.on(_debugger.Debugger.Events.PausedStateChanged, () => {
       if (this._debugger.isPaused()) _recorder.Recorder.showInspectorNoReply(this, _recorderApp.RecorderApp.factory(this));
     });
-    if ((0, _utils.debugMode)() === 'console') await this.extendInjectedScript(consoleApiSource.source);
+    if ((0, _debug.debugMode)() === 'console') await this.extendInjectedScript(consoleApiSource.source);
     if (this._options.serviceWorkers === 'block') await this.addInitScript(`\nif (navigator.serviceWorker) navigator.serviceWorker.register = async () => { console.warn('Service Worker registration blocked by Playwright'); };\n`);
     if (this._options.permissions) await this.grantPermissions(this._options.permissions);
   }
@@ -400,24 +403,25 @@ class BrowserContext extends _instrumentation.SdkObject {
   addVisitedOrigin(origin) {
     this._origins.add(origin);
   }
-  async storageState() {
+  async storageState(indexedDB = false) {
     const result = {
       cookies: await this.cookies(),
       origins: []
     };
     const originsToSave = new Set(this._origins);
+    const collectScript = `(${storageScript.collect})((${utilityScriptSerializers.source})(), ${this._browser.options.name === 'firefox'}, ${indexedDB})`;
 
     // First try collecting storage stage from existing pages.
     for (const page of this.pages()) {
       const origin = page.mainFrame().origin();
       if (!origin || !originsToSave.has(origin)) continue;
       try {
-        const storage = await page.mainFrame().nonStallingEvaluateInExistingContext(`({
-          localStorage: Object.keys(localStorage).map(name => ({ name, value: localStorage.getItem(name) })),
-        })`, 'utility');
-        if (storage.localStorage.length) result.origins.push({
+        var _storage$indexedDB;
+        const storage = await page.mainFrame().nonStallingEvaluateInExistingContext(collectScript, 'utility');
+        if (storage.localStorage.length || (_storage$indexedDB = storage.indexedDB) !== null && _storage$indexedDB !== void 0 && _storage$indexedDB.length) result.origins.push({
           origin,
-          localStorage: storage.localStorage
+          localStorage: storage.localStorage,
+          indexedDB: storage.indexedDB
         });
         originsToSave.delete(origin);
       } catch {
@@ -436,19 +440,17 @@ class BrowserContext extends _instrumentation.SdkObject {
         return true;
       });
       for (const origin of originsToSave) {
-        const originStorage = {
-          origin,
-          localStorage: []
-        };
+        var _storage$indexedDB2;
         const frame = page.mainFrame();
         await frame.goto(internalMetadata, origin);
-        const storage = await frame.evaluateExpression(`({
-          localStorage: Object.keys(localStorage).map(name => ({ name, value: localStorage.getItem(name) })),
-        })`, {
+        const storage = await frame.evaluateExpression(collectScript, {
           world: 'utility'
         });
-        originStorage.localStorage = storage.localStorage;
-        if (storage.localStorage.length) result.origins.push(originStorage);
+        if (storage.localStorage.length || (_storage$indexedDB2 = storage.indexedDB) !== null && _storage$indexedDB2 !== void 0 && _storage$indexedDB2.length) result.origins.push({
+          origin,
+          localStorage: storage.localStorage,
+          indexedDB: storage.indexedDB
+        });
       }
       await page.close(internalMetadata);
     }
@@ -506,14 +508,9 @@ class BrowserContext extends _instrumentation.SdkObject {
         for (const originState of state.origins) {
           const frame = page.mainFrame();
           await frame.goto(metadata, originState.origin);
-          await frame.evaluateExpression(`
-            originState => {
-              for (const { name, value } of (originState.localStorage || []))
-                localStorage.setItem(name, value);
-            }`, {
-            isFunction: true,
+          await frame.evaluateExpression(`(${storageScript.restore})(${JSON.stringify(originState)}, (${utilityScriptSerializers.source})())`, {
             world: 'utility'
-          }, originState);
+          });
         }
         await page.close(internalMetadata);
       }
@@ -534,7 +531,7 @@ class BrowserContext extends _instrumentation.SdkObject {
     await Promise.all(this.pages().map(page => page.safeNonStallingEvaluateInAllFrames(expression, world, options)));
   }
   async _harStart(page, options) {
-    const harId = (0, _utils.createGuid)();
+    const harId = (0, _crypto.createGuid)();
     this._harRecorders.set(harId, new _harRecorder.HarRecorder(this, page, options));
     return harId;
   }
@@ -659,7 +656,7 @@ function normalizeProxySettings(proxy) {
     bypass
   };
 }
-const paramsThatAllowContextReuse = ['colorScheme', 'forcedColors', 'reducedMotion', 'screen', 'userAgent', 'viewport'];
+const paramsThatAllowContextReuse = ['colorScheme', 'forcedColors', 'reducedMotion', 'contrast', 'screen', 'userAgent', 'viewport'];
 const defaultNewContextParamValues = {
   noDefaultViewport: false,
   ignoreHTTPSErrors: false,

@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InMemorySnapshotter = void 0;
 var _snapshotStorage = require("../../../../../trace-viewer/src/sw/snapshotStorage");
-var _snapshotter = require("../recorder/snapshotter");
-var _harTracer = require("../../har/harTracer");
 var _utils = require("../../../utils");
+var _harTracer = require("../../har/harTracer");
+var _snapshotter = require("../recorder/snapshotter");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -69,7 +69,7 @@ class InMemorySnapshotter {
   }
   onEntryStarted(entry) {}
   onEntryFinished(entry) {
-    this._storage.addResource(entry);
+    this._storage.addResource('', entry);
   }
   onContentBlob(sha1, buffer) {
     this._blobs.set(sha1, buffer);
@@ -80,7 +80,7 @@ class InMemorySnapshotter {
   onFrameSnapshot(snapshot) {
     var _this$_snapshotReadyP;
     ++this._snapshotCount;
-    const renderer = this._storage.addFrameSnapshot(snapshot, []);
+    const renderer = this._storage.addFrameSnapshot('', snapshot, []);
     (_this$_snapshotReadyP = this._snapshotReadyPromises.get(snapshot.snapshotName || '')) === null || _this$_snapshotReadyP === void 0 || _this$_snapshotReadyP.resolve(renderer);
   }
   async resourceContentForTest(sha1) {

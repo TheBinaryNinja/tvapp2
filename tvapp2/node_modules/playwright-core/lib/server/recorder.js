@@ -4,17 +4,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Recorder = void 0;
-var fs = _interopRequireWildcard(require("fs"));
+var _fs = _interopRequireDefault(require("fs"));
 var consoleApiSource = _interopRequireWildcard(require("../generated/consoleApiSource"));
 var _utils = require("../utils");
-var _locatorParser = require("../utils/isomorphic/locatorParser");
 var _browserContext = require("./browserContext");
 var _debugger = require("./debugger");
 var _contextRecorder = require("./recorder/contextRecorder");
 var _recorderUtils = require("./recorder/recorderUtils");
+var _locatorParser = require("../utils/isomorphic/locatorParser");
 var _selectorParser = require("../utils/isomorphic/selectorParser");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -325,7 +326,8 @@ class Recorder {
   }
   _pushAllSources() {
     var _this$_recorderApp6;
-    (_this$_recorderApp6 = this._recorderApp) === null || _this$_recorderApp6 === void 0 || _this$_recorderApp6.setSources([...this._recorderSources, ...this._userSources.values()]);
+    const primaryPage = this._context.pages()[0];
+    (_this$_recorderApp6 = this._recorderApp) === null || _this$_recorderApp6 === void 0 || _this$_recorderApp6.setSources([...this._recorderSources, ...this._userSources.values()], primaryPage === null || primaryPage === void 0 ? void 0 : primaryPage.mainFrame().url());
   }
   async onBeforeInputAction(sdkObject, metadata) {}
   async onCallLog(sdkObject, metadata, logName, message) {
@@ -349,7 +351,7 @@ class Recorder {
   }
   _readSource(fileName) {
     try {
-      return fs.readFileSync(fileName, 'utf-8');
+      return _fs.default.readFileSync(fileName, 'utf-8');
     } catch (e) {
       return '// No source available';
     }

@@ -7,10 +7,10 @@ exports.launchApp = launchApp;
 exports.syncLocalStorageWithSettings = syncLocalStorageWithSettings;
 var _fs = _interopRequireDefault(require("fs"));
 var _path = _interopRequireDefault(require("path"));
-var _registry = require("./registry");
 var _utils = require("../utils");
 var _instrumentation = require("./instrumentation");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _registry = require("./registry");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *

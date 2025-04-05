@@ -188,7 +188,8 @@ const emptyFragment = {
   role: 'fragment'
 };
 function normalizeWhitespace(text) {
-  return text.replace(/[\r\n\s\t]+/g, ' ').trim();
+  // TODO: why is this different from normalizeWhitespace in stringUtils.ts?
+  return text.replace(/[\u200b\u00ad]/g, '').replace(/[\r\n\s\t]+/g, ' ').trim();
 }
 function valueOrRegex(value) {
   return value.startsWith('/') && value.endsWith('/') && value.length > 1 ? {

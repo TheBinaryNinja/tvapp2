@@ -9,16 +9,16 @@ exports.openTraceViewerApp = openTraceViewerApp;
 exports.runTraceInBrowser = runTraceInBrowser;
 exports.runTraceViewerApp = runTraceViewerApp;
 exports.startTraceViewerServer = startTraceViewerServer;
-var _path = _interopRequireDefault(require("path"));
 var _fs = _interopRequireDefault(require("fs"));
-var _httpServer = require("../../../utils/httpServer");
+var _path = _interopRequireDefault(require("path"));
 var _utils = require("../../../utils");
-var _launchApp = require("../../launchApp");
+var _httpServer = require("../../utils/httpServer");
+var _utilsBundle = require("../../../utilsBundle");
 var _instrumentation = require("../../instrumentation");
+var _launchApp = require("../../launchApp");
 var _playwright = require("../../playwright");
 var _progress = require("../../progress");
-var _utilsBundle = require("../../../utilsBundle");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -48,6 +48,10 @@ async function startTraceViewerServer(options) {
   server.routePrefix('/trace', (request, response) => {
     const url = new URL('http://localhost' + request.url);
     const relativePath = url.pathname.slice('/trace'.length);
+    if (process.env.PW_HMR) {
+      // When running in Vite HMR mode, port is hardcoded in build.js
+      response.appendHeader('Access-Control-Allow-Origin', 'http://localhost:44223');
+    }
     if (relativePath.endsWith('/stall.js')) return true;
     if (relativePath.startsWith('/file')) {
       try {
@@ -103,6 +107,10 @@ async function installRootRedirect(server, traceUrls, options) {
   server.routePath('/', (_, response) => {
     response.statusCode = 302;
     response.setHeader('Location', urlPath);
+    if (process.env.EXPERIMENTAL_OPENAI_API_KEY) response.appendHeader('Set-Cookie', `openai_api_key=${process.env.EXPERIMENTAL_OPENAI_API_KEY}`);
+    if (process.env.OPENAI_BASE_URL) response.appendHeader('Set-Cookie', `openai_base_url=${process.env.OPENAI_BASE_URL}`);
+    if (process.env.EXPERIMENTAL_ANTHROPIC_API_KEY) response.appendHeader('Set-Cookie', `anthropic_api_key=${process.env.EXPERIMENTAL_ANTHROPIC_API_KEY}`);
+    if (process.env.ANTHROPIC_BASE_URL) response.appendHeader('Set-Cookie', `anthropic_base_url=${process.env.ANTHROPIC_BASE_URL}`);
     response.end();
     return true;
   });

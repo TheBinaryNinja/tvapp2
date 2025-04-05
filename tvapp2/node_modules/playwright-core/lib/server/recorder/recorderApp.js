@@ -4,15 +4,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.RecorderApp = exports.EmptyRecorderApp = void 0;
+var _events = require("events");
 var _fs = _interopRequireDefault(require("fs"));
 var _path = _interopRequireDefault(require("path"));
-var _progress = require("../progress");
-var _events = require("events");
-var _instrumentation = require("../instrumentation");
-var _utils = require("../../utils");
+var _debug = require("../utils/debug");
 var _utilsBundle = require("../../utilsBundle");
+var _instrumentation = require("../instrumentation");
 var _launchApp = require("../launchApp");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _progress = require("../progress");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -40,7 +40,7 @@ class EmptyRecorderApp extends _events.EventEmitter {
   async setRunningFile(file) {}
   async elementPicked(elementInfo, userGesture) {}
   async updateCallLogs(callLogs) {}
-  async setSources(sources) {}
+  async setSources(sources, primaryPageURL) {}
   async setActions(actions, sources) {}
 }
 exports.EmptyRecorderApp = EmptyRecorderApp;
@@ -117,8 +117,8 @@ class RecorderApp extends _events.EventEmitter {
       },
       persistentContextOptions: {
         noDefaultViewport: true,
-        headless: !!process.env.PWTEST_CLI_HEADLESS || (0, _utils.isUnderTest)() && !headed,
-        useWebSocket: (0, _utils.isUnderTest)(),
+        headless: !!process.env.PWTEST_CLI_HEADLESS || (0, _debug.isUnderTest)() && !headed,
+        useWebSocket: (0, _debug.isUnderTest)(),
         handleSIGINT: recorder.handleSIGINT,
         executablePath: inspectedContext._browser.options.isChromium ? inspectedContext._browser.options.customExecutablePath : undefined
       }
@@ -152,12 +152,18 @@ class RecorderApp extends _events.EventEmitter {
       isFunction: true
     }, paused).catch(() => {});
   }
-  async setSources(sources) {
-    await this._page.mainFrame().evaluateExpression((sources => {
-      window.playwrightSetSources(sources);
+  async setSources(sources, primaryPageURL) {
+    await this._page.mainFrame().evaluateExpression((({
+      sources,
+      primaryPageURL
+    }) => {
+      window.playwrightSetSources(sources, primaryPageURL);
     }).toString(), {
       isFunction: true
-    }, sources).catch(() => {});
+    }, {
+      sources,
+      primaryPageURL
+    }).catch(() => {});
 
     // Testing harness for runCLI mode.
     if (process.env.PWTEST_CLI_IS_UNDER_TEST && sources.length) {

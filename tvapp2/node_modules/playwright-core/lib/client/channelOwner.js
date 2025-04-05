@@ -6,10 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.ChannelOwner = void 0;
 var _eventEmitter = require("./eventEmitter");
 var _validator = require("../protocol/validator");
-var _debugLogger = require("../utils/debugLogger");
-var _stackTrace = require("../utils/stackTrace");
-var _utils = require("../utils");
-var _zones = require("../utils/zones");
+var _clientStackTrace = require("./clientStackTrace");
+var _stackTrace = require("../utils/isomorphic/stackTrace");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -28,7 +26,8 @@ var _zones = require("../utils/zones");
 
 class ChannelOwner extends _eventEmitter.EventEmitter {
   constructor(parent, type, guid, initializer) {
-    super();
+    const connection = parent instanceof ChannelOwner ? parent._connection : parent;
+    super(connection._platform);
     this._connection = void 0;
     this._parent = void 0;
     this._objects = new Map();
@@ -42,7 +41,7 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
     this._isInternalType = false;
     this._wasCollected = false;
     this.setMaxListeners(0);
-    this._connection = parent instanceof ChannelOwner ? parent._connection : parent;
+    this._connection = connection;
     this._type = type;
     this._guid = guid;
     this._parent = parent instanceof ChannelOwner ? parent : undefined;
@@ -52,7 +51,7 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
       this._parent._objects.set(guid, this);
       this._logger = this._parent._logger;
     }
-    this._channel = this._createChannel(new _eventEmitter.EventEmitter());
+    this._channel = this._createChannel(new _eventEmitter.EventEmitter(connection._platform));
     this._initializer = initializer;
   }
   markAsInternalType() {
@@ -118,6 +117,13 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
       objects: Array.from(this._objects.values()).map(o => o._debugScopeState())
     };
   }
+  _validatorToWireContext() {
+    return {
+      tChannelImpl: tChannelImplToWire,
+      binary: this._connection.rawBuffers() ? 'buffer' : 'toBase64',
+      isUnderTest: () => this._platform.isUnderTest()
+    };
+  }
   _createChannel(base) {
     const channel = new Proxy(base, {
       get: (obj, prop) => {
@@ -126,16 +132,13 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
           if (validator) {
             return async params => {
               return await this._wrapApiCall(async apiZone => {
-                const validatedParams = validator(params, '', {
-                  tChannelImpl: tChannelImplToWire,
-                  binary: this._connection.rawBuffers() ? 'buffer' : 'toBase64'
-                });
+                const validatedParams = validator(params, '', this._validatorToWireContext());
                 if (!apiZone.isInternal && !apiZone.reported) {
                   // Reporting/tracing/logging this api call for the first time.
                   apiZone.params = params;
                   apiZone.reported = true;
                   this._instrumentation.onApiCallBegin(apiZone);
-                  logApiCall(this._logger, `=> ${apiZone.apiName} started`);
+                  logApiCall(this._platform, this._logger, `=> ${apiZone.apiName} started`);
                   return await this._connection.sendMessageToServer(this, prop, validatedParams, apiZone.apiName, apiZone.frames, apiZone.stepId);
                 }
                 // Since this api call is either internal, or has already been reported/traced once,
@@ -153,10 +156,10 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
   }
   async _wrapApiCall(func, isInternal) {
     const logger = this._logger;
-    const existingApiZone = _zones.zones.zoneData('apiZone');
+    const existingApiZone = this._platform.zones.current().data();
     if (existingApiZone) return await func(existingApiZone);
     if (isInternal === undefined) isInternal = this._isInternalType;
-    const stackTrace = (0, _stackTrace.captureLibraryStackTrace)();
+    const stackTrace = (0, _clientStackTrace.captureLibraryStackTrace)(this._platform);
     const apiZone = {
       apiName: stackTrace.apiName,
       frames: stackTrace.frames,
@@ -166,20 +169,20 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
       stepId: undefined
     };
     try {
-      const result = await _zones.zones.run('apiZone', apiZone, async () => await func(apiZone));
+      const result = await this._platform.zones.current().push(apiZone).run(async () => await func(apiZone));
       if (!isInternal) {
-        logApiCall(logger, `<= ${apiZone.apiName} succeeded`);
+        logApiCall(this._platform, logger, `<= ${apiZone.apiName} succeeded`);
         this._instrumentation.onApiCallEnd(apiZone);
       }
       return result;
     } catch (e) {
-      const innerError = (process.env.PWDEBUGIMPL || (0, _utils.isUnderTest)()) && e.stack ? '\n<inner error>\n' + e.stack : '';
+      const innerError = (this._platform.showInternalStackFrames() || this._platform.isUnderTest()) && e.stack ? '\n<inner error>\n' + e.stack : '';
       if (apiZone.apiName && !apiZone.apiName.includes('<anonymous>')) e.message = apiZone.apiName + ': ' + e.message;
       const stackFrames = '\n' + (0, _stackTrace.stringifyStackFrames)(stackTrace.frames).join('\n') + innerError;
       if (stackFrames.trim()) e.stack = e.message + stackFrames;else e.stack = '';
       if (!isInternal) {
         apiZone.error = e;
-        logApiCall(logger, `<= ${apiZone.apiName} failed`);
+        logApiCall(this._platform, logger, `<= ${apiZone.apiName} failed`);
         this._instrumentation.onApiCallEnd(apiZone);
       }
       throw e;
@@ -201,11 +204,11 @@ class ChannelOwner extends _eventEmitter.EventEmitter {
   }
 }
 exports.ChannelOwner = ChannelOwner;
-function logApiCall(logger, message) {
+function logApiCall(platform, logger, message) {
   if (logger && logger.isEnabled('api', 'info')) logger.log('api', 'info', message, [], {
     color: 'cyan'
   });
-  _debugLogger.debugLogger.log('api', message);
+  platform.log('api', message);
 }
 function tChannelImplToWire(names, arg, path, context) {
   if (arg._object instanceof ChannelOwner && (names === '*' || names.includes(arg._object._type))) return {

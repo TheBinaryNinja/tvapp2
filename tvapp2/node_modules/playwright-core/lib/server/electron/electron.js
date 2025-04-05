@@ -7,26 +7,27 @@ exports.ElectronApplication = exports.Electron = void 0;
 var _fs = _interopRequireDefault(require("fs"));
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
+var readline = _interopRequireWildcard(require("readline"));
+var _timeoutSettings = require("../timeoutSettings");
+var _utils = require("../../utils");
+var _ascii = require("../utils/ascii");
+var _debugLogger = require("../utils/debugLogger");
+var _eventsHelper = require("../utils/eventsHelper");
+var _browserContext = require("../browserContext");
 var _crBrowser = require("../chromium/crBrowser");
 var _crConnection = require("../chromium/crConnection");
 var _crExecutionContext = require("../chromium/crExecutionContext");
-var js = _interopRequireWildcard(require("../javascript"));
-var _timeoutSettings = require("../../common/timeoutSettings");
-var _utils = require("../../utils");
-var _transport = require("../transport");
-var _processLauncher = require("../../utils/processLauncher");
-var _browserContext = require("../browserContext");
-var _progress = require("../progress");
-var _helper = require("../helper");
-var _eventsHelper = require("../../utils/eventsHelper");
-var readline = _interopRequireWildcard(require("readline"));
-var _debugLogger = require("../../utils/debugLogger");
-var _instrumentation = require("../instrumentation");
 var _crProtocolHelper = require("../chromium/crProtocolHelper");
 var _console = require("../console");
+var _helper = require("../helper");
+var _instrumentation = require("../instrumentation");
+var js = _interopRequireWildcard(require("../javascript"));
+var _processLauncher = require("../utils/processLauncher");
+var _progress = require("../progress");
+var _transport = require("../transport");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -102,7 +103,7 @@ class ElectronApplication extends _instrumentation.SdkObject {
       return;
     }
     if (!this._nodeExecutionContext) return;
-    const args = event.args.map(arg => this._nodeExecutionContext.createHandle(arg));
+    const args = event.args.map(arg => (0, _crExecutionContext.createHandle)(this._nodeExecutionContext, arg));
     const message = new _console.ConsoleMessage(null, event.type, undefined, args, (0, _crProtocolHelper.toConsoleMessageLocation)(event.stackTrace));
     this.emit(ElectronApplication.Events.Console, message);
   }
@@ -174,7 +175,7 @@ class Electron extends _instrumentation.SdkObject {
           command = require('electron/index.js');
         } catch (error) {
           if ((error === null || error === void 0 ? void 0 : error.code) === 'MODULE_NOT_FOUND') {
-            throw new Error('\n' + (0, _utils.wrapInASCIIBox)(['Electron executablePath not found!', 'Please install it using `npm install -D electron` or set the executablePath to your Electron executable.'].join('\n'), 1));
+            throw new Error('\n' + (0, _ascii.wrapInASCIIBox)(['Electron executablePath not found!', 'Please install it using `npm install -D electron` or set the executablePath to your Electron executable.'].join('\n'), 1));
           }
           throw error;
         }

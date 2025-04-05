@@ -12,16 +12,16 @@ Object.defineProperty(exports, "program", {
 var _fs = _interopRequireDefault(require("fs"));
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
-var _utilsBundle = require("../utilsBundle");
-var _driver = require("./driver");
-var _traceViewer = require("../server/trace/viewer/traceViewer");
 var playwright = _interopRequireWildcard(require("../.."));
-var _utils = require("../utils");
+var _driver = require("./driver");
 var _server = require("../server");
-var _errors = require("../client/errors");
+var _utils = require("../utils");
+var _traceViewer = require("../server/trace/viewer/traceViewer");
+var _ascii = require("../server/utils/ascii");
+var _utilsBundle = require("../utilsBundle");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -97,7 +97,7 @@ _utilsBundle.program.command('install [browser...]').description('ensure browser
   // For '--no-shell' option, commander sets `shell: false` instead.
   if (options.shell === false) options.noShell = true;
   if ((0, _utils.isLikelyNpxGlobal)()) {
-    console.error((0, _utils.wrapInASCIIBox)([`WARNING: It looks like you are running 'npx playwright install' without first`, `installing your project's dependencies.`, ``, `To avoid unexpected behavior, please install your dependencies first, and`, `then run Playwright's install command:`, ``, `    npm install`, `    npx playwright install`, ``, `If your project does not yet depend on Playwright, first install the`, `applicable npm package (most commonly @playwright/test), and`, `then run Playwright's install command to download the browsers:`, ``, `    npm install @playwright/test`, `    npx playwright install`, ``].join('\n'), 1));
+    console.error((0, _ascii.wrapInASCIIBox)([`WARNING: It looks like you are running 'npx playwright install' without first`, `installing your project's dependencies.`, ``, `To avoid unexpected behavior, please install your dependencies first, and`, `then run Playwright's install command:`, ``, `    npm install`, `    npx playwright install`, ``, `If your project does not yet depend on Playwright, first install the`, `applicable npm package (most commonly @playwright/test), and`, `then run Playwright's install command to download the browsers:`, ``, `    npm install @playwright/test`, `    npx playwright install`, ``].join('\n'), 1));
   }
   try {
     const hasNoArguments = !args.length;
@@ -408,7 +408,7 @@ async function openPage(context, url) {
   if (url) {
     if (_fs.default.existsSync(url)) url = 'file://' + _path.default.resolve(url);else if (!url.startsWith('http') && !url.startsWith('file://') && !url.startsWith('about:') && !url.startsWith('data:')) url = 'http://' + url;
     await page.goto(url).catch(error => {
-      if (process.env.PWTEST_CLI_AUTO_EXIT_WHEN && (0, _errors.isTargetClosedError)(error)) {
+      if (process.env.PWTEST_CLI_AUTO_EXIT_WHEN) {
         // Tests with PWTEST_CLI_AUTO_EXIT_WHEN might close page too fast, resulting
         // in a stray navigation aborted error. We should ignore it.
       } else {

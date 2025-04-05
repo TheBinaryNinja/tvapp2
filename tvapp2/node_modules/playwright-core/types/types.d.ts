@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 import { ChildProcess } from 'child_process';
-import { EventEmitter } from 'events';
 import { Readable } from 'stream';
 import { ReadStream } from 'fs';
 import { Protocol } from './protocol';
@@ -2564,6 +2563,12 @@ export interface Page {
      * `'no-preference'` is deprecated.
      */
     colorScheme?: null|"light"|"dark"|"no-preference";
+
+    /**
+     * Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. Passing `null`
+     * disables contrast emulation.
+     */
+    contrast?: null|"no-preference"|"more";
 
     /**
      * Emulates `'forced-colors'` media feature, supported values are `'active'` and `'none'`. Passing `null` disables
@@ -9260,10 +9265,21 @@ export interface BrowserContext {
   setOffline(offline: boolean): Promise<void>;
 
   /**
-   * Returns storage state for this browser context, contains current cookies and local storage snapshot.
+   * Returns storage state for this browser context, contains current cookies, local storage snapshot and IndexedDB
+   * snapshot.
    * @param options
    */
   storageState(options?: {
+    /**
+     * Set to `true` to include [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) in the storage
+     * state snapshot. If your application uses IndexedDB to store authentication tokens, like Firebase Authentication,
+     * enable this.
+     *
+     * **NOTE** IndexedDBs with typed arrays are currently not supported.
+     *
+     */
+    indexedDB?: boolean;
+
     /**
      * The file path to save the storage state to. If
      * [`path`](https://playwright.dev/docs/api/class-browsercontext#browser-context-storage-state-option-path) is a
@@ -9771,6 +9787,13 @@ export interface Browser {
     colorScheme?: null|"light"|"dark"|"no-preference";
 
     /**
+     * Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. See
+     * [page.emulateMedia([options])](https://playwright.dev/docs/api/class-page#page-emulate-media) for more details.
+     * Passing `null` resets emulation to system defaults. Defaults to `'no-preference'`.
+     */
+    contrast?: null|"no-preference"|"more";
+
+    /**
      * Specify device scale factor (can be thought of as dpr). Defaults to `1`. Learn more about
      * [emulating devices with device scale factor](https://playwright.dev/docs/emulation#devices).
      */
@@ -10049,12 +10072,12 @@ export interface Browser {
         sameSite: "Strict"|"Lax"|"None";
       }>;
 
-      /**
-       * localStorage to set for context
-       */
       origins: Array<{
         origin: string;
 
+        /**
+         * localStorage to set for context
+         */
         localStorage: Array<{
           name: string;
 
@@ -11627,7 +11650,8 @@ export interface ElementHandle<T=Node> extends JSHandle<T> {
      * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink
      * box `#FF00FF` (customized by
      * [`maskColor`](https://playwright.dev/docs/api/class-elementhandle#element-handle-screenshot-option-mask-color))
-     * that completely covers its bounding box.
+     * that completely covers its bounding box. The mask is also applied to invisible elements, see
+     * [Matching only visible elements](https://playwright.dev/docs/locators#matching-only-visible-elements) to disable that.
      */
     mask?: Array<Locator>;
 
@@ -12176,12 +12200,6 @@ export interface Locator {
    * rejects, this method throws.
    *
    * **Usage**
-   *
-   * ```js
-   * const tweets = page.locator('.tweet .retweets');
-   * expect(await tweets.evaluate(node => node.innerText)).toBe('10 retweets');
-   * ```
-   *
    * @param pageFunction Function to be evaluated in the page context.
    * @param arg Optional argument to pass to
    * [`pageFunction`](https://playwright.dev/docs/api/class-locator#locator-evaluate-option-expression).
@@ -12207,12 +12225,6 @@ export interface Locator {
    * rejects, this method throws.
    *
    * **Usage**
-   *
-   * ```js
-   * const tweets = page.locator('.tweet .retweets');
-   * expect(await tweets.evaluate(node => node.innerText)).toBe('10 retweets');
-   * ```
-   *
    * @param pageFunction Function to be evaluated in the page context.
    * @param arg Optional argument to pass to
    * [`pageFunction`](https://playwright.dev/docs/api/class-locator#locator-evaluate-option-expression).
@@ -13111,6 +13123,11 @@ export interface Locator {
      * `<article><div>Playwright</div></article>`.
      */
     hasText?: string|RegExp;
+
+    /**
+     * Only matches visible or invisible elements.
+     */
+    visible?: boolean;
   }): Locator;
 
   /**
@@ -14062,9 +14079,9 @@ export interface Locator {
    *
    * ```html
    * <select multiple>
-   *   <option value="red">Red</div>
-   *   <option value="green">Green</div>
-   *   <option value="blue">Blue</div>
+   *   <option value="red">Red</option>
+   *   <option value="green">Green</option>
+   *   <option value="blue">Blue</option>
    * </select>
    * ```
    *
@@ -14313,7 +14330,8 @@ export interface Locator {
   }): Promise<void>;
 
   /**
-   * Perform a tap gesture on the element matching the locator.
+   * Perform a tap gesture on the element matching the locator. For examples of emulating other gestures by manually
+   * dispatching touch events, see the [emulating legacy touch events](https://playwright.dev/docs/touch-events) page.
    *
    * **Details**
    *
@@ -14615,14 +14633,12 @@ export interface BrowserType<Unused = {}> {
    */
   connectOverCDP(options: ConnectOverCDPOptions & { wsEndpoint?: string }): Promise<Browser>;
   /**
-   * This method attaches Playwright to an existing browser instance created via
-   * [browserType.launchServer([options])](https://playwright.dev/docs/api/class-browsertype#browser-type-launch-server).
+   * This method attaches Playwright to an existing browser instance created via `BrowserType.launchServer` in Node.js.
    *
    * **NOTE** The major and minor version of the Playwright instance that connects needs to match the version of
    * Playwright that launches the browser (1.2.3 → is compatible with 1.2.x).
    *
-   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via
-   * [browserServer.wsEndpoint()](https://playwright.dev/docs/api/class-browserserver#browser-server-ws-endpoint).
+   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via `BrowserServer.wsEndpoint`.
    * @param options
    */
   connect(wsEndpoint: string, options?: ConnectOptions): Promise<Browser>;
@@ -14633,14 +14649,12 @@ export interface BrowserType<Unused = {}> {
    * @deprecated
    */
   /**
-   * This method attaches Playwright to an existing browser instance created via
-   * [browserType.launchServer([options])](https://playwright.dev/docs/api/class-browsertype#browser-type-launch-server).
+   * This method attaches Playwright to an existing browser instance created via `BrowserType.launchServer` in Node.js.
    *
    * **NOTE** The major and minor version of the Playwright instance that connects needs to match the version of
    * Playwright that launches the browser (1.2.3 → is compatible with 1.2.x).
    *
-   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via
-   * [browserServer.wsEndpoint()](https://playwright.dev/docs/api/class-browserserver#browser-server-ws-endpoint).
+   * @param wsEndpoint A Playwright browser websocket endpoint to connect to. You obtain this endpoint via `BrowserServer.wsEndpoint`.
    * @param options
    */
   connect(options: ConnectOptions & { wsEndpoint?: string }): Promise<Browser>;
@@ -14812,6 +14826,13 @@ export interface BrowserType<Unused = {}> {
      * Passing `null` resets emulation to system defaults. Defaults to `'light'`.
      */
     colorScheme?: null|"light"|"dark"|"no-preference";
+
+    /**
+     * Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. See
+     * [page.emulateMedia([options])](https://playwright.dev/docs/api/class-page#page-emulate-media) for more details.
+     * Passing `null` resets emulation to system defaults. Defaults to `'no-preference'`.
+     */
+    contrast?: null|"no-preference"|"more";
 
     /**
      * Specify device scale factor (can be thought of as dpr). Defaults to `1`. Learn more about
@@ -16626,6 +16647,13 @@ export interface AndroidDevice {
     colorScheme?: null|"light"|"dark"|"no-preference";
 
     /**
+     * Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. See
+     * [page.emulateMedia([options])](https://playwright.dev/docs/api/class-page#page-emulate-media) for more details.
+     * Passing `null` resets emulation to system defaults. Defaults to `'no-preference'`.
+     */
+    contrast?: null|"no-preference"|"more";
+
+    /**
      * Specify device scale factor (can be thought of as dpr). Defaults to `1`. Learn more about
      * [emulating devices with device scale factor](https://playwright.dev/docs/emulation#devices).
      */
@@ -17501,6 +17529,12 @@ export interface APIRequest {
     extraHTTPHeaders?: { [key: string]: string; };
 
     /**
+     * Whether to throw on response codes other than 2xx and 3xx. By default response object is returned for all status
+     * codes.
+     */
+    failOnStatusCode?: boolean;
+
+    /**
      * Credentials for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication). If no
      * origin is specified, the username and password are sent to any servers upon unauthorized responses.
      */
@@ -18369,6 +18403,11 @@ export interface APIRequestContext {
    * @param options
    */
   storageState(options?: {
+    /**
+     * Set to `true` to include IndexedDB in the storage state snapshot.
+     */
+    indexedDB?: boolean;
+
     /**
      * The file path to save the storage state to. If
      * [`path`](https://playwright.dev/docs/api/class-apirequestcontext#api-request-context-storage-state-option-path) is
@@ -21067,6 +21106,9 @@ export interface Selectors {
 /**
  * The Touchscreen class operates in main-frame CSS pixels relative to the top-left corner of the viewport. Methods on
  * the touchscreen can only be used in browser contexts that have been initialized with `hasTouch` set to true.
+ *
+ * This class is limited to emulating tap gestures. For examples of other gestures simulated by manually dispatching
+ * touch events, see the [emulating legacy touch events](https://playwright.dev/docs/touch-events) page.
  */
 export interface Touchscreen {
   /**
@@ -21317,8 +21359,11 @@ export interface WebError {
 }
 
 /**
- * The [WebSocket](https://playwright.dev/docs/api/class-websocket) class represents websocket connections in the
- * page.
+ * The [WebSocket](https://playwright.dev/docs/api/class-websocket) class represents WebSocket connections within a
+ * page. It provides the ability to inspect and manipulate the data being transmitted and received.
+ *
+ * If you want to intercept or modify WebSocket frames, consider using
+ * [WebSocketRoute](https://playwright.dev/docs/api/class-websocketroute).
  */
 export interface WebSocket {
   /**
@@ -21803,7 +21848,8 @@ export interface LocatorScreenshotOptions {
    * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink
    * box `#FF00FF` (customized by
    * [`maskColor`](https://playwright.dev/docs/api/class-locator#locator-screenshot-option-mask-color)) that completely
-   * covers its bounding box.
+   * covers its bounding box. The mask is also applied to invisible elements, see
+   * [Matching only visible elements](https://playwright.dev/docs/locators#matching-only-visible-elements) to disable that.
    */
   mask?: Array<Locator>;
 
@@ -21981,6 +22027,13 @@ export interface BrowserContextOptions {
    * Passing `null` resets emulation to system defaults. Defaults to `'light'`.
    */
   colorScheme?: null|"light"|"dark"|"no-preference";
+
+  /**
+   * Emulates `'prefers-contrast'` media feature, supported values are `'no-preference'`, `'more'`. See
+   * [page.emulateMedia([options])](https://playwright.dev/docs/api/class-page#page-emulate-media) for more details.
+   * Passing `null` resets emulation to system defaults. Defaults to `'no-preference'`.
+   */
+  contrast?: null|"no-preference"|"more";
 
   /**
    * Specify device scale factor (can be thought of as dpr). Defaults to `1`. Learn more about
@@ -22228,12 +22281,12 @@ export interface BrowserContextOptions {
       sameSite: "Strict"|"Lax"|"None";
     }>;
 
-    /**
-     * localStorage to set for context
-     */
     origins: Array<{
       origin: string;
 
+      /**
+       * localStorage to set for context
+       */
       localStorage: Array<{
         name: string;
 
@@ -22461,7 +22514,8 @@ export interface PageScreenshotOptions {
    * Specify locators that should be masked when the screenshot is taken. Masked elements will be overlaid with a pink
    * box `#FF00FF` (customized by
    * [`maskColor`](https://playwright.dev/docs/api/class-page#page-screenshot-option-mask-color)) that completely covers
-   * its bounding box.
+   * its bounding box. The mask is also applied to invisible elements, see
+   * [Matching only visible elements](https://playwright.dev/docs/locators#matching-only-visible-elements) to disable that.
    */
   mask?: Array<Locator>;
 

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ProtocolError = void 0;
 exports.isProtocolError = isProtocolError;
 exports.isSessionClosedError = isSessionClosedError;
-var _stackTrace = require("../utils/stackTrace");
+var _stackTrace = require("../utils/isomorphic/stackTrace");
 /**
  * Copyright (c) Microsoft Corporation.
  *

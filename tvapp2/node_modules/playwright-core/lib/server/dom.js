@@ -10,15 +10,15 @@ exports.kUnableToAdoptErrorMessage = void 0;
 exports.throwElementIsNotAttached = throwElementIsNotAttached;
 exports.throwRetargetableDOMError = throwRetargetableDOMError;
 var _fs = _interopRequireDefault(require("fs"));
-var injectedScriptSource = _interopRequireWildcard(require("../generated/injectedScriptSource"));
-var _protocolError = require("./protocolError");
 var js = _interopRequireWildcard(require("./javascript"));
 var _progress = require("./progress");
 var _utils = require("../utils");
 var _fileUploadUtils = require("./fileUploadUtils");
+var _protocolError = require("./protocolError");
+var injectedScriptSource = _interopRequireWildcard(require("../generated/injectedScriptSource"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -71,10 +71,6 @@ class FrameExecutionContext extends js.ExecutionContext {
       returnByValue: false
     }, arg);
   }
-  createHandle(remoteObject) {
-    if (this.frame._page._delegate.isElementHandle(remoteObject)) return new ElementHandle(this, remoteObject.objectId);
-    return super.createHandle(remoteObject);
-  }
   injectedScript() {
     if (!this._injectedScriptPromise) {
       const custom = [];
@@ -98,7 +94,10 @@ class FrameExecutionContext extends js.ExecutionContext {
         );
         })();
       `;
-      this._injectedScriptPromise = this.rawEvaluateHandle(source).then(objectId => new js.JSHandle(this, 'object', 'InjectedScript', objectId));
+      this._injectedScriptPromise = this.rawEvaluateHandle(source).then(handle => {
+        handle._setPreview('InjectedScript');
+        return handle;
+      });
     }
     return this._injectedScriptPromise;
   }
@@ -157,6 +156,13 @@ class ElementHandle extends js.JSHandle {
     const isFrameElement = throwRetargetableDOMError(await this.isIframeElement());
     if (!isFrameElement) return null;
     return this._page._delegate.getContentFrame(this);
+  }
+  async generateLocatorString() {
+    const selector = await this.evaluateInUtility(async ([injected, node]) => {
+      return injected.generateSelectorSimple(node);
+    }, {});
+    if (selector === 'error:notconnected') return;
+    return (0, _utils.asLocator)('javascript', selector);
   }
   async getAttribute(metadata, name) {
     return this._frame.getAttribute(metadata, ':scope', name, {}, this);
@@ -639,7 +645,7 @@ class ElementHandle extends js.JSHandle {
       await this._page._delegate.setInputFilePaths(retargeted, localPathsOrDirectory);
       await waitForInputEvent;
     } else {
-      await this._page._delegate.setInputFiles(retargeted, filePayloads);
+      await retargeted.evaluateInUtility(([injected, node, files]) => injected.setInputFiles(node, files), filePayloads);
     }
     return 'done';
   }
@@ -729,8 +735,8 @@ class ElementHandle extends js.JSHandle {
   async boundingBox() {
     return this._page._delegate.getBoundingBox(this);
   }
-  async ariaSnapshot() {
-    return await this.evaluateInUtility(([injected, element]) => injected.ariaSnapshot(element), {});
+  async ariaSnapshot(options) {
+    return await this.evaluateInUtility(([injected, element, options]) => injected.ariaSnapshot(element, options), options);
   }
   async screenshot(metadata, options = {}) {
     const controller = new _progress.ProgressController(metadata, this);

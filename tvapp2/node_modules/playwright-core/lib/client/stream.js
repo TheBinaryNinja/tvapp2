@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Stream = void 0;
-var _stream = require("stream");
 var _channelOwner = require("./channelOwner");
 /**
  * Copyright (c) Microsoft Corporation.
@@ -30,25 +29,7 @@ class Stream extends _channelOwner.ChannelOwner {
     super(parent, type, guid, initializer);
   }
   stream() {
-    return new StreamImpl(this._channel);
+    return this._platform.streamReadable(this._channel);
   }
 }
 exports.Stream = Stream;
-class StreamImpl extends _stream.Readable {
-  constructor(channel) {
-    super();
-    this._channel = void 0;
-    this._channel = channel;
-  }
-  async _read() {
-    const result = await this._channel.read({
-      size: 1024 * 1024
-    });
-    if (result.binary.byteLength) this.push(result.binary);else this.push(null);
-  }
-  _destroy(error, callback) {
-    // Stream might be destroyed after the connection was closed.
-    this._channel.close().catch(e => null);
-    super._destroy(error, callback);
-  }
-}

@@ -4,9 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.SelectorsOwner = exports.Selectors = void 0;
-var _clientHelper = require("./clientHelper");
+exports.setPlatformForSelectors = setPlatformForSelectors;
 var _channelOwner = require("./channelOwner");
+var _clientHelper = require("./clientHelper");
 var _locator = require("./locator");
+var _platform = require("./platform");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -23,13 +25,17 @@ var _locator = require("./locator");
  * limitations under the License.
  */
 
+let platform = _platform.emptyPlatform;
+function setPlatformForSelectors(p) {
+  platform = p;
+}
 class Selectors {
   constructor() {
     this._channels = new Set();
     this._registrations = [];
   }
   async register(name, script, options = {}) {
-    const source = await (0, _clientHelper.evaluationScript)(script, undefined, false);
+    const source = await (0, _clientHelper.evaluationScript)(platform, script, undefined, false);
     const params = {
       ...options,
       name,

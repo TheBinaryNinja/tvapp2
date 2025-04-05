@@ -5,19 +5,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WebSocketRouteHandler = exports.WebSocketRoute = exports.WebSocket = exports.RouteHandler = exports.Route = exports.Response = exports.Request = exports.RawHeaders = void 0;
 exports.validateHeaders = validateHeaders;
-var _url = require("url");
 var _channelOwner = require("./channelOwner");
-var _frame = require("./frame");
-var _worker = require("./worker");
-var _fs = _interopRequireDefault(require("fs"));
-var _utilsBundle = require("../utilsBundle");
-var _utils = require("../utils");
-var _manualPromise = require("../utils/manualPromise");
-var _events = require("./events");
-var _waiter = require("./waiter");
-var _fetch = require("./fetch");
 var _errors = require("./errors");
-let _Symbol$asyncDispose;
+var _events = require("./events");
+var _fetch = require("./fetch");
+var _frame = require("./frame");
+var _waiter = require("./waiter");
+var _worker = require("./worker");
+var _assert = require("../utils/isomorphic/assert");
+var _headers = require("../utils/isomorphic/headers");
+var _urlMatch = require("../utils/isomorphic/urlMatch");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
+var _multimap = require("../utils/isomorphic/multimap");
+var _rtti = require("../utils/isomorphic/rtti");
+var _stackTrace = require("../utils/isomorphic/stackTrace");
+var _mimeType = require("../utils/isomorphic/mimeType");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -33,7 +35,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 class Request extends _channelOwner.ChannelOwner {
   static from(request) {
     return request._object;
@@ -88,7 +90,7 @@ class Request extends _channelOwner.ChannelOwner {
     const contentType = this.headers()['content-type'];
     if (contentType !== null && contentType !== void 0 && contentType.includes('application/x-www-form-urlencoded')) {
       const entries = {};
-      const parsed = new _url.URLSearchParams(postData);
+      const parsed = new URLSearchParams(postData);
       for (const [k, v] of parsed.entries()) entries[k] = v;
       return entries;
     }
@@ -134,7 +136,7 @@ class Request extends _channelOwner.ChannelOwner {
   }
   frame() {
     if (!this._initializer.frame) {
-      (0, _utils.assert)(this.serviceWorker());
+      (0, _assert.assert)(this.serviceWorker());
       throw new Error('Service Worker requests do not have an associated frame.');
     }
     const frame = _frame.Frame.from(this._initializer.frame);
@@ -184,7 +186,7 @@ class Request extends _channelOwner.ChannelOwner {
     if (overrides.url) this._fallbackOverrides.url = overrides.url;
     if (overrides.method) this._fallbackOverrides.method = overrides.method;
     if (overrides.headers) this._fallbackOverrides.headers = overrides.headers;
-    if ((0, _utils.isString)(overrides.postData)) this._fallbackOverrides.postDataBuffer = Buffer.from(overrides.postData, 'utf-8');else if (overrides.postData instanceof Buffer) this._fallbackOverrides.postDataBuffer = overrides.postData;else if (overrides.postData) this._fallbackOverrides.postDataBuffer = Buffer.from(JSON.stringify(overrides.postData), 'utf-8');
+    if ((0, _rtti.isString)(overrides.postData)) this._fallbackOverrides.postDataBuffer = Buffer.from(overrides.postData, 'utf-8');else if (overrides.postData instanceof Buffer) this._fallbackOverrides.postDataBuffer = overrides.postData;else if (overrides.postData) this._fallbackOverrides.postDataBuffer = Buffer.from(JSON.stringify(overrides.postData), 'utf-8');
   }
   _fallbackOverridesForContinue() {
     return this._fallbackOverrides;
@@ -272,13 +274,12 @@ class Route extends _channelOwner.ChannelOwner {
       body
     } = options;
     if (options.json !== undefined) {
-      (0, _utils.assert)(options.body === undefined, 'Can specify either body or json parameters');
+      (0, _assert.assert)(options.body === undefined, 'Can specify either body or json parameters');
       body = JSON.stringify(options.json);
     }
     if (options.response instanceof _fetch.APIResponse) {
-      var _statusOption, _headersOption;
-      (_statusOption = statusOption) !== null && _statusOption !== void 0 ? _statusOption : statusOption = options.response.status();
-      (_headersOption = headersOption) !== null && _headersOption !== void 0 ? _headersOption : headersOption = options.response.headers();
+      statusOption !== null && statusOption !== void 0 ? statusOption : statusOption = options.response.status();
+      headersOption !== null && headersOption !== void 0 ? headersOption : headersOption = options.response.headers();
       if (body === undefined && options.path === undefined) {
         if (options.response._request._connection === this._connection) fetchResponseUid = options.response._fetchUid();else body = await options.response.body();
       }
@@ -286,11 +287,11 @@ class Route extends _channelOwner.ChannelOwner {
     let isBase64 = false;
     let length = 0;
     if (options.path) {
-      const buffer = await _fs.default.promises.readFile(options.path);
+      const buffer = await this._platform.fs().promises.readFile(options.path);
       body = buffer.toString('base64');
       isBase64 = true;
       length = buffer.length;
-    } else if ((0, _utils.isString)(body)) {
+    } else if ((0, _rtti.isString)(body)) {
       isBase64 = false;
       length = Buffer.byteLength(body);
     } else if (body) {
@@ -300,11 +301,11 @@ class Route extends _channelOwner.ChannelOwner {
     }
     const headers = {};
     for (const header of Object.keys(headersOption || {})) headers[header.toLowerCase()] = String(headersOption[header]);
-    if (options.contentType) headers['content-type'] = String(options.contentType);else if (options.json) headers['content-type'] = 'application/json';else if (options.path) headers['content-type'] = _utilsBundle.mime.getType(options.path) || 'application/octet-stream';
+    if (options.contentType) headers['content-type'] = String(options.contentType);else if (options.json) headers['content-type'] = 'application/json';else if (options.path) headers['content-type'] = (0, _mimeType.getMimeTypeForPath)(options.path) || 'application/octet-stream';
     if (length && !('content-length' in headers)) headers['content-length'] = String(length);
     await this._raceWithTargetClose(this._channel.fulfill({
       status: statusOption || 200,
-      headers: (0, _utils.headersObjectToArray)(headers),
+      headers: (0, _headers.headersObjectToArray)(headers),
       body,
       isBase64,
       fetchResponseUid
@@ -329,14 +330,13 @@ class Route extends _channelOwner.ChannelOwner {
     return await this._raceWithTargetClose(this._channel.continue({
       url: options.url,
       method: options.method,
-      headers: options.headers ? (0, _utils.headersObjectToArray)(options.headers) : undefined,
+      headers: options.headers ? (0, _headers.headersObjectToArray)(options.headers) : undefined,
       postData: options.postDataBuffer,
       isFallback
     }));
   }
 }
 exports.Route = Route;
-_Symbol$asyncDispose = Symbol.asyncDispose;
 class WebSocketRoute extends _channelOwner.ChannelOwner {
   static from(route) {
     return route._object;
@@ -370,7 +370,7 @@ class WebSocketRoute extends _channelOwner.ChannelOwner {
         }).catch(() => {});
       },
       send: message => {
-        if ((0, _utils.isString)(message)) this._channel.sendToServer({
+        if ((0, _rtti.isString)(message)) this._channel.sendToServer({
           message,
           isBase64: false
         }).catch(() => {});else this._channel.sendToServer({
@@ -439,7 +439,7 @@ class WebSocketRoute extends _channelOwner.ChannelOwner {
     return this._server;
   }
   send(message) {
-    if ((0, _utils.isString)(message)) this._channel.sendToPage({
+    if ((0, _rtti.isString)(message)) this._channel.sendToPage({
       message,
       isBase64: false
     }).catch(() => {});else this._channel.sendToPage({
@@ -453,7 +453,7 @@ class WebSocketRoute extends _channelOwner.ChannelOwner {
   onClose(handler) {
     this._onPageClose = handler;
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.close();
   }
   async _afterHandle() {
@@ -476,9 +476,9 @@ class WebSocketRouteHandler {
     const patterns = [];
     let all = false;
     for (const handler of handlers) {
-      if ((0, _utils.isString)(handler.url)) patterns.push({
+      if ((0, _rtti.isString)(handler.url)) patterns.push({
         glob: handler.url
-      });else if ((0, _utils.isRegExp)(handler.url)) patterns.push({
+      });else if ((0, _rtti.isRegExp)(handler.url)) patterns.push({
         regexSource: handler.url.source,
         regexFlags: handler.url.flags
       });else all = true;
@@ -489,7 +489,7 @@ class WebSocketRouteHandler {
     return patterns;
   }
   matches(wsURL) {
-    return (0, _utils.urlMatches)(this._baseURL, wsURL, this.url);
+    return (0, _urlMatch.urlMatches)(this._baseURL, wsURL, this.url);
   }
   async handle(webSocketRoute) {
     const handler = this.handler;
@@ -644,11 +644,11 @@ exports.WebSocket = WebSocket;
 function validateHeaders(headers) {
   for (const key of Object.keys(headers)) {
     const value = headers[key];
-    if (!Object.is(value, undefined) && !(0, _utils.isString)(value)) throw new Error(`Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
+    if (!Object.is(value, undefined) && !(0, _rtti.isString)(value)) throw new Error(`Expected value of header "${key}" to be String, but "${typeof value}" is found.`);
   }
 }
 class RouteHandler {
-  constructor(baseURL, url, handler, times = Number.MAX_SAFE_INTEGER) {
+  constructor(platform, baseURL, url, handler, times = Number.MAX_SAFE_INTEGER) {
     this.handledCount = 0;
     this._baseURL = void 0;
     this._times = void 0;
@@ -656,20 +656,20 @@ class RouteHandler {
     this.handler = void 0;
     this._ignoreException = false;
     this._activeInvocations = new Set();
-    this._svedZone = void 0;
+    this._savedZone = void 0;
     this._baseURL = baseURL;
     this._times = times;
     this.url = url;
     this.handler = handler;
-    this._svedZone = _utils.zones.current().without('apiZone');
+    this._savedZone = platform.zones.current().pop();
   }
   static prepareInterceptionPatterns(handlers) {
     const patterns = [];
     let all = false;
     for (const handler of handlers) {
-      if ((0, _utils.isString)(handler.url)) patterns.push({
+      if ((0, _rtti.isString)(handler.url)) patterns.push({
         glob: handler.url
-      });else if ((0, _utils.isRegExp)(handler.url)) patterns.push({
+      });else if ((0, _rtti.isRegExp)(handler.url)) patterns.push({
         regexSource: handler.url.source,
         regexFlags: handler.url.flags
       });else all = true;
@@ -680,10 +680,10 @@ class RouteHandler {
     return patterns;
   }
   matches(requestURL) {
-    return (0, _utils.urlMatches)(this._baseURL, requestURL, this.url);
+    return (0, _urlMatch.urlMatches)(this._baseURL, requestURL, this.url);
   }
   async handle(route) {
-    return await this._svedZone.run(async () => this._handleImpl(route));
+    return await this._savedZone.run(async () => this._handleImpl(route));
   }
   async _handleImpl(route) {
     const handlerInvocation = {
@@ -699,7 +699,7 @@ class RouteHandler {
       if ((0, _errors.isTargetClosedError)(e)) {
         // We are failing in the handler because the target close closed.
         // Give user a hint!
-        (0, _utils.rewriteErrorMessage)(e, `"${e.message}" while running route callback.\nConsider awaiting \`await page.unrouteAll({ behavior: 'ignoreErrors' })\`\nbefore the end of the test to ignore remaining routes in flight.`);
+        (0, _stackTrace.rewriteErrorMessage)(e, `"${e.message}" while running route callback.\nConsider awaiting \`await page.unrouteAll({ behavior: 'ignoreErrors' })\`\nbefore the end of the test to ignore remaining routes in flight.`);
       }
       throw e;
     } finally {
@@ -745,7 +745,7 @@ class RawHeaders {
   }
   constructor(headers) {
     this._headersArray = void 0;
-    this._headersMap = new _utils.MultiMap();
+    this._headersMap = new _multimap.MultiMap();
     this._headersArray = headers;
     for (const header of headers) this._headersMap.set(header.name.toLowerCase(), header.value);
   }

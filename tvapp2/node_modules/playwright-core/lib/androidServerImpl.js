@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AndroidServerLauncherImpl = void 0;
-var _utilsBundle = require("./utilsBundle");
-var _utils = require("./utils");
-var _playwright = require("./server/playwright");
 var _playwrightServer = require("./remote/playwrightServer");
+var _playwright = require("./server/playwright");
+var _crypto = require("./server/utils/crypto");
+var _utilsBundle = require("./utilsBundle");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -43,7 +43,7 @@ class AndroidServerLauncherImpl {
     }
     if (devices.length > 1) throw new Error(`More than one device found. Please specify deviceSerialNumber`);
     const device = devices[0];
-    const path = options.wsPath ? options.wsPath.startsWith('/') ? options.wsPath : `/${options.wsPath}` : `/${(0, _utils.createGuid)()}`;
+    const path = options.wsPath ? options.wsPath.startsWith('/') ? options.wsPath : `/${options.wsPath}` : `/${(0, _crypto.createGuid)()}`;
 
     // 2. Start the server
     const server = new _playwrightServer.PlaywrightServer({

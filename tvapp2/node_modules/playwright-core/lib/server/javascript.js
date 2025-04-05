@@ -10,13 +10,13 @@ exports.isJavaScriptErrorInEvaluate = isJavaScriptErrorInEvaluate;
 exports.normalizeEvaluationExpression = normalizeEvaluationExpression;
 exports.parseUnserializableValue = parseUnserializableValue;
 exports.sparseArrayToString = sparseArrayToString;
-var utilityScriptSource = _interopRequireWildcard(require("../generated/utilityScriptSource"));
-var _utilityScriptSerializers = require("./isomorphic/utilityScriptSerializers");
 var _instrumentation = require("./instrumentation");
-var _manualPromise = require("../utils/manualPromise");
+var utilityScriptSource = _interopRequireWildcard(require("../generated/utilityScriptSource"));
 var _utils = require("../utils");
+var _utilityScriptSerializers = require("./isomorphic/utilityScriptSerializers");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -36,12 +36,12 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
 class ExecutionContext extends _instrumentation.SdkObject {
   constructor(parent, delegate, worldNameForTest) {
     super(parent, 'execution-context');
-    this._delegate = void 0;
+    this.delegate = void 0;
     this._utilityScriptPromise = void 0;
     this._contextDestroyedScope = new _manualPromise.LongStandingScope();
     this.worldNameForTest = void 0;
     this.worldNameForTest = worldNameForTest;
-    this._delegate = delegate;
+    this.delegate = delegate;
   }
   contextDestroyed(reason) {
     this._contextDestroyedScope.close(new Error(reason));
@@ -50,27 +50,25 @@ class ExecutionContext extends _instrumentation.SdkObject {
     return this._contextDestroyedScope.race(promise);
   }
   rawEvaluateJSON(expression) {
-    return this._raceAgainstContextDestroyed(this._delegate.rawEvaluateJSON(expression));
+    return this._raceAgainstContextDestroyed(this.delegate.rawEvaluateJSON(expression));
   }
   rawEvaluateHandle(expression) {
-    return this._raceAgainstContextDestroyed(this._delegate.rawEvaluateHandle(expression));
+    return this._raceAgainstContextDestroyed(this.delegate.rawEvaluateHandle(this, expression));
   }
-  evaluateWithArguments(expression, returnByValue, utilityScript, values, objectIds) {
-    return this._raceAgainstContextDestroyed(this._delegate.evaluateWithArguments(expression, returnByValue, utilityScript, values, objectIds));
+  async evaluateWithArguments(expression, returnByValue, values, handles) {
+    const utilityScript = await this._utilityScript();
+    return this._raceAgainstContextDestroyed(this.delegate.evaluateWithArguments(expression, returnByValue, utilityScript, values, handles));
   }
-  getProperties(context, objectId) {
-    return this._raceAgainstContextDestroyed(this._delegate.getProperties(context, objectId));
+  getProperties(object) {
+    return this._raceAgainstContextDestroyed(this.delegate.getProperties(object));
   }
-  createHandle(remoteObject) {
-    return this._delegate.createHandle(this, remoteObject);
-  }
-  releaseHandle(objectId) {
-    return this._delegate.releaseHandle(objectId);
+  releaseHandle(handle) {
+    return this.delegate.releaseHandle(handle);
   }
   adoptIfNeeded(handle) {
     return null;
   }
-  utilityScript() {
+  _utilityScript() {
     if (!this._utilityScriptPromise) {
       const source = `
       (() => {
@@ -78,7 +76,10 @@ class ExecutionContext extends _instrumentation.SdkObject {
         ${utilityScriptSource.source}
         return new (module.exports.UtilityScript())(${(0, _utils.isUnderTest)()});
       })();`;
-      this._utilityScriptPromise = this._raceAgainstContextDestroyed(this._delegate.rawEvaluateHandle(source).then(objectId => new JSHandle(this, 'object', 'UtilityScript', objectId)));
+      this._utilityScriptPromise = this._raceAgainstContextDestroyed(this.delegate.rawEvaluateHandle(this, source)).then(handle => {
+        handle._setPreview('UtilityScript');
+        return handle;
+      });
     }
     return this._utilityScriptPromise;
   }
@@ -142,16 +143,15 @@ class JSHandle extends _instrumentation.SdkObject {
   }
   async getProperties() {
     if (!this._objectId) return new Map();
-    return this._context.getProperties(this._context, this._objectId);
+    return this._context.getProperties(this);
   }
   rawValue() {
     return this._value;
   }
   async jsonValue() {
     if (!this._objectId) return this._value;
-    const utilityScript = await this._context.utilityScript();
     const script = `(utilityScript, ...args) => utilityScript.jsonValue(...args)`;
-    return this._context.evaluateWithArguments(script, true, utilityScript, [true], [this._objectId]);
+    return this._context.evaluateWithArguments(script, true, [true], [this]);
   }
   asElement() {
     return null;
@@ -160,7 +160,7 @@ class JSHandle extends _instrumentation.SdkObject {
     if (this._disposed) return;
     this._disposed = true;
     if (this._objectId) {
-      this._context.releaseHandle(this._objectId).catch(e => {});
+      this._context.releaseHandle(this).catch(e => {});
       if (globalThis.leakedJSHandles) globalThis.leakedJSHandles.delete(this);
     }
   }
@@ -189,7 +189,6 @@ async function evaluate(context, returnByValue, pageFunction, ...args) {
   }, ...args);
 }
 async function evaluateExpression(context, expression, options, ...args) {
-  const utilityScript = await context.utilityScript();
   expression = normalizeEvaluationExpression(expression, options.isFunction);
   const handles = [];
   const toDispose = [];
@@ -216,17 +215,17 @@ async function evaluateExpression(context, expression, options, ...args) {
       fallThrough: handle
     };
   }));
-  const utilityScriptObjectIds = [];
+  const utilityScriptObjects = [];
   for (const handle of await Promise.all(handles)) {
     if (handle._context !== context) throw new JavaScriptErrorInEvaluate('JSHandles can be evaluated only in the context they were created!');
-    utilityScriptObjectIds.push(handle._objectId);
+    utilityScriptObjects.push(handle);
   }
 
   // See UtilityScript for arguments.
   const utilityScriptValues = [options.isFunction, options.returnByValue, expression, args.length, ...args];
   const script = `(utilityScript, ...args) => utilityScript.evaluate(...args)`;
   try {
-    return await context.evaluateWithArguments(script, options.returnByValue || false, utilityScript, utilityScriptValues, utilityScriptObjectIds);
+    return await context.evaluateWithArguments(script, options.returnByValue || false, utilityScriptValues, utilityScriptObjects);
   } finally {
     toDispose.map(handlePromise => handlePromise.then(handle => handle.dispose()));
   }

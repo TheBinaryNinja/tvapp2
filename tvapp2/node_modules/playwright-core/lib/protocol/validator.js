@@ -168,9 +168,38 @@ _validatorPrimitives.scheme.NameValue = (0, _validatorPrimitives.tObject)({
   name: _validatorPrimitives.tString,
   value: _validatorPrimitives.tString
 });
+_validatorPrimitives.scheme.IndexedDBDatabase = (0, _validatorPrimitives.tObject)({
+  name: _validatorPrimitives.tString,
+  version: _validatorPrimitives.tNumber,
+  stores: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tObject)({
+    name: _validatorPrimitives.tString,
+    autoIncrement: _validatorPrimitives.tBoolean,
+    keyPath: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
+    keyPathArray: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)(_validatorPrimitives.tString)),
+    records: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tObject)({
+      key: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tAny),
+      keyEncoded: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tAny),
+      value: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tAny),
+      valueEncoded: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tAny)
+    })),
+    indexes: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tObject)({
+      name: _validatorPrimitives.tString,
+      keyPath: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
+      keyPathArray: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)(_validatorPrimitives.tString)),
+      multiEntry: _validatorPrimitives.tBoolean,
+      unique: _validatorPrimitives.tBoolean
+    }))
+  }))
+});
+_validatorPrimitives.scheme.SetOriginStorage = (0, _validatorPrimitives.tObject)({
+  origin: _validatorPrimitives.tString,
+  localStorage: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NameValue')),
+  indexedDB: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('IndexedDBDatabase')))
+});
 _validatorPrimitives.scheme.OriginStorage = (0, _validatorPrimitives.tObject)({
   origin: _validatorPrimitives.tString,
-  localStorage: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NameValue'))
+  localStorage: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NameValue')),
+  indexedDB: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('IndexedDBDatabase')))
 });
 _validatorPrimitives.scheme.SerializedError = (0, _validatorPrimitives.tObject)({
   error: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
@@ -231,7 +260,9 @@ _validatorPrimitives.scheme.APIRequestContextFetchLogParams = (0, _validatorPrim
 _validatorPrimitives.scheme.APIRequestContextFetchLogResult = (0, _validatorPrimitives.tObject)({
   log: (0, _validatorPrimitives.tArray)(_validatorPrimitives.tString)
 });
-_validatorPrimitives.scheme.APIRequestContextStorageStateParams = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
+_validatorPrimitives.scheme.APIRequestContextStorageStateParams = (0, _validatorPrimitives.tObject)({
+  indexedDB: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBoolean)
+});
 _validatorPrimitives.scheme.APIRequestContextStorageStateResult = (0, _validatorPrimitives.tObject)({
   cookies: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NetworkCookie')),
   origins: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('OriginStorage'))
@@ -365,6 +396,7 @@ _validatorPrimitives.scheme.PlaywrightNewRequestParams = (0, _validatorPrimitive
   userAgent: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   ignoreHTTPSErrors: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBoolean),
   extraHTTPHeaders: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NameValue'))),
+  failOnStatusCode: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBoolean),
   clientCertificates: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tObject)({
     origin: _validatorPrimitives.tString,
     cert: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBinary),
@@ -387,7 +419,7 @@ _validatorPrimitives.scheme.PlaywrightNewRequestParams = (0, _validatorPrimitive
   timeout: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tNumber),
   storageState: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     cookies: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NetworkCookie'))),
-    origins: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('OriginStorage')))
+    origins: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('SetOriginStorage')))
   })),
   tracesDir: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString)
 });
@@ -608,6 +640,7 @@ _validatorPrimitives.scheme.BrowserTypeLaunchPersistentContextParams = (0, _vali
   reducedMotion: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['reduce', 'no-preference', 'no-override'])),
   forcedColors: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['active', 'none', 'no-override'])),
   acceptDownloads: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['accept', 'deny', 'internal-browser-default'])),
+  contrast: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['no-preference', 'more', 'no-override'])),
   baseURL: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   recordVideo: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     dir: _validatorPrimitives.tString,
@@ -694,6 +727,7 @@ _validatorPrimitives.scheme.BrowserNewContextParams = (0, _validatorPrimitives.t
   reducedMotion: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['reduce', 'no-preference', 'no-override'])),
   forcedColors: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['active', 'none', 'no-override'])),
   acceptDownloads: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['accept', 'deny', 'internal-browser-default'])),
+  contrast: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['no-preference', 'more', 'no-override'])),
   baseURL: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   recordVideo: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     dir: _validatorPrimitives.tString,
@@ -713,7 +747,7 @@ _validatorPrimitives.scheme.BrowserNewContextParams = (0, _validatorPrimitives.t
   })),
   storageState: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     cookies: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('SetNetworkCookie'))),
-    origins: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('OriginStorage')))
+    origins: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('SetOriginStorage')))
   }))
 });
 _validatorPrimitives.scheme.BrowserNewContextResult = (0, _validatorPrimitives.tObject)({
@@ -763,6 +797,7 @@ _validatorPrimitives.scheme.BrowserNewContextForReuseParams = (0, _validatorPrim
   reducedMotion: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['reduce', 'no-preference', 'no-override'])),
   forcedColors: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['active', 'none', 'no-override'])),
   acceptDownloads: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['accept', 'deny', 'internal-browser-default'])),
+  contrast: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['no-preference', 'more', 'no-override'])),
   baseURL: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   recordVideo: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     dir: _validatorPrimitives.tString,
@@ -782,7 +817,7 @@ _validatorPrimitives.scheme.BrowserNewContextForReuseParams = (0, _validatorPrim
   })),
   storageState: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     cookies: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('SetNetworkCookie'))),
-    origins: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('OriginStorage')))
+    origins: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('SetOriginStorage')))
   }))
 });
 _validatorPrimitives.scheme.BrowserNewContextForReuseResult = (0, _validatorPrimitives.tObject)({
@@ -986,7 +1021,9 @@ _validatorPrimitives.scheme.BrowserContextSetOfflineParams = (0, _validatorPrimi
   offline: _validatorPrimitives.tBoolean
 });
 _validatorPrimitives.scheme.BrowserContextSetOfflineResult = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
-_validatorPrimitives.scheme.BrowserContextStorageStateParams = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
+_validatorPrimitives.scheme.BrowserContextStorageStateParams = (0, _validatorPrimitives.tObject)({
+  indexedDB: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBoolean)
+});
 _validatorPrimitives.scheme.BrowserContextStorageStateResult = (0, _validatorPrimitives.tObject)({
   cookies: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('NetworkCookie')),
   origins: (0, _validatorPrimitives.tArray)((0, _validatorPrimitives.tType)('OriginStorage'))
@@ -1143,7 +1180,8 @@ _validatorPrimitives.scheme.PageEmulateMediaParams = (0, _validatorPrimitives.tO
   media: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['screen', 'print', 'no-override'])),
   colorScheme: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['dark', 'light', 'no-preference', 'no-override'])),
   reducedMotion: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['reduce', 'no-preference', 'no-override'])),
-  forcedColors: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['active', 'none', 'no-override']))
+  forcedColors: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['active', 'none', 'no-override'])),
+  contrast: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['no-preference', 'more', 'no-override']))
 });
 _validatorPrimitives.scheme.PageEmulateMediaResult = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
 _validatorPrimitives.scheme.PageExposeBindingParams = (0, _validatorPrimitives.tObject)({
@@ -1455,6 +1493,8 @@ _validatorPrimitives.scheme.FrameAddStyleTagResult = (0, _validatorPrimitives.tO
 });
 _validatorPrimitives.scheme.FrameAriaSnapshotParams = (0, _validatorPrimitives.tObject)({
   selector: _validatorPrimitives.tString,
+  id: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tBoolean),
+  mode: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['raw', 'regex'])),
   timeout: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tNumber)
 });
 _validatorPrimitives.scheme.FrameAriaSnapshotResult = (0, _validatorPrimitives.tObject)({
@@ -1951,6 +1991,10 @@ _validatorPrimitives.scheme.ElementHandleFillParams = (0, _validatorPrimitives.t
 _validatorPrimitives.scheme.ElementHandleFillResult = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
 _validatorPrimitives.scheme.ElementHandleFocusParams = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
 _validatorPrimitives.scheme.ElementHandleFocusResult = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
+_validatorPrimitives.scheme.ElementHandleGenerateLocatorStringParams = (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({}));
+_validatorPrimitives.scheme.ElementHandleGenerateLocatorStringResult = (0, _validatorPrimitives.tObject)({
+  value: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString)
+});
 _validatorPrimitives.scheme.ElementHandleGetAttributeParams = (0, _validatorPrimitives.tObject)({
   name: _validatorPrimitives.tString
 });
@@ -2660,6 +2704,7 @@ _validatorPrimitives.scheme.AndroidDeviceLaunchBrowserParams = (0, _validatorPri
   reducedMotion: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['reduce', 'no-preference', 'no-override'])),
   forcedColors: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['active', 'none', 'no-override'])),
   acceptDownloads: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['accept', 'deny', 'internal-browser-default'])),
+  contrast: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tEnum)(['no-preference', 'more', 'no-override'])),
   baseURL: (0, _validatorPrimitives.tOptional)(_validatorPrimitives.tString),
   recordVideo: (0, _validatorPrimitives.tOptional)((0, _validatorPrimitives.tObject)({
     dir: _validatorPrimitives.tString,

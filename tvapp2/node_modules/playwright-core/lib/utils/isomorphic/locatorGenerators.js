@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.PythonLocatorFactory = exports.JsonlLocatorFactory = exports.JavaScriptLocatorFactory = exports.JavaLocatorFactory = exports.CSharpLocatorFactory = void 0;
 exports.asLocator = asLocator;
 exports.asLocators = asLocators;
-var _stringUtils = require("./stringUtils");
 var _selectorParser = require("./selectorParser");
+var _stringUtils = require("./stringUtils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -45,6 +45,10 @@ function innerAsLocators(factory, parsed, isFrameLocator = false, maxOutputSize 
     nextBase = 'locator';
     if (part.name === 'nth') {
       if (part.body === '0') tokens.push([factory.generateLocator(base, 'first', ''), factory.generateLocator(base, 'nth', '0')]);else if (part.body === '-1') tokens.push([factory.generateLocator(base, 'last', ''), factory.generateLocator(base, 'nth', '-1')]);else tokens.push([factory.generateLocator(base, 'nth', part.body)]);
+      continue;
+    }
+    if (part.name === 'visible') {
+      tokens.push([factory.generateLocator(base, 'visible', part.body), factory.generateLocator(base, 'default', `visible=${part.body}`)]);
       continue;
     }
     if (part.name === 'internal:text') {
@@ -287,6 +291,8 @@ class JavaScriptLocatorFactory {
         return `first()`;
       case 'last':
         return `last()`;
+      case 'visible':
+        return `filter({ visible: ${body === 'true' ? 'true' : 'false'} })`;
       case 'role':
         const attrs = [];
         if (isRegExp(options.name)) {
@@ -372,6 +378,8 @@ class PythonLocatorFactory {
         return `first`;
       case 'last':
         return `last`;
+      case 'visible':
+        return `filter(visible=${body === 'true' ? 'True' : 'False'})`;
       case 'role':
         const attrs = [];
         if (isRegExp(options.name)) {
@@ -474,6 +482,8 @@ class JavaLocatorFactory {
         return `first()`;
       case 'last':
         return `last()`;
+      case 'visible':
+        return `filter(new ${clazz}.FilterOptions().setVisible(${body === 'true' ? 'true' : 'false'}))`;
       case 'role':
         const attrs = [];
         if (isRegExp(options.name)) {
@@ -560,6 +570,8 @@ class CSharpLocatorFactory {
         return `First`;
       case 'last':
         return `Last`;
+      case 'visible':
+        return `Filter(new() { Visible = ${body === 'true' ? 'true' : 'false'} })`;
       case 'role':
         const attrs = [];
         if (isRegExp(options.name)) {

@@ -3,12 +3,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.fileUploadSizeLimit = void 0;
 exports.prepareFilesForUpload = prepareFilesForUpload;
 var _fs = _interopRequireDefault(require("fs"));
 var _path = _interopRequireDefault(require("path"));
-var _utils = require("../utils");
+var _assert = require("../utils/isomorphic/assert");
 var _utilsBundle = require("../utilsBundle");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -25,9 +26,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * limitations under the License.
  */
 
+// Keep in sync with the client.
+const fileUploadSizeLimit = exports.fileUploadSizeLimit = 50 * 1024 * 1024;
 async function filesExceedUploadLimit(files) {
   const sizes = await Promise.all(files.map(async file => (await _fs.default.promises.stat(file)).size));
-  return sizes.reduce((total, size) => total + size, 0) >= _utils.fileUploadSizeLimit;
+  return sizes.reduce((total, size) => total + size, 0) >= fileUploadSizeLimit;
 }
 async function prepareFilesForUpload(frame, params) {
   var _fileBuffers;
@@ -44,7 +47,7 @@ async function prepareFilesForUpload(frame, params) {
   if (streams) localPaths = streams.map(c => c.path());
   if (directoryStream) localDirectory = directoryStream.path();
   if (localPaths) {
-    for (const p of localPaths) (0, _utils.assert)(_path.default.isAbsolute(p) && _path.default.resolve(p) === p, 'Paths provided to localPaths must be absolute and fully resolved.');
+    for (const p of localPaths) (0, _assert.assert)(_path.default.isAbsolute(p) && _path.default.resolve(p) === p, 'Paths provided to localPaths must be absolute and fully resolved.');
   }
   let fileBuffers = payloads;
   if (!frame._page._browserContext._browser._isCollocatedWithServer) {

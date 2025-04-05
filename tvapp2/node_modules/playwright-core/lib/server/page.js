@@ -4,27 +4,29 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Worker = exports.PageBinding = exports.Page = exports.InitScript = void 0;
-var frames = _interopRequireWildcard(require("./frames"));
-var input = _interopRequireWildcard(require("./input"));
-var js = _interopRequireWildcard(require("./javascript"));
-var _screenshotter = require("./screenshotter");
-var _timeoutSettings = require("../common/timeoutSettings");
+var accessibility = _interopRequireWildcard(require("./accessibility"));
 var _browserContext = require("./browserContext");
 var _console = require("./console");
-var accessibility = _interopRequireWildcard(require("./accessibility"));
-var _fileChooser = require("./fileChooser");
-var _progress = require("./progress");
-var _utils = require("../utils");
-var _manualPromise = require("../utils/manualPromise");
-var _debugLogger = require("../utils/debugLogger");
-var _comparators = require("../utils/comparators");
-var _instrumentation = require("./instrumentation");
-var _selectorParser = require("../utils/isomorphic/selectorParser");
-var _utilityScriptSerializers = require("./isomorphic/utilityScriptSerializers");
 var _errors = require("./errors");
+var _fileChooser = require("./fileChooser");
+var frames = _interopRequireWildcard(require("./frames"));
 var _helper = require("./helper");
+var input = _interopRequireWildcard(require("./input"));
+var _instrumentation = require("./instrumentation");
+var _utilityScriptSerializers = require("./isomorphic/utilityScriptSerializers");
+var js = _interopRequireWildcard(require("./javascript"));
+var _progress = require("./progress");
+var _screenshotter = require("./screenshotter");
+var _timeoutSettings = require("./timeoutSettings");
+var _utils = require("../utils");
+var _crypto = require("./utils/crypto");
+var _comparators = require("./utils/comparators");
+var _debugLogger = require("./utils/debugLogger");
+var _selectorParser = require("../utils/isomorphic/selectorParser");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
+var _callLog = require("./callLog");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -378,16 +380,18 @@ class Page extends _instrumentation.SdkObject {
     if (options.colorScheme !== undefined) this._emulatedMedia.colorScheme = options.colorScheme;
     if (options.reducedMotion !== undefined) this._emulatedMedia.reducedMotion = options.reducedMotion;
     if (options.forcedColors !== undefined) this._emulatedMedia.forcedColors = options.forcedColors;
+    if (options.contrast !== undefined) this._emulatedMedia.contrast = options.contrast;
     await this._delegate.updateEmulateMedia();
   }
   emulatedMedia() {
-    var _contextOptions$color, _contextOptions$reduc, _contextOptions$force;
+    var _contextOptions$color, _contextOptions$reduc, _contextOptions$force, _contextOptions$contr;
     const contextOptions = this._browserContext._options;
     return {
       media: this._emulatedMedia.media || 'no-override',
       colorScheme: this._emulatedMedia.colorScheme !== undefined ? this._emulatedMedia.colorScheme : (_contextOptions$color = contextOptions.colorScheme) !== null && _contextOptions$color !== void 0 ? _contextOptions$color : 'light',
       reducedMotion: this._emulatedMedia.reducedMotion !== undefined ? this._emulatedMedia.reducedMotion : (_contextOptions$reduc = contextOptions.reducedMotion) !== null && _contextOptions$reduc !== void 0 ? _contextOptions$reduc : 'no-preference',
-      forcedColors: this._emulatedMedia.forcedColors !== undefined ? this._emulatedMedia.forcedColors : (_contextOptions$force = contextOptions.forcedColors) !== null && _contextOptions$force !== void 0 ? _contextOptions$force : 'none'
+      forcedColors: this._emulatedMedia.forcedColors !== undefined ? this._emulatedMedia.forcedColors : (_contextOptions$force = contextOptions.forcedColors) !== null && _contextOptions$force !== void 0 ? _contextOptions$force : 'none',
+      contrast: this._emulatedMedia.contrast !== undefined ? this._emulatedMedia.contrast : (_contextOptions$contr = contextOptions.contrast) !== null && _contextOptions$contr !== void 0 ? _contextOptions$contr : 'no-preference'
     };
   }
   async setViewportSize(viewportSize) {
@@ -517,7 +521,7 @@ class Page extends _instrumentation.SdkObject {
       let errorMessage = e.message;
       if (e instanceof _errors.TimeoutError && (_intermediateResult = intermediateResult) !== null && _intermediateResult !== void 0 && _intermediateResult.previous) errorMessage = `Failed to take two consecutive stable screenshots.`;
       return {
-        log: (0, _utils.compressCallLog)(e.message ? [...metadata.log, e.message] : metadata.log),
+        log: (0, _callLog.compressCallLog)(e.message ? [...metadata.log, e.message] : metadata.log),
         ...intermediateResult,
         errorMessage,
         timedOut: e instanceof _errors.TimeoutError
@@ -642,6 +646,7 @@ class Worker extends _instrumentation.SdkObject {
   _createExecutionContext(delegate) {
     this._existingExecutionContext = new js.ExecutionContext(this, delegate, 'worker');
     this._executionContextCallback(this._existingExecutionContext);
+    return this._existingExecutionContext;
   }
   url() {
     return this._url;
@@ -790,7 +795,7 @@ class InitScript {
     this.source = void 0;
     this.internal = void 0;
     this.name = void 0;
-    const guid = (0, _utils.createGuid)();
+    const guid = (0, _crypto.createGuid)();
     this.source = `(() => {
       globalThis.__pwInitScripts = globalThis.__pwInitScripts || {};
       const hasInitScript = globalThis.__pwInitScripts[${JSON.stringify(guid)}];

@@ -12,9 +12,9 @@ exports.toButtonsMask = toButtonsMask;
 exports.toConsoleMessageLocation = toConsoleMessageLocation;
 exports.toModifiersMask = toModifiersMask;
 var _fs = _interopRequireDefault(require("fs"));
-var _fileUtils = require("../../utils/fileUtils");
-var _stackTrace = require("../../utils/stackTrace");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _stackTrace = require("../../utils/isomorphic/stackTrace");
+var _fileUtils = require("../utils/fileUtils");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

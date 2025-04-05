@@ -4,19 +4,19 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.BidiPage = void 0;
-var _eventsHelper = require("../../utils/eventsHelper");
 var _utils = require("../../utils");
-var dom = _interopRequireWildcard(require("../dom"));
-var dialog = _interopRequireWildcard(require("../dialog"));
-var _page = require("../page");
-var _bidiInput = require("./bidiInput");
-var bidi = _interopRequireWildcard(require("./third_party/bidiProtocol"));
-var _bidiExecutionContext = require("./bidiExecutionContext");
-var _bidiNetworkManager = require("./bidiNetworkManager");
+var _eventsHelper = require("../utils/eventsHelper");
 var _browserContext = require("../browserContext");
+var dialog = _interopRequireWildcard(require("../dialog"));
+var dom = _interopRequireWildcard(require("../dom"));
+var _page = require("../page");
+var _bidiExecutionContext = require("./bidiExecutionContext");
+var _bidiInput = require("./bidiInput");
+var _bidiNetworkManager = require("./bidiNetworkManager");
 var _bidiPdf = require("./bidiPdf");
+var bidi = _interopRequireWildcard(require("./third_party/bidiProtocol"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -101,7 +101,6 @@ class BidiPage {
     if (realmInfo.type !== 'window') return;
     const frame = this._page._frameManager.frame(realmInfo.context);
     if (!frame) return;
-    const delegate = new _bidiExecutionContext.BidiExecutionContext(this._session, realmInfo);
     let worldName;
     if (!realmInfo.sandbox) {
       worldName = 'main';
@@ -112,8 +111,8 @@ class BidiPage {
     } else {
       return;
     }
+    const delegate = new _bidiExecutionContext.BidiExecutionContext(this._session, realmInfo);
     const context = new dom.FrameExecutionContext(delegate, frame, worldName);
-    context[contextDelegateSymbol] = delegate;
     frame._contextCreated(worldName, context);
     this._realmToContext.set(realmInfo.realm, context);
   }
@@ -202,10 +201,7 @@ class BidiPage {
       lineNumber: 1,
       columnNumber: 1
     };
-    this._page._addConsoleMessage(entry.method, entry.args.map(arg => context.createHandle({
-      objectId: arg.handle,
-      ...arg
-    })), location, params.text || undefined);
+    this._page._addConsoleMessage(entry.method, entry.args.map(arg => (0, _bidiExecutionContext.createHandle)(context, arg)), location, params.text || undefined);
   }
   async navigateFrame(frame, url, referrer) {
     const {
@@ -352,21 +348,20 @@ class BidiPage {
   }
   async getContentFrame(handle) {
     const executionContext = toBidiExecutionContext(handle._context);
-    const contentWindow = await executionContext.rawCallFunction('e => e.contentWindow', {
-      handle: handle._objectId
-    });
-    if (contentWindow.type === 'window') {
-      const frameId = contentWindow.value.context;
-      const result = this._page._frameManager.frame(frameId);
-      return result;
-    }
-    return null;
+    const frameId = await executionContext.contentFrameIdForFrame(handle);
+    if (!frameId) return null;
+    return this._page._frameManager.frame(frameId);
   }
   async getOwnerFrame(handle) {
-    throw new Error('Method not implemented.');
-  }
-  isElementHandle(remoteObject) {
-    return remoteObject.type === 'node';
+    // TODO: switch to utility world?
+    const windowHandle = await handle.evaluateHandle(node => {
+      var _node$ownerDocument;
+      const doc = (_node$ownerDocument = node.ownerDocument) !== null && _node$ownerDocument !== void 0 ? _node$ownerDocument : node;
+      return doc.defaultView;
+    });
+    if (!windowHandle) return null;
+    const executionContext = toBidiExecutionContext(handle._context);
+    return executionContext.frameIdForWindowHandle(windowHandle);
   }
   async getBoundingBox(handle) {
     const box = await handle.evaluate(element => {
@@ -449,29 +444,19 @@ class BidiPage {
     }));
     return quads;
   }
-  async setInputFiles(handle, files) {
-    throw new Error('Method not implemented.');
-  }
   async setInputFilePaths(handle, paths) {
-    throw new Error('Method not implemented.');
+    const fromContext = toBidiExecutionContext(handle._context);
+    await this._session.send('input.setFiles', {
+      context: this._session.sessionId,
+      element: await fromContext.nodeIdForElementHandle(handle),
+      files: paths
+    });
   }
   async adoptElementHandle(handle, to) {
     const fromContext = toBidiExecutionContext(handle._context);
-    const shared = await fromContext.rawCallFunction('x => x', {
-      handle: handle._objectId
-    });
-    // TODO: store sharedId in the handle.
-    if (!('sharedId' in shared)) throw new Error('Element is not a node');
-    const sharedId = shared.sharedId;
+    const nodeId = await fromContext.nodeIdForElementHandle(handle);
     const executionContext = toBidiExecutionContext(to);
-    const result = await executionContext.rawCallFunction('x => x', {
-      sharedId
-    });
-    if ('handle' in result) return to.createHandle({
-      objectId: result.handle,
-      ...result
-    });
-    throw new Error('Failed to adopt element handle.');
+    return await executionContext.remoteObjectForNodeId(to, nodeId);
   }
   async getAccessibilityTree(needle) {
     throw new Error('Method not implemented.');
@@ -513,6 +498,5 @@ function addMainBinding(callback) {
   globalThis['__playwright__binding__'] = callback;
 }
 function toBidiExecutionContext(executionContext) {
-  return executionContext[contextDelegateSymbol];
+  return executionContext.delegate;
 }
-const contextDelegateSymbol = Symbol('delegate');

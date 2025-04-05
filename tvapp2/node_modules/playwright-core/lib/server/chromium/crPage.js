@@ -5,16 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CRPage = void 0;
 var _path = _interopRequireDefault(require("path"));
-var _eventsHelper = require("../../utils/eventsHelper");
-var _registry = require("../registry");
-var _stackTrace = require("../../utils/stackTrace");
-var _utils = require("../../utils");
+var _assert = require("../../utils/isomorphic/assert");
+var _crypto = require("../utils/crypto");
+var _eventsHelper = require("../utils/eventsHelper");
+var _stackTrace = require("../../utils/isomorphic/stackTrace");
 var dialog = _interopRequireWildcard(require("../dialog"));
 var dom = _interopRequireWildcard(require("../dom"));
 var frames = _interopRequireWildcard(require("../frames"));
 var _helper = require("../helper");
 var network = _interopRequireWildcard(require("../network"));
 var _page = require("../page");
+var _registry = require("../registry");
 var _crAccessibility = require("./crAccessibility");
 var _crBrowser = require("./crBrowser");
 var _crCoverage = require("./crCoverage");
@@ -30,8 +31,8 @@ var _browserContext = require("../browserContext");
 var _errors = require("../errors");
 var _protocolError = require("../protocolError");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -251,9 +252,6 @@ class CRPage {
   async getOwnerFrame(handle) {
     return this._sessionForHandle(handle)._getOwnerFrame(handle);
   }
-  isElementHandle(remoteObject) {
-    return remoteObject.subtype === 'node';
-  }
   async getBoundingBox(handle) {
     return this._sessionForHandle(handle)._getBoundingBox(handle);
   }
@@ -277,9 +275,6 @@ class CRPage {
   }
   async getContentQuads(handle) {
     return this._sessionForHandle(handle)._getContentQuads(handle);
-  }
-  async setInputFiles(handle, files) {
-    await handle.evaluateInUtility(([injected, node, files]) => injected.setInputFiles(node, files), files);
   }
   async setInputFilePaths(handle, files) {
     const frame = await handle.ownerFrame();
@@ -386,7 +381,7 @@ class FrameSession {
     }
     let screencastOptions;
     if (!isSettingStorageState && this._isMainFrame() && this._crPage._browserContext._options.recordVideo && hasUIWindow) {
-      const screencastId = (0, _utils.createGuid)();
+      const screencastId = (0, _crypto.createGuid)();
       const outputFile = _path.default.join(this._crPage._browserContext._options.recordVideo.dir, screencastId + '.webm');
       screencastOptions = {
         // validateBrowserContextOptions ensures correct video size.
@@ -576,7 +571,6 @@ class FrameSession {
     let worldName = null;
     if (contextPayload.auxData && !!contextPayload.auxData.isDefault) worldName = 'main';else if (contextPayload.name === UTILITY_WORLD_NAME) worldName = 'utility';
     const context = new dom.FrameExecutionContext(delegate, frame, worldName);
-    context[contextDelegateSymbol] = delegate;
     if (worldName) frame._contextCreated(worldName, context);
     this._contextIdToContext.set(contextPayload.id, context);
   }
@@ -630,7 +624,7 @@ class FrameSession {
     session.on('Target.attachedToTarget', event => this._onAttachedToTarget(event));
     session.on('Target.detachedFromTarget', event => this._onDetachedFromTarget(event));
     session.on('Runtime.consoleAPICalled', event => {
-      const args = event.args.map(o => worker._existingExecutionContext.createHandle(o));
+      const args = event.args.map(o => (0, _crExecutionContext.createHandle)(worker._existingExecutionContext, o));
       this._page._addConsoleMessage(event.type, args, (0, _crProtocolHelper.toConsoleMessageLocation)(event.stackTrace));
     });
     session.on('Runtime.exceptionThrown', exception => this._page.emitOnContextOnceInitialized(_browserContext.BrowserContext.Events.PageError, (0, _crProtocolHelper.exceptionToError)(exception.exceptionDetails), this._page));
@@ -687,7 +681,7 @@ class FrameSession {
     }
     const context = this._contextIdToContext.get(event.executionContextId);
     if (!context) return;
-    const values = event.args.map(arg => context.createHandle(arg));
+    const values = event.args.map(arg => (0, _crExecutionContext.createHandle)(context, arg));
     this._page._addConsoleMessage(event.type, values, (0, _crProtocolHelper.toConsoleMessageLocation)(event.stackTrace));
   }
   async _onBindingCalled(event) {
@@ -770,14 +764,14 @@ class FrameSession {
     });
   }
   async _createVideoRecorder(screencastId, options) {
-    (0, _utils.assert)(!this._screencastId);
+    (0, _assert.assert)(!this._screencastId);
     const ffmpegPath = _registry.registry.findExecutable('ffmpeg').executablePathOrDie(this._page.attribution.playwright.options.sdkLanguage);
     this._videoRecorder = await _videoRecorder.VideoRecorder.launch(this._crPage._page, ffmpegPath, options);
     this._screencastId = screencastId;
   }
   async _startVideoRecording(options) {
     const screencastId = this._screencastId;
-    (0, _utils.assert)(screencastId);
+    (0, _assert.assert)(screencastId);
     this._page.once(_page.Page.Events.Close, () => this._stopVideoRecording().catch(() => {}));
     const gotFirstFrame = new Promise(f => this._client.once('Page.screencastFrame', f));
     await this._startScreencast(this._videoRecorder, {
@@ -818,7 +812,7 @@ class FrameSession {
   }
   async _updateViewport(preserveWindowBoundaries) {
     if (this._crPage._browserContext._browser.isClank()) return;
-    (0, _utils.assert)(this._isMainFrame());
+    (0, _assert.assert)(this._isMainFrame());
     const options = this._crPage._browserContext._options;
     const emulatedSize = this._page.emulatedSize();
     if (emulatedSize === null) return;
@@ -903,6 +897,7 @@ class FrameSession {
     const colorScheme = emulatedMedia.colorScheme === 'no-override' ? '' : emulatedMedia.colorScheme;
     const reducedMotion = emulatedMedia.reducedMotion === 'no-override' ? '' : emulatedMedia.reducedMotion;
     const forcedColors = emulatedMedia.forcedColors === 'no-override' ? '' : emulatedMedia.forcedColors;
+    const contrast = emulatedMedia.contrast === 'no-override' ? '' : emulatedMedia.contrast;
     const features = [{
       name: 'prefers-color-scheme',
       value: colorScheme
@@ -912,6 +907,9 @@ class FrameSession {
     }, {
       name: 'forced-colors',
       value: forcedColors
+    }, {
+      name: 'prefers-contrast',
+      value: contrast
     }];
     await this._client.send('Emulation.setEmulatedMedia', {
       media,
@@ -1047,10 +1045,10 @@ class FrameSession {
   async _adoptBackendNodeId(backendNodeId, to) {
     const result = await this._client._sendMayFail('DOM.resolveNode', {
       backendNodeId,
-      executionContextId: to[contextDelegateSymbol]._contextId
+      executionContextId: to.delegate._contextId
     });
     if (!result || result.object.subtype === 'null') throw new Error(dom.kUnableToAdoptErrorMessage);
-    return to.createHandle(result.object).asElement();
+    return (0, _crExecutionContext.createHandle)(to, result.object).asElement();
   }
 }
 async function emulateLocale(session, locale) {
@@ -1077,7 +1075,6 @@ async function emulateTimezone(session, timezoneId) {
     throw exception;
   }
 }
-const contextDelegateSymbol = Symbol('delegate');
 
 // Chromium reference: https://source.chromium.org/chromium/chromium/src/+/main:components/embedder_support/user_agent_utils.cc;l=434;drc=70a6711e08e9f9e0d8e4c48e9ba5cab62eb010c2
 function calculateUserAgentMetadata(options) {

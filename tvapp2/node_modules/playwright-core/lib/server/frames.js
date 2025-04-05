@@ -4,26 +4,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.NavigationAbortedError = exports.FrameManager = exports.Frame = void 0;
+var _browserContext = require("./browserContext");
 var dom = _interopRequireWildcard(require("./dom"));
+var _errors = require("./errors");
+var _fileUploadUtils = require("./fileUploadUtils");
+var _frameSelectors = require("./frameSelectors");
 var _helper = require("./helper");
-var _eventsHelper = require("../utils/eventsHelper");
+var _instrumentation = require("./instrumentation");
 var js = _interopRequireWildcard(require("./javascript"));
 var network = _interopRequireWildcard(require("./network"));
 var _page = require("./page");
-var types = _interopRequireWildcard(require("./types"));
-var _browserContext = require("./browserContext");
 var _progress = require("./progress");
+var types = _interopRequireWildcard(require("./types"));
 var _utils = require("../utils");
-var _manualPromise = require("../utils/manualPromise");
-var _debugLogger = require("../utils/debugLogger");
-var _instrumentation = require("./instrumentation");
 var _protocolError = require("./protocolError");
+var _debugLogger = require("./utils/debugLogger");
+var _eventsHelper = require("./utils/eventsHelper");
 var _selectorParser = require("../utils/isomorphic/selectorParser");
-var _frameSelectors = require("./frameSelectors");
-var _errors = require("./errors");
-var _fileUploadUtils = require("./fileUploadUtils");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
+var _callLog = require("./callLog");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -1234,7 +1235,7 @@ class Frame extends _instrumentation.SdkObject {
   async ariaSnapshot(metadata, selector, options = {}) {
     const controller = new _progress.ProgressController(metadata, this);
     return controller.run(async progress => {
-      return await this._retryWithProgressIfNotConnected(progress, selector, true /* strict */, true /* performActionPreChecks */, handle => handle.ariaSnapshot());
+      return await this._retryWithProgressIfNotConnected(progress, selector, true /* strict */, true /* performActionPreChecks */, handle => handle.ariaSnapshot(options));
     }, this._page._timeoutSettings.timeout(options));
   }
   async expect(metadata, selector, options) {
@@ -1281,7 +1282,7 @@ class Frame extends _instrumentation.SdkObject {
       }
       if (timeout < 0) return {
         matches: options.isNot,
-        log: (0, _utils.compressCallLog)(metadata.log),
+        log: (0, _callLog.compressCallLog)(metadata.log),
         timedOut: true,
         received: lastIntermediateResult.received
       };
@@ -1312,7 +1313,7 @@ class Frame extends _instrumentation.SdkObject {
       if (js.isJavaScriptErrorInEvaluate(e) || (0, _selectorParser.isInvalidSelectorError)(e)) throw e;
       const result = {
         matches: options.isNot,
-        log: (0, _utils.compressCallLog)(metadata.log)
+        log: (0, _callLog.compressCallLog)(metadata.log)
       };
       if (lastIntermediateResult.isSet) result.received = lastIntermediateResult.received;
       if (e instanceof _errors.TimeoutError) result.timedOut = true;

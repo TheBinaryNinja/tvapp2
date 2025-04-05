@@ -9,7 +9,6 @@ var _dispatcher = require("./dispatcher");
 var _elementHandlerDispatcher = require("./elementHandlerDispatcher");
 var _jsHandleDispatcher = require("./jsHandleDispatcher");
 var _networkDispatchers = require("./networkDispatchers");
-var _utils = require("../../utils");
 var _ariaSnapshot = require("../../utils/isomorphic/ariaSnapshot");
 var _utilsBundle = require("../../utilsBundle");
 /**
@@ -41,7 +40,6 @@ class FrameDispatcher extends _dispatcher.Dispatcher {
     // Main frames are gc'ed separately from any other frames, so that
     // methods on Page that redirect to the main frame remain operational.
     // Note: we cannot check parentFrame() here because it may be null after the frame has been detached.
-    (0, _utils.debugAssert)(frame._page.mainFrame(), 'Cannot determine whether the frame is a main frame');
     const gcBucket = frame._page.mainFrame() === frame ? 'MainFrame' : 'Frame';
     const pageDispatcher = (0, _dispatcher.existingDispatcher)(frame._page);
     super(pageDispatcher || scope, frame, 'Frame', {

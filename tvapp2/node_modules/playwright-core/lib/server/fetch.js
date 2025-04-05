@@ -8,22 +8,25 @@ exports.createProxyAgent = createProxyAgent;
 var _http = _interopRequireDefault(require("http"));
 var _https = _interopRequireDefault(require("https"));
 var _stream = require("stream");
+var _tls = require("tls");
 var _url = _interopRequireDefault(require("url"));
-var _zlib = _interopRequireDefault(require("zlib"));
-var _timeoutSettings = require("../common/timeoutSettings");
-var _userAgent = require("../utils/userAgent");
+var zlib = _interopRequireWildcard(require("zlib"));
+var _timeoutSettings = require("./timeoutSettings");
 var _utils = require("../utils");
+var _crypto = require("./utils/crypto");
+var _userAgent = require("./utils/userAgent");
 var _utilsBundle = require("../utilsBundle");
 var _browserContext = require("./browserContext");
 var _cookieStore = require("./cookieStore");
 var _formData = require("./formData");
-var _happyEyeballs = require("../utils/happy-eyeballs");
 var _instrumentation = require("./instrumentation");
 var _progress = require("./progress");
-var _tracing = require("./trace/recorder/tracing");
 var _socksClientCertificatesInterceptor = require("./socksClientCertificatesInterceptor");
-var _tls = require("tls");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _happyEyeballs = require("./utils/happyEyeballs");
+var _tracing = require("./trace/recorder/tracing");
+function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -67,7 +70,7 @@ class APIRequestContext extends _instrumentation.SdkObject {
     this.fetchLog.delete(fetchUid);
   }
   _storeResponseBody(body) {
-    const uid = (0, _utils.createGuid)();
+    const uid = (0, _crypto.createGuid)();
     this.fetchResponses.set(uid, body);
     return uid;
   }
@@ -130,7 +133,8 @@ class APIRequestContext extends _instrumentation.SdkObject {
     });
     const fetchUid = this._storeResponseBody(fetchResponse.body);
     this.fetchLog.set(fetchUid, controller.metadata.log);
-    if (params.failOnStatusCode && (fetchResponse.status < 200 || fetchResponse.status >= 400)) {
+    const failOnStatusCode = params.failOnStatusCode !== undefined ? params.failOnStatusCode : !!defaults.failOnStatusCode;
+    if (failOnStatusCode && (fetchResponse.status < 200 || fetchResponse.status >= 400)) {
       let responseText = '';
       if (fetchResponse.body.byteLength) {
         let text = fetchResponse.body.toString('utf8');
@@ -172,8 +176,7 @@ class APIRequestContext extends _instrumentation.SdkObject {
     }
   }
   async _sendRequestWithRetries(progress, url, options, postData, maxRetries) {
-    var _maxRetries;
-    (_maxRetries = maxRetries) !== null && _maxRetries !== void 0 ? _maxRetries : maxRetries = 0;
+    maxRetries !== null && maxRetries !== void 0 ? maxRetries : maxRetries = 0;
     let backoff = 250;
     for (let i = 0; i <= maxRetries; i++) {
       try {
@@ -230,10 +233,9 @@ class APIRequestContext extends _instrumentation.SdkObject {
       const request = requestConstructor(url, requestOptions, async response => {
         const responseAt = (0, _utils.monotonicTime)();
         const notifyRequestFinished = body => {
-          var _tlsHandshakeAt;
           const endAt = (0, _utils.monotonicTime)();
           // spec: http://www.softwareishard.com/blog/har-12-spec/#timings
-          const connectEnd = (_tlsHandshakeAt = tlsHandshakeAt) !== null && _tlsHandshakeAt !== void 0 ? _tlsHandshakeAt : tcpConnectionAt;
+          const connectEnd = tlsHandshakeAt !== null && tlsHandshakeAt !== void 0 ? tlsHandshakeAt : tcpConnectionAt;
           const timings = {
             send: requestFinishAt - startAt,
             wait: responseAt - requestFinishAt,
@@ -357,17 +359,17 @@ class APIRequestContext extends _instrumentation.SdkObject {
         let transform;
         const encoding = response.headers['content-encoding'];
         if (encoding === 'gzip' || encoding === 'x-gzip') {
-          transform = _zlib.default.createGunzip({
-            flush: _zlib.default.constants.Z_SYNC_FLUSH,
-            finishFlush: _zlib.default.constants.Z_SYNC_FLUSH
+          transform = zlib.createGunzip({
+            flush: zlib.constants.Z_SYNC_FLUSH,
+            finishFlush: zlib.constants.Z_SYNC_FLUSH
           });
         } else if (encoding === 'br') {
-          transform = _zlib.default.createBrotliDecompress({
-            flush: _zlib.default.constants.BROTLI_OPERATION_FLUSH,
-            finishFlush: _zlib.default.constants.BROTLI_OPERATION_FLUSH
+          transform = zlib.createBrotliDecompress({
+            flush: zlib.constants.BROTLI_OPERATION_FLUSH,
+            finishFlush: zlib.constants.BROTLI_OPERATION_FLUSH
           });
         } else if (encoding === 'deflate') {
-          transform = _zlib.default.createInflate();
+          transform = zlib.createInflate();
         }
         if (transform) {
           // Brotli and deflate decompressors throw if the input stream is empty.
@@ -490,6 +492,7 @@ class BrowserContextAPIRequestContext extends APIRequestContext {
     return {
       userAgent: this._context._options.userAgent || this._context._browser.userAgent(),
       extraHTTPHeaders: this._context._options.extraHTTPHeaders,
+      failOnStatusCode: undefined,
       httpCredentials: this._context._options.httpCredentials,
       proxy: this._context._options.proxy || this._context._browser.options.proxy,
       timeoutSettings: this._context._timeoutSettings,
@@ -504,8 +507,8 @@ class BrowserContextAPIRequestContext extends APIRequestContext {
   async _cookies(url) {
     return await this._context.cookies(url.toString());
   }
-  async storageState() {
-    return this._context.storageState();
+  async storageState(indexedDB) {
+    return this._context.storageState(indexedDB);
   }
 }
 exports.BrowserContextAPIRequestContext = BrowserContextAPIRequestContext;
@@ -526,7 +529,11 @@ class GlobalAPIRequestContext extends APIRequestContext {
       proxy.server = url;
     }
     if (options.storageState) {
-      this._origins = options.storageState.origins;
+      var _options$storageState;
+      this._origins = (_options$storageState = options.storageState.origins) === null || _options$storageState === void 0 ? void 0 : _options$storageState.map(origin => ({
+        indexedDB: [],
+        ...origin
+      }));
       this._cookieStore.addCookies(options.storageState.cookies || []);
     }
     (0, _browserContext.verifyClientCertificates)(options.clientCertificates);
@@ -534,6 +541,7 @@ class GlobalAPIRequestContext extends APIRequestContext {
       baseURL: options.baseURL,
       userAgent: options.userAgent || (0, _userAgent.getUserAgent)(),
       extraHTTPHeaders: options.extraHTTPHeaders,
+      failOnStatusCode: !!options.failOnStatusCode,
       ignoreHTTPSErrors: !!options.ignoreHTTPSErrors,
       httpCredentials: options.httpCredentials,
       clientCertificates: options.clientCertificates,
@@ -560,10 +568,13 @@ class GlobalAPIRequestContext extends APIRequestContext {
   async _cookies(url) {
     return this._cookieStore.cookies(url);
   }
-  async storageState() {
+  async storageState(indexedDB = false) {
     return {
       cookies: this._cookieStore.allCookies(),
-      origins: this._origins || []
+      origins: (this._origins || []).map(origin => ({
+        ...origin,
+        indexedDB: indexedDB ? origin.indexedDB : []
+      }))
     };
   }
 }

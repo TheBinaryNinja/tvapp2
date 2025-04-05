@@ -5,7 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.StreamDispatcher = void 0;
 var _dispatcher = require("./dispatcher");
-var _utils = require("../../utils");
+var _manualPromise = require("../../utils/isomorphic/manualPromise");
+var _crypto = require("../utils/crypto");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -25,7 +26,7 @@ var _utils = require("../../utils");
 class StreamDispatcher extends _dispatcher.Dispatcher {
   constructor(scope, stream) {
     super(scope, {
-      guid: 'stream@' + (0, _utils.createGuid)(),
+      guid: 'stream@' + (0, _crypto.createGuid)(),
       stream
     }, 'Stream', {});
     // In Node v12.9.0+ we can use readableEnded.
@@ -40,7 +41,7 @@ class StreamDispatcher extends _dispatcher.Dispatcher {
       binary: Buffer.from('')
     };
     if (!stream.readableLength) {
-      const readyPromise = new _utils.ManualPromise();
+      const readyPromise = new _manualPromise.ManualPromise();
       const done = () => readyPromise.resolve();
       stream.on('readable', done);
       stream.on('end', done);

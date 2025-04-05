@@ -7,8 +7,8 @@ exports.TimeoutError = exports.TargetClosedError = void 0;
 exports.isTargetClosedError = isTargetClosedError;
 exports.parseError = parseError;
 exports.serializeError = serializeError;
-var _utils = require("../utils");
 var _serializers = require("../protocol/serializers");
+var _utils = require("../utils");
 /**
  * Copyright (c) Microsoft Corporation.
  *

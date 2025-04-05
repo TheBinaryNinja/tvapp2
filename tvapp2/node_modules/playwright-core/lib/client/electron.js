@@ -4,16 +4,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ElectronApplication = exports.Electron = void 0;
-var _timeoutSettings = require("../common/timeoutSettings");
 var _browserContext = require("./browserContext");
 var _channelOwner = require("./channelOwner");
 var _clientHelper = require("./clientHelper");
+var _consoleMessage = require("./consoleMessage");
+var _errors = require("./errors");
 var _events = require("./events");
 var _jsHandle = require("./jsHandle");
-var _consoleMessage = require("./consoleMessage");
 var _waiter = require("./waiter");
-var _errors = require("./errors");
-let _Symbol$asyncDispose;
+var _timeoutSettings = require("./timeoutSettings");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -29,6 +28,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 class Electron extends _channelOwner.ChannelOwner {
   static from(electron) {
     return electron._object;
@@ -38,8 +38,8 @@ class Electron extends _channelOwner.ChannelOwner {
   }
   async launch(options = {}) {
     const params = {
-      ...(await (0, _browserContext.prepareBrowserContextParams)(options)),
-      env: (0, _clientHelper.envObjectToArray)(options.env ? options.env : process.env),
+      ...(await (0, _browserContext.prepareBrowserContextParams)(this._platform, options)),
+      env: (0, _clientHelper.envObjectToArray)(options.env ? options.env : this._platform.env),
       tracesDir: options.tracesDir
     };
     const app = ElectronApplication.from((await this._channel.launch(params)).electronApplication);
@@ -48,7 +48,6 @@ class Electron extends _channelOwner.ChannelOwner {
   }
 }
 exports.Electron = Electron;
-_Symbol$asyncDispose = Symbol.asyncDispose;
 class ElectronApplication extends _channelOwner.ChannelOwner {
   static from(electronApplication) {
     return electronApplication._object;
@@ -57,14 +56,15 @@ class ElectronApplication extends _channelOwner.ChannelOwner {
     super(parent, type, guid, initializer);
     this._context = void 0;
     this._windows = new Set();
-    this._timeoutSettings = new _timeoutSettings.TimeoutSettings();
+    this._timeoutSettings = void 0;
+    this._timeoutSettings = new _timeoutSettings.TimeoutSettings(this._platform);
     this._context = _browserContext.BrowserContext.from(initializer.context);
     for (const page of this._context._pages) this._onPage(page);
     this._context.on(_events.Events.BrowserContext.Page, page => this._onPage(page));
     this._channel.on('close', () => {
       this.emit(_events.Events.ElectronApplication.Close);
     });
-    this._channel.on('console', event => this.emit(_events.Events.ElectronApplication.Console, new _consoleMessage.ConsoleMessage(event)));
+    this._channel.on('console', event => this.emit(_events.Events.ElectronApplication.Console, new _consoleMessage.ConsoleMessage(this._platform, event)));
     this._setEventToSubscriptionMapping(new Map([[_events.Events.ElectronApplication.Console, 'console']]));
   }
   process() {
@@ -86,7 +86,7 @@ class ElectronApplication extends _channelOwner.ChannelOwner {
   context() {
     return this._context;
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.close();
   }
   async close() {

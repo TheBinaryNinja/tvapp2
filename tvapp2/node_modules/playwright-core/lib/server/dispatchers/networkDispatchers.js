@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.WebSocketDispatcher = exports.RouteDispatcher = exports.ResponseDispatcher = exports.RequestDispatcher = exports.APIRequestContextDispatcher = void 0;
 var _network = require("../network");
 var _dispatcher = require("./dispatcher");
-var _tracingDispatcher = require("./tracingDispatcher");
 var _frameDispatcher = require("./frameDispatcher");
 var _pageDispatcher = require("./pageDispatcher");
+var _tracingDispatcher = require("./tracingDispatcher");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -183,8 +183,8 @@ class APIRequestContextDispatcher extends _dispatcher.Dispatcher {
     this._type_APIRequestContext = true;
     this.adopt(tracing);
   }
-  async storageState() {
-    return this._object.storageState();
+  async storageState(params) {
+    return this._object.storageState(params.indexedDB);
   }
   async dispose(params, metadata) {
     metadata.potentiallyClosesScope = true;

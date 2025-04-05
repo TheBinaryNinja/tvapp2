@@ -7,11 +7,12 @@ exports.BidiFirefox = void 0;
 var _os = _interopRequireDefault(require("os"));
 var _path = _interopRequireDefault(require("path"));
 var _utils = require("../../utils");
+var _ascii = require("../utils/ascii");
 var _browserType = require("../browserType");
 var _bidiBrowser = require("./bidiBrowser");
 var _bidiConnection = require("./bidiConnection");
 var _firefoxPrefs = require("./third_party/firefoxPrefs");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -39,8 +40,8 @@ class BidiFirefox extends _browserType.BrowserType {
   doRewriteStartupLog(error) {
     if (!error.logs) return error;
     // https://github.com/microsoft/playwright/issues/6500
-    if (error.logs.includes(`as root in a regular user's session is not supported.`)) error.logs = '\n' + (0, _utils.wrapInASCIIBox)(`Firefox is unable to launch if the $HOME folder isn't owned by the current user.\nWorkaround: Set the HOME=/root environment variable${process.env.GITHUB_ACTION ? ' in your GitHub Actions workflow file' : ''} when running Playwright.`, 1);
-    if (error.logs.includes('no DISPLAY environment variable specified')) error.logs = '\n' + (0, _utils.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
+    if (error.logs.includes(`as root in a regular user's session is not supported.`)) error.logs = '\n' + (0, _ascii.wrapInASCIIBox)(`Firefox is unable to launch if the $HOME folder isn't owned by the current user.\nWorkaround: Set the HOME=/root environment variable${process.env.GITHUB_ACTION ? ' in your GitHub Actions workflow file' : ''} when running Playwright.`, 1);
+    if (error.logs.includes('no DISPLAY environment variable specified')) error.logs = '\n' + (0, _ascii.wrapInASCIIBox)(_browserType.kNoXServerRunningError, 1);
     return error;
   }
   amendEnvironment(env, userDataDir, executable, browserArguments) {

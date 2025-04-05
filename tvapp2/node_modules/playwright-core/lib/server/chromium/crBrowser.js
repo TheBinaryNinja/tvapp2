@@ -5,20 +5,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CRBrowserContext = exports.CRBrowser = void 0;
 var _path = _interopRequireDefault(require("path"));
+var _assert = require("../../utils/isomorphic/assert");
+var _crypto = require("../utils/crypto");
+var _artifact = require("../artifact");
 var _browser = require("../browser");
 var _browserContext = require("../browserContext");
-var _utils = require("../../utils");
+var _frames = require("../frames");
 var network = _interopRequireWildcard(require("../network"));
 var _page = require("../page");
-var _frames = require("../frames");
 var _crConnection = require("./crConnection");
 var _crPage = require("./crPage");
 var _crProtocolHelper = require("./crProtocolHelper");
 var _crServiceWorker = require("./crServiceWorker");
-var _artifact = require("../artifact");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -143,7 +144,7 @@ class CRBrowser extends _browser.Browser {
   }) {
     if (targetInfo.type === 'browser') return;
     const session = this._session.createChildSession(sessionId);
-    (0, _utils.assert)(targetInfo.browserContextId, 'targetInfo: ' + JSON.stringify(targetInfo, null, 2));
+    (0, _assert.assert)(targetInfo.browserContextId, 'targetInfo: ' + JSON.stringify(targetInfo, null, 2));
     let context = this._contexts.get(targetInfo.browserContextId) || null;
     if (!context) {
       // TODO: auto attach only to pages from our contexts.
@@ -159,9 +160,9 @@ class CRBrowser extends _browser.Browser {
       session.detach().catch(() => {});
       return;
     }
-    (0, _utils.assert)(!this._crPages.has(targetInfo.targetId), 'Duplicate target ' + targetInfo.targetId);
-    (0, _utils.assert)(!this._backgroundPages.has(targetInfo.targetId), 'Duplicate target ' + targetInfo.targetId);
-    (0, _utils.assert)(!this._serviceWorkers.has(targetInfo.targetId), 'Duplicate target ' + targetInfo.targetId);
+    (0, _assert.assert)(!this._crPages.has(targetInfo.targetId), 'Duplicate target ' + targetInfo.targetId);
+    (0, _assert.assert)(!this._backgroundPages.has(targetInfo.targetId), 'Duplicate target ' + targetInfo.targetId);
+    (0, _assert.assert)(!this._serviceWorkers.has(targetInfo.targetId), 'Duplicate target ' + targetInfo.targetId);
     if (targetInfo.type === 'background_page') {
       const backgroundPage = new _crPage.CRPage(session, targetInfo.targetId, context, null, {
         hasUIWindow: false,
@@ -258,7 +259,7 @@ class CRBrowser extends _browser.Browser {
     return await this._connection.createBrowserSession();
   }
   async startTracing(page, options = {}) {
-    (0, _utils.assert)(!this._tracingRecording, 'Cannot start recording trace while already recording trace.');
+    (0, _assert.assert)(!this._tracingRecording, 'Cannot start recording trace while already recording trace.');
     this._tracingClient = page ? page._delegate._mainFrameSession._client : this._session;
     const defaultCategories = ['-*', 'devtools.timeline', 'v8.execute', 'disabled-by-default-devtools.timeline', 'disabled-by-default-devtools.timeline.frame', 'toplevel', 'blink.console', 'blink.user_timing', 'latencyInfo', 'disabled-by-default-devtools.timeline.stack', 'disabled-by-default-v8.cpu_profiler', 'disabled-by-default-v8.cpu_profiler.hires'];
     const {
@@ -273,9 +274,9 @@ class CRBrowser extends _browser.Browser {
     });
   }
   async stopTracing() {
-    (0, _utils.assert)(this._tracingClient, 'Tracing was not started.');
+    (0, _assert.assert)(this._tracingClient, 'Tracing was not started.');
     const [event] = await Promise.all([new Promise(f => this._tracingClient.once('Tracing.tracingComplete', f)), this._tracingClient.send('Tracing.end')]);
-    const tracingPath = _path.default.join(this.options.artifactsDir, (0, _utils.createGuid)() + '.crtrace');
+    const tracingPath = _path.default.join(this.options.artifactsDir, (0, _crypto.createGuid)() + '.crtrace');
     await (0, _crProtocolHelper.saveProtocolStream)(this._tracingClient, event.stream, tracingPath);
     this._tracingRecording = false;
     const artifact = new _artifact.Artifact(this, tracingPath);
@@ -297,7 +298,7 @@ class CRBrowserContext extends _browserContext.BrowserContext {
     this._authenticateProxyViaCredentials();
   }
   async _initialize() {
-    (0, _utils.assert)(!Array.from(this._browser._crPages.values()).some(page => page._browserContext === this));
+    (0, _assert.assert)(!Array.from(this._browser._crPages.values()).some(page => page._browserContext === this));
     const promises = [super._initialize()];
     if (this._browser.options.name !== 'clank' && this._options.acceptDownloads !== 'internal-browser-default') {
       promises.push(this._browser._session.send('Browser.setDownloadBehavior', {
@@ -335,7 +336,7 @@ class CRBrowserContext extends _browserContext.BrowserContext {
         const page = this._browser._crPages.get(key);
         if (page._opener) newKeys.delete(key);
       }
-      (0, _utils.assert)(newKeys.size === 1);
+      (0, _assert.assert)(newKeys.size === 1);
       [targetId] = [...newKeys];
     }
     return this._browser._crPages.get(targetId)._page;

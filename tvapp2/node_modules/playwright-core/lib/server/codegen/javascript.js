@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.JavaScriptLanguageGenerator = exports.JavaScriptFormatter = void 0;
 exports.quoteMultiline = quoteMultiline;
 var _language = require("./language");
-var _deviceDescriptors = require("../deviceDescriptors");
 var _utils = require("../../utils");
+var _deviceDescriptors = require("../deviceDescriptors");
 /**
  * Copyright (c) Microsoft Corporation.
  *

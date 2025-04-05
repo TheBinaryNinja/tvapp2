@@ -4,12 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.SocksInterceptor = void 0;
-var socks = _interopRequireWildcard(require("../common/socksProxy"));
 var _events = _interopRequireDefault(require("events"));
+var socks = _interopRequireWildcard(require("./utils/socksProxy"));
 var _validator = require("../protocol/validator");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _debug = require("./utils/debug");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -44,7 +45,8 @@ class SocksInterceptor {
             const validator = (0, _validator.findValidator)('SocksSupport', prop, 'Params');
             params = validator(params, '', {
               tChannelImpl: tChannelForSocks,
-              binary: 'toBase64'
+              binary: 'toBase64',
+              isUnderTest: _debug.isUnderTest
             });
             transport.send({
               id,
@@ -86,7 +88,8 @@ class SocksInterceptor {
       const validator = (0, _validator.findValidator)('SocksSupport', message.method, 'Event');
       const params = validator(message.params, '', {
         tChannelImpl: tChannelForSocks,
-        binary: 'fromBase64'
+        binary: 'fromBase64',
+        isUnderTest: _debug.isUnderTest
       });
       this._channel.emit(message.method, params);
       return true;

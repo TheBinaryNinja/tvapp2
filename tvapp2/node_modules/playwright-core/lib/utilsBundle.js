@@ -5,12 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.minimatch = exports.mime = exports.lockfile = exports.jpegjs = exports.getProxyForUrl = exports.dotenv = exports.diff = exports.debug = exports.colors = exports.SocksProxyAgent = exports.PNG = exports.HttpsProxyAgent = void 0;
 exports.ms = ms;
-exports.open = void 0;
-exports.parseStackTraceLine = parseStackTraceLine;
-exports.yaml = exports.wsServer = exports.wsSender = exports.wsReceiver = exports.ws = exports.progress = exports.program = void 0;
-var _url = _interopRequireDefault(require("url"));
-var _path = _interopRequireDefault(require("path"));
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+exports.yaml = exports.wsServer = exports.wsSender = exports.wsReceiver = exports.ws = exports.progress = exports.program = exports.open = void 0;
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -47,25 +42,6 @@ const ws = exports.ws = require('./utilsBundleImpl').ws;
 const wsServer = exports.wsServer = require('./utilsBundleImpl').wsServer;
 const wsReceiver = exports.wsReceiver = require('./utilsBundleImpl').wsReceiver;
 const wsSender = exports.wsSender = require('./utilsBundleImpl').wsSender;
-const StackUtils = require('./utilsBundleImpl').StackUtils;
-const stackUtils = new StackUtils({
-  internals: StackUtils.nodeInternals()
-});
-function parseStackTraceLine(line) {
-  var _frame$file, _frame$file2;
-  const frame = stackUtils.parseLine(line);
-  if (!frame) return null;
-  if (!process.env.PWDEBUGIMPL && ((_frame$file = frame.file) !== null && _frame$file !== void 0 && _frame$file.startsWith('internal') || (_frame$file2 = frame.file) !== null && _frame$file2 !== void 0 && _frame$file2.startsWith('node:'))) return null;
-  if (!frame.file) return null;
-  // ESM files return file:// URLs, see here: https://github.com/tapjs/stack-utils/issues/60
-  const file = frame.file.startsWith('file://') ? _url.default.fileURLToPath(frame.file) : _path.default.resolve(process.cwd(), frame.file);
-  return {
-    file,
-    line: frame.line || 0,
-    column: frame.column || 0,
-    function: frame.function
-  };
-}
 function ms(ms) {
   if (!isFinite(ms)) return '-';
   if (ms === 0) return '0ms';

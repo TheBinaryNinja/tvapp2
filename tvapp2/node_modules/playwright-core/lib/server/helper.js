@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.helper = void 0;
-var _debugLogger = require("../utils/debugLogger");
-var _eventsHelper = require("../utils/eventsHelper");
+var _debugLogger = require("./utils/debugLogger");
+var _eventsHelper = require("./utils/eventsHelper");
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

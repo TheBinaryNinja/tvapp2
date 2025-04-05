@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ProgressController = void 0;
 var _errors = require("./errors");
 var _utils = require("../utils");
-var _manualPromise = require("../utils/manualPromise");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
 /**
  * Copyright (c) Microsoft Corporation.
  *

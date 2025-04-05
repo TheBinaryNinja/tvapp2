@@ -6,9 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.addSourceUrlToScript = addSourceUrlToScript;
 exports.envObjectToArray = envObjectToArray;
 exports.evaluationScript = evaluationScript;
-var _fs = _interopRequireDefault(require("fs"));
-var _utils = require("../utils");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _rtti = require("../utils/isomorphic/rtti");
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -36,17 +34,17 @@ function envObjectToArray(env) {
   }
   return result;
 }
-async function evaluationScript(fun, arg, addSourceUrl = true) {
+async function evaluationScript(platform, fun, arg, addSourceUrl = true) {
   if (typeof fun === 'function') {
     const source = fun.toString();
     const argString = Object.is(arg, undefined) ? 'undefined' : JSON.stringify(arg);
     return `(${source})(${argString})`;
   }
   if (arg !== undefined) throw new Error('Cannot evaluate a string with arguments');
-  if ((0, _utils.isString)(fun)) return fun;
+  if ((0, _rtti.isString)(fun)) return fun;
   if (fun.content !== undefined) return fun.content;
   if (fun.path !== undefined) {
-    let source = await _fs.default.promises.readFile(fun.path, 'utf8');
+    let source = await platform.fs().promises.readFile(fun.path, 'utf8');
     if (addSourceUrl) source = addSourceUrlToScript(source, fun.path);
     return source;
   }

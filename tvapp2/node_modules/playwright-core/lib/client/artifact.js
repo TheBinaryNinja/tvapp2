@@ -4,12 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Artifact = void 0;
-var fs = _interopRequireWildcard(require("fs"));
-var _stream = require("./stream");
-var _fileUtils = require("../utils/fileUtils");
 var _channelOwner = require("./channelOwner");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+var _stream = require("./stream");
+var _fileUtils = require("./fileUtils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -43,9 +40,9 @@ class Artifact extends _channelOwner.ChannelOwner {
     }
     const result = await this._channel.saveAsStream();
     const stream = _stream.Stream.from(result.stream);
-    await (0, _fileUtils.mkdirIfNeeded)(path);
+    await (0, _fileUtils.mkdirIfNeeded)(this._platform, path);
     await new Promise((resolve, reject) => {
-      stream.stream().pipe(fs.createWriteStream(path)).on('finish', resolve).on('error', reject);
+      stream.stream().pipe(this._platform.fs().createWriteStream(path)).on('finish', resolve).on('error', reject);
     });
   }
   async failure() {

@@ -9,13 +9,13 @@ exports.runDriver = runDriver;
 exports.runServer = runServer;
 var _fs = _interopRequireDefault(require("fs"));
 var playwright = _interopRequireWildcard(require("../.."));
-var _server = require("../server");
-var _transport = require("../protocol/transport");
+var _pipeTransport = require("../server/utils/pipeTransport");
 var _playwrightServer = require("../remote/playwrightServer");
-var _processLauncher = require("../utils/processLauncher");
+var _server = require("../server");
+var _processLauncher = require("../server/utils/processLauncher");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -48,7 +48,7 @@ function runDriver() {
     });
     return new _server.PlaywrightDispatcher(rootScope, playwright);
   });
-  const transport = new _transport.PipeTransport(process.stdout, process.stdin);
+  const transport = new _pipeTransport.PipeTransport(process.stdout, process.stdin);
   transport.onmessage = message => dispatcherConnection.dispatch(JSON.parse(message));
   // Certain Language Binding JSON parsers (e.g. .NET) do not like strings with lone surrogates.
   const isJavaScriptLanguageBinding = !process.env.PW_LANG_NAME || process.env.PW_LANG_NAME === 'javascript';

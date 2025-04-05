@@ -7,8 +7,8 @@ exports.TimeoutError = exports.TargetClosedError = void 0;
 exports.isTargetClosedError = isTargetClosedError;
 exports.parseError = parseError;
 exports.serializeError = serializeError;
-var _utils = require("../utils");
 var _serializers = require("../protocol/serializers");
+var _rtti = require("../utils/isomorphic/rtti");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -42,7 +42,7 @@ function isTargetClosedError(error) {
   return error instanceof TargetClosedError;
 }
 function serializeError(e) {
-  if ((0, _utils.isError)(e)) return {
+  if ((0, _rtti.isError)(e)) return {
     error: {
       message: e.message,
       stack: e.stack,

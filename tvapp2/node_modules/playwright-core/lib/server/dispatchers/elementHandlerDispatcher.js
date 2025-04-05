@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ElementHandleDispatcher = void 0;
-var _dispatcher = require("./dispatcher");
-var _jsHandleDispatcher = require("./jsHandleDispatcher");
-var _frameDispatcher = require("./frameDispatcher");
 var _browserContextDispatcher = require("./browserContextDispatcher");
+var _dispatcher = require("./dispatcher");
+var _frameDispatcher = require("./frameDispatcher");
+var _jsHandleDispatcher = require("./jsHandleDispatcher");
 var _pageDispatcher = require("./pageDispatcher");
 /**
  * Copyright (c) Microsoft Corporation.
@@ -54,6 +54,11 @@ class ElementHandleDispatcher extends _jsHandleDispatcher.JSHandleDispatcher {
     const frame = await this._elementHandle.contentFrame();
     return {
       frame: frame ? _frameDispatcher.FrameDispatcher.from(this._browserContextDispatcher(), frame) : undefined
+    };
+  }
+  async generateLocatorString(params, metadata) {
+    return {
+      value: await this._elementHandle.generateLocatorString()
     };
   }
   async getAttribute(params, metadata) {

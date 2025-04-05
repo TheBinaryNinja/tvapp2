@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", {
 exports.Artifact = void 0;
 var _fs = _interopRequireDefault(require("fs"));
 var _utils = require("../utils");
-var _manualPromise = require("../utils/manualPromise");
-var _instrumentation = require("./instrumentation");
 var _errors = require("./errors");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _instrumentation = require("./instrumentation");
+var _manualPromise = require("../utils/isomorphic/manualPromise");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *

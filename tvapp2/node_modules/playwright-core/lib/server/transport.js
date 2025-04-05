@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.perMessageDeflate = exports.WebSocketTransport = void 0;
-var _utilsBundle = require("../utilsBundle");
 var _utils = require("../utils");
-var _happyEyeballs = require("../utils/happy-eyeballs");
+var _happyEyeballs = require("./utils/happyEyeballs");
+var _utilsBundle = require("../utilsBundle");
 /**
  * Copyright 2018 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.

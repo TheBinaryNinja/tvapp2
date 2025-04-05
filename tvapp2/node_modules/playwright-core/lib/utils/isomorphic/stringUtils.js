@@ -85,7 +85,7 @@ function normalizeWhiteSpace(text) {
   let result = (_normalizedWhitespace = normalizedWhitespaceCache) === null || _normalizedWhitespace === void 0 ? void 0 : _normalizedWhitespace.get(text);
   if (result === undefined) {
     var _normalizedWhitespace2;
-    result = text.replace(/\u200b/g, '').trim().replace(/\s+/g, ' ');
+    result = text.replace(/[\u200b\u00ad]/g, '').trim().replace(/\s+/g, ' ');
     (_normalizedWhitespace2 = normalizedWhitespaceCache) === null || _normalizedWhitespace2 === void 0 || _normalizedWhitespace2.set(text, result);
   }
   return result;

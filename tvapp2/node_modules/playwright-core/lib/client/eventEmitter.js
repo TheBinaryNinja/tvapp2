@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.EventEmitter = void 0;
-var _events = require("events");
-var _utils = require("../utils");
 /**
  * Copyright Joyent, Inc. and other Node contributors.
  * Modifications copyright (c) Microsoft Corporation.
@@ -31,12 +29,14 @@ var _utils = require("../utils");
  */
 
 class EventEmitter {
-  constructor() {
+  constructor(platform) {
     this._events = undefined;
     this._eventsCount = 0;
     this._maxListeners = undefined;
     this._pendingHandlers = new Map();
     this._rejectionHandler = void 0;
+    this._platform = void 0;
+    this._platform = platform;
     if (this._events === undefined || this._events === Object.getPrototypeOf(this)._events) {
       this._events = Object.create(null);
       this._eventsCount = 0;
@@ -51,7 +51,7 @@ class EventEmitter {
     return this;
   }
   getMaxListeners() {
-    return this._maxListeners === undefined ? _events.EventEmitter.defaultMaxListeners : this._maxListeners;
+    return this._maxListeners === undefined ? this._platform.defaultMaxListeners() : this._maxListeners;
   }
   emit(type, ...args) {
     const events = this._events;
@@ -130,7 +130,7 @@ class EventEmitter {
         w.emitter = this;
         w.type = type;
         w.count = existing.length;
-        if (!(0, _utils.isUnderTest)()) {
+        if (!this._platform.isUnderTest()) {
           // eslint-disable-next-line no-console
           console.warn(w);
         }
@@ -191,14 +191,11 @@ class EventEmitter {
     if (options.behavior === 'wait') {
       const errors = [];
       this._rejectionHandler = error => errors.push(error);
-      // eslint-disable-next-line internal-playwright/await-promise-in-class-returns
       return this._waitFor(type).then(() => {
         if (errors.length) throw errors[0];
       });
     }
     if (options.behavior === 'ignoreErrors') this._rejectionHandler = () => {};
-
-    // eslint-disable-next-line internal-playwright/await-promise-in-class-returns
     return Promise.resolve();
   }
   _removeAllListeners(type) {

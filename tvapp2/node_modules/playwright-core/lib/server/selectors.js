@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Selectors = void 0;
+var _crypto = require("./utils/crypto");
 var _selectorParser = require("../utils/isomorphic/selectorParser");
-var _utils = require("../utils");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -27,10 +27,10 @@ class Selectors {
     this._builtinEngines = void 0;
     this._builtinEnginesInMainWorld = void 0;
     this._engines = void 0;
-    this.guid = `selectors@${(0, _utils.createGuid)()}`;
+    this.guid = `selectors@${(0, _crypto.createGuid)()}`;
     this._testIdAttributeName = 'data-testid';
     // Note: keep in sync with InjectedScript class.
-    this._builtinEngines = new Set(['css', 'css:light', 'xpath', 'xpath:light', '_react', '_vue', 'text', 'text:light', 'id', 'id:light', 'data-testid', 'data-testid:light', 'data-test-id', 'data-test-id:light', 'data-test', 'data-test:light', 'nth', 'visible', 'internal:control', 'internal:has', 'internal:has-not', 'internal:has-text', 'internal:has-not-text', 'internal:and', 'internal:or', 'internal:chain', 'role', 'internal:attr', 'internal:label', 'internal:text', 'internal:role', 'internal:testid']);
+    this._builtinEngines = new Set(['css', 'css:light', 'xpath', 'xpath:light', '_react', '_vue', 'text', 'text:light', 'id', 'id:light', 'data-testid', 'data-testid:light', 'data-test-id', 'data-test-id:light', 'data-test', 'data-test:light', 'nth', 'visible', 'internal:control', 'internal:has', 'internal:has-not', 'internal:has-text', 'internal:has-not-text', 'internal:and', 'internal:or', 'internal:chain', 'role', 'internal:attr', 'internal:label', 'internal:text', 'internal:role', 'internal:testid', 'internal:aria-id']);
     this._builtinEnginesInMainWorld = new Set(['_react', '_vue']);
     this._engines = new Map();
   }

@@ -6,13 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 exports.Locator = exports.FrameLocator = void 0;
 exports.setTestIdAttribute = setTestIdAttribute;
 exports.testIdAttributeName = testIdAttributeName;
-var util = _interopRequireWildcard(require("util"));
-var _utils = require("../utils");
 var _elementHandle = require("./elementHandle");
 var _jsHandle = require("./jsHandle");
-var _stringUtils = require("../utils/isomorphic/stringUtils");
+var _locatorGenerators = require("../utils/isomorphic/locatorGenerators");
 var _locatorUtils = require("../utils/isomorphic/locatorUtils");
-let _util$inspect$custom;
+var _stringUtils = require("../utils/isomorphic/stringUtils");
+var _rtti = require("../utils/isomorphic/rtti");
+var _time = require("../utils/isomorphic/time");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -28,9 +28,7 @@ let _util$inspect$custom;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-_util$inspect$custom = util.inspect.custom;
+
 class Locator {
   constructor(frame, selector, options) {
     this._frame = void 0;
@@ -49,12 +47,14 @@ class Locator {
       if (locator._frame !== frame) throw new Error(`Inner "hasNot" locator must belong to the same frame.`);
       this._selector += ` >> internal:has-not=` + JSON.stringify(locator._selector);
     }
+    if ((options === null || options === void 0 ? void 0 : options.visible) !== undefined) this._selector += ` >> visible=${options.visible ? 'true' : 'false'}`;
+    if (this._frame._platform.inspectCustom) this[this._frame._platform.inspectCustom] = () => this._inspect();
   }
   async _withElement(task, timeout) {
     timeout = this._frame.page()._timeoutSettings.timeout({
       timeout
     });
-    const deadline = timeout ? (0, _utils.monotonicTime)() + timeout : 0;
+    const deadline = timeout ? (0, _time.monotonicTime)() + timeout : 0;
     return await this._frame._wrapApiCall(async () => {
       const result = await this._frame._channel.waitForSelector({
         selector: this._selector,
@@ -65,7 +65,7 @@ class Locator {
       const handle = _elementHandle.ElementHandle.fromNullable(result.element);
       if (!handle) throw new Error(`Could not resolve ${this._selector} to DOM Element`);
       try {
-        return await task(handle, deadline ? deadline - (0, _utils.monotonicTime)() : 0);
+        return await task(handle, deadline ? deadline - (0, _time.monotonicTime)() : 0);
       } finally {
         await handle.dispose();
       }
@@ -136,7 +136,7 @@ class Locator {
     return await this._frame._highlight(this._selector);
   }
   locator(selectorOrLocator, options) {
-    if ((0, _utils.isString)(selectorOrLocator)) return new Locator(this._frame, this._selector + ' >> ' + selectorOrLocator, options);
+    if ((0, _rtti.isString)(selectorOrLocator)) return new Locator(this._frame, this._selector + ' >> ' + selectorOrLocator, options);
     if (selectorOrLocator._frame !== this._frame) throw new Error(`Locators must belong to the same frame.`);
     return new Locator(this._frame, this._selector + ' >> internal:chain=' + JSON.stringify(selectorOrLocator._selector), options);
   }
@@ -213,6 +213,9 @@ class Locator {
   async count() {
     return await this._frame._queryCount(this._selector);
   }
+  async _generateLocatorString() {
+    return await this._withElement(h => h._generateLocatorString());
+  }
   async getAttribute(name, options) {
     return await this._frame.getAttribute(this._selector, name, {
       strict: true,
@@ -286,14 +289,18 @@ class Locator {
     });
   }
   async screenshot(options = {}) {
+    const mask = options.mask;
     return await this._withElement((h, timeout) => h.screenshot({
       ...options,
+      mask,
       timeout
     }), options.timeout);
   }
   async ariaSnapshot(options) {
     const result = await this._frame._channel.ariaSnapshot({
       ...options,
+      id: options === null || options === void 0 ? void 0 : options._id,
+      mode: options === null || options === void 0 ? void 0 : options._mode,
       selector: this._selector
     });
     return result.snapshot;
@@ -381,11 +388,11 @@ class Locator {
     if (result.received !== undefined) result.received = (0, _jsHandle.parseResult)(result.received);
     return result;
   }
-  [_util$inspect$custom]() {
+  _inspect() {
     return this.toString();
   }
   toString() {
-    return (0, _utils.asLocator)('javascript', this._selector);
+    return (0, _locatorGenerators.asLocator)('javascript', this._selector);
   }
 }
 exports.Locator = Locator;
@@ -397,7 +404,7 @@ class FrameLocator {
     this._frameSelector = selector;
   }
   locator(selectorOrLocator, options) {
-    if ((0, _utils.isString)(selectorOrLocator)) return new Locator(this._frame, this._frameSelector + ' >> internal:control=enter-frame >> ' + selectorOrLocator, options);
+    if ((0, _rtti.isString)(selectorOrLocator)) return new Locator(this._frame, this._frameSelector + ' >> internal:control=enter-frame >> ' + selectorOrLocator, options);
     if (selectorOrLocator._frame !== this._frame) throw new Error(`Locators must belong to the same frame.`);
     return new Locator(this._frame, this._frameSelector + ' >> internal:control=enter-frame >> ' + selectorOrLocator._selector, options);
   }

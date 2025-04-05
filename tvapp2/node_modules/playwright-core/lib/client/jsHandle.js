@@ -8,9 +8,8 @@ exports.assertMaxArguments = assertMaxArguments;
 exports.parseResult = parseResult;
 exports.serializeArgument = serializeArgument;
 var _channelOwner = require("./channelOwner");
-var _serializers = require("../protocol/serializers");
 var _errors = require("./errors");
-let _Symbol$asyncDispose;
+var _serializers = require("../protocol/serializers");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -26,7 +25,7 @@ let _Symbol$asyncDispose;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-_Symbol$asyncDispose = Symbol.asyncDispose;
+
 class JSHandle extends _channelOwner.ChannelOwner {
   static from(handle) {
     return handle._object;
@@ -75,7 +74,7 @@ class JSHandle extends _channelOwner.ChannelOwner {
   asElement() {
     return null;
   }
-  async [_Symbol$asyncDispose]() {
+  async [Symbol.asyncDispose]() {
     await this.dispose();
   }
   async dispose() {

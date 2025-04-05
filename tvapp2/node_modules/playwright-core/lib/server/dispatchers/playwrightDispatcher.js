@@ -4,18 +4,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PlaywrightDispatcher = void 0;
+var _socksProxy = require("../utils/socksProxy");
 var _fetch = require("../fetch");
-var _socksProxy = require("../../common/socksProxy");
 var _androidDispatcher = require("./androidDispatcher");
+var _browserDispatcher = require("./browserDispatcher");
 var _browserTypeDispatcher = require("./browserTypeDispatcher");
 var _dispatcher = require("./dispatcher");
 var _electronDispatcher = require("./electronDispatcher");
 var _localUtilsDispatcher = require("./localUtilsDispatcher");
 var _networkDispatchers = require("./networkDispatchers");
 var _selectorsDispatcher = require("./selectorsDispatcher");
-var _browserDispatcher = require("./browserDispatcher");
-var _utils = require("../../utils");
-var _eventsHelper = require("../../utils/eventsHelper");
+var _crypto = require("../utils/crypto");
+var _eventsHelper = require("../utils/eventsHelper");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -72,7 +72,7 @@ exports.PlaywrightDispatcher = PlaywrightDispatcher;
 class SocksSupportDispatcher extends _dispatcher.Dispatcher {
   constructor(scope, socksProxy) {
     super(scope, {
-      guid: 'socksSupport@' + (0, _utils.createGuid)()
+      guid: 'socksSupport@' + (0, _crypto.createGuid)()
     }, 'SocksSupport', {});
     this._type_SocksSupport = void 0;
     this._socksProxy = void 0;

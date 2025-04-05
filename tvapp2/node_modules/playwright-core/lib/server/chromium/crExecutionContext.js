@@ -4,13 +4,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CRExecutionContext = void 0;
+exports.createHandle = createHandle;
+var _assert = require("../../utils/isomorphic/assert");
 var _crProtocolHelper = require("./crProtocolHelper");
-var js = _interopRequireWildcard(require("../javascript"));
-var _stackTrace = require("../../utils/stackTrace");
+var _stackTrace = require("../../utils/isomorphic/stackTrace");
 var _utilityScriptSerializers = require("../isomorphic/utilityScriptSerializers");
+var js = _interopRequireWildcard(require("../javascript"));
+var dom = _interopRequireWildcard(require("../dom"));
 var _protocolError = require("../protocolError");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -47,7 +50,7 @@ class CRExecutionContext {
     if (exceptionDetails) throw new js.JavaScriptErrorInEvaluate((0, _crProtocolHelper.getExceptionMessage)(exceptionDetails));
     return remoteObject.value;
   }
-  async rawEvaluateHandle(expression) {
+  async rawEvaluateHandle(context, expression) {
     const {
       exceptionDetails,
       result: remoteObject
@@ -56,9 +59,9 @@ class CRExecutionContext {
       contextId: this._contextId
     }).catch(rewriteError);
     if (exceptionDetails) throw new js.JavaScriptErrorInEvaluate((0, _crProtocolHelper.getExceptionMessage)(exceptionDetails));
-    return remoteObject.objectId;
+    return createHandle(context, remoteObject);
   }
-  async evaluateWithArguments(expression, returnByValue, utilityScript, values, objectIds) {
+  async evaluateWithArguments(expression, returnByValue, utilityScript, values, handles) {
     const {
       exceptionDetails,
       result: remoteObject
@@ -69,33 +72,31 @@ class CRExecutionContext {
         objectId: utilityScript._objectId
       }, ...values.map(value => ({
         value
-      })), ...objectIds.map(objectId => ({
-        objectId
+      })), ...handles.map(handle => ({
+        objectId: handle._objectId
       }))],
       returnByValue,
       awaitPromise: true,
       userGesture: true
     }).catch(rewriteError);
     if (exceptionDetails) throw new js.JavaScriptErrorInEvaluate((0, _crProtocolHelper.getExceptionMessage)(exceptionDetails));
-    return returnByValue ? (0, _utilityScriptSerializers.parseEvaluationResultValue)(remoteObject.value) : utilityScript._context.createHandle(remoteObject);
+    return returnByValue ? (0, _utilityScriptSerializers.parseEvaluationResultValue)(remoteObject.value) : createHandle(utilityScript._context, remoteObject);
   }
-  async getProperties(context, objectId) {
+  async getProperties(object) {
     const response = await this._client.send('Runtime.getProperties', {
-      objectId,
+      objectId: object._objectId,
       ownProperties: true
     });
     const result = new Map();
     for (const property of response.result) {
       if (!property.enumerable || !property.value) continue;
-      result.set(property.name, context.createHandle(property.value));
+      result.set(property.name, createHandle(object._context, property.value));
     }
     return result;
   }
-  createHandle(context, remoteObject) {
-    return new js.JSHandle(context, remoteObject.subtype || remoteObject.type, renderPreview(remoteObject), remoteObject.objectId, potentiallyUnserializableValue(remoteObject));
-  }
-  async releaseHandle(objectId) {
-    await (0, _crProtocolHelper.releaseObject)(this._client, objectId);
+  async releaseHandle(handle) {
+    if (!handle._objectId) return;
+    await (0, _crProtocolHelper.releaseObject)(this._client, handle._objectId);
   }
 }
 exports.CRExecutionContext = CRExecutionContext;
@@ -129,4 +130,11 @@ function renderPreview(object) {
   }
   if (object.subtype === 'array' && object.preview) return js.sparseArrayToString(object.preview.properties);
   return object.description;
+}
+function createHandle(context, remoteObject) {
+  if (remoteObject.subtype === 'node') {
+    (0, _assert.assert)(context instanceof dom.FrameExecutionContext);
+    return new dom.ElementHandle(context, remoteObject.objectId);
+  }
+  return new js.JSHandle(context, remoteObject.subtype || remoteObject.type, renderPreview(remoteObject), remoteObject.objectId, potentiallyUnserializableValue(remoteObject));
 }

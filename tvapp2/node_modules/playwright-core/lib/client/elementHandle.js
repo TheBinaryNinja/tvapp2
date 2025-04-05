@@ -9,15 +9,11 @@ exports.convertSelectOptionValues = convertSelectOptionValues;
 exports.determineScreenshotType = determineScreenshotType;
 var _frame = require("./frame");
 var _jsHandle = require("./jsHandle");
-var _fs = _interopRequireDefault(require("fs"));
-var _utilsBundle = require("../utilsBundle");
-var _path = _interopRequireDefault(require("path"));
-var _utils = require("../utils");
-var _fileUtils = require("../utils/fileUtils");
+var _assert = require("../utils/isomorphic/assert");
+var _fileUtils = require("./fileUtils");
+var _rtti = require("../utils/isomorphic/rtti");
 var _writableStream = require("./writableStream");
-var _stream = require("stream");
-var _util = require("util");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _mimeType = require("../utils/isomorphic/mimeType");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -34,7 +30,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * limitations under the License.
  */
 
-const pipelineAsync = (0, _util.promisify)(_stream.pipeline);
 class ElementHandle extends _jsHandle.JSHandle {
   static from(handle) {
     return handle._object;
@@ -55,6 +50,10 @@ class ElementHandle extends _jsHandle.JSHandle {
   }
   async contentFrame() {
     return _frame.Frame.fromNullable((await this._elementChannel.contentFrame()).frame);
+  }
+  async _generateLocatorString() {
+    const value = (await this._elementChannel.generateLocatorString()).value;
+    return value === undefined ? null : value;
   }
   async getAttribute(name) {
     const value = (await this._elementChannel.getAttribute({
@@ -133,7 +132,7 @@ class ElementHandle extends _jsHandle.JSHandle {
   async setInputFiles(files, options = {}) {
     const frame = await this.ownerFrame();
     if (!frame) throw new Error('Cannot set input files to detached element');
-    const converted = await convertInputFiles(files, frame.page().context());
+    const converted = await convertInputFiles(this._platform, files, frame.page().context());
     await this._elementChannel.setInputFiles({
       ...converted,
       ...options
@@ -168,21 +167,22 @@ class ElementHandle extends _jsHandle.JSHandle {
     return value === undefined ? null : value;
   }
   async screenshot(options = {}) {
+    const mask = options.mask;
     const copy = {
       ...options,
       mask: undefined
     };
     if (!copy.type) copy.type = determineScreenshotType(options);
-    if (options.mask) {
-      copy.mask = options.mask.map(locator => ({
+    if (mask) {
+      copy.mask = mask.map(locator => ({
         frame: locator._frame._channel,
         selector: locator._selector
       }));
     }
     const result = await this._elementChannel.screenshot(copy);
     if (options.path) {
-      await (0, _fileUtils.mkdirIfNeeded)(options.path);
-      await _fs.default.promises.writeFile(options.path, result.binary);
+      await (0, _fileUtils.mkdirIfNeeded)(this._platform, options.path);
+      await this._platform.fs().promises.writeFile(options.path, result.binary);
     }
     return result.binary;
   }
@@ -234,11 +234,11 @@ function convertSelectOptionValues(values) {
   if (values === null) return {};
   if (!Array.isArray(values)) values = [values];
   if (!values.length) return {};
-  for (let i = 0; i < values.length; i++) (0, _utils.assert)(values[i] !== null, `options[${i}]: expected object, got null`);
+  for (let i = 0; i < values.length; i++) (0, _assert.assert)(values[i] !== null, `options[${i}]: expected object, got null`);
   if (values[0] instanceof ElementHandle) return {
     elements: values.map(v => v._elementChannel)
   };
-  if ((0, _utils.isString)(values[0])) return {
+  if ((0, _rtti.isString)(values[0])) return {
     options: values.map(valueOrLabel => ({
       valueOrLabel
     }))
@@ -250,50 +250,49 @@ function convertSelectOptionValues(values) {
 function filePayloadExceedsSizeLimit(payloads) {
   return payloads.reduce((size, item) => size + (item.buffer ? item.buffer.byteLength : 0), 0) >= _fileUtils.fileUploadSizeLimit;
 }
-async function resolvePathsAndDirectoryForInputFiles(items) {
-  var _localPaths2;
+async function resolvePathsAndDirectoryForInputFiles(platform, items) {
+  var _localPaths;
   let localPaths;
   let localDirectory;
   for (const item of items) {
-    const stat = await _fs.default.promises.stat(item);
+    const stat = await platform.fs().promises.stat(item);
     if (stat.isDirectory()) {
       if (localDirectory) throw new Error('Multiple directories are not supported');
-      localDirectory = _path.default.resolve(item);
+      localDirectory = platform.path().resolve(item);
     } else {
-      var _localPaths;
-      (_localPaths = localPaths) !== null && _localPaths !== void 0 ? _localPaths : localPaths = [];
-      localPaths.push(_path.default.resolve(item));
+      localPaths !== null && localPaths !== void 0 ? localPaths : localPaths = [];
+      localPaths.push(platform.path().resolve(item));
     }
   }
-  if ((_localPaths2 = localPaths) !== null && _localPaths2 !== void 0 && _localPaths2.length && localDirectory) throw new Error('File paths must be all files or a single directory');
+  if ((_localPaths = localPaths) !== null && _localPaths !== void 0 && _localPaths.length && localDirectory) throw new Error('File paths must be all files or a single directory');
   return [localPaths, localDirectory];
 }
-async function convertInputFiles(files, context) {
+async function convertInputFiles(platform, files, context) {
   const items = Array.isArray(files) ? files.slice() : [files];
   if (items.some(item => typeof item === 'string')) {
     if (!items.every(item => typeof item === 'string')) throw new Error('File paths cannot be mixed with buffers');
-    const [localPaths, localDirectory] = await resolvePathsAndDirectoryForInputFiles(items);
+    const [localPaths, localDirectory] = await resolvePathsAndDirectoryForInputFiles(platform, items);
     if (context._connection.isRemote()) {
-      const files = localDirectory ? (await _fs.default.promises.readdir(localDirectory, {
+      const files = localDirectory ? (await platform.fs().promises.readdir(localDirectory, {
         withFileTypes: true,
         recursive: true
-      })).filter(f => f.isFile()).map(f => _path.default.join(f.path, f.name)) : localPaths;
+      })).filter(f => f.isFile()).map(f => platform.path().join(f.path, f.name)) : localPaths;
       const {
         writableStreams,
         rootDir
       } = await context._wrapApiCall(async () => context._channel.createTempFiles({
-        rootDirName: localDirectory ? _path.default.basename(localDirectory) : undefined,
+        rootDirName: localDirectory ? platform.path().basename(localDirectory) : undefined,
         items: await Promise.all(files.map(async file => {
-          const lastModifiedMs = (await _fs.default.promises.stat(file)).mtimeMs;
+          const lastModifiedMs = (await platform.fs().promises.stat(file)).mtimeMs;
           return {
-            name: localDirectory ? _path.default.relative(localDirectory, file) : _path.default.basename(file),
+            name: localDirectory ? platform.path().relative(localDirectory, file) : platform.path().basename(file),
             lastModifiedMs
           };
         }))
       }), true);
       for (let i = 0; i < files.length; i++) {
         const writable = _writableStream.WritableStream.from(writableStreams[i]);
-        await pipelineAsync(_fs.default.createReadStream(files[i]), writable.stream());
+        await platform.streamFile(files[i], writable.stream());
       }
       return {
         directoryStream: rootDir,
@@ -313,7 +312,7 @@ async function convertInputFiles(files, context) {
 }
 function determineScreenshotType(options) {
   if (options.path) {
-    const mimeType = _utilsBundle.mime.getType(options.path);
+    const mimeType = (0, _mimeType.getMimeTypeForPath)(options.path);
     if (mimeType === 'image/png') return 'png';else if (mimeType === 'image/jpeg') return 'jpeg';
     throw new Error(`path: unsupported mime type "${mimeType}"`);
   }

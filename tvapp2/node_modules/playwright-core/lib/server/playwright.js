@@ -5,18 +5,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Playwright = void 0;
 exports.createPlaywright = createPlaywright;
+var _utils = require("../utils");
 var _android = require("./android/android");
 var _backendAdb = require("./android/backendAdb");
-var _chromium = require("./chromium/chromium");
-var _electron = require("./electron/electron");
-var _firefox = require("./firefox/firefox");
-var _selectors = require("./selectors");
-var _webkit = require("./webkit/webkit");
-var _instrumentation = require("./instrumentation");
-var _utils = require("../utils");
-var _debugController = require("./debugController");
 var _bidiChromium = require("./bidi/bidiChromium");
 var _bidiFirefox = require("./bidi/bidiFirefox");
+var _chromium = require("./chromium/chromium");
+var _debugController = require("./debugController");
+var _electron = require("./electron/electron");
+var _firefox = require("./firefox/firefox");
+var _instrumentation = require("./instrumentation");
+var _selectors = require("./selectors");
+var _webkit = require("./webkit/webkit");
 /**
  * Copyright (c) Microsoft Corporation.
  *

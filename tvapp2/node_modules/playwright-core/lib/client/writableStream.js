@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WritableStream = void 0;
-var _stream = require("stream");
 var _channelOwner = require("./channelOwner");
 /**
  * Copyright (c) Microsoft Corporation.
@@ -30,25 +29,7 @@ class WritableStream extends _channelOwner.ChannelOwner {
     super(parent, type, guid, initializer);
   }
   stream() {
-    return new WritableStreamImpl(this._channel);
+    return this._platform.streamWritable(this._channel);
   }
 }
 exports.WritableStream = WritableStream;
-class WritableStreamImpl extends _stream.Writable {
-  constructor(channel) {
-    super();
-    this._channel = void 0;
-    this._channel = channel;
-  }
-  async _write(chunk, encoding, callback) {
-    const error = await this._channel.write({
-      binary: typeof chunk === 'string' ? Buffer.from(chunk) : chunk
-    }).catch(e => e);
-    callback(error || null);
-  }
-  async _final(callback) {
-    // Stream might be destroyed after the connection was closed.
-    const error = await this._channel.close().catch(e => e);
-    callback(error || null);
-  }
-}

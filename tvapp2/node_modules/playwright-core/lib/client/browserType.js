@@ -7,11 +7,13 @@ exports.BrowserType = void 0;
 var _browser3 = require("./browser");
 var _browserContext = require("./browserContext");
 var _channelOwner = require("./channelOwner");
-var _connection = require("./connection");
-var _events = require("./events");
 var _clientHelper = require("./clientHelper");
-var _utils = require("../utils");
-var _timeoutRunner = require("../utils/timeoutRunner");
+var _events = require("./events");
+var _assert = require("../utils/isomorphic/assert");
+var _headers = require("../utils/isomorphic/headers");
+var _time = require("../utils/isomorphic/time");
+var _timeoutRunner = require("../utils/isomorphic/timeoutRunner");
+var _webSocket = require("./webSocket");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -36,11 +38,6 @@ class BrowserType extends _channelOwner.ChannelOwner {
     this._serverLauncher = void 0;
     this._contexts = new Set();
     this._playwright = void 0;
-    // Instrumentation.
-    this._defaultContextOptions = void 0;
-    this._defaultContextTimeout = void 0;
-    this._defaultContextNavigationTimeout = void 0;
-    this._defaultLaunchOptions = void 0;
   }
   static from(browserType) {
     return browserType._object;
@@ -53,12 +50,12 @@ class BrowserType extends _channelOwner.ChannelOwner {
     return this._initializer.name;
   }
   async launch(options = {}) {
-    var _this$_defaultLaunchO;
-    (0, _utils.assert)(!options.userDataDir, 'userDataDir option is not supported in `browserType.launch`. Use `browserType.launchPersistentContext` instead');
-    (0, _utils.assert)(!options.port, 'Cannot specify a port without launching as a server.');
-    const logger = options.logger || ((_this$_defaultLaunchO = this._defaultLaunchOptions) === null || _this$_defaultLaunchO === void 0 ? void 0 : _this$_defaultLaunchO.logger);
+    var _this$_playwright$_de;
+    (0, _assert.assert)(!options.userDataDir, 'userDataDir option is not supported in `browserType.launch`. Use `browserType.launchPersistentContext` instead');
+    (0, _assert.assert)(!options.port, 'Cannot specify a port without launching as a server.');
+    const logger = options.logger || ((_this$_playwright$_de = this._playwright._defaultLaunchOptions) === null || _this$_playwright$_de === void 0 ? void 0 : _this$_playwright$_de.logger);
     options = {
-      ...this._defaultLaunchOptions,
+      ...this._playwright._defaultLaunchOptions,
       ...options
     };
     const launchOptions = {
@@ -76,28 +73,28 @@ class BrowserType extends _channelOwner.ChannelOwner {
   async launchServer(options = {}) {
     if (!this._serverLauncher) throw new Error('Launching server is not supported');
     options = {
-      ...this._defaultLaunchOptions,
+      ...this._playwright._defaultLaunchOptions,
       ...options
     };
     return await this._serverLauncher.launchServer(options);
   }
   async launchPersistentContext(userDataDir, options = {}) {
-    var _this$_defaultLaunchO2;
-    const logger = options.logger || ((_this$_defaultLaunchO2 = this._defaultLaunchOptions) === null || _this$_defaultLaunchO2 === void 0 ? void 0 : _this$_defaultLaunchO2.logger);
-    (0, _utils.assert)(!options.port, 'Cannot specify a port without launching as a server.');
+    var _this$_playwright$_de2;
+    const logger = options.logger || ((_this$_playwright$_de2 = this._playwright._defaultLaunchOptions) === null || _this$_playwright$_de2 === void 0 ? void 0 : _this$_playwright$_de2.logger);
+    (0, _assert.assert)(!options.port, 'Cannot specify a port without launching as a server.');
     options = {
-      ...this._defaultLaunchOptions,
-      ...this._defaultContextOptions,
+      ...this._playwright._defaultLaunchOptions,
+      ...this._playwright._defaultContextOptions,
       ...options
     };
-    const contextParams = await (0, _browserContext.prepareBrowserContextParams)(options);
+    const contextParams = await (0, _browserContext.prepareBrowserContextParams)(this._platform, options);
     const persistentParams = {
       ...contextParams,
       ignoreDefaultArgs: Array.isArray(options.ignoreDefaultArgs) ? options.ignoreDefaultArgs : undefined,
       ignoreAllDefaultArgs: !!options.ignoreDefaultArgs && !Array.isArray(options.ignoreDefaultArgs),
       env: options.env ? (0, _clientHelper.envObjectToArray)(options.env) : undefined,
       channel: options.channel,
-      userDataDir
+      userDataDir: this._platform.path().isAbsolute(userDataDir) || !userDataDir ? userDataDir : this._platform.path().resolve(userDataDir)
     };
     return await this._wrapApiCall(async () => {
       const result = await this._channel.launchPersistentContext(persistentParams);
@@ -111,19 +108,18 @@ class BrowserType extends _channelOwner.ChannelOwner {
       ...options,
       wsEndpoint: optionsOrWsEndpoint
     });
-    (0, _utils.assert)(optionsOrWsEndpoint.wsEndpoint, 'options.wsEndpoint is required');
+    (0, _assert.assert)(optionsOrWsEndpoint.wsEndpoint, 'options.wsEndpoint is required');
     return await this._connect(optionsOrWsEndpoint);
   }
   async _connect(params) {
     const logger = params.logger;
     return await this._wrapApiCall(async () => {
       var _params$exposeNetwork;
-      const deadline = params.timeout ? (0, _utils.monotonicTime)() + params.timeout : 0;
+      const deadline = params.timeout ? (0, _time.monotonicTime)() + params.timeout : 0;
       const headers = {
         'x-playwright-browser': this.name(),
         ...params.headers
       };
-      const localUtils = this._connection.localUtils();
       const connectParams = {
         wsEndpoint: params.wsEndpoint,
         headers,
@@ -132,69 +128,39 @@ class BrowserType extends _channelOwner.ChannelOwner {
         timeout: params.timeout
       };
       if (params.__testHookRedirectPortForwarding) connectParams.socksProxyRedirectPortForTest = params.__testHookRedirectPortForwarding;
-      const {
-        pipe,
-        headers: connectHeaders
-      } = await localUtils._channel.connect(connectParams);
-      const closePipe = () => pipe.close().catch(() => {});
-      const connection = new _connection.Connection(localUtils, this._instrumentation);
-      connection.markAsRemote();
-      connection.on('close', closePipe);
+      const connection = await (0, _webSocket.connectOverWebSocket)(this._connection, connectParams);
       let browser;
-      let closeError;
-      const onPipeClosed = reason => {
+      connection.on('close', () => {
         // Emulate all pages, contexts and the browser closing upon disconnect.
         for (const context of ((_browser = browser) === null || _browser === void 0 ? void 0 : _browser.contexts()) || []) {
           var _browser;
           for (const page of context.pages()) page._onClose();
           context._onClose();
         }
-        connection.close(reason || closeError);
-        // Give a chance to any API call promises to reject upon page/context closure.
-        // This happens naturally when we receive page.onClose and browser.onClose from the server
-        // in separate tasks. However, upon pipe closure we used to dispatch them all synchronously
-        // here and promises did not have a chance to reject.
-        // The order of rejects vs closure is a part of the API contract and our test runner
-        // relies on it to attribute rejections to the right test.
         setTimeout(() => {
           var _browser2;
           return (_browser2 = browser) === null || _browser2 === void 0 ? void 0 : _browser2._didClose();
         }, 0);
-      };
-      pipe.on('closed', params => onPipeClosed(params.reason));
-      connection.onmessage = message => this._wrapApiCall(() => pipe.send({
-        message
-      }).catch(() => onPipeClosed()), /* isInternal */true);
-      pipe.on('message', ({
-        message
-      }) => {
-        try {
-          connection.dispatch(message);
-        } catch (e) {
-          closeError = String(e);
-          closePipe();
-        }
       });
       const result = await (0, _timeoutRunner.raceAgainstDeadline)(async () => {
         // For tests.
         if (params.__testHookBeforeCreateBrowser) await params.__testHookBeforeCreateBrowser();
         const playwright = await connection.initializePlaywright();
         if (!playwright._initializer.preLaunchedBrowser) {
-          closePipe();
+          connection.close();
           throw new Error('Malformed endpoint. Did you use BrowserType.launchServer method?');
         }
         playwright._setSelectors(this._playwright.selectors);
         browser = _browser3.Browser.from(playwright._initializer.preLaunchedBrowser);
         this._didLaunchBrowser(browser, {}, logger);
         browser._shouldCloseConnectionOnClose = true;
-        browser._connectHeaders = connectHeaders;
-        browser.on(_events.Events.Browser.Disconnected, () => this._wrapApiCall(() => closePipe(), /* isInternal */true));
+        browser.on(_events.Events.Browser.Disconnected, () => connection.close());
         return browser;
       }, deadline);
       if (!result.timedOut) {
         return result.result;
       } else {
-        closePipe();
+        connection.close();
         throw new Error(`Timeout ${params.timeout}ms exceeded`);
       }
     });
@@ -202,12 +168,12 @@ class BrowserType extends _channelOwner.ChannelOwner {
   async connectOverCDP(endpointURLOrOptions, options) {
     if (typeof endpointURLOrOptions === 'string') return await this._connectOverCDP(endpointURLOrOptions, options);
     const endpointURL = 'endpointURL' in endpointURLOrOptions ? endpointURLOrOptions.endpointURL : endpointURLOrOptions.wsEndpoint;
-    (0, _utils.assert)(endpointURL, 'Cannot connect over CDP without wsEndpoint.');
+    (0, _assert.assert)(endpointURL, 'Cannot connect over CDP without wsEndpoint.');
     return await this.connectOverCDP(endpointURL, endpointURLOrOptions);
   }
   async _connectOverCDP(endpointURL, params = {}) {
     if (this.name() !== 'chromium') throw new Error('Connecting over CDP is only supported in Chromium.');
-    const headers = params.headers ? (0, _utils.headersObjectToArray)(params.headers) : undefined;
+    const headers = params.headers ? (0, _headers.headersObjectToArray)(params.headers) : undefined;
     const result = await this._channel.connectOverCDP({
       endpointURL,
       headers,
@@ -229,8 +195,8 @@ class BrowserType extends _channelOwner.ChannelOwner {
     context._browserType = this;
     this._contexts.add(context);
     context._setOptions(contextOptions, browserOptions);
-    if (this._defaultContextTimeout !== undefined) context.setDefaultTimeout(this._defaultContextTimeout);
-    if (this._defaultContextNavigationTimeout !== undefined) context.setDefaultNavigationTimeout(this._defaultContextNavigationTimeout);
+    if (this._playwright._defaultContextTimeout !== undefined) context.setDefaultTimeout(this._playwright._defaultContextTimeout);
+    if (this._playwright._defaultContextNavigationTimeout !== undefined) context.setDefaultNavigationTimeout(this._playwright._defaultContextNavigationTimeout);
     await this._instrumentation.runAfterCreateBrowserContext(context);
   }
   async _willCloseContext(context) {

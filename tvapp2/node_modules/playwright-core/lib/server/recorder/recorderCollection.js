@@ -5,10 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RecorderCollection = void 0;
 var _events = require("events");
-var _time = require("../../utils/time");
-var _recorderUtils = require("./recorderUtils");
 var _recorderRunner = require("./recorderRunner");
-var _debug = require("../../utils/debug");
+var _recorderUtils = require("./recorderUtils");
+var _debug = require("../utils/debug");
+var _time = require("../../utils/isomorphic/time");
 /**
  * Copyright (c) Microsoft Corporation.
  *

@@ -2,10 +2,10 @@
 
 var _fs = _interopRequireDefault(require("fs"));
 var _path = _interopRequireDefault(require("path"));
-var _network = require("../../utils/network");
-var _manualPromise = require("../../utils/manualPromise");
+var _manualPromise = require("../../utils/isomorphic/manualPromise");
+var _network = require("../utils/network");
 var _zipBundle = require("../../zipBundle");
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *

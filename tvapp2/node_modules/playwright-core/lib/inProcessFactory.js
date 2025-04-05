@@ -4,10 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createInProcessPlaywright = createInProcessPlaywright;
-var _server = require("./server");
-var _connection = require("./client/connection");
-var _browserServerImpl = require("./browserServerImpl");
 var _androidServerImpl = require("./androidServerImpl");
+var _browserServerImpl = require("./browserServerImpl");
+var _server = require("./server");
+var _nodePlatform = require("./server/utils/nodePlatform");
+var _connection = require("./client/connection");
+var _selectors = require("./client/selectors");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -28,7 +30,8 @@ function createInProcessPlaywright() {
   const playwright = (0, _server.createPlaywright)({
     sdkLanguage: process.env.PW_LANG_NAME || 'javascript'
   });
-  const clientConnection = new _connection.Connection(undefined, undefined);
+  (0, _selectors.setPlatformForSelectors)(_nodePlatform.nodePlatform);
+  const clientConnection = new _connection.Connection(_nodePlatform.nodePlatform);
   clientConnection.useRawBuffers();
   const dispatcherConnection = new _server.DispatcherConnection(true /* local */);
 

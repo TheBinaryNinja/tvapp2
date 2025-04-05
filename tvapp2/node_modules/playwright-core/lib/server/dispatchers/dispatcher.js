@@ -7,12 +7,14 @@ exports.dispatcherSymbol = exports.RootDispatcher = exports.DispatcherConnection
 exports.existingDispatcher = existingDispatcher;
 exports.setMaxDispatchersForTest = setMaxDispatchersForTest;
 var _events = require("events");
+var _eventsHelper = require("../utils/eventsHelper");
 var _validator = require("../../protocol/validator");
 var _utils = require("../../utils");
+var _debug = require("../utils/debug");
 var _errors = require("../errors");
 var _instrumentation = require("../instrumentation");
-var _eventsHelper = require("../..//utils/eventsHelper");
 var _protocolError = require("../protocolError");
+var _callLog = require("../callLog");
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -39,8 +41,8 @@ function setMaxDispatchersForTest(value) {
   maxDispatchersOverride = value;
 }
 function maxDispatchersForBucket(gcBucket) {
-  var _ref, _maxDispatchersOverri;
-  return (_ref = (_maxDispatchersOverri = maxDispatchersOverride) !== null && _maxDispatchersOverri !== void 0 ? _maxDispatchersOverri : {
+  var _ref;
+  return (_ref = maxDispatchersOverride !== null && maxDispatchersOverride !== void 0 ? maxDispatchersOverride : {
     'JSHandle': 100000,
     'ElementHandle': 100000
   }[gcBucket]) !== null && _ref !== void 0 ? _ref : 10000;
@@ -101,7 +103,7 @@ class Dispatcher extends _events.EventEmitter {
   }
   _dispatchEvent(method, params) {
     if (this._disposed) {
-      if ((0, _utils.isUnderTest)()) throw new Error(`${this._guid} is sending "${String(method)}" event after being disposed`);
+      if ((0, _debug.isUnderTest)()) throw new Error(`${this._guid} is sending "${String(method)}" event after being disposed`);
       // Just ignore this event outside of tests.
       return;
     }
@@ -171,10 +173,7 @@ class DispatcherConnection {
   }
   sendEvent(dispatcher, event, params) {
     const validator = (0, _validator.findValidator)(dispatcher._type, event, 'Event');
-    params = validator(params, '', {
-      tChannelImpl: this._tChannelImplToWire.bind(this),
-      binary: this._isLocal ? 'buffer' : 'toBase64'
-    });
+    params = validator(params, '', this._validatorToWireContext());
     this.onmessage({
       guid: dispatcher._guid,
       method: event,
@@ -183,10 +182,7 @@ class DispatcherConnection {
   }
   sendCreate(parent, type, guid, initializer) {
     const validator = (0, _validator.findValidator)(type, '', 'Initializer');
-    initializer = validator(initializer, '', {
-      tChannelImpl: this._tChannelImplToWire.bind(this),
-      binary: this._isLocal ? 'buffer' : 'toBase64'
-    });
+    initializer = validator(initializer, '', this._validatorToWireContext());
     this.onmessage({
       guid: parent._guid,
       method: '__create__',
@@ -214,6 +210,20 @@ class DispatcherConnection {
         reason
       }
     });
+  }
+  _validatorToWireContext() {
+    return {
+      tChannelImpl: this._tChannelImplToWire.bind(this),
+      binary: this._isLocal ? 'buffer' : 'toBase64',
+      isUnderTest: _debug.isUnderTest
+    };
+  }
+  _validatorFromWireContext() {
+    return {
+      tChannelImpl: this._tChannelImplFromWire.bind(this),
+      binary: this._isLocal ? 'buffer' : 'fromBase64',
+      isUnderTest: _debug.isUnderTest
+    };
   }
   _tChannelImplFromWire(names, arg, path, context) {
     if (arg && typeof arg === 'object' && typeof arg.guid === 'string') {
@@ -278,14 +288,9 @@ class DispatcherConnection {
     let validMetadata;
     try {
       const validator = (0, _validator.findValidator)(dispatcher._type, method, 'Params');
-      validParams = validator(params, '', {
-        tChannelImpl: this._tChannelImplFromWire.bind(this),
-        binary: this._isLocal ? 'buffer' : 'fromBase64'
-      });
-      validMetadata = metadataValidator(metadata, '', {
-        tChannelImpl: this._tChannelImplFromWire.bind(this),
-        binary: this._isLocal ? 'buffer' : 'fromBase64'
-      });
+      const validatorContext = this._validatorFromWireContext();
+      validParams = validator(params, '', validatorContext);
+      validMetadata = metadataValidator(metadata, '', validatorContext);
       if (typeof dispatcher[method] !== 'function') throw new Error(`Mismatching dispatcher: "${dispatcher._type}" does not implement "${method}"`);
     } catch (e) {
       this.onmessage({
@@ -360,10 +365,7 @@ class DispatcherConnection {
     try {
       const result = await dispatcher._handleCommand(callMetadata, method, validParams);
       const validator = (0, _validator.findValidator)(dispatcher._type, method, 'Result');
-      response.result = validator(result, '', {
-        tChannelImpl: this._tChannelImplToWire.bind(this),
-        binary: this._isLocal ? 'buffer' : 'toBase64'
-      });
+      response.result = validator(result, '', this._validatorToWireContext());
       callMetadata.result = result;
     } catch (e) {
       if ((0, _errors.isTargetClosedError)(e) && sdkObject) {
@@ -384,7 +386,7 @@ class DispatcherConnection {
       callMetadata.endTime = (0, _utils.monotonicTime)();
       await (sdkObject === null || sdkObject === void 0 ? void 0 : sdkObject.instrumentation.onAfterCall(sdkObject, callMetadata));
     }
-    if (response.error) response.log = (0, _utils.compressCallLog)(callMetadata.log);
+    if (response.error) response.log = (0, _callLog.compressCallLog)(callMetadata.log);
     this.onmessage(response);
   }
 }

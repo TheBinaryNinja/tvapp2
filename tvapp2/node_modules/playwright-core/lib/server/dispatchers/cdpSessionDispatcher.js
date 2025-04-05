@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CDPSessionDispatcher = void 0;
-var _crConnection = require("../chromium/crConnection");
 var _dispatcher = require("./dispatcher");
+var _crConnection = require("../chromium/crConnection");
 /**
  * Copyright (c) Microsoft Corporation.
  *

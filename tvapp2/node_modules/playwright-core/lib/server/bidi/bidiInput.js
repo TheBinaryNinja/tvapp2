@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.RawTouchscreenImpl = exports.RawMouseImpl = exports.RawKeyboardImpl = void 0;
-var bidi = _interopRequireWildcard(require("./third_party/bidiProtocol"));
-var _bidiKeyboard = require("./third_party/bidiKeyboard");
 var _input = require("../input");
+var _bidiKeyboard = require("./third_party/bidiKeyboard");
+var bidi = _interopRequireWildcard(require("./third_party/bidiProtocol"));
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -84,9 +84,6 @@ class RawMouseImpl {
     this._session = session;
   }
   async move(x, y, button, buttons, modifiers, forClick) {
-    // Bidi throws when x/y are not integers.
-    x = Math.round(x);
-    y = Math.round(y);
     await this._performActions([{
       type: 'pointerMove',
       x,
@@ -107,8 +104,8 @@ class RawMouseImpl {
   }
   async wheel(x, y, buttons, modifiers, deltaX, deltaY) {
     // Bidi throws when x/y are not integers.
-    x = Math.round(x);
-    y = Math.round(y);
+    x = Math.floor(x);
+    y = Math.floor(y);
     await this._session.send('input.performActions', {
       context: this._session.sessionId,
       actions: [{

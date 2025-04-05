@@ -4,11 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WritableStreamDispatcher = void 0;
+var _fs = _interopRequireDefault(require("fs"));
 var _dispatcher = require("./dispatcher");
-var fs = _interopRequireWildcard(require("fs"));
-var _utils = require("../../utils");
-function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+var _crypto = require("../utils/crypto");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright (c) Microsoft Corporation.
  *
@@ -28,7 +27,7 @@ function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; 
 class WritableStreamDispatcher extends _dispatcher.Dispatcher {
   constructor(scope, streamOrDirectory, lastModifiedMs) {
     super(scope, {
-      guid: 'writableStream@' + (0, _utils.createGuid)(),
+      guid: 'writableStream@' + (0, _crypto.createGuid)(),
       streamOrDirectory
     }, 'WritableStream', {});
     this._type_WritableStream = true;
@@ -48,7 +47,7 @@ class WritableStreamDispatcher extends _dispatcher.Dispatcher {
     if (typeof this._object.streamOrDirectory === 'string') throw new Error('Cannot close a directory');
     const stream = this._object.streamOrDirectory;
     await new Promise(fulfill => stream.end(fulfill));
-    if (this._lastModifiedMs) await fs.promises.utimes(this.path(), new Date(this._lastModifiedMs), new Date(this._lastModifiedMs));
+    if (this._lastModifiedMs) await _fs.default.promises.utimes(this.path(), new Date(this._lastModifiedMs), new Date(this._lastModifiedMs));
   }
   path() {
     if (typeof this._object.streamOrDirectory === 'string') return this._object.streamOrDirectory;

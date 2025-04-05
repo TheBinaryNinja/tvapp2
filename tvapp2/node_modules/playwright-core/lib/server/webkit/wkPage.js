@@ -5,13 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WKPage = void 0;
 var _path = _interopRequireDefault(require("path"));
-var _utilsBundle = require("../../utilsBundle");
-var _stackTrace = require("../../utils/stackTrace");
 var _utils = require("../../utils");
-var _hostPlatform = require("../../utils/hostPlatform");
+var _headers = require("../../utils/isomorphic/headers");
+var _crypto = require("../utils/crypto");
+var _eventsHelper = require("../utils/eventsHelper");
+var _hostPlatform = require("../utils/hostPlatform");
+var _stackTrace = require("../../utils/isomorphic/stackTrace");
+var _utilsBundle = require("../../utilsBundle");
+var _browserContext = require("../browserContext");
 var dialog = _interopRequireWildcard(require("../dialog"));
 var dom = _interopRequireWildcard(require("../dom"));
-var _eventsHelper = require("../../utils/eventsHelper");
+var _errors = require("../errors");
 var _helper = require("../helper");
 var network = _interopRequireWildcard(require("../network"));
 var _page = require("../page");
@@ -22,12 +26,10 @@ var _wkInput = require("./wkInput");
 var _wkInterceptableRequest = require("./wkInterceptableRequest");
 var _wkProvisionalPage = require("./wkProvisionalPage");
 var _wkWorkers = require("./wkWorkers");
-var _debugLogger = require("../../utils/debugLogger");
-var _browserContext = require("../browserContext");
-var _errors = require("../errors");
+var _debugLogger = require("../utils/debugLogger");
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
-function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && Object.prototype.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  * Modifications copyright (c) Microsoft Corporation.
@@ -114,7 +116,7 @@ class WKPage {
       for (const [key, value] of this._browserContext._permissions) promises.push(this._grantPermissions(key, value));
     }
     if (this._browserContext._options.recordVideo) {
-      const outputFile = _path.default.join(this._browserContext._options.recordVideo.dir, (0, _utils.createGuid)() + '.webm');
+      const outputFile = _path.default.join(this._browserContext._options.recordVideo.dir, (0, _crypto.createGuid)() + '.webm');
       promises.push(this._browserContext._ensureVideosPath().then(() => {
         return this._startVideo({
           // validateBrowserContextOptions ensures correct video size.
@@ -180,7 +182,7 @@ class WKPage {
     const contextOptions = this._browserContext._options;
     if (contextOptions.userAgent) promises.push(this.updateUserAgent());
     const emulatedMedia = this._page.emulatedMedia();
-    if (emulatedMedia.media || emulatedMedia.colorScheme || emulatedMedia.reducedMotion || emulatedMedia.forcedColors) promises.push(WKPage._setEmulateMedia(session, emulatedMedia.media, emulatedMedia.colorScheme, emulatedMedia.reducedMotion, emulatedMedia.forcedColors));
+    if (emulatedMedia.media || emulatedMedia.colorScheme || emulatedMedia.reducedMotion || emulatedMedia.forcedColors || emulatedMedia.contrast) promises.push(WKPage._setEmulateMedia(session, emulatedMedia.media, emulatedMedia.colorScheme, emulatedMedia.reducedMotion, emulatedMedia.forcedColors, emulatedMedia.contrast));
     const bootstrapScript = this._calculateBootstrapScript();
     if (bootstrapScript.length) promises.push(session.send('Page.setBootstrapScript', {
       source: bootstrapScript
@@ -198,7 +200,7 @@ class WKPage {
     }
     promises.push(this.updateEmulateMedia());
     promises.push(session.send('Network.setExtraHTTPHeaders', {
-      headers: (0, _utils.headersArrayToObject)(this._calculateExtraHTTPHeaders(), false /* lowerCase */)
+      headers: (0, _headers.headersArrayToObject)(this._calculateExtraHTTPHeaders(), false /* lowerCase */)
     }));
     if (contextOptions.offline) promises.push(session.send('Network.setEmulateOfflineState', {
       offline: true
@@ -306,7 +308,6 @@ class WKPage {
     this._page._frameManager.frameAbortedNavigation(this._page.mainFrame()._id, errorText, event.loaderId);
   }
   handleWindowOpen(event) {
-    (0, _utils.debugAssert)(!this._nextWindowOpenPopupFeatures);
     this._nextWindowOpenPopupFeatures = event.windowFeatures;
   }
   async _onTargetCreated(event) {
@@ -454,7 +455,6 @@ class WKPage {
     let worldName = null;
     if (contextPayload.type === 'normal') worldName = 'main';else if (contextPayload.type === 'user' && contextPayload.name === UTILITY_WORLD_NAME) worldName = 'utility';
     const context = new dom.FrameExecutionContext(delegate, frame, worldName);
-    context[contextDelegateSymbol] = delegate;
     if (worldName) frame._contextCreated(worldName, context);
     this._contextIdToContext.set(contextPayload.id, context);
   }
@@ -524,7 +524,7 @@ class WKPage {
         context = [...this._contextIdToContext.values()].find(c => c.frame === this._page.mainFrame());
       }
       if (!context) return;
-      handles.push(context.createHandle(p));
+      handles.push((0, _wkExecutionContext.createHandle)(context, p));
     }
     this._lastConsoleMessage = {
       derivedType,
@@ -568,14 +568,14 @@ class WKPage {
     let handle;
     try {
       const context = await this._page._frameManager.frame(event.frameId)._mainContext();
-      handle = context.createHandle(event.element).asElement();
+      handle = (0, _wkExecutionContext.createHandle)(context, event.element).asElement();
     } catch (e) {
       // During async processing, frame/context may go away. We should not throw.
       return;
     }
     await this._page._onFileChooserOpened(handle);
   }
-  static async _setEmulateMedia(session, mediaType, colorScheme, reducedMotion, forcedColors) {
+  static async _setEmulateMedia(session, mediaType, colorScheme, reducedMotion, forcedColors, contrast) {
     const promises = [];
     promises.push(session.send('Page.setEmulatedMedia', {
       media: mediaType === 'no-override' ? '' : mediaType
@@ -627,11 +627,27 @@ class WKPage {
     promises.push(session.send('Page.setForcedColors', {
       forcedColors: forcedColorsWk
     }));
+    let contrastWk = undefined;
+    switch (contrast) {
+      case 'more':
+        contrastWk = 'More';
+        break;
+      case 'no-preference':
+        contrastWk = 'NoPreference';
+        break;
+      case 'no-override':
+        contrastWk = undefined;
+        break;
+    }
+    promises.push(session.send('Page.overrideUserPreference', {
+      name: 'PrefersContrast',
+      value: contrastWk
+    }));
     await Promise.all(promises);
   }
   async updateExtraHTTPHeaders() {
     await this._updateState('Network.setExtraHTTPHeaders', {
-      headers: (0, _utils.headersArrayToObject)(this._calculateExtraHTTPHeaders(), false /* lowerCase */)
+      headers: (0, _headers.headersArrayToObject)(this._calculateExtraHTTPHeaders(), false /* lowerCase */)
     });
   }
   _calculateExtraHTTPHeaders() {
@@ -644,7 +660,8 @@ class WKPage {
     const colorScheme = emulatedMedia.colorScheme;
     const reducedMotion = emulatedMedia.reducedMotion;
     const forcedColors = emulatedMedia.forcedColors;
-    await this._forAllSessions(session => WKPage._setEmulateMedia(session, emulatedMedia.media, colorScheme, reducedMotion, forcedColors));
+    const contrast = emulatedMedia.contrast;
+    await this._forAllSessions(session => WKPage._setEmulateMedia(session, emulatedMedia.media, colorScheme, reducedMotion, forcedColors, contrast));
   }
   async updateEmulatedViewportSize() {
     this._browserContext._validateEmulatedViewport(this._page.viewportSize());
@@ -831,9 +848,6 @@ class WKPage {
     });
     return nodeInfo.ownerFrameId || null;
   }
-  isElementHandle(remoteObject) {
-    return remoteObject.subtype === 'node';
-  }
   async getBoundingBox(handle) {
     const quads = await this.getContentQuads(handle);
     if (!quads || !quads.length) return null;
@@ -916,18 +930,6 @@ class WKPage {
       y: quad[7]
     }]);
   }
-  async setInputFiles(handle, files) {
-    const objectId = handle._objectId;
-    const protocolFiles = files.map(file => ({
-      name: file.name,
-      type: file.mimeType,
-      data: file.buffer
-    }));
-    await this._session.send('DOM.setInputFiles', {
-      objectId,
-      files: protocolFiles
-    });
-  }
   async setInputFilePaths(handle, paths) {
     const pageProxyId = this._pageProxySession.sessionId;
     const objectId = handle._objectId;
@@ -942,10 +944,10 @@ class WKPage {
   async adoptElementHandle(handle, to) {
     const result = await this._session.sendMayFail('DOM.resolveNode', {
       objectId: handle._objectId,
-      executionContextId: to[contextDelegateSymbol]._contextId
+      executionContextId: to.delegate._contextId
     });
     if (!result || result.object.subtype === 'null') throw new Error(dom.kUnableToAdoptErrorMessage);
-    return to.createHandle(result.object);
+    return (0, _wkExecutionContext.createHandle)(to, result.object);
   }
   async getAccessibilityTree(needle) {
     return (0, _wkAccessibility.getAccessibilityTree)(this._session, needle);
@@ -958,10 +960,10 @@ class WKPage {
     const context = await parent._mainContext();
     const result = await this._session.send('DOM.resolveNode', {
       frameId: frame._id,
-      executionContextId: context[contextDelegateSymbol]._contextId
+      executionContextId: context.delegate._contextId
     });
     if (!result || result.object.subtype === 'null') throw new Error('Frame has been detached.');
-    return context.createHandle(result.object);
+    return (0, _wkExecutionContext.createHandle)(context, result.object);
   }
   _maybeCancelCoopNavigationRequest(provisionalPage) {
     const navigationRequest = provisionalPage.coopNavigationRequest();
@@ -1204,4 +1206,3 @@ function isLoadedSecurely(url, timing) {
     return true;
   } catch (_) {}
 }
-const contextDelegateSymbol = Symbol('delegate');

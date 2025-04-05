@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.WKProvisionalPage = void 0;
-var _eventsHelper = require("../../utils/eventsHelper");
 var _utils = require("../../utils");
+var _eventsHelper = require("../utils/eventsHelper");
 /**
  * Copyright (c) Microsoft Corporation.
  *

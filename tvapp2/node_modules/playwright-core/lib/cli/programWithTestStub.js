@@ -9,6 +9,7 @@ Object.defineProperty(exports, "program", {
     return _program.program;
   }
 });
+var _processLauncher = require("../server/utils/processLauncher");
 var _utils = require("../utils");
 var _program = require("./program");
 /**
@@ -60,7 +61,7 @@ function addExternalPlaywrightTestCommands() {
     playwrightTest.description(`${description} Available in @playwright/test package.`);
     playwrightTest.action(async () => {
       printPlaywrightTestError(command);
-      (0, _utils.gracefullyProcessExitDoNotHang)(1);
+      (0, _processLauncher.gracefullyProcessExitDoNotHang)(1);
     });
   }
 }

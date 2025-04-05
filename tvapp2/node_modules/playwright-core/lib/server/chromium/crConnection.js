@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.kBrowserCloseMessageId = exports.ConnectionEvents = exports.CRSession = exports.CRConnection = exports.CDPSession = void 0;
-var _utils = require("../../utils");
 var _events = require("events");
-var _debugLogger = require("../../utils/debugLogger");
+var _utils = require("../../utils");
+var _debugLogger = require("../utils/debugLogger");
 var _helper = require("../helper");
 var _protocolError = require("../protocolError");
 /**

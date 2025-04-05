@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Browser = void 0;
+var _artifact = require("./artifact");
 var _browserContext = require("./browserContext");
-var _page = require("./page");
 var _download = require("./download");
 var _instrumentation = require("./instrumentation");
-var _artifact = require("./artifact");
+var _page = require("./page");
 var _socksClientCertificatesInterceptor = require("./socksClientCertificatesInterceptor");
 /**
  * Copyright (c) Microsoft Corporation.

@@ -4,14 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DebugController = void 0;
-var _processLauncher = require("../utils/processLauncher");
 var _instrumentation = require("./instrumentation");
+var _processLauncher = require("./utils/processLauncher");
 var _recorder = require("./recorder");
-var _recorderApp = require("./recorder/recorderApp");
 var _utils = require("../utils");
-var _utilsBundle = require("../utilsBundle");
-var _locatorParser = require("../utils/isomorphic/locatorParser");
 var _ariaSnapshot = require("../utils/isomorphic/ariaSnapshot");
+var _utilsBundle = require("../utilsBundle");
+var _recorderApp = require("./recorder/recorderApp");
+var _locatorParser = require("../utils/isomorphic/locatorParser");
 /**
  * Copyright (c) Microsoft Corporation.
  *
