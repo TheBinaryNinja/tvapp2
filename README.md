@@ -153,7 +153,8 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `FILE_PLAYLIST` | `playlist.m3u8` | Filename for M3U playlist file |
+| `FILE_URL` | `urls.txt` | Filename for url cache file |
+| `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
 | `FILE_GZIP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
@@ -226,7 +227,7 @@ services:
             - DIR_RUN=/usr/bin/app
             - DIR_RUN=/usr/bin/app
             - STREAM_QUALITY=hd
-            - FILE_PLAYLIST=playlist.m3u8
+            - FILE_M3U=playlist.m3u8
             - FILE_EPG=xmltv.xml
             - LOG_LEVEL=4
 ```
@@ -1188,7 +1189,8 @@ This docker container contains the following env variables:
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `FILE_PLAYLIST` | `playlist.m3u8` | Filename for M3U playlist file |
+| `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |
+| `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
 | `FILE_GZIP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
