@@ -1107,13 +1107,18 @@ const server = http.createServer( ( request, response ) =>
                                 ? 'text/plain'
                                 : {
                                     '.html' : 'text/html',
+                                    '.htm' : 'text/html',
                                     '.ico' : 'image/x-icon',
                                     '.jpg' : 'image/jpeg',
                                     '.png' : 'image/png',
                                     '.gif' : 'image/gif',
                                     '.css' : 'text/css',
                                     '.gz' : 'application/gzip',
-                                    '.js' : 'text/javascript'
+                                    '.js' : 'text/javascript',
+                                    '.txt' : 'text/plain',
+                                    '.xml' : 'application/xml',
+                                    '.m3u' : 'text/plain',
+                                    '.m3u8' : 'text/plain'
                                     }[loadFile.substring( fileExt )];
 
                 /*
