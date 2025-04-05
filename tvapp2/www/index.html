@@ -14,7 +14,7 @@
             <nav class="navbar sticky-top container">
                 <div class="navbar-brand">
                     <i class="logo fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
-                    <a class="header-name" href="https://github.com/Aetherinox/thetvapp-docker">TVApp2 for Docker</a>
+                    <a class="header-name" href="<%= appUrlGithub %>">TVApp2 for Docker</a>
                 </div>
                 <div class="navbar-social">
                     <a href="<%= appUrlDocs %>"><i class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
@@ -69,7 +69,7 @@
                             <td class="link cell-link"><a id="m3u-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="m3u-size"></span></td>
                             <td class="date cell-date"><span id="m3u-date"></span></td>
-                            <td class="desc cell-desc">Playlist data file which contains a list of all channels, their associated group, and logo URL.</td>
+                            <td class="desc cell-desc">M3U playlist which lists all channels, their associated group, and logo.</td>
                         </tr>
                         <tr>
                             <td class="icon cell-icon">
@@ -84,7 +84,7 @@
                             <td class="link cell-link"><a id="xml-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="xml-size"></span></td>
                             <td class="date cell-date"><span id="xml-date"></span></td>
-                            <td class="desc cell-desc">XML / EPG guide data which contains a list of all programs which are scheduled to play on a specific channel.</td>
+                            <td class="desc cell-desc">XML / EPG guide data (uncompressed)</td>
                         </tr>
                         <tr>
                             <td class="icon cell-icon">
@@ -99,7 +99,7 @@
                             <td class="link cell-link"><a id="tar-link" target="_blank"></a></td>
                             <td class="size cell-size"><span id="tar-size"></span></td>
                             <td class="date cell-date"><span id="tar-date"></span></td>
-                            <td class="desc cell-desc">XML / EPG guide data in compressed gzip format</td>
+                            <td class="desc cell-desc">XML / EPG guide data (compressed)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -114,7 +114,7 @@
             <div class="footer-inner">
                 <div class="container">
                     <div class="col text-center text-muted text-small text-nowrap">
-                        <small>Developed by BinaryNinja - <a href="https://github.com/thebinaryninja/tvapp2"><%= appName %></a> - v<%= appVersion %></small><br />
+                        <small>Developed by BinaryNinja - <a href="<%= appUrlGithub %>"><%= appName %></a> - v<%= appVersion %></small><br />
                         <small>This utility is for educational purposes only</small>
                     </div>
                 </div>
