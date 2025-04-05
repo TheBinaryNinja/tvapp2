@@ -69,6 +69,7 @@ const FOLDER_WWW = 'www';
 
 const envUrlRepo = process.env.URL_REPO || 'https://git.binaryninja.net/binaryninja';
 const envStreamQuality = process.env.STREAM_QUALITY || 'hd';
+const envFileURL = process.env.FILE_URL || 'urls.txt';
 const envFileM3U = process.env.FILE_PLAYLIST || 'playlist.m3u8';
 const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
 const envFileTAR = process.env.FILE_TAR || 'xmltv.xml.gz';
@@ -197,19 +198,21 @@ if ( process.pkg )
 {
     Log.info( `Processing Package` );
     const basePath = path.dirname( process.execPath );
-    FILE_URL = path.join( basePath, 'urls.txt' );
-    FILE_M3U = path.join( basePath, 'formatted.dat' );
-    FILE_XML = path.join( basePath, `${ envFileXML }` );
+
+    FILE_URL = path.join( basePath, FOLDER_WWW, `${ envFileURL }` );
+    FILE_M3U = path.join( basePath, FOLDER_WWW, `${ envFileM3U }` );
+    FILE_XML = path.join( basePath, FOLDER_WWW, `${ envFileXML }` );
     FILE_XML.length;
-    FILE_TAR = path.join( basePath, `${ envFileTAR }` );
+    FILE_TAR = path.join( basePath, FOLDER_WWW, `${ envFileTAR }` );
 }
 else
 {
     Log.info( `Processing Locals` );
-    FILE_URL = path.resolve( __dirname, 'urls.txt' );
-    FILE_M3U = path.resolve( __dirname, 'formatted.dat' );
-    FILE_XML = path.resolve( __dirname, `${ envFileXML }` );
-    FILE_TAR = path.resolve( __dirname, `${ envFileTAR }` );
+
+    FILE_URL = path.resolve( __dirname, FOLDER_WWW, `${ envFileURL }` );
+    FILE_M3U = path.resolve( __dirname, FOLDER_WWW, `${ envFileM3U }` );
+    FILE_XML = path.resolve( __dirname, FOLDER_WWW, `${ envFileXML }` );
+    FILE_TAR = path.resolve( __dirname, FOLDER_WWW, `${ envFileTAR }` );
 }
 
 /*
@@ -265,7 +268,7 @@ const semaphore = new Semaphore( 5 );
 
 async function downloadFile( url, filePath )
 {
-    Log.info( `Fetching`, chalk.white( `→` ), chalk.grey( `${ url }` ) );
+    Log.info( `Fetching`, chalk.white( `→` ), chalk.grey( `${ url }` ), chalk.white( `→` ), chalk.grey( `${ filePath }` ) );
 
     return new Promise( ( resolve, reject ) =>
     {
@@ -1161,6 +1164,11 @@ const server = http.createServer( ( request, response ) =>
 {
     const envWebIP = process.env.WEB_IP || '0.0.0.0';
     const envWebPort = process.env.WEB_PORT || `4124`;
+
+    Log.debug( `Assigned FILE_URL`, chalk.white( `→` ), chalk.grey( `${ FILE_URL }` ) );
+    Log.debug( `Assigned FILE_M3U`, chalk.white( `→` ), chalk.grey( `${ FILE_M3U }` ) );
+    Log.debug( `Assigned FILE_XML`, chalk.white( `→` ), chalk.grey( `${ FILE_XML }` ) );
+    Log.debug( `Assigned FILE_TAR`, chalk.white( `→` ), chalk.grey( `${ FILE_TAR }` ) );
 
     await initialize();
     server.listen( envWebPort, envWebIP, () =>
