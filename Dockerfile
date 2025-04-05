@@ -71,8 +71,10 @@ ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
 ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
 ENV STREAM_QUALITY="hd"
-ENV FILE_PLAYLIST="playlist.m3u8"
+ENV FILE_URL="urls.txt"
+ENV FILE_M3U="playlist.m3u8"
 ENV FILE_EPG="xmltv.xml"
+ENV FILE_TAR="xmltv.xml.gz"
 ENV LOG_LEVEL=4
 ENV TZ="Etc/UTC"
 
