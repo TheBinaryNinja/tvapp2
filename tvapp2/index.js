@@ -73,6 +73,7 @@ const envFileURL = process.env.FILE_URL || 'urls.txt';
 const envFileM3U = process.env.FILE_M3U || 'playlist.m3u8';
 const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
 const envFileTAR = process.env.FILE_TAR || 'xmltv.xml.gz';
+const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
 /*
@@ -480,7 +481,7 @@ async function fetchRemote( url )
         mod
             .get( url, {
                 headers: {
-                    'Accept-Encoding': 'gzip, deflate, br'
+                    'Accept-Encoding': envWebEncoding
                 }
             }, ( resp ) =>
             {
