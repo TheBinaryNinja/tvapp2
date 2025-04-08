@@ -1,3 +1,19 @@
+.table
+{
+    --bs-table-bg: #1b1b1b;
+    --bs-table-border-color: #313131;
+}
+
+.table-striped > tbody > tr:nth-of-type(2n+1) > *
+{
+    --bs-table-bg-type: #242424;
+}
+
+.table > :not(caption) > * > *
+{
+
+}
+
 body
 {
     background-color:               #f8f9fa;
@@ -32,23 +48,45 @@ body
     to { opacity: 1; }
 }
 
+@keyframes fade-in-dimmer
+{
+    from { opacity: 0; }
+    to { opacity: 0.90; }
+}
+
+@keyframes fade-in-dimmer-repeat
+{
+    from { opacity: 0.90; }
+    to { opacity: 0.7; }
+}
+
 @keyframes scale-in
 {
     from {
         transform:              scale(1, 1);
     }
     to {
-        transform:              scale(1.1, 1.1);
+        transform:              scale(1.5, 1.5);
+    }
+}
+
+@keyframes spin-scale
+{
+    to {
+        transform:      rotate(0deg) scale(1, 1);
+    }
+    from {
+        transform:      rotate(360deg) scale(1.5, 1.5);
     }
 }
 
 @keyframes spin
 {
     from {
-        transform:rotate(0deg);
+        transform:      rotate(0deg);
     }
     to {
-        transform:rotate(360deg);
+        transform:      rotate(360deg);
     }
 }
 
@@ -115,30 +153,6 @@ p
     margin-left:                auto;
 }
 
-.header .logo
-{
-    animation-name:             fade-in, scale-in;
-    animation-duration:         1s, 0.5s;
-    animation-timing-function:  ease-in, linear;
-    animation-direction:        alternate, alternate;
-    animation-iteration-count:  infinite, 1;
-    transition:                 all 0.3s;
-    opacity:                    0.5;
-    transform:                  scale(1.1);
-}
-
-.header .restart
-{
-    animation-name:             fade-in, scale-in;
-    animation-duration:         1s, 0.5s;
-    animation-timing-function:  ease-in, linear;
-    animation-direction:        alternate, alternate;
-    animation-iteration-count:  infinite, 1;
-    transition:                 all 0.3s;
-    opacity:                    0.5;
-    transform:                  scale(1.1);
-}
-
 .footer
 {
     position:                   absolute;
@@ -151,8 +165,8 @@ p
 .footer-inner
 {
     margin:                     0;
-    padding-bottom:             20px;
-    padding-top:                20px;
+    padding-bottom:             10px;
+    padding-top:                10px;
     background-color:           #151515;
 }
 
@@ -177,7 +191,6 @@ p
 {
     background-color:           #a82147;
     color:                      #fff;
-    height:                     55px;
 }
 
 .header .navbar-brand
@@ -298,13 +311,24 @@ p
 .navbar-social svg
 {
     font-size:                  clamp(0.7em, 2vw, 1.1em);
-    padding-top:                2px;
     margin-left:               10px;
 }
 
-.navbar-social svg:hover
+.logo
 {
     animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.2);
+}
+
+.logo:hover
+{
+    animation-name:             scale-in, spin;
     animation-duration:         1s, 0.5s;
     animation-timing-function:  ease-in, linear;
     animation-direction:        alternate, alternate;
@@ -314,15 +338,52 @@ p
     transform:                  scale(1.8);
 }
 
+.restart
+{
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  linear, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.2);
+}
+
+.restart:hover
+{
+    animation-name:             spin-scale;
+    animation-duration:         1s;
+    animation-delay:            0s;
+    animation-timing-function:  linear;
+    animation-direction:        alternate;
+    animation-iteration-count:  infinite;
+    transition:                 all 0.3s;
+    opacity:                    1;
+}
+
+.spin
+{
+    transition-property: transform;
+    transition-duration: 0.5s;
+    animation-name: spin; 
+    animation-duration: 0.5s; 
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
 .table thead th a
 {
     color:                      #9b9b9b !important;
     font-weight:                normal;
 }
 
+
+
+
 .table td, .table th
 {
-    padding:                    .75rem;
+    padding:                    .35rem;
     vertical-align:             baseline;
     border-top:                 0px solid #dee2e6;
     font-size:                  clamp(0.5em, 1vw, 0.8em);
@@ -331,17 +392,13 @@ p
 
 .table thead tr
 {
-    border-bottom:              2px solid #575757;
-    background-color:           #181818;
-    color:                      #717171;
+    border-bottom:              2px solid #325eb3;
 }
 
 .table thead th
 {
     vertical-align:             bottom;
-    border-bottom:              0px solid #575757;
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    line-height:                2.5vmin;
+    border-bottom:              0px solid #325eb3;
 }
 
 .table-hover tbody tr:hover
@@ -355,27 +412,62 @@ p
     color:                      #d0c273;
 }
 
-#warning-firewall
+.ntfy
+{
+    padding-top:                1.5vh;
+    padding-bottom:             1.5vh;
+    padding-left:               2vh;
+    padding-right:              2vh;
+    margin-bottom:              1vh;
+    line-height:                25px;
+    width:                      100%;
+}
+
+#ntfy-restart
+{
+    background-color:           #1a1a1a;
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    font-weight:                100;
+    border:                     1px dashed #9e973a;
+    display:                    none;
+}
+
+#ntfy-firewall
 {
     background-color:           #1A1A1A;
-    padding:                    2vh;
-    margin-bottom:              1vh;
     font-size:                  clamp(0.5em, 1vw, 0.8em);
     font-weight:                100;
     border:                     1px dashed #FF6C00;
-    width:                      100%;
-    line-height:                25px;
+    display:                    none;
 }
 
-#warning-localhost
+#ntfy-localhost
 {
     background-color:           #1A1A1A;
-    padding:                    2vh;
     font-size:                  clamp(0.5em, 1vw, 0.8em);
     font-weight:                100;
     border:                     1px dashed #FF0048;
-    width:                      100%;
-    line-height:                25px;
+    display:                    none;
+}
+
+span.success
+{
+    color:                      #FFF;
+    background-color:           #97950A;
+    padding-left:               7px;
+    padding-right:              7px;
+    padding-top:                2px;
+    padding-bottom:             2px;
+    font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    margin-right:               8px;
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.1);
 }
 
 span.notice
@@ -421,8 +513,8 @@ span.warning
 code
 {
     font-size:                  96%;
-    color:                      #ff4985;
-    word-break:                 break-word;
+    color:                      #ff4985 !important;
+    word-break:                 break-word !important;
     padding-right:              5px;
     padding-left:               4px;
 }
@@ -480,4 +572,61 @@ code
         bottom:                 0;
         z-index:                999;
     }
+}
+
+.aboveDimmer
+{
+	z-index:                    301;
+    position:                   relative;
+}
+
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.dimmer-out
+{
+    transition:                 opacity 1s ease-in-out !important;
+    opacity:                    0 !important;
+}
+
+.dimmer-in
+{
+    opacity:                    0.7;
+    animation-name:             fade-in-dimmer, fade-in-dimmer-repeat;
+    animation-delay:            0s, 0.7s;
+    animation-duration:         0.7s, 1s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  1, infinite;
+    transition:                 opacity 250ms ease-in, visibility 0ms ease-in 250ms;
+}
+
+#dimmer
+{
+	z-index:                    300;
+    position:                   fixed;
+    background-color:           #000000;
+    width:                      100%;
+    float:                      left;
+    height:                     100%;
+    visibility:                 hidden;
+    top:                        0px;
+    left:                       0px;
 }

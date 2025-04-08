@@ -1073,7 +1073,7 @@ const server = http.createServer( ( request, response ) =>
                 'Content-Type': 'application/json'
             });
 
-            response.end( `Restart triggered` );
+            response.end( `{ "status": "ok" }` );
 
             return;
         }

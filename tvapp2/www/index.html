@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="favicon.ico">
     </head>
     <body>
+        <!-- Header -->
         <div class="header">
             <nav class="navbar sticky-top container">
                 <div class="navbar-brand">
@@ -25,17 +26,19 @@
             </nav>
         </div>
 
+        <!-- Header Notification: description -->
         <div class="container">
             <div class="container header-container">
                 <div class="row">
                     <div class="col">
-                        <div class="about">This page displays your most recent copies of the <code><%= fileM3U %></code> playlist and <code><%= fileXML %></code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within an IPTV app such as Jellyfin. The <code><%= fileXML %></code> and <code><%= fileTAR %></code> have identical guide data, however the <code><%= fileTAR %></code> is compressed and will import into your IPTV application much faster.</div>
+                        <div class="about">This page displays your most recent copies of the <code><%= fileM3U %></code> playlist and <code><%= fileXML %></code> EPG guide data. Right-click each file, select <span class="text-accent">Copy Link</span> and paste the URLs within an IPTV app such as Jellyfin. The <code><%= fileXML %></code> and <code><%= fileGZP %></code> have identical guide data, however the <code><%= fileGZP %></code> is compressed and will import into your IPTV application much faster.</div>
                     </div>
                 </div>
             </div>
 
+        <!-- Header Fontawesome Icons -->
             <div class="container main-container">
-                <table id="list" class="table table-sm table-hover">
+                <table id="list" class="table table-dark table-striped">
                     <thead>
                         <tr class="d-none d-md-table-row">
                             <td class="icon cell-icon"></td>
@@ -94,12 +97,12 @@
                                 </svg>
                                 <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
                             </td>
-                            <td class="file cell-tar">
-                                <a id="tar-name" target="_blank"></a>
+                            <td class="file cell-gzp">
+                                <a id="gzp-name" target="_blank"></a>
                             </td>
-                            <td class="link cell-link"><a id="tar-link" target="_blank"></a></td>
-                            <td class="size cell-size"><span id="tar-size"></span></td>
-                            <td class="date cell-date"><span id="tar-date"></span></td>
+                            <td class="link cell-link"><a id="gzp-link" target="_blank"></a></td>
+                            <td class="size cell-size"><span id="gzp-size"></span></td>
+                            <td class="date cell-date"><span id="gzp-date"></span></td>
                             <td class="desc cell-desc">XML / EPG guide data <code>(compressed)</code></td>
                         </tr>
                     </tbody>
@@ -107,10 +110,12 @@
             </div>
         </div>
 
+        <!-- Footer -->
         <footer class="footer">
             <div class="container" style="padding-bottom:20px;">
-                <div id="warning-firewall" class="sticky-bottom"></div>
-                <div id="warning-localhost" class="sticky-bottom"></div>
+                <div id="ntfy-restart" class="ntfy ntfy-success sticky-bottom"></div>
+                <div id="ntfy-firewall" class="ntfy ntfy-warning sticky-bottom"></div>
+                <div id="ntfy-localhost" class="ntfy ntfy-danger sticky-bottom"></div>
             </div>
             <div class="footer-inner">
                 <div class="container">
@@ -122,11 +127,30 @@
             </div>
         </footer>
 
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">TVApp2</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Do you ever feel like a plastic bag.... drifting through the wind?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Welcome to costco</button>
+                        <button type="button" class="btn btn-primary">I'll be back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             const urlBase = window.location.origin;
             const urlM3U = urlBase + "/playlist";
             const urlXML = urlBase + "/epg";
-            const urlTAR = urlBase + "/gzip";
+            const urlGZP = urlBase + "/gzip";
 
             document.getElementById("m3u-name").textContent = "<%= fileM3U %>";
             document.getElementById("m3u-name").href = urlM3U;
@@ -142,42 +166,71 @@
             document.getElementById("xml-size").textContent = "<%= sizeXML %>";
             document.getElementById("xml-date").textContent = "<%= dateXML %>";
 
-            document.getElementById("tar-name").textContent = "<%= fileTAR %>";
-            document.getElementById("tar-name").href = urlTAR;
-            document.getElementById("tar-link").textContent = urlTAR;
-            document.getElementById("tar-link").href = urlTAR;
-            document.getElementById("tar-size").textContent = "<%= sizeTAR %>";
-            document.getElementById("tar-date").textContent = "<%= dateTAR %>";
+            document.getElementById("gzp-name").textContent = "<%= fileGZP %>";
+            document.getElementById("gzp-name").href = urlGZP;
+            document.getElementById("gzp-link").textContent = urlGZP;
+            document.getElementById("gzp-link").href = urlGZP;
+            document.getElementById("gzp-size").textContent = "<%= sizeGZP %>";
+            document.getElementById("gzp-date").textContent = "<%= dateGZP %>";
         </script>
 
         <script>
+
+            /*
+                Notify > Localhost
+            */
+
             document.addEventListener("DOMContentLoaded", function()
             {
-                const host = window.location.hostname;
+                const host          = window.location.hostname;
+                const port          = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
                 if (host === "localhost" || host === "127.0.0.1")
                 {
-                    const warning       = document.createElement("div");
-                    warning.innerHTML   = "<p><span class='warning'>Warning</span> If you are accessing this page via 127.0.0.1 or localhost, proxying will not work on other devices.Please load \
-                                        this page using your computer's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p> \
-                                        <br> \
-                                        <p> Learn how to locate your IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' target = '_blank' > Windows</a> or \
-                                        <a href='https://youtube.com/watch?v=gaIYP4TZfHI' target = '_blank' > Linux</a>.</p>";
+                    const msg       = "<p><span class='warning'>Warning</span> If you are accessing this page via 127.0.0.1 or localhost, proxying will not work on other devices.Please load \
+                                    this page using your computer's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p> \
+                                    <br> \
+                                    <p> Learn how to locate your IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' target = '_blank' > Windows</a> or \
+                                    <a href='https://youtube.com/watch?v=gaIYP4TZfHI' target = '_blank' > Linux</a>.</p>";
 
-                    document.getElementById("warning-localhost").appendChild(warning);
+                    document.getElementById("ntfy-localhost").innerHTML = msg;
+                    document.getElementById("ntfy-localhost").style.display = "block";
                 } else {
-                    document.getElementById("warning-localhost").style.display = "none";
+                    document.getElementById("ntfy-localhost").style.display = "none";
                 }
             });
 
+            /*
+                Notify > Firewall
+            */
+
             document.addEventListener("DOMContentLoaded", function()
             {
-                const port              = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
-                const warningMessage    = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your <a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> \
-                                        or <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a> OS firewall settings \
-                                        This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
+                const port          = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+                const msg           = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your <a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> \
+                                    or <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a> OS firewall settings \
+                                    This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
 
-                document.getElementById("warning-firewall").innerHTML = warningMessage;
+                document.getElementById("ntfy-firewall").innerHTML = msg;
+                document.getElementById("ntfy-firewall").style.display = "block";
             });
+
+            /*
+                Notify > Restart / Resync
+            */
+
+            document.addEventListener("DOMContentLoaded", function()
+            {
+                const port          = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+                const msg           = "<p><span class='success'>Success</span> Your IPTV m3u channels and xml guide data has been successfully re-synced. \
+                                    Please refresh this window to see new data</p>";
+
+                document.getElementById("ntfy-restart").innerHTML = msg;
+                document.getElementById("ntfy-restart").style.display = "none";
+            });
+
+            /*
+                Activate Resync
+            */
 
             function toggleRestart()
             {
@@ -187,6 +240,36 @@
                     type: 'POST',
                     data: {
                         x: 1
+                    },
+                    beforeSend: function( data )
+                    {
+                        const dimmer = document.createElement('div');
+                        dimmer.setAttribute("id", "dimmer");
+                        dimmer.style.visibility = "visible";
+                        dimmer.classList.add("dimmer-in");
+                        document.getElementsByTagName('body')[0].appendChild(dimmer);
+                        document.getElementById("ntfy-firewall").style.display = "none";
+                        document.getElementById("ntfy-localhost").style.display = "none";
+                        document.getElementById("ntfy-restart").style.display = "none";
+
+                        const iconResync = document.getElementsByClassName('fa-rotate');
+                        iconResync[0].classList.remove("restart");
+                        iconResync[0].classList.add("spin");
+                    },
+                    success: function( data )
+                    {
+                        setTimeout(() =>
+                        {
+                            document.getElementById("ntfy-restart").style.display = "block"
+                            const dimmer = document.getElementById("dimmer");
+                            dimmer.classList.remove("dimmer-in");
+                            dimmer.classList.add("dimmer-out");
+                            dimmer.remove();
+                            const iconResync = document.getElementsByClassName('fa-rotate');
+                            iconResync[0].classList.remove("spin");
+                            iconResync[0].classList.add("restart");
+                            setTimeout(location.reload.bind(location), 1000);
+                        }, 1000);
                     }
                 });
             }
