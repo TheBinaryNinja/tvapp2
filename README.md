@@ -565,9 +565,9 @@ docker buildx build \
   --build-arg ARCH=amd64 \
   --build-arg VERSION=1.1.0 \
   --build-arg BUILDDATE=20250325 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2.0 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2 \
+  --tag ghcr.io/thebinaryninja/tvapp2:2 \
   --tag ghcr.io/thebinaryninja/tvapp2:latest \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
