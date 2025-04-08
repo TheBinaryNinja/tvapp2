@@ -1,6 +1,17 @@
 #!/usr/bin/with-contenv sh
 
 # #
+#   Store env variables in s6
+# #
+
+IP_GATEWAY=$(/sbin/ip route|awk '/default/ { print $3 }')
+IP_CONTAINER=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+
+printf "$IP_GATEWAY" > /var/run/s6/container_environment/IP_GATEWAY
+printf "$IP_CONTAINER" > /var/run/s6/container_environment/IP_CONTAINER
+
+
+# #
 #   install and startup for tvapp2
 # #
 
@@ -9,4 +20,3 @@ rm -rf ${DIR_BUILD}/*
 cd ${DIR_RUN}
 npm install --omit=dev
 npm start
-
