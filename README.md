@@ -112,6 +112,7 @@
 
 This project contains several repositories which all share the same code; use them as backups:
 
+- [🔀 dockerhub:thebinaryninja/tvapp2](https://hub.docker.com/r/thebinaryninja/tvapp2)
 - [🔀 github:thebinaryninja/tvapp2](https://github.com/thebinaryninja/tvapp2)
 - [🔀 gitea:git.binaryninja.net/binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2)
 
@@ -206,7 +207,7 @@ docker run -d --restart=unless-stopped \
 
 If you want to use a `📄 docker-compose.yml` to bring TVApp2 up; you may use the following example:
 
-```yml ignore
+```yml
 services:
     tvapp2:
         container_name: tvapp2
@@ -356,7 +357,7 @@ This repository offers two types of docker image; `stable` and `development`. Yo
 
 | Build                     | Tags                                                                          |
 | ------------------------- | ----------------------------------------------------------------------------- |
-| `Stable`                  | `🔖 tvapp2:latest` <br /> `🔖 tvapp2:1.1.0` <br /> `🔖 tvapp2:1.1` <br /> `🔖 tvapp2:1`   |
+| `Stable`                  | `🔖 tvapp2:latest` <br /> `🔖 tvapp2:1.2.0` <br /> `🔖 tvapp2:1.2` <br /> `🔖 tvapp2:1`   |
 | `Development`             | `🔖 tvapp2:development`                                                          |
 
 <br />
@@ -563,8 +564,8 @@ Creates the TVApp2 `amd64` docker image:
 # Build tvapp2 amd64
 docker buildx build \
   --build-arg ARCH=amd64 \
-  --build-arg VERSION=1.1.0 \
-  --build-arg BUILDDATE=20250325 \
+  --build-arg VERSION=1.2.0 \
+  --build-arg BUILDDATE=20250407 \
   --tag ghcr.io/thebinaryninja/tvapp2:1.2.0 \
   --tag ghcr.io/thebinaryninja/tvapp2:1.2 \
   --tag ghcr.io/thebinaryninja/tvapp2:2 \
@@ -591,10 +592,10 @@ Creates the TVApp2 `arm64` docker image:
 # Build tvapp2 arm64
 docker buildx build \
   --build-arg ARCH=arm64 \
-  --build-arg VERSION=1.1.0 \
-  --build-arg BUILDDATE=20250325 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
+  --build-arg VERSION=1.2.0 \
+  --build-arg BUILDDATE=20250407 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2.0 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2 \
   --tag ghcr.io/thebinaryninja/tvapp2:1 \
   --tag ghcr.io/thebinaryninja/tvapp2:latest \
   --attest type=provenance,disabled=true \
@@ -723,8 +724,8 @@ docker run --privileged --rm tonistiigi/binfmt --install all
 
 Once the emulator is installed; we will now build two images. When building these two images; we will ensure the `--tag` value is different for each one, by adding the architecture to the end. This ensures we don't overwrite one image with the newer one. We need to have two seperate docker images with two different tags.
 
-- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
-- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64`
 
 <br />
 
@@ -735,10 +736,10 @@ Once the emulator is installed; we will now build two images. When building thes
 > 
 > | Registry | Tag |
 > | --- | --- |
-> | Dockerhub | `--tag thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag thebinaryninja/tvapp2:1.1.0-arm64` |
-> | Github (GHCR) | `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64` |
-> | Registry v2 | `--tag registry.domain.lan/thebinaryninja/tvapp2:1.1.0-amd64`<br>`--tag registry.domain.lan/thebinaryninja/tvapp2:1.1.0-arm64` |
-> | Gitea | `--tag git.binaryninja.net/binaryninja/tvapp2:1.1.0-amd64`<br>`--tag git.binaryninja.net/binaryninja/tvapp2:1.1.0-arm64` |
+> | Dockerhub | `--tag thebinaryninja/tvapp2:1.2.0-amd64`<br>`--tag thebinaryninja/tvapp2:1.2.0-arm64` |
+> | Github (GHCR) | `--tag ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64`<br>`--tag ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64` |
+> | Registry v2 | `--tag registry.domain.lan/thebinaryninja/tvapp2:1.2.0-amd64`<br>`--tag registry.domain.lan/thebinaryninja/tvapp2:1.2.0-arm64` |
+> | Gitea | `--tag git.binaryninja.net/binaryninja/tvapp2:1.2.0-amd64`<br>`--tag git.binaryninja.net/binaryninja/tvapp2:1.2.0-arm64` |
 
 <br />
 
@@ -759,9 +760,9 @@ Creates the TVApp2 **Stable** release `amd64` docker image:
 # Build Tvapp2 amd64 - (stable release)
 docker buildx build \
   --build-arg ARCH=amd64 \
-  --build-arg VERSION=1.1.0 \
-  --build-arg BUILDDATE=20250325 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64 \
+  --build-arg VERSION=1.2.0 \
+  --build-arg BUILDDATE=20250407 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
   --file Dockerfile \
@@ -785,9 +786,9 @@ Creates the TVApp2 **Stable** release `arm64` docker image:
 # Build Tvapp2 arm64 - (stable release)
 docker buildx build \
   --build-arg ARCH=arm64 \
-  --build-arg VERSION=1.1.0 \
-  --build-arg BUILDDATE=20250325 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64 \
+  --build-arg VERSION=1.2.0 \
+  --build-arg BUILDDATE=20250407 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
   --file Dockerfile \
@@ -811,8 +812,8 @@ Creates the TVApp2 **Development** release `amd64` docker image:
 # Build Tvapp2 amd64 - (development release)
 docker buildx build \
   --build-arg ARCH=amd64 \
-  --build-arg VERSION=1.1.0 \
-  --build-arg BUILDDATE=20250325 \
+  --build-arg VERSION=1.2.0 \
+  --build-arg BUILDDATE=20250407 \
   --tag ghcr.io/thebinaryninja/tvapp2:development-amd64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
@@ -837,8 +838,8 @@ Creates the TVApp2 **Development** release `arm64` docker image:
 # Build Tvapp2 arm64 - (development release)
 docker buildx build \
   --build-arg ARCH=arm64 \
-  --build-arg VERSION=1.1.0 \
-  --build-arg BUILDDATE=20250325 \
+  --build-arg VERSION=1.2.0 \
+  --build-arg BUILDDATE=20250407 \
   --tag ghcr.io/thebinaryninja/tvapp2:development-arm64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
@@ -857,8 +858,8 @@ docker buildx build \
 
 After completing the `docker buildx` commands above; you should now have a few new images. Each image should have its own separate docker tags which do not conflict. If you decided to not build the **development** releases below; that is fine.
 
-- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
-- `--tag ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64`
+- `--tag ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64`
 - `--tag ghcr.io/thebinaryninja/tvapp2:development-amd64`
 - `--tag ghcr.io/thebinaryninja/tvapp2:development-arm64`
 
@@ -884,15 +885,15 @@ You can also get the hash digests by running the commands:
 <br />
 
 ```shell
-$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
+$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64
 
-Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64
+Name:      ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64
 MediaType: application/vnd.docker.distribution.manifest.v2+json
 Digest:    sha256:0abe1b1c119959b3b1ccc23c56a7ee2c4c908c6aaef290d4ab2993859d807a3b
 
-$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
+$ docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64
 
-Name:      ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
+Name:      ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64
 MediaType: application/vnd.docker.distribution.manifest.v2+json
 Digest:    sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c473
 ```
@@ -938,14 +939,14 @@ Digest:    sha256:c719ccb034946e3f0625003f25026d001768794e38a1ba8aafc9146291d548
 > ```shell
 > $ docker images --all --no-trunc | grep thebinaryninja
 > 
-> ghcr.io/thebinaryninja/tvapp2   1.1.0-arm64       sha256:48520ca15fed6483d2d5b79993126c311f833002345b0e12b8eceb5bf9def966   42 minutes ago   46MB
+> ghcr.io/thebinaryninja/tvapp2   1.2.0-arm64       sha256:48520ca15fed6483d2d5b79993126c311f833002345b0e12b8eceb5bf9def966   42 minutes ago   46MB
 > 
-> ghcr.io/thebinaryninja/tvapp2   1.1.0-amd64       sha256:54a9b7d390199532d5667fae67120d77e2f459bd6108b27ce94e0cfec8f3c41f   43 minutes ago   45MB
+> ghcr.io/thebinaryninja/tvapp2   1.2.0-amd64       sha256:54a9b7d390199532d5667fae67120d77e2f459bd6108b27ce94e0cfec8f3c41f   43 minutes ago   45MB
 > ```
 >
 > To get the correct sha256 digest, use:
-> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64`
-> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64`
+> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64`
+> - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64`
 > - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-amd64`
 > - `docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-arm64`
 > 
@@ -965,8 +966,8 @@ For the **stable** releases, use:
 # #
 
 docker buildx imagetools create \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1.0 \
-  --tag ghcr.io/thebinaryninja/tvapp2:1.1 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2.0 \
+  --tag ghcr.io/thebinaryninja/tvapp2:1.2 \
   --tag ghcr.io/thebinaryninja/tvapp2:1 \
   --tag ghcr.io/thebinaryninja/tvapp2:latest \
   sha256:0abe1b1c119959b3b1ccc23c56a7ee2c4c908c6aaef290d4ab2993859d807a3b \
@@ -974,9 +975,9 @@ docker buildx imagetools create \
 
 [+] Building 0.2s (4/4) FINISHED                                                                                                                                                                                                      
  => [internal] pushing ghcr.io/thebinaryninja/tvapp2:latest   0.2s
- => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1.1      0.2s
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1.2      0.2s
  => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1        0.2s
- => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1.1.0    0.2s
+ => [internal] pushing ghcr.io/thebinaryninja/tvapp2:1.2.0    0.2s
 ```
 
 <br />
@@ -1022,8 +1023,8 @@ In this example, we take the existing two files we created earlier, and merge th
 ```shell
 # Example 1 (using tag)
 docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
-    --amend ghcr.io/thebinaryninja/tvapp2:1.1.0-amd64 \
-    --amend ghcr.io/thebinaryninja/tvapp2:1.1.0-arm64
+    --amend ghcr.io/thebinaryninja/tvapp2:1.2.0-amd64 \
+    --amend ghcr.io/thebinaryninja/tvapp2:1.2.0-arm64
 
 # Example 2 (using sha256 hash)
 docker manifest create ghcr.io/thebinaryninja/tvapp2:latest \
@@ -1064,7 +1065,7 @@ To build the project, `🗔 cd` into the project folder and run the build comman
 
 ```shell
 cd /home/docker/tvapp2/
-npm run docker:build:amd64 --VERSION=1.1.0 --BUILDDATE=20250325
+npm run docker:build:amd64 --VERSION=1.2.0 --BUILDDATE=20250407
 ```
 
 <br />
@@ -1089,7 +1090,7 @@ The run command above has several variables you must specify:
 | Variable | Description |
 | --- | --- |
 | `--VERSION=1.X.X` | The version to assign to the docker image |
-| `--BUILDDATE=20250325` | The date to assign to the docker image. <br /> Date format: `YYYYMMDD` |
+| `--BUILDDATE=20250407` | The date to assign to the docker image. <br /> Date format: `YYYYMMDD` |
 | `--ARCH=amd64` | Architecture for image<br /> <sub><sup>Options:</sup></sub> `amd64`, `arm64` |
 
 <br />
@@ -1139,7 +1140,7 @@ sudo nano /home/docker/tvapp2/docker-compose.yml
 
 Add the following to your `📄 docker-compose.yml`:
 
-```yml ignore
+```yml
 services:
     tvapp2:
         container_name: tvapp2
@@ -1245,7 +1246,7 @@ We will be setting up the following:
 
 To add TVApp2 to Traefik, you will need to open your `📄 docker-compose.yml` and apply the following labels to your TVApp2 container. Ensure you change `domain.lan` to your actual domain name.
 
-```yml ignore
+```yml
 services:
     tvapp2:
         container_name: tvapp2

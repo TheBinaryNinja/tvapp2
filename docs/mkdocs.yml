@@ -240,6 +240,7 @@ nav:
                 - Tags: 'about/tags.md'
     - Config:
           - Environment Variables: 'config/env.md'
+          - Volumes: 'config/volumes.md'
     - Changelog: 'about/changelog.md'
     - Discord: 'https://discord.gg/gTze6hRe'
 
