@@ -17,6 +17,7 @@
                     <a class="header-name" href="<%= appUrlGithub %>">TVApp2 for Docker</a>
                 </div>
                 <div class="navbar-social">
+                    <a href="javascript:toggleRestart();"><i class="restart fa-solid fa-rotate" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlDocs %>"><i class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlGithub %>"><i class="logo fa-logos fa-github" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlDiscord %>"><i class="logo fa-logos fa-discord" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
@@ -177,7 +178,20 @@
 
                 document.getElementById("warning-firewall").innerHTML = warningMessage;
             });
+
+            function toggleRestart()
+            {
+                $.ajax(
+                {
+                    url: 'restart',
+                    type: 'POST',
+                    data: {
+                        x: 1
+                    }
+                });
+            }
         </script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="js/tvapp2.min.js"></script>
     </body>
 </html>

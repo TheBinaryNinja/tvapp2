@@ -42,6 +42,16 @@ body
     }
 }
 
+@keyframes spin
+{
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
+
 .container
 {
     text-align:                 left;
@@ -106,6 +116,18 @@ p
 }
 
 .header .logo
+{
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.1);
+}
+
+.header .restart
 {
     animation-name:             fade-in, scale-in;
     animation-duration:         1s, 0.5s;
@@ -277,7 +299,7 @@ p
 {
     font-size:                  clamp(0.7em, 2vw, 1.1em);
     padding-top:                2px;
-    padding-left:               10px;
+    margin-left:               10px;
 }
 
 .navbar-social svg:hover

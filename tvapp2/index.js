@@ -104,6 +104,7 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
                 http://127.0.0.1:4124/channel
 */
 
+const subdomainRestart = [ 'restart', 'sync', 'resync' ];
 const subdomainGZ = [ 'gzip', 'gz' ];
 const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
 const subdomainEPG = [ 'guide', 'epg', 'xml' ];
@@ -1045,7 +1046,7 @@ const server = http.createServer( ( request, response ) =>
 
     const loadFile = reqUrl.replace( /^\/+/, '' );
 
-    Log.debug( `www`, chalk.blueBright( `[GET]` ), chalk.white( `→` ), chalk.grey( `Requesting asset` ), chalk.blueBright( `${ loadFile }` ) );
+    Log.debug( `www`, chalk.blueBright( `[REQUEST]` ), chalk.white( `→` ), chalk.grey( `asset>` ), chalk.greenBright( `${ loadFile }` ), chalk.grey( `<method>` ), chalk.greenBright( `${ method }` ) );
 
     const handleRequest = async() =>
     {
@@ -1056,6 +1057,23 @@ const server = http.createServer( ( request, response ) =>
             subdomainM3U        array []
             loadFile            channel?url=https%3A%2F%2Ftvpass.org%2Fchannel%2Fabc-wabc-new-york-ny%2F
         */
+
+        if ( subdomainRestart.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
+        {
+            Log.info( `Toggled restart`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+
+            const envWebIP = process.env.WEB_IP || '0.0.0.0';
+            const envWebPort = process.env.WEB_PORT || `4124`;
+
+            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_URL` ), chalk.blueBright( `${ FILE_URL }` ) );
+            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_M3U` ), chalk.blueBright( `${ FILE_M3U }` ) );
+            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_XML` ), chalk.blueBright( `${ FILE_XML }` ) );
+            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_TAR` ), chalk.blueBright( `${ FILE_TAR }` ) );
+
+            await initialize();
+
+            return;
+        }
 
         if ( subdomainM3U.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
@@ -1088,7 +1106,6 @@ const server = http.createServer( ( request, response ) =>
             await serveXML( response, request );
             return;
         }
-
 
         if ( subdomainGZ.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
