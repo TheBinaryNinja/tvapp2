@@ -110,6 +110,18 @@ const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
 const subdomainEPG = [ 'guide', 'epg', 'xml' ];
 const subdomainKey = [ 'key', 'keys' ];
 const subdomainChan = [ 'channels', 'channel' ];
+const subdomainHealth = [ 'status', 'health' ];
+
+/*
+    Container Information
+
+    these environment variables are defined from the s6-overlay layer of the docker image
+*/
+
+const fileIpGateway = '/var/run/s6/container_environment/IP_GATEWAY'
+const fileIpContainer = '/var/run/s6/container_environment/IP_CONTAINER'
+const envIpGateway = fs.existsSync(fileIpGateway) ? fs.readFileSync(fileIpGateway, 'utf8') : `0.0.0.0`;
+const envIpContainer = fs.existsSync(fileIpContainer) ? fs.readFileSync(fileIpContainer, 'utf8') : `0.0.0.0`;
 
 /*
     Define > Logs
@@ -805,6 +817,62 @@ async function serveM3UPlaylist( req, res )
     }
 }
 
+async function serveHealthCheck( req, res )
+{
+    await semaphore.acquire();
+    try
+    {
+        const urlParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'url' );
+        if ( !urlParam )
+        {
+            Log.debug( `No parameters passed to healthcheck`, chalk.white( `→` ), chalk.grey( `URL` ) );
+        }
+
+        const healthcheck =
+        {
+            ip: envIpContainer,
+            gateway: envIpGateway,
+            uptime: process.uptime(),
+            message: 'Healthy',
+            timestamp: Date.now()
+        };
+
+        res.writeHead( 200, {
+            'Content-Type': 'application/json'
+        });
+
+        res.end( JSON.stringify(healthcheck) );
+        return;
+    }
+    catch ( err )
+    {
+        Log.error( `Error getting healthcheck:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+
+        if ( !res.headersSent )
+        {
+            const healthcheck =
+            {
+                ip: envIpContainer,
+                gateway: envIpGateway,
+                uptime: process.uptime(),
+                message: 'Unhealthy',
+                status: 0,
+                timestamp: Date.now()
+            };
+
+            res.writeHead( 503, {
+                'Content-Type': 'application/json'
+            });
+
+            res.end( JSON.stringify(healthcheck) );
+        }
+    }
+    finally
+    {
+        semaphore.release();
+    }
+}
+
 /*
     Rewrites the URLs
 */
@@ -1115,6 +1183,14 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `Received request for compressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveGZP( response, request );
+            return;
+        }
+
+        if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+        {
+            Log.info( `Received healthcheck`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+
+            await serveHealthCheck( request, response );
             return;
         }
 
