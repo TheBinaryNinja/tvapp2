@@ -473,6 +473,24 @@ async function prepareGzip( )
     }
 }
 
+/*
+
+    @note               Jellyfin Users
+                        Originally, this node webserver enabled gzip compression for the value `Accept-Encoding`. Doing this
+                        may cause an error to appear in Jellyfin logs / console when attempting to fetch the latest guide data
+                        from the tvapp2 xml file.
+
+                            [ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel XXXXXXXXXXXXXXX (Source 2)
+                            System.Xml.XmlException: '', hexadecimal value 0x1F, is an invalid character. Line 1, position 1.
+
+                        To fix the error, we create a customizable env variable that allows the user to override the encoding header.
+                        We change the following:
+                            'Accept-Encoding': 'gzip, deflate, br'
+                                to
+                            'Accept-Encoding': 'deflate, br'
+
+*/
+
 async function fetchRemote( url )
 {
     return new Promise( ( resolve, reject ) =>
