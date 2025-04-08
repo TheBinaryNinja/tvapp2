@@ -1030,9 +1030,12 @@ const server = http.createServer( ( request, response ) =>
         /*
             Define the different routes.
             Place the template system last. Getting TVApp data should take priority.
+
+            subdomainM3U        array []
+            loadFile            channel?url=https%3A%2F%2Ftvpass.org%2Fchannel%2Fabc-wabc-new-york-ny%2F
         */
 
-        if ( subdomainM3U.includes( `${ loadFile }` ) && method === 'GET' )
+        if ( subdomainM3U.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `Received request for m3u playlist data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
@@ -1040,7 +1043,7 @@ const server = http.createServer( ( request, response ) =>
             return;
         }
 
-        if ( subdomainChan.includes( `${ loadFile }` ) && method === 'GET' )
+        if ( subdomainChan.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `Received request for channel data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
@@ -1048,7 +1051,7 @@ const server = http.createServer( ( request, response ) =>
             return;
         }
 
-        if ( subdomainKey.includes( `${ loadFile }` ) && method === 'GET' )
+        if ( subdomainKey.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `Received request for key data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
@@ -1056,7 +1059,7 @@ const server = http.createServer( ( request, response ) =>
             return;
         }
 
-        if ( subdomainEPG.includes( `${ loadFile }` ) && method === 'GET' )
+        if ( subdomainEPG.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `Received request for raw EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
@@ -1064,7 +1067,8 @@ const server = http.createServer( ( request, response ) =>
             return;
         }
 
-        if ( subdomainGZ.includes( `${ loadFile }` ) && method === 'GET' )
+
+        if ( subdomainGZ.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `Received request for compressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
