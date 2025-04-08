@@ -180,13 +180,13 @@ class Log
     static warn( ...msg )
     {
         if ( LOG_LEVEL >= 2 )
-            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.yellow( msg.join( ' ' ) ) );
+            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
     }
 
     static error( ...msg )
     {
         if ( LOG_LEVEL >= 1 )
-            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.red( msg.join( ' ' ) ) );
+            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.redBright( msg.join( ' ' ) ) );
     }
 }
 
@@ -268,7 +268,7 @@ const semaphore = new Semaphore( 5 );
 
 async function downloadFile( url, filePath )
 {
-    Log.info( `Fetching`, chalk.white( `→` ), chalk.grey( `${ url }` ), chalk.white( `→` ), chalk.grey( `${ filePath }` ) );
+    Log.info( `Fetching`, chalk.white( `→` ), chalk.grey( `Downloading external file` ), chalk.blueBright( `${ url }` ), chalk.grey( `to` ), chalk.blueBright( `${ filePath }` ) );
 
     return new Promise( ( resolve, reject ) =>
     {
@@ -286,7 +286,7 @@ async function downloadFile( url, filePath )
                 response.pipe( file );
                 file.on( 'finish', () =>
                 {
-                    Log.ok( `Received`, chalk.white( `→` ), `${ filePath }` );
+                    Log.ok( `Received`, chalk.white( `→` ), chalk.grey( `Successfully wrote data to file` ), chalk.blueBright( `${ filePath }` ) );
                     file.close( () => resolve( true ) );
                 });
             })
@@ -977,7 +977,7 @@ async function initialize()
         FILE_XML_MODIFIED = getFileModified( FILE_XML );
         FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
 
-        Log.info( `Initialization Complete` );
+        Log.ok( `Initialization Complete` );
     }
     catch ( err )
     {
@@ -1023,7 +1023,7 @@ const server = http.createServer( ( request, response ) =>
 
     const loadFile = reqUrl.replace( /^\/+/, '' );
 
-    Log.debug( `www`, chalk.yellow( ` [GET]  ` ), chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+    Log.debug( `www`, chalk.blueBright( `[GET]` ), chalk.white( `→` ), chalk.grey( `Requesting asset` ), chalk.blueBright( `${ loadFile }` ) );
 
     const handleRequest = async() =>
     {
@@ -1138,11 +1138,16 @@ const server = http.createServer( ( request, response ) =>
                 response.setHeader( 'Content-type', fileMime );
                 response.end( data );
 
-                Log.debug( `www`, chalk.green( ` [LOAD] ` ), chalk.white( `→` ), chalk.grey( `asset:${ loadFile } mime:${ fileMime }` ) );
+                Log.ok( `www`, chalk.greenBright( ` [LOAD] ` ), chalk.white( `→` ), chalk.grey( `<asset>` ), chalk.greenBright( `${ loadFile }` ), chalk.grey( `<mime>` ), chalk.greenBright( `${ fileMime }` ) );
             }
             else
             {
-                Log.error( `www file not found:`, chalk.white( `→` ), chalk.grey( `${ request.url }` ) );
+                if ( loadFile === 'discovery.json' )
+                {
+                    Log.notice( `www`, chalk.yellowBright( ` [NOTICE] ` ), chalk.white( `→` ), chalk.grey( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
+                }
+
+                Log.error( `www`, chalk.redBright( ` [ERROR] ` ), chalk.white( `→` ), chalk.grey( `File not found:` ), chalk.redBright( `${ request.url }` ) );
                 response.writeHead( 404, 'Not Found' );
                 response.end();
             }
@@ -1169,14 +1174,14 @@ const server = http.createServer( ( request, response ) =>
     const envWebIP = process.env.WEB_IP || '0.0.0.0';
     const envWebPort = process.env.WEB_PORT || `4124`;
 
-    Log.debug( `Assigned FILE_URL`, chalk.white( `→` ), chalk.grey( `${ FILE_URL }` ) );
-    Log.debug( `Assigned FILE_M3U`, chalk.white( `→` ), chalk.grey( `${ FILE_M3U }` ) );
-    Log.debug( `Assigned FILE_XML`, chalk.white( `→` ), chalk.grey( `${ FILE_XML }` ) );
-    Log.debug( `Assigned FILE_TAR`, chalk.white( `→` ), chalk.grey( `${ FILE_TAR }` ) );
+    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_URL` ), chalk.blueBright( `${ FILE_URL }` ) );
+    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_M3U` ), chalk.blueBright( `${ FILE_M3U }` ) );
+    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_XML` ), chalk.blueBright( `${ FILE_XML }` ) );
+    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_TAR` ), chalk.blueBright( `${ FILE_TAR }` ) );
 
     await initialize();
     server.listen( envWebPort, envWebIP, () =>
     {
-        Log.info( `Server is running on ${ envWebIP }:${ envWebPort }` );
+        Log.info( `Server now running on`, chalk.white( `→` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ) );
     });
 })();
