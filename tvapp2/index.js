@@ -54,13 +54,13 @@ chalk.level = 3;
 let FILE_URL;
 let FILE_M3U;
 let FILE_XML;
-let FILE_TAR;
+let FILE_GZP;
 let FILE_M3U_SIZE = 0;
 let FILE_XML_SIZE = 0;
-let FILE_TAR_SIZE = 0;
+let FILE_GZP_SIZE = 0;
 let FILE_M3U_MODIFIED = 0;
 let FILE_XML_MODIFIED = 0;
-let FILE_TAR_MODIFIED = 0;
+let FILE_GZP_MODIFIED = 0;
 const FOLDER_WWW = 'www';
 
 /*
@@ -72,7 +72,7 @@ const envStreamQuality = process.env.STREAM_QUALITY || 'hd';
 const envFileURL = process.env.FILE_URL || 'urls.txt';
 const envFileM3U = process.env.FILE_M3U || 'playlist.m3u8';
 const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
-const envFileTAR = process.env.FILE_TAR || 'xmltv.xml.gz';
+const envFileGZP = process.env.FILE_GZP || 'xmltv.xml.gz';
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
@@ -105,7 +105,7 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
 */
 
 const subdomainRestart = [ 'restart', 'sync', 'resync' ];
-const subdomainGZ = [ 'gzip', 'gz' ];
+const subdomainGZP = [ 'gzip', 'gz' ];
 const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
 const subdomainEPG = [ 'guide', 'epg', 'xml' ];
 const subdomainKey = [ 'key', 'keys' ];
@@ -205,7 +205,7 @@ if ( process.pkg )
     FILE_M3U = path.join( basePath, FOLDER_WWW, `${ envFileM3U }` );
     FILE_XML = path.join( basePath, FOLDER_WWW, `${ envFileXML }` );
     FILE_XML.length;
-    FILE_TAR = path.join( basePath, FOLDER_WWW, `${ envFileTAR }` );
+    FILE_GZP = path.join( basePath, FOLDER_WWW, `${ envFileGZP }` );
 }
 else
 {
@@ -214,7 +214,7 @@ else
     FILE_URL = path.resolve( __dirname, FOLDER_WWW, `${ envFileURL }` );
     FILE_M3U = path.resolve( __dirname, FOLDER_WWW, `${ envFileM3U }` );
     FILE_XML = path.resolve( __dirname, FOLDER_WWW, `${ envFileXML }` );
-    FILE_TAR = path.resolve( __dirname, FOLDER_WWW, `${ envFileTAR }` );
+    FILE_GZP = path.resolve( __dirname, FOLDER_WWW, `${ envFileGZP }` );
 }
 
 /*
@@ -417,23 +417,23 @@ async function createGzip( )
 
             zlib.gzip( buf, ( err, buf ) =>
             {
-                Log.debug( `createGzip[zlib.gzip]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ), chalk.white( `→` ), chalk.grey( `${ envFileTAR }` ) );
+                Log.debug( `createGzip[zlib.gzip]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ), chalk.white( `→` ), chalk.grey( `${ envFileGZP }` ) );
                 if ( err )
                 {
                     Log.error( `Could not write to archive. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
-                    return reject( new Error( `Could not create ${ envFileTAR }. Error: ${ err }` ) );
+                    return reject( new Error( `Could not create ${ envFileGZP }. Error: ${ err }` ) );
                 }
 
-                Log.info( `Compressing`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_TAR }` );
-                fs.writeFile( `${ FILE_TAR }`, buf, ( err ) =>
+                Log.info( `Compressing`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_GZP }` );
+                fs.writeFile( `${ FILE_GZP }`, buf, ( err ) =>
                 {
                     if ( err )
                     {
                         Log.error( `Could not write XML file to archive. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
-                        return reject( new Error( `Could not write XML file ${ envFileXML } to ${ envFileTAR }. Error: ${ err }` ) );
+                        return reject( new Error( `Could not write XML file ${ envFileXML } to ${ envFileGZP }. Error: ${ err }` ) );
                     }
 
-                    Log.ok( `Compressed`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_TAR }` );
+                    Log.ok( `Compressed`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_GZP }` );
                     resolve( true );
                 });
             });
@@ -911,25 +911,25 @@ async function serveXML( response, req )
     Serves IPTV .gz guide data
 */
 
-async function serveTAR( response, req )
+async function serveGZP( response, req )
 {
     try
     {
         const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
         const host = req.headers.host;
         const baseUrl = `${ protocol }://${ host }`;
-        const formattedContent = fs.readFileSync( FILE_TAR );
+        const formattedContent = fs.readFileSync( FILE_GZP );
 
         response.writeHead( 200, {
             'Content-Type': 'application/gzip',
-            'Content-Disposition': 'inline; filename="' + envFileTAR
+            'Content-Disposition': 'inline; filename="' + envFileGZP
         });
 
         response.end( formattedContent );
     }
     catch ( err )
     {
-        Log.error( `Error in serveTAR:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `Error in serveGZP:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
@@ -994,11 +994,11 @@ async function initialize()
 
         FILE_M3U_SIZE = getFileSizeHuman( FILE_M3U );
         FILE_XML_SIZE = getFileSizeHuman( FILE_XML );
-        FILE_TAR_SIZE = getFileSizeHuman( FILE_TAR );
+        FILE_GZP_SIZE = getFileSizeHuman( FILE_GZP );
 
         FILE_M3U_MODIFIED = getFileModified( FILE_M3U );
         FILE_XML_MODIFIED = getFileModified( FILE_XML );
-        FILE_TAR_MODIFIED = getFileModified( FILE_TAR );
+        FILE_GZP_MODIFIED = getFileModified( FILE_GZP );
 
         Log.ok( `Initialization Complete` );
     }
@@ -1062,13 +1062,10 @@ const server = http.createServer( ( request, response ) =>
         {
             Log.info( `Toggled restart`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
-            const envWebIP = process.env.WEB_IP || '0.0.0.0';
-            const envWebPort = process.env.WEB_PORT || `4124`;
-
             Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_URL` ), chalk.blueBright( `${ FILE_URL }` ) );
             Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_M3U` ), chalk.blueBright( `${ FILE_M3U }` ) );
             Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_XML` ), chalk.blueBright( `${ FILE_XML }` ) );
-            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_TAR` ), chalk.blueBright( `${ FILE_TAR }` ) );
+            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_GZP` ), chalk.blueBright( `${ FILE_GZP }` ) );
 
             await initialize();
 
@@ -1107,17 +1104,17 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainEPG.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received request for raw EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `Received request for raw uncompressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
             await serveXML( response, request );
             return;
         }
 
-        if ( subdomainGZ.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+        if ( subdomainGZP.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `Received request for compressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
 
-            await serveTAR( response, request );
+            await serveGZP( response, request );
             return;
         }
 
@@ -1136,9 +1133,9 @@ const server = http.createServer( ( request, response ) =>
                 sizeXML: FILE_XML_SIZE,
                 dateXML: FILE_XML_MODIFIED,
 
-                fileTAR: envFileTAR,
-                sizeTAR: FILE_TAR_SIZE,
-                dateTAR: FILE_TAR_MODIFIED,
+                fileGZP: envFileGZP,
+                sizeGZP: FILE_GZP_SIZE,
+                dateGZP: FILE_GZP_MODIFIED,
 
                 appName: name,
                 appVersion: version,
@@ -1222,7 +1219,7 @@ const server = http.createServer( ( request, response ) =>
     Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_URL` ), chalk.blueBright( `${ FILE_URL }` ) );
     Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_M3U` ), chalk.blueBright( `${ FILE_M3U }` ) );
     Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_XML` ), chalk.blueBright( `${ FILE_XML }` ) );
-    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_TAR` ), chalk.blueBright( `${ FILE_TAR }` ) );
+    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_GZP` ), chalk.blueBright( `${ FILE_GZP }` ) );
 
     await initialize();
     server.listen( envWebPort, envWebIP, () =>
