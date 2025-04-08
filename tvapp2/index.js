@@ -1072,6 +1072,12 @@ const server = http.createServer( ( request, response ) =>
 
             await initialize();
 
+            response.writeHead( 200, {
+                'Content-Type': 'application/json'
+            });
+
+            response.end( `Restart triggered` );
+
             return;
         }
 
