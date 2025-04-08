@@ -489,6 +489,9 @@ async function prepareGzip( )
                                 to
                             'Accept-Encoding': 'deflate, br'
 
+                        This error does not appear if you load the xml guide data into Cabernet, and then use a tuner to fetch the data from
+                        cabernet to jellyfin
+
 */
 
 async function fetchRemote( url )
