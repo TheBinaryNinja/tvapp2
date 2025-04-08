@@ -110,7 +110,7 @@ const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
 const subdomainEPG = [ 'guide', 'epg', 'xml' ];
 const subdomainKey = [ 'key', 'keys' ];
 const subdomainChan = [ 'channels', 'channel' ];
-const subdomainHealth = [ 'status', 'health' ];
+const subdomainHealth = [ 'api/status', 'api/health' ];
 
 /*
     Container Information
@@ -118,10 +118,10 @@ const subdomainHealth = [ 'status', 'health' ];
     these environment variables are defined from the s6-overlay layer of the docker image
 */
 
-const fileIpGateway = '/var/run/s6/container_environment/IP_GATEWAY'
-const fileIpContainer = '/var/run/s6/container_environment/IP_CONTAINER'
-const envIpGateway = fs.existsSync(fileIpGateway) ? fs.readFileSync(fileIpGateway, 'utf8') : `0.0.0.0`;
-const envIpContainer = fs.existsSync(fileIpContainer) ? fs.readFileSync(fileIpContainer, 'utf8') : `0.0.0.0`;
+const fileIpGateway = '/var/run/s6/container_environment/IP_GATEWAY';
+const fileIpContainer = '/var/run/s6/container_environment/IP_CONTAINER';
+const envIpGateway = fs.existsSync( fileIpGateway ) ? fs.readFileSync( fileIpGateway, 'utf8' ) : `0.0.0.0`;
+const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileIpContainer, 'utf8' ) : `0.0.0.0`;
 
 /*
     Define > Logs
@@ -574,13 +574,23 @@ async function serveKey( req, res )
         const uriParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'uri' );
         if ( !uriParam )
         {
-            res.writeHead( 400, {
-                'Content-Type': 'text/plain'
-            });
-
             Log.error( `Missing "uri" parameter for key download`, chalk.white( `→` ), chalk.grey( `${ req.url }` ) );
 
-            return res.end( 'Error: Missing "uri" parameter for key download.' );
+            const statusCheck =
+            {
+                ip: envIpContainer,
+                gateway: envIpGateway,
+                uptime: process.uptime(),
+                message: 'Error: Missing "uri" parameter for key download.',
+                code: 400,
+                timestamp: Date.now()
+            };
+
+            res.writeHead( 400, {
+                'Content-Type': 'application/json'
+            });
+
+            return res.end( JSON.stringify( statusCheck ) );
         }
 
         const keyData = await fetchRemote( uriParam );
@@ -594,11 +604,21 @@ async function serveKey( req, res )
     {
         Log.error( `ServeKey Error:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
 
+        const statusCheck =
+        {
+            ip: envIpContainer,
+            gateway: envIpGateway,
+            uptime: process.uptime(),
+            message: 'Error fetching key',
+            code: 500,
+            timestamp: Date.now()
+        };
+
         res.writeHead( 500, {
-            'Content-Type': 'text/plain'
+            'Content-Type': 'application/json'
         });
 
-        res.end( 'Error fetching key.' );
+        res.end( JSON.stringify( statusCheck ) );
     }
 }
 
@@ -741,12 +761,25 @@ async function serveM3UPlaylist( req, res )
         if ( !urlParam )
         {
             Log.error( `Missing parameter`, chalk.white( `→` ), chalk.grey( `URL` ) );
+
+            const statusCheck =
+            {
+                ip: envIpContainer,
+                gateway: envIpGateway,
+                uptime: process.uptime(),
+                message: 'Missing URL parameter',
+                code: 404,
+                timestamp: Date.now()
+            };
+
             res.writeHead( 400, {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             });
-            res.end( 'Error: Missing URL parameter.' );
+
+            res.end( JSON.stringify( statusCheck ) );
             return;
         }
+
 
         const decodedUrl = decodeURIComponent( urlParam );
         if ( decodedUrl.endsWith( '.ts' ) )
@@ -779,11 +812,22 @@ async function serveM3UPlaylist( req, res )
         {
             Log.error( `Failed to retrieve tokenized URL` );
 
+            const statusCheck =
+            {
+                ip: envIpContainer,
+                gateway: envIpGateway,
+                uptime: process.uptime(),
+                message: 'Error: Failed to retrieve tokenized URL.',
+                code: 500,
+                timestamp: Date.now()
+            };
+
             res.writeHead( 500, {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             });
 
-            res.end( 'Error: Failed to retrieve tokenized URL.' );
+            res.end( JSON.stringify( statusCheck ) );
+
             return;
         }
 
@@ -804,11 +848,21 @@ async function serveM3UPlaylist( req, res )
 
         if ( !res.headersSent )
         {
+            const statusCheck =
+            {
+                ip: envIpContainer,
+                gateway: envIpGateway,
+                uptime: process.uptime(),
+                message: 'Error: Cannot process request.',
+                code: 500,
+                timestamp: Date.now()
+            };
+
             res.writeHead( 500, {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             });
 
-            res.end( 'Error processing request.' );
+            res.end( JSON.stringify( statusCheck ) );
         }
     }
     finally
@@ -834,6 +888,7 @@ async function serveHealthCheck( req, res )
             gateway: envIpGateway,
             uptime: process.uptime(),
             message: 'Healthy',
+            code: 200,
             timestamp: Date.now()
         };
 
@@ -841,7 +896,7 @@ async function serveHealthCheck( req, res )
             'Content-Type': 'application/json'
         });
 
-        res.end( JSON.stringify(healthcheck) );
+        res.end( JSON.stringify( healthcheck ) );
         return;
     }
     catch ( err )
@@ -856,7 +911,7 @@ async function serveHealthCheck( req, res )
                 gateway: envIpGateway,
                 uptime: process.uptime(),
                 message: 'Unhealthy',
-                status: 0,
+                code: 503,
                 timestamp: Date.now()
             };
 
@@ -864,7 +919,7 @@ async function serveHealthCheck( req, res )
                 'Content-Type': 'application/json'
             });
 
-            res.end( JSON.stringify(healthcheck) );
+            res.end( JSON.stringify( healthcheck ) );
         }
     }
     finally
@@ -1265,9 +1320,25 @@ const server = http.createServer( ( request, response ) =>
                     Log.notice( `www`, chalk.yellowBright( ` [NOTICE] ` ), chalk.white( `→` ), chalk.grey( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
                 }
 
-                Log.error( `www`, chalk.redBright( ` [ERROR] ` ), chalk.white( `→` ), chalk.grey( `File not found:` ), chalk.redBright( `${ request.url }` ) );
-                response.writeHead( 404, 'Not Found' );
-                response.end();
+                Log.error( `www`, chalk.redBright( ` [ERROR] ` ), chalk.white( `→` ), chalk.grey( `File not found:` ), chalk.redBright( `${ loadFile }` ) );
+
+                const statusCheck =
+                {
+                    ip: envIpContainer,
+                    gateway: envIpGateway,
+                    uptime: process.uptime(),
+                    message: 'Page not found',
+                    ref: request.url,
+                    method: method,
+                    code: 404,
+                    timestamp: Date.now()
+                };
+
+                response.writeHead( 404, {
+                    'Content-Type': 'application/json'
+                });
+
+                response.end( JSON.stringify( statusCheck ) );
             }
         });
     };

@@ -69,6 +69,7 @@
   - [Docker Compose](#docker-compose-1)
   - [Environment Variables](#environment-variables-1)
   - [Mountable Volumes](#mountable-volumes-1)
+  - [Docker health check](#docker-health-check)
 - [Traefik Integration](#traefik-integration)
   - [Labels](#labels)
   - [Dynamic.yml](#dynamicyml)
@@ -84,6 +85,7 @@
     - [Run Error: `Error serving playlist: ENOENT: no such file or directory, open /usr/src/app/xmltv.1.xml`](#run-error-error-serving-playlist-enoent-no-such-file-or-directory-open-usrsrcappxmltv1xml)
     - [Build Error: `s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle`](#build-error-s6-rc-compile-fatal-invalid-etcs6-overlays6-rcdcertsynctype-must-be-oneshot-longrun-or-bundle)
     - [Build Error: `unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied`](#build-error-unable-to-exec-etcs6-overlays6-rcdinit-envfilerun-permission-denied)
+    - [Build Error: `[ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel XXXXXXXXXXXXXXX (Source 2) System.Xml.XmlException: '', hexadecimal value 0x1F, is an invalid character. Line 1, position 1.`](#build-error-err-27-jellyfinlivetvguideguidemanager-error-getting-programs-for-channel-xxxxxxxxxxxxxxx-source-2-systemxmlxmlexception--hexadecimal-value-0x1f-is-an-invalid-character-line-1-position-1)
 - [Extra Notes](#extra-notes)
   - [Accessing Container Shell](#accessing-container-shell)
     - [ash](#ash)
@@ -153,11 +155,12 @@ For the [environment variables](#environment-variables), you may specify these i
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
+| `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_URL` | `urls.txt` | Filename for url cache file |
 | `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
-| `FILE_GZIP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
+| `FILE_GZP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
@@ -1189,11 +1192,12 @@ This docker container contains the following env variables:
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
+| `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |
 | `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
-| `FILE_GZIP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
+| `FILE_GZP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
@@ -1210,6 +1214,51 @@ These paths can be mounted and shared between the TVApp2 docker container and yo
 | --- | --- |
 | `📁 /usr/bin/app` | <sub>Path where TVApp2 files will be placed once the app has been built. Includes `📄 formatted.dat`, `📄 xmltv.1.xml`, `📄 urls.txt`, `📁 node_modules`, and `📄 package.json`</sub> |
 | `📁 /config` | <sub>Where logs will be placed, as well as the web server generated SSH key and cert `🔑 cert.key` and `🪪 cert.crt`</sub> |
+
+<br />
+<br />
+
+### Docker health check
+
+This image includes a docker health check that you can define in your `📄 docker-compose.yml` file. You can view the health check status by opening your browser and going to your TVApp2 container's `health` path:
+
+```
+http://container-ip:4124/api/health
+```
+
+<br />
+
+You should see something similar to the following response:
+
+```json
+{
+  "ip": "172.XX.XX.4",
+  "gateway": "172.XX.XX.1",
+  "uptime": 2703.316357306,
+  "message": "Healthy",
+  "timestamp": 1744152471451
+}
+```
+
+<br />
+
+To apply a health check, open your TVApp2 `docker-compose.yml` and add any of the following options:
+
+```yml
+# Example 1 (Using curl)
+health check:
+    test: "curl --fail --silent http://127.0.0.1:${JELLYFIN_SCRAPER_TVAPP2_PORT_MAIN:-4124}/api/health | grep -i healthy || exit 1"
+    interval: 15s
+    timeout: 10s
+    retries: 3
+
+# Example 1 (Using wget)
+health check:
+    test: "wget -qO- http://127.0.0.1:${JELLYFIN_SCRAPER_TVAPP2_PORT_MAIN:-4124}/api/health | grep -i healthy || exit 1"
+    interval: 15s
+    timeout: 10s
+    retries: 3
+```
 
 <br />
 
@@ -1843,6 +1892,39 @@ find ./ -name 'run' -exec sudo chmod +x {} \;
 <br />
 
 After you have set these permissions, re-build your docker image using `docker build` or `docker buildx`. Then spin the container up.
+
+<br />
+<br />
+
+#### Build Error: `[ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel XXXXXXXXXXXXXXX (Source 2) System.Xml.XmlException: '', hexadecimal value 0x1F, is an invalid character. Line 1, position 1.`
+
+This error may be seen if you are attempting to import our EPG guide data directly into Jellyfin. The cause of this is due to you having **GZIP Compression** enabled in your header request and response. See the example below; which is in your TVApp2 `📄 docker-compose.yml` file:
+
+```yml
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest
+        hostname: tvapp2
+        restart: unless-stopped
+        environment:
+            LOG_LEVEL: 10
+            WEB_ENCODING: 'gzip, deflate, br'
+```
+
+<br />
+
+To fix the issue, add or change the environment variable `WEB_ENCODING` and ensure `gzip` is not specified in the list like the following:
+
+```yml
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest
+        hostname: tvapp2
+        restart: unless-stopped
+        environment:
+            LOG_LEVEL: 10
+            WEB_ENCODING: 'deflate, br'
+```
 
 <br />
 
