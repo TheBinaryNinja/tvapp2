@@ -9,11 +9,6 @@
     --bs-table-bg-type: #242424;
 }
 
-.table > :not(caption) > * > *
-{
-
-}
-
 body
 {
     background-color:               #f8f9fa;
@@ -366,8 +361,8 @@ p
 {
     transition-property: transform;
     transition-duration: 0.5s;
-    animation-name: spin; 
-    animation-duration: 0.5s; 
+    animation-name: spin;
+    animation-duration: 0.5s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
@@ -430,6 +425,7 @@ p
     font-weight:                100;
     border:                     1px dashed #9e973a;
     display:                    none;
+    z-index:                    5000 !important;
 }
 
 #ntfy-firewall
@@ -542,7 +538,7 @@ code
     top:                        0;
     right:                      0;
     left:                       0;
-    z-index:                    999;
+    z-index:                    200;
 }
 
 .fixed-bottom
@@ -551,7 +547,7 @@ code
     right:                      0;
     bottom:                     0;
     left:                       0;
-    z-index:                    999;
+    z-index:                    200;
 }
 
 .sticky-top
@@ -560,8 +556,16 @@ code
     {
         position:               sticky;
         top:                    0;
-        z-index:                999;
+        z-index:                99999;
     }
+}
+
+.sticky-bottom
+{
+    position:                   -webkit-sticky;
+    position:                   relative !important;
+    bottom:                     0;
+    z-index:                    500 !important;
 }
 
 .sticky-bottom
@@ -570,7 +574,7 @@ code
     {
         position:               sticky;
         bottom:                 0;
-        z-index:                999;
+        z-index:                200;
     }
 }
 
@@ -620,7 +624,7 @@ code
 
 #dimmer
 {
-	z-index:                    300;
+	z-index:                    200;
     position:                   fixed;
     background-color:           #000000;
     width:                      100%;
