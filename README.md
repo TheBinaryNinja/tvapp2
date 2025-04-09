@@ -157,7 +157,7 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
-| `FILE_URL` | `urls.txt` | Filename for url cache file |
+| `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |
 | `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
 | `FILE_GZP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
