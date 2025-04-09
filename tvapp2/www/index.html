@@ -8,6 +8,9 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
         <link rel="stylesheet" href="css/tvapp2.min.css">
         <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js' integrity='sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq' crossorigin='anonymous'></script>
+        <script src=' https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js '></script>
+        <script src='js/tvapp2.min.js'></script>
     </head>
     <body>
         <!-- Header -->
@@ -18,7 +21,7 @@
                     <a class="header-name" href="<%= appUrlGithub %>">TVApp2 for Docker</a>
                 </div>
                 <div class="navbar-social">
-                    <a href="javascript:toggleRestart();"><i class="restart fa-solid fa-rotate" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                    <a href="javascript:doResync();"><i class="restart fa-solid fa-rotate" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlDocs %>"><i class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlGithub %>"><i class="logo fa-logos fa-github" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlDiscord %>"><i class="logo fa-logos fa-discord" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
@@ -36,7 +39,7 @@
                 </div>
             </div>
 
-        <!-- Header Fontawesome Icons -->
+            <!-- Header Fontawesome Icons -->
             <div class="container main-container">
                 <table id="list" class="table table-dark table-striped">
                     <thead>
@@ -127,64 +130,108 @@
             </div>
         </footer>
 
+        <!-- Toast Notifications -->
+        <!-- <button type="button" class="btn btn-primary" id="btnTestToasts">Show toast</button> -->
+        <div style="z-index: 9999;" class="toast position-fixed bottom-0 end-0 p-8 m-3" id="tvapp2Toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000">
+            <div class="toast-body">
+                <div class="d-flex gap-4">
+                    <span><i class="fa-solid fa-circle-check fa-lg icon-success"></i></span>
+                    <div class="d-flex flex-column flex-grow-1 gap-2">
+                        <div class="d-flex align-items-center">
+                            <span id="toast-title" class="fw-semibold">Toast Title</span>
+                            <button type="button" class="btn-close btn-close-sm ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <span id="toast-message">Dismiss in 6 seconds</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+        <div class="modal fade" id="modalTvapp2" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalTvapp2Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">TVApp2</h5>
+                        <h5 class="modal-title" id="modalTvapp2Label">Modal title</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Do you ever feel like a plastic bag.... drifting through the wind?
+                    ...
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Welcome to costco</button>
-                        <button type="button" class="btn btn-primary">I'll be back</button>
+                        <button type="button" id="btn-secondary" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="btn-primary" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <script>
+            /*
+            this is test code. enable the "Show Toast" button and then uncomment this code.
+
+            document.getElementById("btnTestToasts").onclick = function()
+            {
+                var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+                var toastList = toastElList.map(function(toastEl)
+                {
+                    return new bootstrap.Toast(toastEl)
+                });
+
+                toastList.forEach(toast => toast.show());
+                console.log(toastList);
+            };
+            */
+
             const urlBase = window.location.origin;
-            const urlM3U = urlBase + "/playlist";
-            const urlXML = urlBase + "/epg";
-            const urlGZP = urlBase + "/gzip";
+            const urlM3U = urlBase + '/playlist';
+            const urlXML = urlBase + '/epg';
+            const urlGZP = urlBase + '/gzip';
 
-            document.getElementById("m3u-name").textContent = "<%= fileM3U %>";
-            document.getElementById("m3u-name").href = urlM3U;
-            document.getElementById("m3u-link").textContent = urlM3U;
-            document.getElementById("m3u-link").href = urlM3U;
-            document.getElementById("m3u-size").textContent = "<%= sizeM3U %>";
-            document.getElementById("m3u-date").textContent = "<%= dateM3U %>";
+            document.getElementById('m3u-name').textContent = '<%= fileM3U %>';
+            document.getElementById('m3u-name').href = urlM3U;
+            document.getElementById('m3u-link').textContent = urlM3U;
+            document.getElementById('m3u-link').href = urlM3U;
+            document.getElementById('m3u-size').textContent = '<%= sizeM3U %>';
+            document.getElementById('m3u-date').textContent = '<%= dateM3U %>';
 
-            document.getElementById("xml-name").textContent = "<%= fileXML %>";
-            document.getElementById("xml-name").href = urlXML;
-            document.getElementById("xml-link").textContent = urlXML;
-            document.getElementById("xml-link").href = urlXML;
-            document.getElementById("xml-size").textContent = "<%= sizeXML %>";
-            document.getElementById("xml-date").textContent = "<%= dateXML %>";
+            document.getElementById('xml-name').textContent = '<%= fileXML %>';
+            document.getElementById('xml-name').href = urlXML;
+            document.getElementById('xml-link').textContent = urlXML;
+            document.getElementById('xml-link').href = urlXML;
+            document.getElementById('xml-size').textContent = '<%= sizeXML %>';
+            document.getElementById('xml-date').textContent = '<%= dateXML %>';
 
-            document.getElementById("gzp-name").textContent = "<%= fileGZP %>";
-            document.getElementById("gzp-name").href = urlGZP;
-            document.getElementById("gzp-link").textContent = urlGZP;
-            document.getElementById("gzp-link").href = urlGZP;
-            document.getElementById("gzp-size").textContent = "<%= sizeGZP %>";
-            document.getElementById("gzp-date").textContent = "<%= dateGZP %>";
+            document.getElementById('gzp-name').textContent = '<%= fileGZP %>';
+            document.getElementById('gzp-name').href = urlGZP;
+            document.getElementById('gzp-link').textContent = urlGZP;
+            document.getElementById('gzp-link').href = urlGZP;
+            document.getElementById('gzp-size').textContent = '<%= sizeGZP %>';
+            document.getElementById('gzp-date').textContent = '<%= dateGZP %>';
         </script>
 
         <script>
 
             /*
+                Action > DOM Status
+            */
+
+            document.addEventListener("DOMContentReady", function() {
+                $("#tvapp2Toast").toast();
+            });
+
+            document.addEventListener("DOMContentLoaded", function() {
+                /* $('#tvapp2Toast').toast("show"); */
+            });
+
+            /*
                 Notify > Localhost
             */
 
-            document.addEventListener("DOMContentLoaded", function()
-            {
+            document.addEventListener('DOMContentLoaded', function() {
                 const host          = window.location.hostname;
-                const port          = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
-                if (host === "localhost" || host === "127.0.0.1")
+                const port          = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+                if (host === 'localhost' || host === '127.0.0.1')
                 {
                     const msg       = "<p><span class='warning'>Warning</span> If you are accessing this page via 127.0.0.1 or localhost, proxying will not work on other devices.Please load \
                                     this page using your computer's IP address (e.g., 192.168.x.x) and port in order to access the playlist from other devices on your network.</p> \
@@ -192,10 +239,10 @@
                                     <p> Learn how to locate your IP address on <a href='https://youtube.com/watch?v=UAhDHXN2c6E' target = '_blank' > Windows</a> or \
                                     <a href='https://youtube.com/watch?v=gaIYP4TZfHI' target = '_blank' > Linux</a>.</p>";
 
-                    document.getElementById("ntfy-localhost").innerHTML = msg;
-                    document.getElementById("ntfy-localhost").style.display = "block";
+                    document.getElementById('ntfy-localhost').innerHTML = msg;
+                    document.getElementById('ntfy-localhost').style.display = 'block';
                 } else {
-                    document.getElementById("ntfy-localhost").style.display = "none";
+                    document.getElementById('ntfy-localhost').style.display = 'none';
                 }
             });
 
@@ -203,79 +250,148 @@
                 Notify > Firewall
             */
 
-            document.addEventListener("DOMContentLoaded", function()
-            {
-                const port          = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+            document.addEventListener('DOMContentLoaded', function() {
+                const port          = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
                 const msg           = "<p><span class='notice'>Notice</span> Port <strong> " + port + " </strong> must be open and allowed through your <a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> \
                                     or <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a> OS firewall settings \
                                     This action enables devices such as Firestick or Android to connect to the server and request the playlist through the proxy.</p>";
 
-                document.getElementById("ntfy-firewall").innerHTML = msg;
-                document.getElementById("ntfy-firewall").style.display = "block";
+                document.getElementById('ntfy-firewall').innerHTML = msg;
+                document.getElementById('ntfy-firewall').style.display = 'block';
             });
 
             /*
                 Notify > Restart / Resync
             */
 
-            document.addEventListener("DOMContentLoaded", function()
-            {
-                const port          = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
+            document.addEventListener('DOMContentLoaded', function() {
+                const port          = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
                 const msg           = "<p><span class='success'>Success</span> Your IPTV m3u channels and xml guide data has been successfully re-synced. \
                                     Please refresh this window to see new data</p>";
 
-                document.getElementById("ntfy-restart").innerHTML = msg;
-                document.getElementById("ntfy-restart").style.display = "none";
+                document.getElementById('ntfy-restart').innerHTML = msg;
+                document.getElementById('ntfy-restart').style.display = 'none';
             });
 
             /*
-                Activate Resync
+                Action > Healthcheck
             */
 
-            function toggleRestart()
+            function doHealthCheck()
+            {
+                const toastTypeClass = [];
+                toastTypeClass[ 'DEFAULT' ] = 'text-bg-primary';
+                toastTypeClass[ 'UNHEALTHY' ] = 'text-bg-warning';
+                toastTypeClass[ 'HEALTHY' ]= 'text-bg-success';
+                toastTypeClass[ 'ERROR' ]= 'text-bg-danger';
+
+                $.ajax(
+                {
+                    url: 'api/health',
+                    type: 'GET',
+                    data: {
+                        internal: 1
+                    },
+                    beforeSend: function( data )
+                    {
+                        console.log('Sending health check ...')
+                    },
+                    success: function( data )
+                    {
+                        const status = data.message;
+                        const code = data.code;
+                        if ( status )
+                        {
+                            const toastClass = toastTypeClass[status.toUpperCase()];
+                            const toastElm = document.getElementById('tvapp2Toast');
+                            toastElm.classList.add(toastClass);
+
+                            $('.toast #toast-title').html(`<%= appName %> is ${ status }`);
+                            $('.toast #toast-message').html(`Health check returned ${ status } (${ code })`);
+                            $('#tvapp2Toast').toast('show');
+                        }
+                    },
+                    error: function( data )
+                    {
+                        const toastClass = toastTypeClass['ERROR'];
+                        const toastElm = document.getElementById('tvapp2Toast');
+                        toastElm.classList.add(toastClass);
+
+                        $('.toast #toast-title').html(`Could not connect to health check api`);
+                        $('.toast #toast-message').html(`Failed to communicate with health check api. Try restarting the docker container to restore connection.`);
+                        $('#tvapp2Toast').toast('show');
+                    }
+                }).always(function()
+                {
+                    const healthTime = '<%= healthTimer %>';
+                    setTimeout(function()
+                    {
+                        doHealthCheck();
+                    }, parseInt(healthTime));
+                }).responseText;
+            }
+
+            /*
+                Action > Healthcheck > Initialize
+            */
+
+            setTimeout(function(){ doHealthCheck(); }, 10000);
+
+            /*
+                Action > Do Resync
+            */
+
+            function doResync()
             {
                 $.ajax(
                 {
                     url: 'restart',
                     type: 'POST',
                     data: {
-                        x: 1
+                        internal: 1
                     },
                     beforeSend: function( data )
                     {
                         const dimmer = document.createElement('div');
-                        dimmer.setAttribute("id", "dimmer");
-                        dimmer.style.visibility = "visible";
-                        dimmer.classList.add("dimmer-in");
+                        dimmer.setAttribute('id', 'dimmer');
+                        dimmer.style.visibility = 'visible';
+                        dimmer.classList.add('dimmer-in');
                         document.getElementsByTagName('body')[0].appendChild(dimmer);
-                        document.getElementById("ntfy-firewall").style.display = "none";
-                        document.getElementById("ntfy-localhost").style.display = "none";
-                        document.getElementById("ntfy-restart").style.display = "none";
+                        document.getElementById('ntfy-firewall').style.display = 'none';
+                        document.getElementById('ntfy-localhost').style.display = 'none';
+                        document.getElementById('ntfy-restart').style.display = 'none';
 
                         const iconResync = document.getElementsByClassName('fa-rotate');
-                        iconResync[0].classList.remove("restart");
-                        iconResync[0].classList.add("spin");
+                        iconResync[0].classList.remove('restart');
+                        iconResync[0].classList.add('spin');
+
+                        $('.modal-content .modal-body').html('<small>The M3U and EPG data will now be re-downloaded and synced with your TVApp2 container. Afterward, this page will be refreshed automatically.</small><br /><br /><small>Please wait...</small>')
+                        $('.modal-content .modal-title').html('Resyncing Data')
+                        $('#modalTvapp2').modal('show');
+
+                        const modalBtnPrimary = document.querySelector('#btn-primary');
+                        modalBtnPrimary.style.display = 'none';
+                        modalBtnPrimary.style.visibility= 'hidden';
+
                     },
                     success: function( data )
                     {
                         setTimeout(() =>
                         {
-                            document.getElementById("ntfy-restart").style.display = "block"
-                            const dimmer = document.getElementById("dimmer");
-                            dimmer.classList.remove("dimmer-in");
-                            dimmer.classList.add("dimmer-out");
+                            document.getElementById('ntfy-restart').style.display = 'block'
+                            const dimmer = document.getElementById('dimmer');
+                            dimmer.classList.remove('dimmer-in');
+                            dimmer.classList.add('dimmer-out');
                             dimmer.remove();
                             const iconResync = document.getElementsByClassName('fa-rotate');
-                            iconResync[0].classList.remove("spin");
-                            iconResync[0].classList.add("restart");
-                            setTimeout(location.reload.bind(location), 1000);
+                            iconResync[0].classList.remove('spin');
+                            iconResync[0].classList.add('restart');
+
+                            setTimeout(location.reload.bind(location), 5000);
                         }, 1000);
                     }
                 });
             }
         </script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-        <script src=" https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js "></script>
-        <script src="js/tvapp2.min.js"></script>
     </body>
 </html>
