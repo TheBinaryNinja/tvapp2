@@ -76,6 +76,7 @@ ENV FILE_URL="urls.txt"
 ENV FILE_M3U="playlist.m3u8"
 ENV FILE_EPG="xmltv.xml"
 ENV FILE_TAR="xmltv.xml.gz"
+ENV HEALTH_TIMER=600000
 ENV LOG_LEVEL=4
 ENV TZ="Etc/UTC"
 

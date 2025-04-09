@@ -74,6 +74,7 @@ const envFileM3U = process.env.FILE_M3U || 'playlist.m3u8';
 const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
 const envFileGZP = process.env.FILE_GZP || 'xmltv.xml.gz';
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
+const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
 /*
@@ -1268,6 +1269,7 @@ const server = http.createServer( ( request, response ) =>
                 sizeGZP: FILE_GZP_SIZE,
                 dateGZP: FILE_GZP_MODIFIED,
 
+                healthTimer: envHealthTimer,
                 appName: name,
                 appVersion: version,
                 appUrlGithub: repository.url,
