@@ -289,16 +289,27 @@
             });
 
             /*
+                Set initial health check sync time
+
+                first health check runs after 10 seconds
+                all future health checks run after <%= healthTimer %>
+            */
+
+            let timerDelayMS            = 10000;
+            let timerStartMS            = Date.now(); // returns milliseconds
+            const timerHealthRun        = '10000'; // time in milliseconds until health check ran AFTER initial run
+
+            /*
                 Action > Healthcheck
             */
 
-            function doHealthCheck()
+            function runHealthCheck()
             {
                 const toastTypeClass = [];
-                toastTypeClass[ 'DEFAULT' ] = 'text-bg-primary';
-                toastTypeClass[ 'UNHEALTHY' ] = 'text-bg-warning';
-                toastTypeClass[ 'HEALTHY' ]= 'text-bg-success';
-                toastTypeClass[ 'ERROR' ]= 'text-bg-danger';
+                toastTypeClass[ 'DEFAULT' ]     = 'text-bg-primary';
+                toastTypeClass[ 'UNHEALTHY' ]   = 'text-bg-warning';
+                toastTypeClass[ 'HEALTHY' ]     = 'text-bg-success';
+                toastTypeClass[ 'ERROR' ]       = 'text-bg-danger';
 
                 $.ajax(
                 {
@@ -325,6 +336,7 @@
                             $('.toast #toast-message').html(`Health check returned ${ status } (${ code })`);
                             $('#tvapp2Toast').toast('show');
                         }
+
                     },
                     error: function( data )
                     {
@@ -335,28 +347,25 @@
                         $('.toast #toast-title').html(`Could not connect to health check api`);
                         $('.toast #toast-message').html(`Failed to communicate with health check api. Try restarting the docker container to restore connection.`);
                         $('#tvapp2Toast').toast('show');
+
                     }
                 }).always(function()
                 {
-                    const healthTime = '<%= healthTimer %>';
+                    timerDelayMS = parseInt(timerHealthRun);
+                    timerStartMS = Date.now();
+
                     setTimeout(function()
                     {
-                        doHealthCheck();
-                    }, parseInt(healthTime));
+                        runHealthCheck();
+                    }, parseInt(timerHealthRun));
                 }).responseText;
             }
-
-            /*
-                Action > Healthcheck > Initialize
-            */
-
-            setTimeout(function(){ doHealthCheck(); }, 10000);
 
             /*
                 Action > Do Resync
             */
 
-            function doResync()
+            function runResync()
             {
                 $.ajax(
                 {
@@ -391,7 +400,12 @@
                     },
                     success: function( data )
                     {
-                        setTimeout(() =>
+
+                        /*
+                            On successful restart, wait 1 second, remove dimmer, reload page in 5 seconds
+                        */
+
+                        setTimeout( () =>
                         {
                             document.getElementById('ntfy-restart').style.display = 'block'
                             const dimmer = document.getElementById('dimmer');
@@ -399,17 +413,75 @@
                             dimmer.classList.add('dimmer-out');
                             dimmer.remove();
 
-                            setTimeout(function()
+                            setTimeout( function()
                             {
-                                const iconResync = document.getElementsByClassName('fa-rotate');
-                                iconResync[0].classList.remove('spin');
-                                iconResync[0].classList.add('restart');
-                                document.location.reload()
-                            }, 5000);
-                        }, 1000);
+                                const iconResync = document.getElementsByClassName('fa-rotate');        // resync favicon
+                                iconResync[0].classList.remove('spin');                                 // stop spinning
+                                iconResync[0].classList.add('restart');                                 // normal spinner class
+                                document.location.reload()                                              // reload page
+                            }, 5000 );  // how long until refresh page
+                        }, 1000 );      // how long until dimmer is removed / reload page activated (also on delay) 
                     }
                 });
             }
+
+            /*
+                Health check > Show time remaining as tooltip
+            */
+            
+            function runTooltipCountdown( )
+            {
+                let timerHours, timerMins, timerRemainsLS;
+
+                function twoDigits( n )
+                {
+                    return (n <= 9 ? "0" + n : n);
+                }
+
+                /*
+                    Update Tooltip Countdown
+
+                    MS          = milliseconds
+                    LS          = long string (Wed Dec 31 1969 10:01:42 (Coordinated Universal Time))
+                */
+
+                function updateTooltipCountdown()
+                {
+                    const timerElapsedMS    = Date.now() - timerStartMS;            // ( 2091 )
+                    const timerRemainsMS    = timerDelayMS - timerElapsedMS;        // ( 7909 )     divide by 1000 for seconds
+    
+                    timerRemainsLS          = new Date( timerRemainsMS );           // (Wed Dec 31 1969 10:01:42 (Coordinated Universal Time))
+                    timerHours              = timerRemainsLS.getUTCHours();         // ( 0 )
+                    timerMins               = timerRemainsLS.getUTCMinutes();       // ( 9 )
+                    const timeLeft          = (timerHours ? timerHours + ':' + twoDigits( timerMins ) : timerMins) + ':' + twoDigits( timerRemainsLS.getUTCSeconds() );
+
+                    jQuery(function($)
+                    {
+                        $(document.body).tooltip({ selector: "[title]" });
+                        $('#action-resync')
+                            .attr('data-original-title', timeLeft)
+                            .attr('aria-label', timeLeft)
+                            .attr('data-bs-original-title', timeLeft)
+                    }); 
+
+                    setTimeout( updateTooltipCountdown, timerRemainsLS.getUTCMilliseconds() + 500 );
+                }
+                
+                updateTooltipCountdown();
+            }
+
+            /*
+                Action > Healthcheck > Initialize
+            */
+
+            setTimeout( function() { runHealthCheck(); }, timerDelayMS );
+
+            /*
+                Action > Tooltip Resync Timers
+            */
+
+            runTooltipCountdown( );
+
         </script>
     </body>
 </html>
