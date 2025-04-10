@@ -4,13 +4,13 @@
 
 .table
 {
-    --bs-table-bg: #1b1b1b;
-    --bs-table-border-color: #313131;
+    --bs-table-bg:              #1b1b1b;
+    --bs-table-border-color:    #313131;
 }
 
 .table-striped > tbody > tr:nth-of-type(2n+1) > *
 {
-    --bs-table-bg-type: #242424;
+    --bs-table-bg-type:         #242424;
 }
 
 /*
@@ -19,37 +19,37 @@
 
 .tooltip-inner
 {
-    background-color: #3061a1;
-    box-shadow: 0px 0px 4px black;
-    opacity: 1;
-    color: #FFF;
+    background-color:           #3061a1;
+    box-shadow:                 0px 0px 4px black;
+    opacity:                    1;
+    color:                      #FFF;
 }
 
 .tooltip.bs-tooltip-right .tooltip-arrow::before
 {
-    border-right-color: #3061a1 !important;
+    border-right-color:         #3061a1 !important;
 }
 
 .tooltip.bs-tooltip-left .tooltip-arrow::before
 {
-    border-left-color: #3061a1 !important;
+    border-left-color:          #3061a1 !important;
 }
 
 .tooltip.bs-tooltip-bottom .tooltip-arrow::before
 {
-    border-bottom-color: #3061a1 !important;
+    border-bottom-color:        #3061a1 !important;
 }
 
 .tooltip.bs-tooltip-top .tooltip-arrow::before
 {
-    border-top-color: #3061a1 !important;
+    border-top-color:           #3061a1 !important;
 }
 
 body
 {
-    background-color:               #f8f9fa;
-    padding-bottom:                 20px;
-    overflow:                       auto;
+    background-color:           #f8f9fa;
+    padding-bottom:             20px;
+    overflow:                   auto;
 }
 
 @media (prefers-color-scheme: dark)
@@ -104,20 +104,20 @@ body
 @keyframes spin-scale
 {
     to {
-        transform:      rotate(0deg) scale(1, 1);
+        transform:              rotate(0deg) scale(1, 1);
     }
     from {
-        transform:      rotate(360deg) scale(1.5, 1.5);
+        transform:              rotate(360deg) scale(1.5, 1.5);
     }
 }
 
 @keyframes spin
 {
     from {
-        transform:      rotate(0deg);
+        transform:              rotate(0deg);
     }
     to {
-        transform:      rotate(360deg);
+        transform:              rotate(360deg);
     }
 }
 
@@ -347,8 +347,8 @@ p
 
 .navbar-social svg
 {
-    font-size:                  clamp(0.7em, 2vw, 1.1em);
-    margin-left:               10px;
+    font-size:                  clamp(0.7em, 2vw, 1.0em);
+    margin-left:                10px;
 }
 
 .logo
@@ -401,12 +401,12 @@ p
 
 .spin
 {
-    transition-property: transform;
-    transition-duration: 0.5s;
-    animation-name: spin;
-    animation-duration: 0.5s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+    transition-property:        transform;
+    transition-duration:        0.5s;
+    animation-name:             spin;
+    animation-duration:         0.5s;
+    animation-iteration-count:  infinite;
+    animation-timing-function:  linear;
 }
 
 .table thead th a
@@ -630,77 +630,35 @@ code
 {
     0%
     {
-            transform: scale( .75);
+            transform: scale(1.2);
     }
     20%
     {
-            transform: scale( 1);
+            transform: scale(1.5);
     }
     40%
     {
-            transform: scale( .75);
+            transform: scale(1.2);
     }
     60%
     {
-            transform: scale( 1);
+            transform: scale(1.5);
     }
     80%
     {
-            transform: scale( .75);
+            transform: scale(1.2);
     }
     100%
     {
-            transform: scale( .75);
+            transform: scale(1.2);
     }
 }
 
-#heart
+.heart
 {
-    position: relative;
-    width: 100px;
-    height: 90px;
-    animation: heartbeat 1s infinite;
+    position:                   relative;
+    animation:                  heartbeat 1s infinite;
 }
-
-#heart:before,
-#heart:after
-{
-    position: absolute;
-    content: "";
-    left: 50px;
-    top: 0;
-    width: 50px;
-    height: 80px;
-    background: red;
-    -moz-border-radius: 50px 50px 0 0;
-    border-radius: 50px 50px 0 0;
-    -webkit-transform: rotate(-45deg);
-    -moz-transform: rotate(-45deg);
-    -ms-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-    -webkit-transform-origin: 0 100%;
-    -moz-transform-origin: 0 100%;
-    -ms-transform-origin: 0 100%;
-    -o-transform-origin: 0 100%;
-    transform-origin: 0 100%;
-}
-
-#heart:after
-{
-    left: 0;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-    transform: rotate(45deg);
-    -webkit-transform-origin: 100% 100%;
-    -moz-transform-origin: 100% 100%;
-    -ms-transform-origin: 100% 100%;
-    -o-transform-origin: 100% 100%;
-    transform-origin: 100% 100%;
-}
-
 
 @-webkit-keyframes fadeOut {
     0% {
