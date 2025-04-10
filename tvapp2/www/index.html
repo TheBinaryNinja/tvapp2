@@ -22,6 +22,7 @@
                 </div>
                 <div class="navbar-social">
                     <a href="javascript:runResync();"><i id="action-resync" data-bs-toggle="tooltip" title="Resync" class="restart fa-solid fa-rotate" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                    <a href=""><i id="action-health" data-bs-toggle="tooltip" title="Health" class="logo health fa-duotone fa-solid fa-heart" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlDocs %>"><i data-bs-toggle="tooltip" title="Documentation" class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlGithub %>"><i data-bs-toggle="tooltip" title="Github" class="logo fa-logos fa-github" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
                     <a href="<%= appUrlDiscord %>"><i data-bs-toggle="tooltip" title="Discord" class="logo fa-logos fa-discord" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
@@ -458,13 +459,32 @@
                     jQuery(function($)
                     {
                         $(document.body).tooltip({ selector: "[title]" });
-                        $('#action-resync')
+                        $('#action-health')
                             .attr('data-original-title', timeLeft)
                             .attr('aria-label', timeLeft)
                             .attr('data-bs-original-title', timeLeft)
                     }); 
 
-                    setTimeout( updateTooltipCountdown, timerRemainsLS.getUTCMilliseconds() + 500 );
+                    const Heart = document.getElementsByClassName('fa-heart');
+                    Heart[0].style.color = '#FFF';
+
+                    setTimeout( function()
+                    {
+                        const Heart = document.getElementsByClassName('fa-heart');
+                        Heart[0].style.color = '#FFF';
+
+                        setTimeout( function()
+                        {
+                            Heart[0].style.color = '#ff7575';
+                        }, timerRemainsLS.getUTCMilliseconds() + 200 );
+
+                    }, timerRemainsLS.getUTCMilliseconds() + 500 );
+
+
+                    setTimeout( function()
+                    {
+                        updateTooltipCountdown();
+                    }, timerRemainsLS.getUTCMilliseconds() + 500 );
                 }
                 
                 updateTooltipCountdown();
