@@ -1,3 +1,7 @@
+/*
+    Boostrap 5 > Table
+*/
+
 .table
 {
     --bs-table-bg: #1b1b1b;
@@ -7,6 +11,38 @@
 .table-striped > tbody > tr:nth-of-type(2n+1) > *
 {
     --bs-table-bg-type: #242424;
+}
+
+/*
+    Boostrap 5 > Tooltips
+*/
+
+.tooltip-inner
+{
+    background-color: #3061a1;
+    box-shadow: 0px 0px 4px black;
+    opacity: 1;
+    color: #FFF;
+}
+
+.tooltip.bs-tooltip-right .tooltip-arrow::before
+{
+    border-right-color: #3061a1 !important;
+}
+
+.tooltip.bs-tooltip-left .tooltip-arrow::before
+{
+    border-left-color: #3061a1 !important;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before
+{
+    border-bottom-color: #3061a1 !important;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before
+{
+    border-top-color: #3061a1 !important;
 }
 
 body
