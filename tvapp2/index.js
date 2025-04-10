@@ -67,6 +67,7 @@ const FOLDER_WWW = 'www';
     Define > Environment Variables || Defaults
 */
 
+const envAppRelease = process.env.RELEASE || 'stable';
 const envUrlRepo = process.env.URL_REPO || 'https://git.binaryninja.net/binaryninja';
 const envStreamQuality = process.env.STREAM_QUALITY || 'hd';
 const envFileURL = process.env.FILE_URL || 'urls.txt';
@@ -1270,6 +1271,7 @@ const server = http.createServer( ( request, response ) =>
                 dateGZP: FILE_GZP_MODIFIED,
 
                 healthTimer: envHealthTimer,
+                appRelease: envAppRelease,
                 appName: name,
                 appVersion: version,
                 appUrlGithub: repository.url,
