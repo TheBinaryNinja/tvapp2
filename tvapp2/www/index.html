@@ -460,9 +460,9 @@
                     {
                         $(document.body).tooltip({ selector: "[title]" });
                         $('#action-health')
-                            .attr('data-original-title', timeLeft)
-                            .attr('aria-label', timeLeft)
-                            .attr('data-bs-original-title', timeLeft)
+                            .attr('data-original-title', `Health check in ${ timeLeft }`)
+                            .attr('aria-label', `Health check in ${ timeLeft }`)
+                            .attr('data-bs-original-title', `Health check in ${ timeLeft }`)
                     }); 
 
                     const Heart = document.getElementsByClassName('fa-heart');
@@ -475,8 +475,8 @@
 
                         setTimeout( function()
                         {
-                            Heart[0].style.color = '#ff7575';
-                        }, timerRemainsLS.getUTCMilliseconds() + 200 );
+                            Heart[0].style.color = '#FF6593';
+                        }, timerRemainsLS.getUTCMilliseconds() + 100 );
 
                     }, timerRemainsLS.getUTCMilliseconds() + 500 );
 
