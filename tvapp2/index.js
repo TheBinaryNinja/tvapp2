@@ -74,6 +74,9 @@ const envFileURL = process.env.FILE_URL || 'urls.txt';
 const envFileM3U = process.env.FILE_M3U || 'playlist.m3u8';
 const envFileXML = process.env.FILE_EPG || 'xmltv.xml';
 const envFileGZP = process.env.FILE_GZP || 'xmltv.xml.gz';
+const envApiKey = process.env.API_KEY || null;
+const envWebIP = process.env.WEB_IP || '0.0.0.0';
+const envWebPort = process.env.WEB_PORT || `4124`;
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
@@ -104,6 +107,7 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
                 http://127.0.0.1:4124/playlist
                 http://127.0.0.1:4124/key
                 http://127.0.0.1:4124/channel
+                http://127.0.0.1:4124/health
 */
 
 const subdomainRestart = [ 'restart', 'sync', 'resync' ];
@@ -111,7 +115,7 @@ const subdomainGZP = [ 'gzip', 'gz' ];
 const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
 const subdomainEPG = [ 'guide', 'epg', 'xml' ];
 const subdomainKey = [ 'key', 'keys' ];
-const subdomainChan = [ 'channels', 'channel' ];
+const subdomainChan = [ 'channels', 'channel', 'chan' ];
 const subdomainHealth = [ 'api/status', 'api/health' ];
 
 /*
@@ -212,7 +216,7 @@ class Log
 
 if ( process.pkg )
 {
-    Log.info( `Processing Package` );
+    Log.info( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Starting server utilizing process.execPath` ) );
     const basePath = path.dirname( process.execPath );
 
     FILE_URL = path.join( basePath, FOLDER_WWW, `${ envFileURL }` );
@@ -223,7 +227,7 @@ if ( process.pkg )
 }
 else
 {
-    Log.info( `Processing Locals` );
+    Log.info( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Starting server utilizing processed locals` ) );
 
     FILE_URL = path.resolve( __dirname, FOLDER_WWW, `${ envFileURL }` );
     FILE_M3U = path.resolve( __dirname, FOLDER_WWW, `${ envFileM3U }` );
@@ -284,7 +288,7 @@ const semaphore = new Semaphore( 5 );
 
 async function downloadFile( url, filePath )
 {
-    Log.info( `Fetching`, chalk.white( `→` ), chalk.grey( `Downloading external file` ), chalk.blueBright( `${ url }` ), chalk.grey( `to` ), chalk.blueBright( `${ filePath }` ) );
+    Log.info( `netw`, chalk.yellow( `[start]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Downloading external file` ), chalk.blueBright( `<source>` ), chalk.gray( `${ url }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ filePath }` ) );
 
     return new Promise( ( resolve, reject ) =>
     {
@@ -296,19 +300,19 @@ async function downloadFile( url, filePath )
             {
                 if ( response.statusCode !== 200 )
                 {
-                    Log.error( `Failed to download file: ${ url }`, chalk.white( `→` ), chalk.grey( `Status code: ${ response.statusCode }` ) );
+                    Log.error( `netw`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Failed to download source file` ), chalk.blueBright( `<source>` ), chalk.gray( `${ url }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ filePath }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ response.statusCode }` ) );
                     return reject( new Error( `Failed to download file: ${ url }. Status code: ${ response.statusCode }` ) );
                 }
                 response.pipe( file );
                 file.on( 'finish', () =>
                 {
-                    Log.ok( `Received`, chalk.white( `→` ), chalk.grey( `Successfully wrote data to file` ), chalk.blueBright( `${ filePath }` ) );
+                    Log.ok( `netw`, chalk.yellow( `[finish]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Successfully downloaded and wrote new file` ), chalk.blueBright( `<source>` ), chalk.gray( `${ url }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ filePath }` ) );
                     file.close( () => resolve( true ) );
                 });
             })
             .on( 'error', ( err ) =>
             {
-                Log.error( `Error downloading file: ${ url }`, chalk.white( `→` ), chalk.grey( `Status code: ${ err.message }` ) );
+                Log.error( `netw`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Failed to download source file` ), chalk.blueBright( `<error>` ), chalk.gray( `${ err.message }`, chalk.blueBright( `<source>` ), chalk.gray( `${ url }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ filePath }` ) ) );
                 fs.unlink( filePath, () => reject( err ) );
             });
     });
@@ -373,7 +377,7 @@ function getFileSizeHuman( filename, si = true, decimal = 1 )
 }
 
 /*
-    Func > Ensure File Exists
+    Func > Get Files
 
     if file exists; start download from external website utilizing url and file path arguments; or
     throw error to user that file does not exist via the URL.
@@ -395,59 +399,56 @@ async function getFile( url, filePath )
     {
         if ( fs.existsSync( filePath ) )
         {
-            Log.warn( `Using existing local file ${ filePath }, download failed`, chalk.white( `→` ), chalk.grey( `${ url }` ) );
+            Log.warn( `netw`, chalk.yellow( `[get]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Download failed - Using existing local file ${ filePath }` ), chalk.blueBright( `<source>` ), chalk.gray( `${ url }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ filePath }` ) );
         }
         else
         {
-            Log.error( `Failed to download file, and no local file exists; aborting`, chalk.white( `→` ), chalk.grey( `${ url }` ) );
+            Log.error( `netw`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Download filed and no local backup exists, aborting` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<source>` ), chalk.gray( `${ url }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ filePath }` ) );
             throw err;
         }
     }
 }
 
 /*
-    Func > Package GZip
+    Func > Create GZip
 
     locates the xmltv.xml and packages it into a xmltv.gz archive
 */
 
 async function createGzip( )
 {
-    Log.debug( `Preparing to gzip`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ) );
-
+    Log.info( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Preparing to create compressed XML gz file` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
     return new Promise( ( resolve, reject ) =>
     {
-        Log.debug( `createGzip[promise]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ) );
-
+        Log.debug( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Promise to create compressed gz started` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
         fs.readFile( FILE_XML, ( err, buf ) =>
         {
-            Log.debug( `createGzip[fs.readFile]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ) );
-
+            Log.debug( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Reading source XML file` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
             if ( err )
             {
-                Log.error( `Could not read file ${ envFileXML }. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
+                Log.error( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Could not read source XML file` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err }` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
                 return reject( new Error( `Could not read file ${ envFileXML }. Error: ${ err }` ) );
             }
 
             zlib.gzip( buf, ( err, buf ) =>
             {
-                Log.debug( `createGzip[zlib.gzip]`, chalk.white( `→` ), chalk.grey( `${ envFileXML }` ), chalk.white( `→` ), chalk.grey( `${ envFileGZP }` ) );
+                Log.debug( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Starting zlib.gzip` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
                 if ( err )
                 {
-                    Log.error( `Could not write to archive. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
+                    Log.error( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Could not create gz archive` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err }` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
                     return reject( new Error( `Could not create ${ envFileGZP }. Error: ${ err }` ) );
                 }
 
-                Log.info( `Compressing`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_GZP }` );
+                Log.info( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Started creating gz archive from XML source` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
                 fs.writeFile( `${ FILE_GZP }`, buf, ( err ) =>
                 {
                     if ( err )
                     {
-                        Log.error( `Could not write XML file to archive. Error: `, chalk.white( `→` ), chalk.grey( `${ err }` ) );
+                        Log.error( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Could not write to and create gz archive` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err }` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
                         return reject( new Error( `Could not write XML file ${ envFileXML } to ${ envFileGZP }. Error: ${ err }` ) );
                     }
 
-                    Log.ok( `Compressed`, chalk.white( `→` ), `${ envFileXML }`, chalk.white( `→` ), `${ FILE_GZP }` );
+                    Log.ok( `gzip`, chalk.yellow( `[create]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Successfully created compressed gz archive from XML source file` ), chalk.blueBright( `<source>` ), chalk.gray( `${ envFileXML }` ), chalk.blueBright( `<destination>` ), chalk.gray( `${ envFileGZP }` ) );
                     resolve( true );
                 });
             });
@@ -456,19 +457,12 @@ async function createGzip( )
 }
 
 /*
-    Func > Ensure File Exists
+    Func > Get Gzip
 
-    if file exists; start download from external website utilizing url and file path arguments; or
-    throw error to user that file does not exist via the URL.
-
-    If file cannot be obtained from external url; use local copy if available
-
-    @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
-    @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
-    @ret        none
+    try; catch to create a .gz compressed file from the .xml guide data
 */
 
-async function prepareGzip( )
+async function getGzip( )
 {
     try
     {
@@ -478,11 +472,11 @@ async function prepareGzip( )
     {
         if ( fs.existsSync( FILE_XML ) )
         {
-            Log.warn( `XML file found, but gzip failed to compress XML`, chalk.white( `→` ), chalk.grey( `${ FILE_XML }` ) );
+            Log.warn( `gzip`, chalk.yellow( `[compress]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.yellowBright( `Source xml file found, but gzip failed generate a compressed .gz fileL` ), chalk.blueBright( `<source>` ), chalk.gray( `${ FILE_XML }` ) );
         }
         else
         {
-            Log.error( `XML file not found`, chalk.white( `→` ), chalk.grey( `${ FILE_XML }` ) );
+            Log.error( `gzip`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Source XML file not found; cannot create compressed gzip` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<source>` ), chalk.gray( `${ FILE_XML }` ) );
             throw err;
         }
     }
@@ -523,7 +517,7 @@ async function fetchRemote( url )
             {
                 if ( resp.statusCode !== 200 )
                 {
-                    Log.error( `Server returned status code other than 200`, chalk.white( `→` ), chalk.grey( `${ url } - ${ resp.statusCode }` ) );
+                    Log.error( `core`, chalk.yellow( `[fetch]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Server returned status code other than 200` ), chalk.blueBright( `<statusCode>` ), chalk.redBright( `${ resp.statusCode }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
                     return reject( new Error( `HTTP ${ resp.statusCode } for ${ url }` ) );
                 }
 
@@ -576,21 +570,24 @@ async function serveKey( req, res )
         const uriParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'uri' );
         if ( !uriParam )
         {
-            Log.error( `Missing "uri" parameter for key download`, chalk.white( `→` ), chalk.grey( `${ req.url }` ) );
-
             const statusCheck =
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
                 uptime: process.uptime(),
                 message: 'Error: Missing "uri" parameter for key download.',
+                status: 'unhealthy',
+                ref: req.url,
+                method: req.method || 'GET',
                 code: 400,
                 timestamp: Date.now()
             };
 
-            res.writeHead( 400, {
+            res.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
+
+            Log.error( `key`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
 
             return res.end( JSON.stringify( statusCheck ) );
         }
@@ -604,21 +601,25 @@ async function serveKey( req, res )
     }
     catch ( err )
     {
-        Log.error( `ServeKey Error:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
-
         const statusCheck =
         {
             ip: envIpContainer,
             gateway: envIpGateway,
             uptime: process.uptime(),
-            message: 'Error fetching key',
+            message: `Failed to serve key`,
+            error: `${ err.message }`,
+            status: 'unhealthy',
+            ref: req.url,
+            method: req.method || 'GET',
             code: 500,
             timestamp: Date.now()
         };
 
-        res.writeHead( 500, {
+        res.writeHead( statusCheck.code, {
             'Content-Type': 'application/json'
         });
+
+        Log.error( `key`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ statusCheck.error }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
 
         res.end( JSON.stringify( statusCheck ) );
     }
@@ -706,7 +707,7 @@ async function getTokenizedUrl( channelUrl )
             const streamNameMatch = html.match( /id="stream_name" name="([^"]+)"/ );
             if ( !streamNameMatch )
             {
-                Log.error( `Cannot find "stream_name"`, chalk.white( `→` ), chalk.grey( `${ channelUrl }` ) );
+                Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Cannot find "stream_name` ), chalk.blueBright( `<url>` ), chalk.grey( `${ channelUrl }` ) );
                 return null;
             }
             streamName = streamNameMatch[1];
@@ -726,6 +727,8 @@ async function getTokenizedUrl( channelUrl )
         const tokenResponse = await fetchPage( tokenUrl );
         let finalUrl;
 
+        Log.debug( `playlist`, chalk.yellow( `[tokenize]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Generating tokenized final stream URL` ), chalk.blueBright( `<streamName>` ), chalk.gray( `${ streamName }` ), chalk.blueBright( `<quality>` ), chalk.gray( `${ envStreamQuality }` ), chalk.blueBright( `<host>` ), chalk.gray( `${ streamHost }` ) );
+
         try
         {
             const json = JSON.parse( tokenResponse );
@@ -733,23 +736,22 @@ async function getTokenizedUrl( channelUrl )
         }
         catch ( err )
         {
-            Log.error( `Failed to parse token JSON for channel`, chalk.white( `→` ), chalk.grey( `${ channelUrl } - ${ err.message }` ) );
+            Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Failed to parse token JSON for channel` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ channelUrl }` ) );
             return null;
         }
 
         if ( !finalUrl )
         {
-            Log.error( `No URL found in token JSON for channel`, chalk.white( `→` ), chalk.grey( `${ channelUrl }` ) );
+            Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `No URL found in token JSON for channel` ), chalk.blueBright( `<url>` ), chalk.gray( `${ channelUrl }` ) );
             return null;
         }
 
-        Log.debug( `Tokenized URL:`, chalk.white( `→` ), chalk.grey( `${ finalUrl }` ) );
-
+        Log.debug( `playlist`, chalk.yellow( `[tokenize]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Completed generated tokenized final stream URL` ), chalk.blueBright( `<streamName>` ), chalk.gray( `${ streamName }` ), chalk.blueBright( `<quality>` ), chalk.gray( `${ envStreamQuality }` ), chalk.blueBright( `<host>` ), chalk.gray( `${ streamHost }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ finalUrl }` ) );
         return finalUrl;
     }
     catch ( err )
     {
-        Log.error( `Fatal error fetching token:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Fatal error fetching token` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<url>` ), chalk.grey( `${ channelUrl }` ) );
         return null;
     }
 }
@@ -762,26 +764,28 @@ async function serveM3UPlaylist( req, res )
         const urlParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'url' );
         if ( !urlParam )
         {
-            Log.error( `Missing parameter`, chalk.white( `→` ), chalk.grey( `URL` ) );
-
             const statusCheck =
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
                 uptime: process.uptime(),
-                message: 'Missing URL parameter',
+                message: `Missing ?url= parameter`,
+                status: `unhealthy`,
+                ref: req.url,
+                method: req.method || 'GET',
                 code: 404,
                 timestamp: Date.now()
             };
 
-            res.writeHead( 400, {
+            res.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
+
+            Log.error( `channel`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<expected>` ), chalk.grey( `http://${ req.headers.host }/channel?url=XXXX` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
 
             res.end( JSON.stringify( statusCheck ) );
             return;
         }
-
 
         const decodedUrl = decodeURIComponent( urlParam );
         if ( decodedUrl.endsWith( '.ts' ) )
@@ -803,30 +807,35 @@ async function serveM3UPlaylist( req, res )
                 'Content-Disposition': 'inline; filename="' + envFileM3U
             });
 
+            Log.debug( `playlist`, chalk.yellow( `[fetch]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `retrieving cached playlist` ), chalk.blueBright( `<cachedUrl>` ), chalk.gray( `${ cachedUrl }` ), chalk.blueBright( `<stream>` ), chalk.gray( `${ urlParam }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `200` ) );
+
             res.end( rewrittenPlaylist );
             return;
         }
 
-        Log.info( `Fetching stream:`, chalk.white( `→` ), chalk.grey( `${ urlParam }` ) );
+        Log.info( `playlist`, chalk.yellow( `[fetch]` ), chalk.white( `→` ), chalk.blueBright( `<stream>` ), chalk.gray( `${ urlParam }` ) );
 
         const finalUrl = await getTokenizedUrl( decodedUrl );
         if ( !finalUrl )
         {
-            Log.error( `Failed to retrieve tokenized URL` );
-
             const statusCheck =
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
                 uptime: process.uptime(),
-                message: 'Error: Failed to retrieve tokenized URL.',
+                message: `Failed to retrieve tokenized URL.`,
+                status: `unhealthy`,
+                ref: req.url,
+                method: req.method || 'GET',
                 code: 500,
                 timestamp: Date.now()
             };
 
-            res.writeHead( 500, {
+            res.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
+
+            Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<stream>` ), chalk.gray( `${ urlParam }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
 
             res.end( JSON.stringify( statusCheck ) );
 
@@ -846,8 +855,6 @@ async function serveM3UPlaylist( req, res )
     }
     catch ( err )
     {
-        Log.error( `Error processing request:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
-
         if ( !res.headersSent )
         {
             const statusCheck =
@@ -855,14 +862,20 @@ async function serveM3UPlaylist( req, res )
                 ip: envIpContainer,
                 gateway: envIpGateway,
                 uptime: process.uptime(),
-                message: 'Error: Cannot process request.',
+                message: `Cannot process request when fetching channel playlist`,
+                error: `${ err.message }`,
+                status: 'unhealthy',
+                ref: req.url,
+                method: req.method || 'GET',
                 code: 500,
                 timestamp: Date.now()
             };
 
-            res.writeHead( 500, {
+            res.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
+
+            Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
 
             res.end( JSON.stringify( statusCheck ) );
         }
@@ -878,50 +891,59 @@ async function serveHealthCheck( req, res )
     await semaphore.acquire();
     try
     {
-        const urlParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'url' );
+        const urlParam = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'api' );
         if ( !urlParam )
         {
-            Log.debug( `No parameters passed to healthcheck`, chalk.white( `→` ), chalk.grey( `URL` ) );
+            Log.debug( `health`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `No API key passed to health check` ) );
         }
 
-        const healthcheck =
+        const statusCheck =
         {
             ip: envIpContainer,
             gateway: envIpGateway,
             uptime: process.uptime(),
-            message: 'Healthy',
+            message: `healthy`,
+            status: `healthy`,
+            ref: req.url,
+            method: req.method || 'GET',
             code: 200,
             timestamp: Date.now()
         };
 
-        res.writeHead( 200, {
+        res.writeHead( statusCheck.code, {
             'Content-Type': 'application/json'
         });
 
-        res.end( JSON.stringify( healthcheck ) );
+        Log.ok( `health`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `health check returned` ), chalk.greenBright( `${ statusCheck.status }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ), chalk.blueBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
+
+        res.end( JSON.stringify( statusCheck ) );
         return;
     }
     catch ( err )
     {
-        Log.error( `Error getting healthcheck:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
-
         if ( !res.headersSent )
         {
-            const healthcheck =
+            const statusCheck =
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
                 uptime: process.uptime(),
-                message: 'Unhealthy',
+                message: `health check failed`,
+                error: `${ err.message }`,
+                status: `unhealthy`,
+                ref: req.url,
+                method: req.method || 'GET',
                 code: 503,
                 timestamp: Date.now()
             };
 
-            res.writeHead( 503, {
+            res.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
 
-            res.end( JSON.stringify( healthcheck ) );
+            Log.error( `health`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `${ statusCheck.message }; returned` ), chalk.redBright( `${ statusCheck.status }` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ), chalk.blueBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
+
+            res.end( JSON.stringify( statusCheck ) );
         }
     }
     finally
@@ -963,7 +985,7 @@ async function rewriteM3U( originalUrl, req )
     Serves IPTV .m3u playlist
 */
 
-async function serveM3U( response, req )
+async function serveM3U( res, req )
 {
     try
     {
@@ -981,22 +1003,36 @@ async function serveM3U( response, req )
                 return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
             });
 
-        response.writeHead( 200, {
-            'Content-Type': 'application/x-mpegURL',
-            'Content-Disposition': 'inline; filename="' + envFileM3U
-        });
+            res.writeHead( 200, {
+                'Content-Type': 'application/x-mpegURL',
+                'Content-Disposition': 'inline; filename="' + envFileM3U
+            });
 
-        response.end( updatedContent );
+        res.end( updatedContent );
     }
     catch ( err )
     {
-        Log.error( `Error in serveM3U:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+        const statusCheck =
+        {
+            ip: envIpContainer,
+            gateway: envIpGateway,
+            uptime: process.uptime(),
+            message: `Fatal error serving playlist`,
+            error: `${ err.message }`,
+            status: 'unhealthy',
+            ref: req.url,
+            method: req.method || 'GET',
+            code: 500,
+            timestamp: Date.now()
+        };
 
-        response.writeHead( 500, {
-            'Content-Type': 'text/plain'
+        Log.error( `playlist`, chalk.yellow( `[serve]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ statusCheck.message }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
+
+        res.writeHead( statusCheck.code, {
+            'Content-Type': 'application/json'
         });
 
-        response.end( `Error serving playlist: ${ err.message }` );
+        res.end( JSON.stringify( statusCheck ) );
     }
 }
 
@@ -1022,13 +1058,13 @@ async function serveXML( response, req )
     }
     catch ( err )
     {
-        Log.error( `Error in serveM3U:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `playlist`, chalk.yellow( `[serve]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Fatal serving xml / epg guide data` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
 
-        response.end( `Error serving playlist: ${ err.message }` );
+        response.end( `Error serving xml/epg guide data: ${ err.message }` );
     }
 };
 
@@ -1054,7 +1090,7 @@ async function serveGZP( response, req )
     }
     catch ( err )
     {
-        Log.error( `Error in serveGZP:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `playlist`, chalk.yellow( `[serve]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Fatal serving compressed gzip file` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ) );
 
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
@@ -1072,7 +1108,7 @@ function setCache( key, value, ttl )
         expiry
     });
 
-    Log.debug( `Cache set for key ${ key } which expires in`, chalk.white( `→` ), chalk.grey( `${ ttl / 1000 } seconds` ) );
+    Log.debug( `cache`, chalk.yellow( `[set]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `new key created` ), chalk.blueBright( `<key>` ), chalk.gray( `${ key }` ), chalk.blueBright( `<expire>` ), chalk.gray( `${ ttl / 1000 } seconds` ) );
 }
 
 function getCache( key )
@@ -1085,7 +1121,7 @@ function getCache( key )
     else
     {
         if ( cached )
-            Log.debug( `Cache expired for key`, chalk.white( `→` ), chalk.grey( `${ key }` ) );
+            Log.debug( `cache`, chalk.yellow( `[get]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `key has expired, marked for deletion` ), chalk.blueBright( `<key>` ), chalk.gray( `${ key }` ) );
 
         cache.delete( key );
         return null;
@@ -1102,12 +1138,18 @@ async function initialize()
 {
     try
     {
-        Log.info( `Initialization Started` );
+        const start = performance.now();
+        Log.info( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Starting TVApp2 container. Assigning bound IP to host network adapter` ), chalk.blueBright( `<hostIp>` ), chalk.gray( `${ envWebIP }` ), chalk.blueBright( `<containerIp>` ), chalk.gray( `${ envIpContainer }` ), chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
+
+        Log.debug( `.env`, chalk.yellow( `[set]` ), chalk.white( `→` ), chalk.blueBright( `<variable>` ), chalk.gray( `FILE_URL` ), chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_URL }` ) );
+        Log.debug( `.env`, chalk.yellow( `[set]` ), chalk.white( `→` ), chalk.blueBright( `<variable>` ), chalk.gray( `FILE_M3U` ), chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_M3U }` ) );
+        Log.debug( `.env`, chalk.yellow( `[set]` ), chalk.white( `→` ), chalk.blueBright( `<variable>` ), chalk.gray( `FILE_XML` ), chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_XML }` ) );
+        Log.debug( `.env`, chalk.yellow( `[set]` ), chalk.white( `→` ), chalk.blueBright( `<variable>` ), chalk.gray( `FILE_GZP` ), chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_GZP }` ) );
 
         await getFile( extURL, FILE_URL );
         await getFile( extXML, FILE_XML );
         await getFile( extM3U, FILE_M3U );
-        await prepareGzip();
+        await getGzip();
 
         urls = fs.readFileSync( FILE_URL, 'utf-8' ).split( '\n' ).filter( Boolean );
         if ( urls.length === 0 )
@@ -1125,11 +1167,12 @@ async function initialize()
         FILE_XML_MODIFIED = getFileModified( FILE_XML );
         FILE_GZP_MODIFIED = getFileModified( FILE_GZP );
 
-        Log.ok( `Initialization Complete` );
+        const end = performance.now();
+        Log.info( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `TVApp2 container is ready` ), chalk.blueBright( `took ${ end - start }ms` ), chalk.blueBright( `<message>` ), chalk.gray( `TVApp2 container is ready; took ${ end - start }ms` ), chalk.blueBright( `<ip>` ), chalk.gray( `${ envIpContainer }` ), chalk.blueBright( `<gateway>` ), chalk.gray( `${ envIpGateway }` ), chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
     }
     catch ( err )
     {
-        Log.error( `Initialization error:`, chalk.white( `→` ), chalk.grey( `${ err.message }` ) );
+        Log.error( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Could not start up TVApp2 container due to error` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err }` ), chalk.blueBright( `<ip>` ), chalk.gray( `${ envIpContainer }` ), chalk.blueBright( `<gateway>` ), chalk.gray( `${ envIpGateway }` ), chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
     }
 }
 
@@ -1171,8 +1214,6 @@ const server = http.createServer( ( request, response ) =>
 
     const loadFile = reqUrl.replace( /^\/+/, '' );
 
-    Log.debug( `www`, chalk.blueBright( `[REQUEST]` ), chalk.white( `→` ), chalk.grey( `asset>` ), chalk.greenBright( `${ loadFile }` ), chalk.grey( `<method>` ), chalk.greenBright( `${ method }` ) );
-
     const handleRequest = async() =>
     {
         /*
@@ -1185,27 +1226,35 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainRestart.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
         {
-            Log.info( `Toggled restart`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
-
-            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_URL` ), chalk.blueBright( `${ FILE_URL }` ) );
-            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_M3U` ), chalk.blueBright( `${ FILE_M3U }` ) );
-            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_XML` ), chalk.blueBright( `${ FILE_XML }` ) );
-            Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_GZP` ), chalk.blueBright( `${ FILE_GZP }` ) );
-
             await initialize();
 
-            response.writeHead( 200, {
+            const statusCheck =
+            {
+                ip: envIpContainer,
+                gateway: envIpGateway,
+                uptime: process.uptime(),
+                message: 'Restart command received',
+                status: 'ok',
+                ref: request.url,
+                method: method || 'GET',
+                code: 200,
+                timestamp: Date.now()
+            };
+
+            response.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
 
-            response.end( `{ "status": "ok" }` );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+            response.end( JSON.stringify( statusCheck ) );
 
             return;
         }
 
         if ( subdomainM3U.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received request for m3u playlist data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `m3u playlist` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveM3U( response, request );
             return;
@@ -1213,7 +1262,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainChan.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received request for channel data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `channel` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveM3UPlaylist( request, response );
             return;
@@ -1221,7 +1270,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainKey.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received request for key data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `key` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveKey( request, response );
             return;
@@ -1229,7 +1278,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainEPG.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received request for raw uncompressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `epg-uncompressed` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveXML( response, request );
             return;
@@ -1237,7 +1286,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainGZP.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received request for compressed EPG data`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `epg-compressed` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveGZP( response, request );
             return;
@@ -1245,7 +1294,7 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `Received healthcheck`, chalk.white( `→` ), chalk.grey( `${ loadFile }` ) );
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `api` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveHealthCheck( request, response );
             return;
@@ -1297,6 +1346,7 @@ const server = http.createServer( ( request, response ) =>
                                     '.png' : 'image/png',
                                     '.gif' : 'image/gif',
                                     '.css' : 'text/css',
+                                    '.scss' : 'text/x-sass',
                                     '.gz' : 'application/gzip',
                                     '.js' : 'text/javascript',
                                     '.txt' : 'text/plain',
@@ -1315,16 +1365,14 @@ const server = http.createServer( ( request, response ) =>
                 response.setHeader( 'Content-type', fileMime );
                 response.end( data );
 
-                Log.ok( `www`, chalk.greenBright( ` [LOAD] ` ), chalk.white( `→` ), chalk.grey( `<asset>` ), chalk.greenBright( `${ loadFile }` ), chalk.grey( `<mime>` ), chalk.greenBright( `${ fileMime }` ) );
+                Log.ok( `www`, chalk.yellow( `[load]` ), chalk.white( `→` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<mime>` ), chalk.gray( `${ fileMime }` ) );
             }
             else
             {
                 if ( loadFile === 'discovery.json' )
                 {
-                    Log.notice( `www`, chalk.yellowBright( ` [NOTICE] ` ), chalk.white( `→` ), chalk.grey( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
+                    Log.notice( `www`, chalk.yellowBright( `[notice]` ), chalk.white( `→` ), chalk.grey( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
                 }
-
-                Log.error( `www`, chalk.redBright( ` [ERROR] ` ), chalk.white( `→` ), chalk.grey( `File not found:` ), chalk.redBright( `${ loadFile }` ) );
 
                 const statusCheck =
                 {
@@ -1332,15 +1380,18 @@ const server = http.createServer( ( request, response ) =>
                     gateway: envIpGateway,
                     uptime: process.uptime(),
                     message: 'Page not found',
+                    status: 'healthy',
                     ref: request.url,
-                    method: method,
+                    method: method || 'GET',
                     code: 404,
                     timestamp: Date.now()
                 };
 
-                response.writeHead( 404, {
+                response.writeHead( statusCheck.code, {
                     'Content-Type': 'application/json'
                 });
+
+                Log.error( `www`, chalk.redBright( `[error]` ), chalk.white( `→` ), chalk.grey( `${ statusCheck.message }` ), chalk.redBright( `${ loadFile }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ) );
 
                 response.end( JSON.stringify( statusCheck ) );
             }
@@ -1348,11 +1399,11 @@ const server = http.createServer( ( request, response ) =>
     };
     handleRequest().catch( ( err ) =>
     {
-        Log.error( `Error handling request:`, chalk.white( `→` ), chalk.grey( `${ err }` ) );
-
         response.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
+
+        Log.error( `Error handling request:`, chalk.white( `→` ), chalk.grey( `${ err }` ) );
 
         response.end( 'Internal Server Error' );
     });
@@ -1364,17 +1415,15 @@ const server = http.createServer( ( request, response ) =>
 
 ( async() =>
 {
-    const envWebIP = process.env.WEB_IP || '0.0.0.0';
-    const envWebPort = process.env.WEB_PORT || `4124`;
-
-    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_URL` ), chalk.blueBright( `${ FILE_URL }` ) );
-    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_M3U` ), chalk.blueBright( `${ FILE_M3U }` ) );
-    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_XML` ), chalk.blueBright( `${ FILE_XML }` ) );
-    Log.debug( `env`, chalk.blueBright( `[SET]` ), chalk.white( `→` ), chalk.grey( `FILE_GZP` ), chalk.blueBright( `${ FILE_GZP }` ) );
+    if ( !envApiKey )
+    {
+        Log.warn( `core`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `API_KEY environment variable not defined for api, leaving blank` ) );
+    }
 
     await initialize();
+
     server.listen( envWebPort, envWebIP, () =>
     {
-        Log.info( `Server now running on`, chalk.white( `→` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ) );
+        Log.warn( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `server is now running on` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ) );
     });
 })();

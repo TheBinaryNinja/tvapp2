@@ -37,6 +37,7 @@ FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:3.21
 ARG ARCH=amd64
 ARG BUILDDATE
 ARG VERSION
+ARG RELEASE
 
 # #
 #   Set Labels
@@ -56,6 +57,7 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.architecture="${ARCH}"
 LABEL org.opencontainers.image.ref.name="main"
 LABEL org.opencontainers.image.registry="local"
+LABEL org.opencontainers.image.release="${RELEASE}"
 LABEL org.tvapp2.image.maintainers="Aetherinox, iFlip721, Optx"
 LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
 
@@ -65,6 +67,7 @@ LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
 
 ENV NODE_VERSION=22.8.0
 ENV YARN_VERSION=1.22.22
+ENV RELEASE="${RELEASE}"
 ENV DIR_BUILD=/usr/src/app
 ENV DIR_RUN=/usr/bin/app
 ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
