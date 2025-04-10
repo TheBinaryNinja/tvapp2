@@ -298,7 +298,7 @@
 
             let timerDelayMS            = 10000;
             let timerStartMS            = Date.now(); // returns milliseconds
-            const timerHealthRun        = '10000'; // time in milliseconds until health check ran AFTER initial run
+            const timerHealthRun        = '<%= healthTimer %>'; // time in milliseconds until health check ran AFTER initial run
 
             /*
                 Action > Healthcheck
