@@ -455,6 +455,7 @@ jobs:
                   sbom: false
                   build-args: |-
                       ARCH=amd64
+                      RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
@@ -511,6 +512,7 @@ jobs:
                   sbom: false
                   build-args: |-
                       ARCH=arm64
+                      RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
 
