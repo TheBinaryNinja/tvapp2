@@ -175,6 +175,63 @@ services:
 
 <br />
 
+## WEB_ENCODING
+<!-- md:control env -->
+<!-- md:version stable-1.3.0 -->
+<!-- md:default `deflate, br` -->
+
+The `WEB_ENCODING` environment variable allows you to customize the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand when sending these requests.
+
+Most users will not need to modify this value unless you are running Jellyfin and receive the following error when attempting to sync EPG data between Jellyfin and the TVApp2 container:
+
+!!! warning "Jellyfin  Error"
+
+    ```
+    [ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel 
+    XXXXXXXXXXXXXXX (Source 2) System.Xml.XmlException: '', hexadecimal value 0x1F, 
+    is an invalid character. Line 1, position 1.
+    ```
+
+If you receive the above error and you have already customized this environment variable to include `gzip`, you must remove it from your accepted encoders string to fix the error.
+
+=== "Old"
+
+    ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
+    services:
+        tvapp2:
+            container_name: tvapp2
+            image: ghcr.io/thebinaryninja/tvapp2:latest
+            restart: unless-stopped
+            volumes:
+                - /etc/timezone:/etc/timezone:ro
+                - /etc/localtime:/etc/localtime:ro
+                - /var/run/docker.sock:/var/run/docker.sock
+                - ./config:/config
+                - ./app:/usr/bin/app
+            environment:
+                - WEB_ENCODING: 'gzip, deflate, br'
+    ```
+
+=== "New"
+
+    ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
+    services:
+        tvapp2:
+            container_name: tvapp2
+            image: ghcr.io/thebinaryninja/tvapp2:latest
+            restart: unless-stopped
+            volumes:
+                - /etc/timezone:/etc/timezone:ro
+                - /etc/localtime:/etc/localtime:ro
+                - /var/run/docker.sock:/var/run/docker.sock
+                - ./config:/config
+                - ./app:/usr/bin/app
+            environment:
+                - WEB_ENCODING: 'deflate, br'
+    ```
+
+<br />
+
 ## URL_REPO
 <!-- md:control env -->
 <!-- md:version stable-1.0.0 -->
@@ -202,19 +259,19 @@ services:
 ```
 
 1.  :warning: It is highly recommended that you do not change this value
-    otherwise you will not be able to download the latest M3U playlists and EPG 
-    guide data.
+    otherwise you will not be able to download the latest M3U playlists
+    and EPG guide data.
 
 <br />
 
-## DIR_BUILD
+## FILE_URL
 <!-- md:control env -->
-<!-- md:version stable-1.0.0 -->
-<!-- md:default `/usr/src/app` -->
-<!-- md:flag dangerous -->
+<!-- md:version stable-1.2.0 -->
+<!-- md:default `urls.txt` -->
 
-The `DIR_BUILD` environment variable specifies what local folder will be utilized
-by the TVApp2 docker container when the container builds the app.
+The `FILE_URL` environment variable allows you to specify what the name of the downloaded `urls.txt` cache file. This file is downloaded when you first spin up the TVApp2 container.
+
+There should be no need to utilize this environment variable unless you have a specific reason.
 
 ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
 services:
@@ -229,85 +286,22 @@ services:
             - ./config:/config
             - ./app:/usr/bin/app
         environment:
-            - DIR_BUILD=/usr/src/app # (1)
+            - FILE_URL=urls.txt # (1)
 ```
 
-1.  :warning: You should not change this unless you are an advanced user.
+1.  :warning: There is really no reason to modify this environment variable
+    unless you have a specific purpose.
 
 <br />
 
-## DIR_RUN
-<!-- md:control env -->
-<!-- md:version stable-1.0.0 -->
-<!-- md:default `/usr/src/app` -->
-<!-- md:flag dangerous -->
-
-The `DIR_RUN` environment variable specifies what local folder will be utilized
-by the TVApp2 docker container when the container has built the app and placed it
-into a production folder.
-
-``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
-services:
-    tvapp2:
-        container_name: tvapp2
-        image: ghcr.io/thebinaryninja/tvapp2:latest
-        restart: unless-stopped
-        volumes:
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
-            - /var/run/docker.sock:/var/run/docker.sock
-            - ./config:/config
-            - ./app:/usr/bin/app
-        environment:
-            - DIR_RUN=/usr/bin/app # (1)
-```
-
-1.  :warning: You should not change this unless you are an advanced user.
-
-<br />
-
-## STREAM_QUALITY
-<!-- md:control env -->
-<!-- md:version stable-1.1.0 -->
-<!-- md:default `hd` -->
-
-The `STREAM_QUALITY` environment variable specifies the default stream quality that will 
-be used when you initiate a new channel to view.
-
-Available Options:
-
-  * `hd` High Definition
-  * `sd` Standard Definition
-
-``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
-services:
-    tvapp2:
-        container_name: tvapp2
-        image: ghcr.io/thebinaryninja/tvapp2:latest
-        restart: unless-stopped
-        volumes:
-            - /etc/timezone:/etc/timezone:ro
-            - /etc/localtime:/etc/localtime:ro
-            - /var/run/docker.sock:/var/run/docker.sock
-            - ./config:/config
-            - ./app:/usr/bin/app
-        environment:
-            - STREAM_QUALITY=hd # (1)
-```
-
-1.  :information: This environment variable has the following options:
-    - hd
-    - sd
-
-<br />
-
-## FILE_PLAYLIST
+## FILE_M3U
 <!-- md:control env -->
 <!-- md:version stable-1.1.0 -->
 <!-- md:default `playlist.m3u8` -->
 
-The `FILE_PLAYLIST` environment variable specifies the filename that will be utilized when
-your .m3u playlist file is generated.
+The `FILE_M3U` environment variable allows you to specify what the name of the downloaded `playlist.m3u8` file will be. This file is downloaded when you first spin up the TVApp2 container, and contains a list of what channels you can pick from.
+
+There should be no need to utilize this environment variable unless you have a specific reason.
 
 ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
 services:
@@ -322,11 +316,12 @@ services:
             - ./config:/config
             - ./app:/usr/bin/app
         environment:
-            - FILE_PLAYLIST=playlist.m3u8 # (1)
+            - FILE_M3U=playlist.m3u8 # (1)
 ```
 
-1.  :information: Changing this file only changes the filename locally; it does
-    not affect the server-side fetching mechanism.
+1.  :warning: There is really no reason to modify this environment variable
+    unless you have a specific purpose.
+
 
 <br />
 
@@ -389,6 +384,100 @@ services:
 
 <br />
 
+## STREAM_QUALITY
+<!-- md:control env -->
+<!-- md:version stable-1.1.0 -->
+<!-- md:default `hd` -->
+
+The `STREAM_QUALITY` environment variable specifies the default stream quality that will 
+be used when you initiate a new channel to view.
+
+Available Options:
+
+  * `hd` High Definition
+  * `sd` Standard Definition
+
+``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
+services:
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        environment:
+            - STREAM_QUALITY=hd # (1)
+```
+
+1.  :information: This environment variable has the following options:
+    - hd
+    - sd
+
+<br />
+
+## DIR_BUILD
+<!-- md:control env -->
+<!-- md:version stable-1.0.0 -->
+<!-- md:default `/usr/src/app` -->
+<!-- md:flag dangerous -->
+
+The `DIR_BUILD` environment variable specifies what local folder will be utilized
+by the TVApp2 docker container when the container builds the app.
+
+``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
+services:
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        environment:
+            - DIR_BUILD=/usr/src/app # (1)
+```
+
+1.  :warning: You should not change this unless you are an advanced user.
+
+<br />
+
+## DIR_RUN
+<!-- md:control env -->
+<!-- md:version stable-1.0.0 -->
+<!-- md:default `/usr/src/app` -->
+<!-- md:flag dangerous -->
+
+The `DIR_RUN` environment variable specifies what local folder will be utilized
+by the TVApp2 docker container when the container has built the app and placed it
+into a production folder.
+
+``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
+services:
+    tvapp2:
+        container_name: tvapp2
+        image: ghcr.io/thebinaryninja/tvapp2:latest
+        restart: unless-stopped
+        volumes:
+            - /etc/timezone:/etc/timezone:ro
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config:/config
+            - ./app:/usr/bin/app
+        environment:
+            - DIR_RUN=/usr/bin/app # (1)
+```
+
+1.  :warning: You should not change this unless you are an advanced user.
+
+<br />
+
 ## LOG_LEVEL
 <!-- md:control env -->
 <!-- md:version stable-1.1.0 -->
@@ -417,13 +506,16 @@ when being output to your console.
 
     1.  :information: The default log level is `4` (info).
 
-=== "Logging Options"
+=== "Log Levels"
 
     | Log Level       | Name        | Description                                                                     |
     | --------------- | ----------- | ------------------------------------------------------------------------------- |
-    | `6`             | Trace       | Displays all possible logs in console, along with anything below this line.     |
-    | `5`             | Debug       | Displays debug / developer logs, along with anything below this line.           |
-    | `4`             | Info        | Displays informative logs, along with anything below this line.                 |
-    | `3`             | Notice      | Displays important notices, along with anything below this line.                |
-    | `2`             | Warm        | Displays warnings, along with anything below this line.                         |
-    | `1`             | Error       | Displays only errors, none of the log levels above this line will be shown      |
+    | `6`             | :material-checkbox-blank-circle:{ style="color: var(--md-loglevel-trace-color) " } Trace       | Displays all possible logs in console, along with anything below this line.     |
+    | `5`             | :material-checkbox-blank-circle:{ style="color: var(--md-loglevel-debug-color) " } Debug       | Displays debug / developer logs, along with anything below this line.           |
+    | `4`             | :material-checkbox-blank-circle:{ style="color: var(--md-loglevel-info-color) " } Info        | Displays informative logs, along with anything below this line.                 |
+    | `3`             | :material-checkbox-blank-circle:{ style="color: var(--md-loglevel-notice-color) " } Notice      | Displays important notices, along with anything below this line.                |
+    | `2`             | :material-checkbox-blank-circle:{ style="color: var(--md-loglevel-warn-color) " } Warn        | Displays warnings, along with anything below this line.                         |
+    | `1`             | :material-checkbox-blank-circle:{ style="color: var(--md-loglevel-error-color) " } Error       | Displays only errors, none of the log levels above this line will be shown      |
+
+<br />
+<br />

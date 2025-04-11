@@ -13,108 +13,97 @@ The TVApp2 docker image provides a few different paths that you can mount to you
 <br />
 
 ## 📁 /usr/bin/app
-<!-- md:control env -->
-<!-- md:version stable-1.0.0 -->
-<!-- md:default `Etc/UTC` -->
 
-The `TZ` environment variable specifies the timezone that your docker container will
-utilize. This is useful for syncing your local time with console outputs such as
-our logging system.
+<!-- md:control volume -->
+<!-- md:version stable-1.0.0 -->
+
+The mountable volume `/usr/bin/app` is where TVApp2 files will be placed once the app has been built when your docker container spins up. The files in this folder include:
+
+| File | Description |
+| --- | --- |
+| `📁 node_modules` | List of all NodeJS packages utilized by TVApp2 |
+| `📁 www` | Main storage folder for TVApp2. Contains website files and M3U / EPG synced files |
+| `📄 package.json` | NodeJS package file |
+| `📄 playlist.m3u8` | Generated playlist containing channels |
+| `📄 urls.txt` | List containing cached URLs utilized by TVApp2 |
+| `📄 xmltv.xml` | EPG guide data in uncompressed XML format |
+| `📄 xmltv.xml.gz` | EPG guide data in compressed GZ archive |
+| `📄 index.js` | Main source code file for TVApp2 |
+
+<br />
 
 === "Example"
 
-    ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="13" }
+    ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="7" }
     services:
         tvapp2:
             container_name: tvapp2
             image: ghcr.io/thebinaryninja/tvapp2:latest
             restart: unless-stopped
             volumes:
-                - /etc/timezone:/etc/timezone:ro
-                - /etc/localtime:/etc/localtime:ro
-                - /var/run/docker.sock:/var/run/docker.sock
-                - ./config:/config
-                - ./app:/usr/bin/app
-            environment:
-                - TZ=Etc/UTC # (1)
+                - ./app:/usr/bin/app # (1)
     ```
 
     1.  :information: Changing this env variable will change the time for anything
         related to the TVApp2 docker container.
 
-=== "Timezones"
+<br />
 
-    ``` yaml
-      Etc/UTC
-      Africa/Cairo
-      Africa/Johannesburg
-      Africa/Lagos
-      America/Argentina/Buenos_Aires
-      America/Bogota
-      America/Caracas
-      America/Chicago
-      America/El_Salvador
-      America/Juneau
-      America/Lima
-      America/Los_Angeles
-      America/Mexico_City
-      America/New_York
-      America/Phoenix
-      America/Santiago
-      America/Sao_Paulo
-      America/Toronto
-      America/Vancouver
-      Asia/Almaty
-      Asia/Ashkhabad
-      Asia/Bahrain
-      Asia/Bangkok
-      Asia/Chongqing
-      Asia/Dubai
-      Asia/Ho_Chi_Minh
-      Asia/Hong_Kong
-      Asia/Jakarta
-      Asia/Jerusalem
-      Asia/Kathmandu
-      Asia/Kolkata
-      Asia/Kuwait
-      Asia/Muscat
-      Asia/Qatar
-      Asia/Riyadh
-      Asia/Seoul
-      Asia/Shanghai
-      Asia/Singapore
-      Asia/Taipei
-      Asia/Tehran
-      Asia/Tokyo
-      Atlantic/Reykjavik
-      Australia/ACT
-      Australia/Adelaide
-      Australia/Brisbane
-      Australia/Sydney
-      Europe/Athens
-      Europe/Belgrade
-      Europe/Berlin
-      Europe/Copenhagen
-      Europe/Helsinki
-      Europe/Istanbul
-      Europe/London
-      Europe/Luxembourg
-      Europe/Madrid
-      Europe/Moscow
-      Europe/Paris
-      Europe/Riga
-      Europe/Rome
-      Europe/Stockholm
-      Europe/Tallinn
-      Europe/Vilnius
-      Europe/Warsaw
-      Europe/Zurich
-      Pacific/Auckland
-      Pacific/Chatham
-      Pacific/Fakaofo
-      Pacific/Honolulu
-      Pacific/Norfolk
-      US/Mountain
+This folder path can be changed by specifying a new path with the environment variable `DIR_RUN`
+
+=== "Example"
+
+    ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="7" }
+    services:
+        tvapp2:
+            container_name: tvapp2
+            image: ghcr.io/thebinaryninja/tvapp2:latest
+            restart: unless-stopped
+            volumes:
+                - ./app:/usr/bin/app # (1) (2)
     ```
 
+    1.  :information: Changing this env variable will change the folder within the docker container which stores the fully built TVApp2 files.
+
+    2.  This should not be used unless you know what you're doing
+
+<br />
+
+---
+
+<br />
+
+## 📁 /config
+
+<!-- md:control volume -->
+<!-- md:version stable-1.0.0 -->
+
+The mountable volume `/config` defines where the TVApp2 application will store SSL certificates related to the TVApp2 web interface being ran using https instead of http. The files in this folder include:
+
+| File | Description |
+| --- | --- |
+| `📁 keys` | Folder which stores the SSL cert and keys |
+| `📄 keys/cert.crt` | SSL public certificate |
+| `📄 keys/key.crt` | SSL private key |
+
+<br />
+
+
+=== "Example"
+
+    ``` { .yaml .copy .select title="docker-compose.yml" linenums="1" hl_lines="7" }
+    services:
+        tvapp2:
+            container_name: tvapp2
+            image: ghcr.io/thebinaryninja/tvapp2:latest
+            restart: unless-stopped
+            volumes:
+                - ./config:/config # (1) (2)
+    ```
+
+    1.  :information: Changing this env variable will change the folder within the docker container which stores the fully built TVApp2 files.
+
+    2.  This should not be used unless you know what you're doing
+
+<br />
 <br />

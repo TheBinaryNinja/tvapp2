@@ -164,6 +164,7 @@ def badgeControl( args: str, page: Page, files: Files ):
     elif type == "button":      return newControlButton( page, files )
     elif type == "slider":      return newControlSlider( page, files )
     elif type == "env":         return newControlEnvVar( page, files )
+    elif type == "volume":      return newControlVolume( page, files )
     elif type == "color":       return newControlColor( args, page, files )
     else: return newControlDefault( page, files )
 
@@ -935,7 +936,7 @@ def newControlColor( text: str, page: Page, files: Files ):
 #   Icon : Control : Env Variable
 #
 #       use the following tag in your md file:
-#           <!-- md:control slider -->
+#           <!-- md:control env -->
 # #
 
 def newControlEnvVar( page: Page, files: Files ):
@@ -947,4 +948,22 @@ def newControlEnvVar( page: Page, files: Files ):
     return badgeCreate(
         icon = f"[:{icon}:]({href} 'Type: Environment Variable')",
         type = "env"
+    )
+
+# #
+#   Icon : Control : Volume
+#
+#       use the following tag in your md file:
+#           <!-- md:control volume -->
+# #
+
+def newControlVolume( page: Page, files: Files ):
+    icon = "aetherx-axd-volume"
+    href = _resolve_path( f"{PAGE_CONVENTIONS}#control", page, files )
+
+    print(clr.MAGENTA + 'VERBOSE - ' + clr.WHITE + ' Running ' + clr.YELLOW + inspect.stack()[0][3] + clr.WHITE + ' for page ' + clr.GREY + str(href) + clr.WHITE )
+
+    return badgeCreate(
+        icon = f"[:{icon}:]({href} 'Type: Mountable Volume')",
+        type = "volume"
     )

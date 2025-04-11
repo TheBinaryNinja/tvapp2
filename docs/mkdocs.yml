@@ -241,6 +241,8 @@ nav:
     - Config:
           - Environment Variables: 'config/env.md'
           - Volumes: 'config/volumes.md'
+    - Usage:
+          - Healthcheck: 'usage/healthcheck.md'
     - Changelog: 'about/changelog.md'
     - Discord: 'https://discord.gg/gTze6hRe'
 

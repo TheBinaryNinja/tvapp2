@@ -191,6 +191,13 @@
     --md-tooltip-width:                 400px;
     --glow-color:                       hsl(186 100% 69%);
 
+    --md-loglevel-error-color:          #f06090;
+    --md-loglevel-warn-color:           #e6695b;
+    --md-loglevel-notice-color:         #e2d55e;
+    --md-loglevel-info-color:           #6791e0;
+    --md-loglevel-debug-color:          #c973d9;
+    --md-loglevel-trace-color:          hsla(225deg,15%,90%,0.56);
+
     --md-default-fg-color:              hsla(var(--md-hue),15%,90%,0.82);
     --md-default-fg-color--light:       hsla(var(--md-hue),15%,90%,0.56);
     --md-default-fg-color--lighter:     hsla(var(--md-hue),15%,90%,0.32);
@@ -559,6 +566,25 @@ h4:has(.twemoji) .twemoji
     --md-badge-bg-color--transparent: #7B1532 !important;
     color: #f9f9f9;
     --md-typeset-bg-color: #111;
+}
+
+@keyframes health
+{
+    0%, 40%, 80%, 100% {
+        transform: scale(1);
+        color: #FFF;
+        fill: #FFF !important;
+    }
+    20%, 60% {
+        transform: scale(1.15);
+        color: #FF6593;
+        fill: #FF6593 !important;
+    }
+}
+
+.heart
+{
+    animation: health 1000ms infinite;
 }
 
 .md-typeset .mdx-badge--heart {

@@ -28,6 +28,60 @@ This section outlines all releases of TVApp2, including the version of the relea
 
 <br />
 
+### <!-- md:version stable- -->  1.4.0 <small>Apr 10, 2025</small> { id="1.4.0" }
+
+- `feat`: add new environment variable `HEALTH_TIMER` _(See feature below)_
+- `feat`: new health check icon in top right; triggers every `10 minutes` and reports back to the web interface as a toast notification
+    - health check shows timer until next health check is performed.
+- `feat`: added bootstramp toast notifications and modals
+- `feat`: new modal dialog when when user triggers a re-sync of the m3u and epg data
+- `feat`: footer of web interface how discloses which build is being ran; `stable` or `development`
+- `refactor`: console logging system overhauled with new syntax for how logs are displayed
+- `refactor`: additional logs added for `LOG_LEVEL=5` or higher
+
+<br />
+
+---
+
+<br />
+
+### <!-- md:version stable- -->  1.3.0 <small>Apr 9, 2025</small> { id="1.3.0" }
+
+- `feat`: new button to upper-right side of header which allows you to **force re-sync** your m3u and xml data.
+- `feat`: new api endpoint `/api/resync`; utilized to resync M3U and EPG data
+- `feat`: new api endpoint `/api/health`; utilized in your `docker-compose.yml` health check
+- `feat`: new env variable `WEB_ENCODING`; allows you to customize the HTTP `Accept-Encoding` request and response header
+- `feat`: new env variable `IP_GATEWAY`; stores assigned container gateway ip
+- `feat`: new env variable `IP_CONTAINER`; stores assigned container ip
+- `refactor`: env variables re-named
+    - `FILE_TAR` → `FILE_GZP`
+- `refactor`: errors and success messages now use api endpoint; lists timestamp, error code, etc.
+- `build`: bump bootstrap from `v4` to `v5`
+- `fix`: bug in Jellyfin which caused EPG data syncing to error out for hosts which cannot support gzip compression
+    - Error:  _[ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel XXXXXXXXXXXXXXX (Source 2) System.Xml.XmlException: '', hexadecimal value 0x1F, is an invalid character. Line 1, position 1._
+
+<br />
+
+---
+
+<br />
+
+### <!-- md:version stable- -->  1.2.0 <small>Apr 5, 2025</small> { id="1.2.0" }
+
+- `feat`: add support for additional mime types and default file type
+- `style`: rename env variable `FILE_PLAYLIST` to `FILE_M3U`
+- `build`: add new env vars to `Dockerfile`
+    - `FILE_TAR`
+    - `FILE_URL`
+- `refactor`: m3u and epg files now stored in `www` folder
+- `fix`: html template links pointing to old repo
+
+<br />
+
+---
+
+<br />
+
 ### <!-- md:version stable- --> 1.1.0 <small>Mar 25, 2025</small> { id="1.1.0" }
 
 - `feat`: new interface & theme for web ui
@@ -63,6 +117,10 @@ This section outlines all releases of TVApp2, including the version of the relea
 - `build(deps-dev)`: add package `eslint-plugin-promise` 7.2.1
 - `build(deps-dev)`: add package `@stylistic/eslint-plugin-js` 3.1.0
 - `remove`: tvapp2.fonts.min.js
+
+<br />
+
+---
 
 <br />
 
