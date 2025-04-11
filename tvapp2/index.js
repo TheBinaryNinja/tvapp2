@@ -118,6 +118,7 @@ const subdomainEPG = [ 'guide', 'epg', 'xml' ];
 const subdomainKey = [ 'key', 'keys' ];
 const subdomainChan = [ 'channels', 'channel', 'chan' ];
 const subdomainHealth = [ 'api/status', 'api/health' ];
+const subdomainRestart = [ 'api/restart', 'api/sync', 'api/resync' ];
 
 /*
     Container Information
