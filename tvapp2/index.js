@@ -111,7 +111,6 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
                 http://127.0.0.1:4124/health
 */
 
-const subdomainRestart = [ 'restart', 'sync', 'resync' ];
 const subdomainGZP = [ 'gzip', 'gz' ];
 const subdomainM3U = [ 'playlist', 'm3u', 'm3u8' ];
 const subdomainEPG = [ 'guide', 'epg', 'xml' ];
@@ -599,6 +598,7 @@ async function serveKey( req, res )
                 ref: req.url,
                 method: req.method || 'GET',
                 code: 400,
+                uptime: Math.round( process.uptime() ),
                 timestamp: Date.now()
             };
 
@@ -631,6 +631,7 @@ async function serveKey( req, res )
             ref: req.url,
             method: req.method || 'GET',
             code: 500,
+            uptime: Math.round( process.uptime() ),
             timestamp: Date.now()
         };
 
@@ -793,6 +794,7 @@ async function serveM3UPlaylist( req, res )
                 ref: req.url,
                 method: req.method || 'GET',
                 code: 404,
+                uptime: Math.round( process.uptime() ),
                 timestamp: Date.now()
             };
 
@@ -847,6 +849,7 @@ async function serveM3UPlaylist( req, res )
                 ref: req.url,
                 method: req.method || 'GET',
                 code: 500,
+                uptime: Math.round( process.uptime() ),
                 timestamp: Date.now()
             };
 
@@ -887,6 +890,7 @@ async function serveM3UPlaylist( req, res )
                 ref: req.url,
                 method: req.method || 'GET',
                 code: 500,
+                uptime: Math.round( process.uptime() ),
                 timestamp: Date.now()
             };
 
@@ -926,6 +930,7 @@ async function serveHealthCheck( req, res )
             ref: req.url,
             method: req.method || 'GET',
             code: 200,
+            uptime: Math.round( process.uptime() ),
             timestamp: Date.now()
         };
 
@@ -933,7 +938,7 @@ async function serveHealthCheck( req, res )
             'Content-Type': 'application/json'
         });
 
-        Log.ok( `health`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `health check returned` ), chalk.greenBright( `${ statusCheck.status }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ), chalk.blueBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
+        Log.ok( `health`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `health check returned` ), chalk.greenBright( `${ statusCheck.status }` ), chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ), chalk.blueBright( `<statusCode>` ), chalk.gray( `${ statusCheck.code }` ), chalk.blueBright( `<uptime>` ), chalk.gray( Math.round( process.uptime() ) ) );
 
         res.end( JSON.stringify( statusCheck ) );
         return;
@@ -953,6 +958,7 @@ async function serveHealthCheck( req, res )
                 ref: req.url,
                 method: req.method || 'GET',
                 code: 503,
+                uptime: Math.round( process.uptime() ),
                 timestamp: Date.now()
             };
 
@@ -1042,6 +1048,7 @@ async function serveM3U( res, req )
             ref: req.url,
             method: req.method || 'GET',
             code: 500,
+            uptime: Math.round( process.uptime() ),
             timestamp: Date.now()
         };
 
@@ -1187,7 +1194,7 @@ async function initialize()
         FILE_GZP_MODIFIED = getFileModified( FILE_GZP );
 
         const end = performance.now();
-        Log.info( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `TVApp2 container is ready` ), chalk.blueBright( `took ${ end - start }ms` ), chalk.blueBright( `<message>` ), chalk.gray( `TVApp2 container is ready; took ${ end - start }ms` ), chalk.blueBright( `<ip>` ), chalk.gray( `${ envIpContainer }` ), chalk.blueBright( `<gateway>` ), chalk.gray( `${ envIpGateway }` ), chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
+        Log.info( `core`, chalk.yellow( `[init]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `TVApp2 container is ready` ), chalk.blueBright( `took ${ end - start }ms` ), chalk.blueBright( `<ip>` ), chalk.gray( `${ envIpContainer }` ), chalk.blueBright( `<gateway>` ), chalk.gray( `${ envIpGateway }` ), chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
     }
     catch ( err )
     {
@@ -1245,6 +1252,66 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainRestart.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
         {
+            /*
+                Not highly technical, but good enough for starting out until Express is integrated.
+                    if restart command is triggered using website, allow it to pass through without an API key.
+                    if restart command is triggered by using
+
+                referer         = if activated from webpage via clicking icon
+                no referer      = if activated using URL
+
+                referer is check just as an added aspect of the api key, but really this doesn't even need to be here
+                as the referer can be easily spoofed. remove once express and the new api system are added. right now
+                it does no harm for a user to even bypass this.
+
+                @todo               integrate real api system after express replaces node http
+            */
+
+            const apiKey = new URL( request.url, `http://${ request.headers.host }` ).searchParams.get( 'key' );
+            const referer = request.headers.referer || null;
+
+            if ( ( !referer && envApiKey && !apiKey ) || ( referer && !referer.includes( request.headers.host ) ) )
+            {
+                const statusCheck =
+                {
+                    ip: envIpContainer, gateway: envIpGateway, client: clientIp( request ),
+                    message: `must specify api key: http://${ request.headers.host }/api/restart?key=XXXXXXXX`,
+                    status: `unauthorized`, ref: request.url, method: method || 'GET', code: 401,
+                    uptime: Math.round( process.uptime() ), timestamp: Date.now()
+                };
+
+                response.writeHead( statusCheck.code, {
+                    'Content-Type': 'application/json'
+                });
+
+                Log.error( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `unauthorized (401): restart attempt did not specify api key using ?key=XXX parameter` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+                response.end( JSON.stringify( statusCheck ) );
+
+                return;
+            }
+
+            /*
+                no referer, api key in url specified, api key set up with tvapp2 do not match
+            */
+
+            if ( !referer && ( envApiKey !== apiKey ) )
+            {
+                const statusCheck =
+                {
+                    ip: envIpContainer, gateway: envIpGateway, client: clientIp( request ),
+                    message: `incorrect api key specified: http://${ request.headers.host }/api/restart?key=XXXXXXXX`,
+                    status: `unauthorized`, ref: request.url, method: method || 'GET', code: 401,
+                    uptime: Math.round( process.uptime() ), timestamp: Date.now()
+                };
+
+                response.writeHead( statusCheck.code, {
+                    'Content-Type': 'application/json'
+                });
+
+                Log.error( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `unauthorized (401): incorrect api key specified` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+                response.end( JSON.stringify( statusCheck ) );
+            }
+
             await initialize();
 
             const statusCheck =
@@ -1257,6 +1324,7 @@ const server = http.createServer( ( request, response ) =>
                 ref: request.url,
                 method: method || 'GET',
                 code: 200,
+                uptime: Math.round( process.uptime() ),
                 timestamp: Date.now()
             };
 
@@ -1265,9 +1333,16 @@ const server = http.createServer( ( request, response ) =>
             });
 
             Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
-
             response.end( JSON.stringify( statusCheck ) );
 
+            return;
+        }
+
+        if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+        {
+            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `api` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+            await serveHealthCheck( request, response );
             return;
         }
 
@@ -1308,14 +1383,6 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `epg-compressed` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveGZP( response, request );
-            return;
-        }
-
-        if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
-        {
-            Log.info( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<type>` ), chalk.gray( `api` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
-
-            await serveHealthCheck( request, response );
             return;
         }
 
@@ -1403,6 +1470,7 @@ const server = http.createServer( ( request, response ) =>
                     ref: request.url,
                     method: method || 'GET',
                     code: 404,
+                    uptime: Math.round( process.uptime() ),
                     timestamp: Date.now()
                 };
 
@@ -1435,9 +1503,9 @@ const server = http.createServer( ( request, response ) =>
 ( async() =>
 {
     if ( !envApiKey )
-    {
         Log.warn( `core`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `API_KEY environment variable not defined for api, leaving blank` ) );
-    }
+    else
+        Log.ok( `core`, chalk.yellow( `[api]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `API_KEY environment variable successfully assigned` ) );
 
     await initialize();
 

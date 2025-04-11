@@ -29,7 +29,7 @@
                 </div>
             </nav>
         </div>
-    
+
         <!-- Header Notification: description -->
         <div class="container">
             <div class="container header-container">
@@ -147,7 +147,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Modal -->
         <div class="modal fade" id="modalTvapp2" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalTvapp2Label" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -239,7 +239,7 @@
                 $('#tvapp2Toast').toast("show");
             });
             */
-            
+
             /*
                 Notify > Localhost
             */
@@ -421,7 +421,7 @@
                                 iconResync[0].classList.add('restart');                                 // normal spinner class
                                 document.location.reload()                                              // reload page
                             }, 5000 );  // how long until refresh page
-                        }, 1000 );      // how long until dimmer is removed / reload page activated (also on delay) 
+                        }, 1000 );      // how long until dimmer is removed / reload page activated (also on delay)
                     }
                 });
             }
@@ -429,7 +429,7 @@
             /*
                 Health check > Show time remaining as tooltip
             */
-            
+
             function runTooltipCountdown( )
             {
                 let timerHours, timerMins, timerRemainsLS;
@@ -450,7 +450,7 @@
                 {
                     const timerElapsedMS    = Date.now() - timerStartMS;            // ( 2091 )
                     const timerRemainsMS    = timerDelayMS - timerElapsedMS;        // ( 7909 )     divide by 1000 for seconds
-    
+
                     timerRemainsLS          = new Date( timerRemainsMS );           // (Wed Dec 31 1969 10:01:42 (Coordinated Universal Time))
                     timerHours              = timerRemainsLS.getUTCHours();         // ( 0 )
                     timerMins               = timerRemainsLS.getUTCMinutes();       // ( 9 )
@@ -463,7 +463,7 @@
                             .attr('data-original-title', `Health check in ${ timeLeft }`)
                             .attr('aria-label', `Health check in ${ timeLeft }`)
                             .attr('data-bs-original-title', `Health check in ${ timeLeft }`)
-                    }); 
+                    });
 
                     const Heart = document.getElementsByClassName('fa-heart');
                     Heart[0].style.color = '#FFF';
@@ -486,7 +486,7 @@
                         updateTooltipCountdown();
                     }, timerRemainsLS.getUTCMilliseconds() + 500 );
                 }
-                
+
                 updateTooltipCountdown();
             }
 
