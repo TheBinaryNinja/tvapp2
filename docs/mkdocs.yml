@@ -29,6 +29,7 @@ site_url: 'https://thebinaryninja.github.io/tvapp2/'
 # #
 
 markdown_extensions:
+    - pymdownx.critic
     - markdown.extensions.extra
     - toc:
           permalink: true
@@ -238,6 +239,10 @@ nav:
           - Wiki:
                 - Conventions: 'about/conventions.md'
                 - Tags: 'about/tags.md'
+    - Install:
+          - Getting Started: 'install/index.md'
+          - docker run: 'install/docker-run.md'
+          - docker compose: 'install/docker-compose.md'
     - Config:
           - Environment Variables: 'config/env.md'
           - Volumes: 'config/volumes.md'

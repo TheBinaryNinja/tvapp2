@@ -418,7 +418,28 @@
 
     .md-typeset .tabbed-labels
     {
-        background-color: #0d0d0d;
+        background-color: #0b0b0b;
+        border-top-left-radius: 4px;
+        border-left: 1px solid #242735;
+        border-top: 1px solid #242735;
+        border-right: 1px solid #242735;
+        border-top-right-radius: 4px;
+    }
+
+    .tabbed-labels::before
+    {
+        background: hsla(343.1, 87.9%, 51.6%, 0.82);
+        bottom: 0;
+        content: "";
+        display: block;
+        height: 2px;
+        left: 0;
+        position: absolute;
+        transform: translateX(var(--md-indicator-x));
+        transition: width 225ms,background-color .25s,transform .25s;
+        transition-timing-function: ease, ease, ease;
+        transition-timing-function: cubic-bezier(.4,0,.2,1);
+        width: var(--md-indicator-width);
     }
 
     /*
