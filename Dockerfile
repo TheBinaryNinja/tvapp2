@@ -74,6 +74,7 @@ ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
 ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
 ENV WEB_ENCODING="deflate, br"
+ENV WEB_PROXY_HEADER="x-forwarded-for"
 ENV STREAM_QUALITY="hd"
 ENV FILE_URL="urls.txt"
 ENV FILE_M3U="playlist.m3u8"

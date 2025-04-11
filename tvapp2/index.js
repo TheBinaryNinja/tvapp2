@@ -78,6 +78,7 @@ const envApiKey = process.env.API_KEY || null;
 const envWebIP = process.env.WEB_IP || '0.0.0.0';
 const envWebPort = process.env.WEB_PORT || `4124`;
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
+const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const LOG_LEVEL = process.env.LOG_LEVEL || 10;
 
@@ -234,6 +235,23 @@ else
     FILE_XML = path.resolve( __dirname, FOLDER_WWW, `${ envFileXML }` );
     FILE_GZP = path.resolve( __dirname, FOLDER_WWW, `${ envFileGZP }` );
 }
+
+/*
+    Get Client IP
+
+    prioritize header.
+*/
+
+const clientIp = ( req ) =>
+    ( req.headers && (
+        req.headers[envProxyHeader]?.split( ',' )?.shift() ||
+        req.headers['X-Forwarded-For']?.split( ',' )?.shift() ||
+        req.headers['x-forwarded-for']?.split( ',' )?.shift() ||
+        req.headers['cf-connecting-ip']?.split( ',' )?.shift() ||
+        req.headers['x-real-ip']?.split( ',' )?.shift() ||
+        req.headers['X-Real-IP']?.split( ',' )?.shift() ||
+        req.socket?.remoteAddress ) ||
+    envIpContainer );
 
 /*
     Semaphore > Declare
@@ -574,7 +592,7 @@ async function serveKey( req, res )
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                uptime: process.uptime(),
+                client: clientIp( req ),
                 message: 'Error: Missing "uri" parameter for key download.',
                 status: 'unhealthy',
                 ref: req.url,
@@ -605,7 +623,7 @@ async function serveKey( req, res )
         {
             ip: envIpContainer,
             gateway: envIpGateway,
-            uptime: process.uptime(),
+            client: clientIp( req ),
             message: `Failed to serve key`,
             error: `${ err.message }`,
             status: 'unhealthy',
@@ -768,7 +786,7 @@ async function serveM3UPlaylist( req, res )
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                uptime: process.uptime(),
+                client: clientIp( req ),
                 message: `Missing ?url= parameter`,
                 status: `unhealthy`,
                 ref: req.url,
@@ -822,7 +840,7 @@ async function serveM3UPlaylist( req, res )
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                uptime: process.uptime(),
+                client: clientIp( req ),
                 message: `Failed to retrieve tokenized URL.`,
                 status: `unhealthy`,
                 ref: req.url,
@@ -861,7 +879,7 @@ async function serveM3UPlaylist( req, res )
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                uptime: process.uptime(),
+                client: clientIp( req ),
                 message: `Cannot process request when fetching channel playlist`,
                 error: `${ err.message }`,
                 status: 'unhealthy',
@@ -901,7 +919,7 @@ async function serveHealthCheck( req, res )
         {
             ip: envIpContainer,
             gateway: envIpGateway,
-            uptime: process.uptime(),
+            client: clientIp( req ),
             message: `healthy`,
             status: `healthy`,
             ref: req.url,
@@ -927,7 +945,7 @@ async function serveHealthCheck( req, res )
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                uptime: process.uptime(),
+                client: clientIp( req ),
                 message: `health check failed`,
                 error: `${ err.message }`,
                 status: `unhealthy`,
@@ -1016,7 +1034,7 @@ async function serveM3U( res, req )
         {
             ip: envIpContainer,
             gateway: envIpGateway,
-            uptime: process.uptime(),
+            client: clientIp( req ),
             message: `Fatal error serving playlist`,
             error: `${ err.message }`,
             status: 'unhealthy',
@@ -1232,7 +1250,7 @@ const server = http.createServer( ( request, response ) =>
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                uptime: process.uptime(),
+                client: clientIp( response ),
                 message: 'Restart command received',
                 status: 'ok',
                 ref: request.url,
@@ -1378,7 +1396,7 @@ const server = http.createServer( ( request, response ) =>
                 {
                     ip: envIpContainer,
                     gateway: envIpGateway,
-                    uptime: process.uptime(),
+                    client: clientIp( response ),
                     message: 'Page not found',
                     status: 'healthy',
                     ref: request.url,
