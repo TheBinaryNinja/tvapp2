@@ -1284,7 +1284,7 @@ const server = http.createServer( ( request, response ) =>
                     'Content-Type': 'application/json'
                 });
 
-                Log.error( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `unauthorized (401): restart attempt did not specify api key using ?key=XXX parameter` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+                Log.error( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `unauthorized (401): restart attempt did not specify api key using ?key=XXX parameter` ), chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
                 response.end( JSON.stringify( statusCheck ) );
 
                 return;
@@ -1318,7 +1318,7 @@ const server = http.createServer( ( request, response ) =>
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                client: clientIp( response ),
+                client: clientIp( request ),
                 message: 'Restart command received',
                 status: 'ok',
                 ref: request.url,
@@ -1451,7 +1451,7 @@ const server = http.createServer( ( request, response ) =>
                 response.setHeader( 'Content-type', fileMime );
                 response.end( data );
 
-                Log.ok( `www`, chalk.yellow( `[load]` ), chalk.white( `→` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<mime>` ), chalk.gray( `${ fileMime }` ) );
+                Log.ok( `www`, chalk.yellow( `[load]` ), chalk.white( `→` ), chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<mime>` ), chalk.gray( `${ fileMime }` ) );
             }
             else
             {
@@ -1464,7 +1464,7 @@ const server = http.createServer( ( request, response ) =>
                 {
                     ip: envIpContainer,
                     gateway: envIpGateway,
-                    client: clientIp( response ),
+                    client: clientIp( request ),
                     message: 'Page not found',
                     status: 'healthy',
                     ref: request.url,
