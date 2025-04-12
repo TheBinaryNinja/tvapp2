@@ -612,9 +612,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#associated-links" class="md-nav__link">
+  <a href="#image-sources" class="md-nav__link">
     <span class="md-ellipsis">
-      Associated Links
+      Image Sources
     </span>
   </a>
   
@@ -875,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../install/docker-run.md" class="md-nav__link">
+      <a href="../../install/docker-run/" class="md-nav__link">
         
   
   
@@ -1180,9 +1180,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#associated-links" class="md-nav__link">
+  <a href="#image-sources" class="md-nav__link">
     <span class="md-ellipsis">
-      Associated Links
+      Image Sources
     </span>
   </a>
   
@@ -1270,8 +1270,44 @@
 <p><br /></p>
 <hr />
 <p><br /></p>
-<h2 id="associated-links">Associated Links<a class="headerlink" href="#associated-links" title="Permanent link">&para;</a></h2>
-<p>Check out the following websites for additional resources for the TVApp2 docker image below.</p>
+<h2 id="image-sources">Image Sources<a class="headerlink" href="#image-sources" title="Permanent link">&para;</a></h2>
+<p>This project contains several repositories which all share the same code; use them as backups:</p>
+<ul>
+<li><a href="https://hub.docker.com/r/thebinaryninja/tvapp2">🔀 dockerhub:thebinaryninja/tvapp2</a></li>
+<li><a href="https://github.com/thebinaryninja/tvapp2">🔀 github:thebinaryninja/tvapp2</a></li>
+<li><a href="https://git.binaryninja.net/binaryninja/tvapp2">🔀 gitea:git.binaryninja.net/binaryninja/tvapp2</a></li>
+</ul>
+<p><br /></p>
+<table>
+<thead>
+<tr>
+<th>Pull URL</th>
+<th>Registry</th>
+<th>Arch</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ghcr.io/thebinaryninja/tvapp2:latest</code><br /><code>ghcr.io/thebinaryninja/tvapp2:development</code></td>
+<td>Github</td>
+<td>amd64<br/>arm64</td>
+<td><a href="https://github.com/TheBinaryNinja/tvapp2/pkgs/container/tvapp2"><img alt="Github" src="https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&amp;ignore=development-amd64%2Cdevelopment%2Cdevelopment-arm64%2Clatest&amp;label=version&amp;trim=" /></a></td>
+</tr>
+<tr>
+<td><code>thebinaryninja/tvapp2:latest</code><br /><code>thebinaryninja/tvapp2:development</code></td>
+<td>Dockerhub</td>
+<td>amd64<br/>arm64</td>
+<td><a href="https://hub.docker.com/repository/docker/thebinaryninja/tvapp2/general"><img alt="Dockerhub" src="https://img.shields.io/docker/v/thebinaryninja/tvapp2?sort=semver&amp;arch=arm64" /></a></td>
+</tr>
+<tr>
+<td><code>git.binaryninja.net/binaryninja/tvapp2:latest</code><br /><code>git.binaryninja.net/binaryninja/tvapp2:development</code></td>
+<td>Gitea</td>
+<td>amd64<br/>arm64</td>
+<td><a href="https://git.binaryninja.net/BinaryNinja/tvapp2"><img alt="Gitea" src="https://badges-ghcr.onrender.com/thebinaryninja/tvapp2/latest_tag?color=%233d9e18&amp;ignore=latest&amp;label=version&amp;trim=" /></a></td>
+</tr>
+</tbody>
+</table>
 <p><br /></p>
 <hr />
 <p><br /></p>
@@ -1289,6 +1325,19 @@
 </ul>
 </li>
 <li>Tracking statistics which show the last update time, size, and a description for each file's purpose.</li>
+<li>API endpoints:<ul>
+<li><strong>Resync All Files</strong><ul>
+<li><a href="http://127.0.0.1:4124/api/resync">http://127.0.0.1:4124/api/resync</a></li>
+<li><a href="http://127.0.0.1:4124/api/restart">http://127.0.0.1:4124/api/restart</a></li>
+</ul>
+</li>
+<li><strong>Health check</strong><ul>
+<li><a href="http://127.0.0.1:4124/api/health">http://127.0.0.1:4124/api/health</a></li>
+<li><a href="http://127.0.0.1:4124/api/status">http://127.0.0.1:4124/api/status</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li>Direct access to download each of the generated files, including multiple easy-to-remember URLs for each file type.<ul>
 <li><strong>M3U Playlist</strong>:<ul>
 <li><a href="http://127.0.0.1:4124/playlist">http://127.0.0.1:4124/playlist</a></li>
@@ -1405,7 +1454,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 11, 2025 20:17:18"><span class="timeago" datetime="2025-04-11T20:17:18+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 11, 2025 20:17:18">2025-04-11</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="April 12, 2025 07:56:33"><span class="timeago" datetime="2025-04-12T07:56:33+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="April 12, 2025 07:56:33">2025-04-12</span>
   </span>
 
     
