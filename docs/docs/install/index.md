@@ -26,13 +26,20 @@ Select your desired option to bring up the TVApp2 container with:
     This is useful for quick launches, but is not time efficient
     if you plan to use this container long-term.
 
+    This requires a longer command that must be used each time
+    you wish to bring the container up.
+
 -   :material-circle: &nbsp; [docker compose](docker-compose.md)
 
     ---
 
-    Spin up the TVApp2 container by creating a `docker-compose.yml`
-    file which will store all of your variables, volumes, properties,
-    and any labels that you may need the container to utilize.
+    Spin up the TVApp2 container by creating a `📄 docker-compose.yml`
+    file which will store all of your options such as env variables,
+    mounted volumes, and labels.
+
+    To bring the container up, `cd` into the folder with the 
+    `📄 docker-compose.yml` file, and run the
+    command `docker compose up -d`.
 
 </div>
 

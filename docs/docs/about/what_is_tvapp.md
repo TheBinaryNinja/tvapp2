@@ -42,10 +42,21 @@ All channels contain multiple sources so that you have a reliable streaming expe
 
 <br />
 
-## Associated Links
+## Image Sources
 
-Check out the following websites for additional resources for the TVApp2 docker image below.
+This project contains several repositories which all share the same code; use them as backups:
 
+- [🔀 dockerhub:thebinaryninja/tvapp2](https://hub.docker.com/r/thebinaryninja/tvapp2)
+- [🔀 github:thebinaryninja/tvapp2](https://github.com/thebinaryninja/tvapp2)
+- [🔀 gitea:git.binaryninja.net/binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2)
+
+<br />
+
+| Pull URL | Registry | Arch | Version |
+| --- | --- | --- | --- |
+| `ghcr.io/thebinaryninja/tvapp2:latest`<br />`ghcr.io/thebinaryninja/tvapp2:development` | Github | amd64<br/>arm64 | [![Github][github-docker-version-img]][github-docker-version-uri] |
+| `thebinaryninja/tvapp2:latest`<br />`thebinaryninja/tvapp2:development` | Dockerhub | amd64<br/>arm64 | [![Dockerhub][dockerhub-docker-version-img]][dockerhub-docker-version-uri] |
+| `git.binaryninja.net/binaryninja/tvapp2:latest`<br />`git.binaryninja.net/binaryninja/tvapp2:development` | Gitea | amd64<br/>arm64 | [![Gitea][gitea-docker-version-img]][gitea-docker-version-uri] |
 
 <br />
 
@@ -64,6 +75,13 @@ The following is a small list of the features available with the TVApp2 containe
 - Channel playlists can be downloaded as a `.m38u` or a compressed `.gzip` archive.
     - Compressed gzip compatible with 3rd party apps like Cabernet and Jellyfin.
 - Tracking statistics which show the last update time, size, and a description for each file's purpose.
+- API endpoints:
+    - **Resync All Files**
+        - http://127.0.0.1:4124/api/resync
+        - http://127.0.0.1:4124/api/restart
+    - **Health check**
+        - http://127.0.0.1:4124/api/health
+        - http://127.0.0.1:4124/api/status
 - Direct access to download each of the generated files, including multiple easy-to-remember URLs for each file type.
     - **M3U Playlist**:
         - http://127.0.0.1:4124/playlist
