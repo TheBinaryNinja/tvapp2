@@ -743,35 +743,41 @@ async function getTokenizedUrl( channelUrl )
             streamHost = 'thetvapp.to';
         };
 
-        const tokenUrl = `https://${ streamHost }/token/${ streamName }?quality=${ envStreamQuality }`;
+        const tokenUrl = `https://${ streamHost }/token/${ streamName }?quality=${ envStreamQuality.toLowerCase() }`;
         const tokenResponse = await fetchPage( tokenUrl );
         let finalUrl;
 
         Log.debug( `playlist`, chalk.yellow( `[tokenize]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Generating tokenized final stream URL` ), chalk.blueBright( `<streamName>` ), chalk.gray( `${ streamName }` ), chalk.blueBright( `<quality>` ), chalk.gray( `${ envStreamQuality }` ), chalk.blueBright( `<host>` ), chalk.gray( `${ streamHost }` ) );
+            chalk.blueBright( `<streamQuality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
 
         try
         {
             const json = JSON.parse( tokenResponse );
             finalUrl = json.url;
+                chalk.blueBright( `<streamQuality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
         }
         catch ( err )
         {
             Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Failed to parse token JSON for channel` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ channelUrl }` ) );
+                chalk.redBright( `<streamQuality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
             return null;
         }
 
         if ( !finalUrl )
         {
             Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `No URL found in token JSON for channel` ), chalk.blueBright( `<url>` ), chalk.gray( `${ channelUrl }` ) );
+                chalk.redBright( `<streamQuality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
             return null;
         }
 
         Log.debug( `playlist`, chalk.yellow( `[tokenize]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.gray( `Completed generated tokenized final stream URL` ), chalk.blueBright( `<streamName>` ), chalk.gray( `${ streamName }` ), chalk.blueBright( `<quality>` ), chalk.gray( `${ envStreamQuality }` ), chalk.blueBright( `<host>` ), chalk.gray( `${ streamHost }` ), chalk.blueBright( `<url>` ), chalk.gray( `${ finalUrl }` ) );
+            chalk.blueBright( `<quality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
         return finalUrl;
     }
     catch ( err )
     {
         Log.error( `playlist`, chalk.yellow( `[error]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `Fatal error fetching token` ), chalk.blueBright( `<error>` ), chalk.redBright( `${ err.message }` ), chalk.blueBright( `<url>` ), chalk.grey( `${ channelUrl }` ) );
+        chalk.redBright( `<streamQuality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
         return null;
     }
 }
