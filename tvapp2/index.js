@@ -1316,6 +1316,7 @@ const server = http.createServer( ( request, response ) =>
 
                 Log.error( `www`, chalk.yellow( `[req]` ), chalk.white( `→` ), chalk.blueBright( `<message>` ), chalk.redBright( `unauthorized (401): incorrect api key specified` ), chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ), chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ), chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
                 response.end( JSON.stringify( statusCheck ) );
+                return;
             }
 
             await initialize();
