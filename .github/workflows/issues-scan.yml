@@ -2,7 +2,7 @@
 #   @type               github workflow
 #   @author             Aetherinox
 #   @url                https://github.com/Aetherinox
-#   @desc               pull request auto-scan
+#   @usage              pull request auto-scan
 #                           scans all of the files related to a particular pull request
 #                           if the code in the files being submitted contains code that is forbidden,
 #                           a report is generated and posted as a comment in the PR.
@@ -16,15 +16,15 @@
 #                       secrets.PYPI_API_TOKEN                                      self Pypi API token (production site) - https://pypi.org/
 #                       secrets.PYPI_API_TEST_TOKEN                                 self Pypi API token (test site) - https://test.pypi.org/
 #                       secrets.SELF_DOCKERHUB_TOKEN                                self Dockerhub token
-#                       secrets.ORG_BINARYNINJA_TOKEN                               org github personal access token (fine-grained)
-#                       secrets.ORG_BINARYNINJA_TOKEN_CL                            org github personal access token (classic)
-#                       secrets.ORG_BINARYNINJA_DOCKERHUB_TOKEN                     org dockerhub secret
-#                       secrets.ORG_BINARYNINJA_GITEA_TOKEN                         org gitea personal access token (classic) with package:write permission
-#                       secrets.BINARYSERV_GPG_KEY_ASC                              bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
-#                       secrets.BINARYSERV_GPG_PASSPHRASE                           bot gpg private key passphrase
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES         discord webhook to report release notifications from github to discord
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS        discord webhook to report workflow notifications from github to discord
-#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_UPDATES          discord webhook to report activity notifications from github to discord
+#                       secrets.ORG_TOKEN                                           org github personal access token (fine-grained)
+#                       secrets.ORG_TOKEN_CL                                        org github personal access token (classic)
+#                       secrets.ORG_DOCKERHUB_TOKEN                                 org dockerhub secret
+#                       secrets.ORG_GITEA_TOKEN                                     org gitea personal access token (classic) with package:write permission
+#                       secrets.BOT_GPG_KEY_ASC                                     bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
+#                       secrets.BOT_GPG_PASSPHRASE                                  bot gpg private key passphrase
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_RELEASES                discord webhook to report release notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_WORKFLOWS               discord webhook to report workflow notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_UPDATES                 discord webhook to report activity notifications from github to discord
 #
 #   @local              these workflows can be tested locally through the use of `act`
 #                           https://github.com/nektos/act
@@ -36,8 +36,8 @@
 #                           act -W .github/workflows/issues-scan.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
 # #
 
-name: "🎫 Issues › Scan"
-run-name: "🎫 Issues › Scan"
+name: '🎫 PR › Scan'
+run-name: '🎫 PR › Scan'
 
 # #
 #   triggers
@@ -61,9 +61,9 @@ env:
     LABEL_CHECK_SECURITY_ERR:       AC › Security Warning
     LABEL_CHECK_STATUS_CHGMADE:     AC › Changes Made
     LABEL_CHECK_SCAN_SKIPPED:       AC › Skipped Scan
-    LABEL_TYPE_PR:                  Type ◦ Pull Request
-    LABEL_TYPE_DEPENDENCY:          Type ◦ Dependency
-    LABEL_TYPE_GITACTION:           Type ◦ Git Action
+    LABEL_TYPE_PR:                  Type › Pull Request
+    LABEL_TYPE_DEPENDENCY:          Type › Dependency
+    LABEL_TYPE_GITACTION:           Type › Git Action
 
     ASSIGN_USER:                    Aetherinox
     BOT_NAME_1:                     EuropaServ
@@ -73,64 +73,64 @@ env:
 
     LABELS_JSON: |
       [
-            { "name": "AC › Changes Made",           "color": "8F1784", "description": "Requested changes have been made and are pending a re-scan" },
-            { "name": "AC › Changes Required",       "color": "8F1784", "description": "Requires changes to be made to the package before being accepted" },
-            { "name": "AC › Failed",                 "color": "a61f2d", "description": "Autocheck failed to run through a complete cycle, requires investigation" },
-            { "name": "AC › Needs Rebase",           "color": "8F1784", "description": "Due to the permissions on the requesting repo, this pull request must be rebased by the author" },
-            { "name": "AC › Passed",                 "color": "146b4a", "description": "Ready to be reviewed" },
-            { "name": "AC › Review Required",        "color": "8F1784", "description": "PR needs to be reviewed by another person, after the requested changes have been made" },
-            { "name": "AC › Security Warning",       "color": "761620", "description": "Does not conform to developer policies, or includes potentially dangerous code" },
-            { "name": "AC › Skipped Scan",           "color": "8F1784", "description": "Author has skipped code scan" },
-            { "name": "Status 𐄂 Duplicate",          "color": "75536b", "description": "Issue or pull request already exists" },
-            { "name": "Status 𐄂 Accepted",            "color": "2e7539", "description": "This pull request has been accepted" },
-            { "name": "Status 𐄂 Autoclosed",          "color": "3E0915", "description": "Originally stale and was autoclosed for no activity" },
-            { "name": "Status 𐄂 Denied",              "color": "ba4058", "description": "Pull request has been denied" },
-            { "name": "Status 𐄂 Locked",              "color": "550F45", "description": "Automatically locked by EuropaServ for a prolonged period of inactivity" },
-            { "name": "Status 𐄂 Need Info",           "color": "2E3C4C", "description": "Not enough information to resolve" },
-            { "name": "Status 𐄂 No Action",           "color": "030406", "description": "Closed without any action being taken" },
-            { "name": "Status 𐄂 Pending",             "color": "984b12", "description": "Pending pull request" },
-            { "name": "Status 𐄂 Released",            "color": "1b6626", "description": "Issues or PR has been implemented and is now live" },
-            { "name": "Status 𐄂 Reopened",            "color": "8a6f14", "description": "A previously closed PR which has been re-opened" },
-            { "name": "Status 𐄂 Review",              "color": "9e1451", "description": "Currently pending review" },
-            { "name": "Status 𐄂 Stale",               "color": "928282", "description": "Has not had any activity in over 30 days" },
-            { "name": "Type ◦ Bug",                   "color": "9a2c2c", "description": "Something isn't working" },
-            { "name": "Type ◦ Dependency",            "color": "243759", "description": "Item is associated to dependency" },
-            { "name": "Type ◦ Docs",                  "color": "0e588d", "description": "Improvements or modifications to docs" },
-            { "name": "Type ◦ Feature",               "color": "3c4e93", "description": "Feature request" },
-            { "name": "Type ◦ Git Action",            "color": "030406", "description": "GitHub Action / workflow" },
-            { "name": "Type ◦ Pull Request",          "color": "8F1784", "description": "Normal pull request" },
-            { "name": "Type ◦ Roadmap",               "color": "8F1784", "description": "Feature or bug currently planned for implementation" },
-            { "name": "Type ◦ Internal",              "color": "A51994", "description": "Assigned items are for internal developer use" },
-            { "name": "Build ◦ Desktop",              "color": "c7ca4a", "description": "Specific to desktop" },
-            { "name": "Build ◦ Linux",                "color": "c7ca4a", "description": "Specific to Linux" },
-            { "name": "Build ◦ MacOS",                "color": "c7ca4a", "description": "Specific to MacOS" },
-            { "name": "Build ◦ Mobile",               "color": "c7ca4a", "description": "Specific to mobile" },
-            { "name": "Build ◦ Web",                  "color": "c7ca4a", "description": "Specific to web" },
-            { "name": "Build ◦ Windows",              "color": "c7ca4a", "description": "Specific to Windows" },
-            { "name": "› API",                        "color": "F99B50", "description": "Plugin API, CLI, browser JS API" },
-            { "name": "› Auto-type",                  "color": "9141E0", "description": "Auto-type functionality in desktop apps" },
-            { "name": "› Browser",                    "color": "9141E0", "description": "Browser plugins and passing data to <=> from app" },
-            { "name": "› Customization",              "color": "E3F0FC", "description": "Customizations: plugins, themes, configs" },
-            { "name": "› Design",                     "color": "FA70DE", "description": "Design related queries" },
-            { "name": "› Dist",                       "color": "FA70DE", "description": "Installers and other forms of software distribution" },
-            { "name": "› Enterprise",                 "color": "11447a", "description": "Issues about collaboration, administration, and so on" },
-            { "name": "› Hardware",                   "color": "5a7503", "description": "YubiKey, other tokens, biometrics" },
-            { "name": "› Import/Export",              "color": "F5FFCC", "description": "Import from and export to different file formats" },
-            { "name": "› Improvement",                "color": "185c98", "description": "Enhance an existing feature" },
-            { "name": "› Performance",                "color": "006b75", "description": "Web and desktop performance issues" },
-            { "name": "› Plugin Request",             "color": "FCE9CA", "description": "Requested changes should be implemented as a plugin" },
-            { "name": "› Security",                   "color": "F75D39", "description": "Security issues" },
-            { "name": "› Self-Hosting",               "color": "fad8c7", "description": "Self-hosting installations and configs" },
-            { "name": "› Storage",                    "color": "5319e7", "description": "Storage providers: Dropbox, Google, WebDAV, etc." },
-            { "name": "› Updater",                    "color": "1BADDE", "description": "Auto-updater issues" },
-            { "name": "› UX",                         "color": "1BADDE", "description": "UX and usability" },
-            { "name": "› Website",                    "color": "fef2c0", "description": "Website related issues" },
-            { "name": "⚠ Urgent",                     "color": "a8740e", "description": "Requires urgent attention" },
-            { "name": "⚠ Announcement",               "color": "DB4712", "description": "Announcements" },
-            { "name": "📰 Progress Report",           "color": "392297", "description": "Development updates" },
-            { "name": "📦 Release",                   "color": "277542", "description": "Release announcements" },
-            { "name": "✔️ Poll",                      "color": "972255", "description": "Community polls" },
-            { "name": "❔ Question",                  "color": "FFFFFF", "description": "All questions" }
+          { "name": "AC › Changes Made",            "color": "8F1784", "description": "Requested changes have been made and are pending a re-scan" },
+          { "name": "AC › Changes Required",        "color": "8F1784", "description": "Requires changes to be made to the package before being accepted" },
+          { "name": "AC › Failed",                  "color": "a61f2d", "description": "Autocheck failed to run through a complete cycle, requires investigation" },
+          { "name": "AC › Needs Rebase",            "color": "8F1784", "description": "Due to the permissions on the requesting repo, this pull request must be rebased by the author" },
+          { "name": "AC › Passed",                  "color": "146b4a", "description": "Ready to be reviewed" },
+          { "name": "AC › Review Required",         "color": "8F1784", "description": "PR needs to be reviewed by another person, after the requested changes have been made" },
+          { "name": "AC › Security Warning",        "color": "761620", "description": "Does not conform to developer policies, or includes potentially dangerous code" },
+          { "name": "AC › Skipped Scan",            "color": "8F1784", "description": "Author has skipped code scan" },
+          { "name": "Status › Duplicate",           "color": "75536b", "description": "Issue or pull request already exists" },
+          { "name": "Status › Accepted",            "color": "2e7539", "description": "This pull request has been accepted" },
+          { "name": "Status › Autoclosed",          "color": "3E0915", "description": "Originally stale and was autoclosed for no activity" },
+          { "name": "Status › Denied",              "color": "ba4058", "description": "Pull request has been denied" },
+          { "name": "Status › Locked",              "color": "550F45", "description": "Automatically locked by AdminServ for a prolonged period of inactivity" },
+          { "name": "Status › Need Info",           "color": "2E3C4C", "description": "Not enough information to resolve" },
+          { "name": "Status › No Action",           "color": "030406", "description": "Closed without any action being taken" },
+          { "name": "Status › Pending",             "color": "984b12", "description": "Pending pull request" },
+          { "name": "Status › Released",            "color": "1b6626", "description": "Issues or PR has been implemented and is now live" },
+          { "name": "Status › Reopened",            "color": "8a6f14", "description": "A previously closed PR which has been re-opened" },
+          { "name": "Status › Review",              "color": "9e1451", "description": "Currently pending review" },
+          { "name": "Status › Stale",               "color": "928282", "description": "Has not had any activity in over 30 days" },
+          { "name": "Type › Bug",                   "color": "9a2c2c", "description": "Something isn't working" },
+          { "name": "Type › Dependency",            "color": "243759", "description": "Item is associated to dependency" },
+          { "name": "Type › Docs",                  "color": "0e588d", "description": "Improvements or modifications to docs" },
+          { "name": "Type › Feature",               "color": "3c4e93", "description": "Feature request" },
+          { "name": "Type › Git Action",            "color": "030406", "description": "GitHub Action / workflow" },
+          { "name": "Type › Pull Request",          "color": "8F1784", "description": "Normal pull request" },
+          { "name": "Type › Roadmap",               "color": "8F1784", "description": "Feature or bug currently planned for implementation" },
+          { "name": "Type › Internal",              "color": "A51994", "description": "Assigned items are for internal developer use" },
+          { "name": "Build › Desktop",              "color": "c7ca4a", "description": "Specific to desktop" },
+          { "name": "Build › Linux",                "color": "c7ca4a", "description": "Specific to Linux" },
+          { "name": "Build › MacOS",                "color": "c7ca4a", "description": "Specific to MacOS" },
+          { "name": "Build › Mobile",               "color": "c7ca4a", "description": "Specific to mobile" },
+          { "name": "Build › Web",                  "color": "c7ca4a", "description": "Specific to web" },
+          { "name": "Build › Windows",              "color": "c7ca4a", "description": "Specific to Windows" },
+          { "name": "› API",                        "color": "F99B50", "description": "Plugin API, CLI, browser JS API" },
+          { "name": "› Auto-type",                  "color": "9141E0", "description": "Auto-type functionality in desktop apps" },
+          { "name": "› Browser",                    "color": "9141E0", "description": "Browser plugins and passing data to <=> from app" },
+          { "name": "› Customization",              "color": "E3F0FC", "description": "Customizations: plugins, themes, configs" },
+          { "name": "› Design",                     "color": "FA70DE", "description": "Design related queries" },
+          { "name": "› Dist",                       "color": "FA70DE", "description": "Installers and other forms of software distribution" },
+          { "name": "› Enterprise",                 "color": "11447a", "description": "Issues about collaboration, administration, and so on" },
+          { "name": "› Hardware",                   "color": "5a7503", "description": "YubiKey, other tokens, biometrics" },
+          { "name": "› Import/Export",              "color": "F5FFCC", "description": "Import from and export to different file formats" },
+          { "name": "› Improvement",                "color": "185c98", "description": "Enhance an existing feature" },
+          { "name": "› Performance",                "color": "006b75", "description": "Web and desktop performance issues" },
+          { "name": "› Plugin Request",             "color": "FCE9CA", "description": "Requested changes should be implemented as a plugin" },
+          { "name": "› Security",                   "color": "F75D39", "description": "Security issues" },
+          { "name": "› Self-Hosting",               "color": "fad8c7", "description": "Self-hosting installations and configs" },
+          { "name": "› Storage",                    "color": "5319e7", "description": "Storage providers: Dropbox, Google, WebDAV, etc." },
+          { "name": "› Updater",                    "color": "1BADDE", "description": "Auto-updater issues" },
+          { "name": "› UX",                         "color": "1BADDE", "description": "UX and usability" },
+          { "name": "› Website",                    "color": "fef2c0", "description": "Website related issues" },
+          { "name": "⚠ Urgent",                     "color": "a8740e", "description": "Requires urgent attention" },
+          { "name": "⚠ Announcement",               "color": "DB4712", "description": "Announcements" },
+          { "name": "📰 Progress Report",           "color": "392297", "description": "Development updates" },
+          { "name": "📦 Release",                   "color": "277542", "description": "Release announcements" },
+          { "name": "✔️ Poll",                      "color": "972255", "description": "Community polls" },
+          { "name": "❔ Question",                  "color": "FFFFFF", "description": "All questions" }
       ]
 
 # #
@@ -140,14 +140,17 @@ env:
 jobs:
 
     # #
-    #   Job › Autoscan
+    #   Job › PR Scan
+    #
+    #   automatically scan a pull request once it is submitted
     # #
 
-    job-pr-autoscan:
-        name: 🎫 Issues › Autoscan
+    job-pr-scan:
+        name: >-
+            🎫 Issues › Autoscan
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
-        timeout-minutes: 7
+        timeout-minutes: 5
         permissions:
             contents: read
             actions: read
@@ -156,27 +159,32 @@ jobs:
         steps:
 
             # #
-            #   Cleanup › Set Env Variables
+            #   PR Scan › Set Env Variables
             # #
 
             - name: >-
-                🕛 Get Timestamp
-              id: task_autocheck_set_timestamp
+                  🕛 Get Timestamp
+              id: task_prscan_set_timestamp
               run: |
+                  echo "YEAR=$(date +'%Y')" >> $GITHUB_ENV
                   echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
                   echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
 
             # #
+            #   PR Scan › Labels › Verify Existing
+            #
+            #   check if repo has all of the needed issue / pr labels; create label if not exists
+            #
             #   action needed if using 'pull_request' and 'issue_comment'
             #   to get the pull request, you would normally use ${{ github.event.number }}
             #   however this isnt available for 'issue_comment'
             # #
 
             - name: >-
-                  🏷️ Verify Existing Labels
-              id: task_autocheck_labels_verify
+                  🎫 Labels › Verify Existing
+              id: task_prscan_labels_verify
               uses: actions/github-script@v7
               with:
                   github-token: ${{ secrets.ADMINSERV_TOKEN_CL || github.token }}
@@ -191,7 +199,7 @@ jobs:
                                   owner:        context.repo.owner,
                                   repo:         context.repo.repo,
                                   name:         label.name,
-                                  description:  label.description || '',
+                                  description:  label.description || 'No Description',
                                   color:        label.color
                               });
                           }
@@ -209,13 +217,15 @@ jobs:
                       }
 
             # #
-            #   set issue number
+            #   PR Scan › Assign Pull Request ID to variable
+            #
+            #   get id (number) for pr when submitted
             # #
 
             - name: >-
-                  #️⃣ Issue number › Set
+                  #️⃣ Pull-Request ID › Set
+              id: task_prscan_issue_num_set
               uses: actions/github-script@v7
-              id: task_autocheck_issue_num_set
               with:
                   github-token: ${{ secrets.ADMINSERV_TOKEN_CL || github.token }}
                   script: |
@@ -244,41 +254,43 @@ jobs:
                   result-encoding: string
 
             # #
-            #   print issue number
+            #   PR Scan › Pull-Request ID › Print
+            #
+            #   prints the pr number detected
             # #
 
             - name: >-
-                  #️⃣ Issue number › Print
-              id: task_autocheck_issue_num_get
+                  #️⃣ Pull-Request ID › Print
+              id: task_prscan_issue_num_get
               run: |
-                  echo '${{ steps.task_autocheck_issue_num_set.outputs.result }}'
+                  echo '${{ steps.task_prscan_issue_num_set.outputs.result }}'
 
             # #
-            #   checkout
+            #   PR Scan › Checkout
             # #
 
             - name: >-
                   ☑️ Checkout
-              id: task_autoscan_checkout
+              id: task_prscan_checkout
               uses: actions/checkout@v4
               if: |
                   ( github.event_name == 'pull_request_target' ) || ( github.event_name == 'pull_request' ) || ( github.event_name == 'issue_comment' && contains( github.event.comment.html_url, '/pull/' ) && contains( github.event.comment.body, '/rescan' ) )
               with:
                   token: ${{ secrets.ADMINSERV_TOKEN_CL || github.token }}
                   fetch-depth: 0
-                  ref: "refs/pull/${{ steps.task_autocheck_issue_num_set.outputs.result }}/merge"
+                  ref: "refs/pull/${{ steps.task_prscan_issue_num_set.outputs.result }}/merge"
 
             # #
-            #   nodejs
+            #   PR Scan › Setup NodeJS
             # #
 
             - name: >-
                   ⚙️ Setup Node
-              id: task_autocheck_nodejs
+              id: task_prscan_nodejs
               uses: actions/setup-node@v4
 
             # #
-            #     get list of changed files
+            #     PR Scan › Get List of Changed Files
             #
             #     Effortlessly track all changed files and directories relative to a target branch,
             #     the current branch (preceding commit or the last remote commit), multiple branches,
@@ -288,49 +300,49 @@ jobs:
 
             - name: >-
                   📄 Get changed files
-              id: task_autocheck_changed_files_get
+              id: task_prscan_changed_files_get
               uses: tj-actions/changed-files@v46
               with:
                   separator: ","
 
             # #
-            #   list of changed files
+            #   PR Scan › List All Changed Files
             # #
 
             - name: >-
                   📄 List all added files
-              id: task_autocheck_added_files_get
+              id: task_prscan_added_files_get
               run: |
                   for file in ${CHANGED_FILES}; do
                       echo "$file was changed"
                   done
               env:
-                  ADDED_FILES:      ${{ steps.task_autocheck_changed_files_get.outputs.added_files }}
-                  MODIFIED_FILES:   ${{ steps.task_autocheck_changed_files_get.outputs.modified_files }}
-                  CHANGED_FILES:    ${{ steps.task_autocheck_changed_files_get.outputs.all_changed_files }}
-                  COUNT_ADDED:      ${{ steps.task_autocheck_changed_files_get.outputs.added_files_count }}
-                  COUNT_MODIFIED:   ${{ steps.task_autocheck_changed_files_get.outputs.modified_files_count }}
-                  COUNT_DELETED:    ${{ steps.task_autocheck_changed_files_get.outputs.deleted_files_count }}
-                  COUNT_RENAMED:    ${{ steps.task_autocheck_changed_files_get.outputs.renamed_files_count }}
-                  COUNT_COPIED:     ${{ steps.task_autocheck_changed_files_get.outputs.copied_files_count }}
+                  ADDED_FILES:      ${{ steps.task_prscan_changed_files_get.outputs.added_files }}
+                  MODIFIED_FILES:   ${{ steps.task_prscan_changed_files_get.outputs.modified_files }}
+                  CHANGED_FILES:    ${{ steps.task_prscan_changed_files_get.outputs.all_changed_files }}
+                  COUNT_ADDED:      ${{ steps.task_prscan_changed_files_get.outputs.added_files_count }}
+                  COUNT_MODIFIED:   ${{ steps.task_prscan_changed_files_get.outputs.modified_files_count }}
+                  COUNT_DELETED:    ${{ steps.task_prscan_changed_files_get.outputs.deleted_files_count }}
+                  COUNT_RENAMED:    ${{ steps.task_prscan_changed_files_get.outputs.renamed_files_count }}
+                  COUNT_COPIED:     ${{ steps.task_prscan_changed_files_get.outputs.copied_files_count }}
 
             # #
-            #   List directories
+            #   PR Scan › List Directories / File Structure
             # #
 
             - name: >-
                   📂 List Directories
-              id: task_autocheck_dirs_list
+              id: task_prscan_dirs_list
               run: |
                   ls
 
             # #
-            #   Run autocheck
+            #   PR Scan › Autocheck
             # #
 
             - name: >-
                   ☑️ Run Autocheck
-              id: task_autocheck_run
+              id: task_prscan_run
               uses: actions/github-script@v7
               with:
                   github-token: ${{ secrets.ADMINSERV_TOKEN_CL }}
@@ -358,8 +370,8 @@ jobs:
                                 "number": 32
                             },
                             "repo": {
-                                "owner": "TheBinaryNinja",
-                                "repo": "TVApp2"
+                                "owner": "Aetherinox",
+                                "repo": "TheRepoName"
                             },
                             "payload": {
                                 "action": "synchronize",
@@ -368,19 +380,19 @@ jobs:
                                 "number": 32,
                                 "organization": {
                                     "avatar_url": "https://avatars.githubusercontent.com/u/200161462?v=4",
-                                    "events_url": "https://api.github.com/orgs/TheBinaryNinja/events",
-                                    "hooks_url": "https://api.github.com/orgs/TheBinaryNinja/hooks",
-                                    "issues_url": "https://api.github.com/orgs/TheBinaryNinja/issues",
-                                    "login": "TheBinaryNinja",
-                                    "members_url": "https://api.github.com/orgs/TheBinaryNinja/members{/member}",
-                                    "public_members_url": "https://api.github.com/orgs/TheBinaryNinja/public_members{/member}",
-                                    "repos_url": "https://api.github.com/orgs/TheBinaryNinja/repos",
-                                    "url": "https://api.github.com/orgs/TheBinaryNinja"
+                                    "events_url": "https://api.github.com/orgs/Aetherinox/events",
+                                    "hooks_url": "https://api.github.com/orgs/Aetherinox/hooks",
+                                    "issues_url": "https://api.github.com/orgs/Aetherinox/issues",
+                                    "login": "Aetherinox",
+                                    "members_url": "https://api.github.com/orgs/Aetherinox/members{/member}",
+                                    "public_members_url": "https://api.github.com/orgs/Aetherinox/public_members{/member}",
+                                    "repos_url": "https://api.github.com/orgs/Aetherinox/repos",
+                                    "url": "https://api.github.com/orgs/Aetherinox"
                                 },
                                 "pull_request": {
                                     "created_at": "2025-03-17T23:32:22Z",
                                     "updated_at": "2025-03-17T23:32:22Z",
-                                    "url": "https://api.github.com/repos/TheBinaryNinja/tvapp2",
+                                    "url": "https://api.github.com/repos/Aetherinox/TheRepoName",
                                     "title": "Test PR Workflow",
                                     "head": {
                                         "ref": "main"
@@ -399,16 +411,16 @@ jobs:
                                           "id": 7821944832,
                                           "name": "AC › Passed",
                                           "node_id": "LA_kwDONW-GkM8AAAAB0jloAA",
-                                          "url": "https://api.github.com/repos/TheBinaryNinja/tvapp2/labels/AC%20%E2%80%BA%20Passed"
+                                          "url": "https://api.github.com/repos/Aetherinox/TheRepoName/labels/AC%20%E2%80%BA%20Passed"
                                       },
                                       {
                                           "color": "8F1784",
                                           "default": false,
                                           "description": "Normal pull request",
                                           "id": 7821944963,
-                                          "name": "Type ◦ Pull Request",
+                                          "name": "Type › Pull Request",
                                           "node_id": "LA_kwDONW-GkM8AAAAB0jlogw",
-                                          "url": "https://api.github.com/repos/TheBinaryNinja/tvapp2/labels/Type%20%E2%97%A6%20Pull%20Request"
+                                          "url": "https://api.github.com/repos/Aetherinox/TheRepoName/labels/Type%20%E2%97%A6%20Pull%20Request"
                                       }
                                   ]
                                 },
@@ -417,7 +429,7 @@ jobs:
                             "sha": "c938f7a21247f69b29cf352d0c6890a63f260d47",
                             "ref": "refs/heads/main",
                             "workflow": "🎫 Issues › Scan",
-                            "action": "task_autocheck_run",
+                            "action": "task_prscan_run",
                             "actor": "renovate[bot]",
                             "job": "job-pr-autoscan",
                             "runNumber": 45,
@@ -454,7 +466,7 @@ jobs:
                           labels.push(name);
                       });
 
-                      const files_List        = `${{ steps.task_autocheck_changed_files_get.outputs.all_changed_files }}` || ''
+                      const files_List        = `${{ steps.task_prscan_changed_files_get.outputs.all_changed_files }}` || ''
                       const files_Array       = files_List.split(',')
                       const branch_ref        = `${ ct.payload.pull_request.head.ref }`
 
@@ -507,11 +519,11 @@ jobs:
                       | Author | [ ` + ct.payload.pull_request.user.login + ` ](https://github.com/` + ct.repo.owner + `/) |
                       | Repo | [ ` + ct.repo.repo + ` ](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `) |
                       | Branch | [ ` + ct.payload.pull_request.head.ref + `](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `/tree/` + ct.payload.pull_request.head.ref + `) ⇁ [ ` + ct.payload.pull_request.base.ref + `](https://github.com/` + ct.repo.owner + `/` + ct.repo.repo + `/tree/` + ct.payload.pull_request.base.ref + `) |
-                      | Added Files | ${{ steps.task_autocheck_changed_files_get.outputs.added_files_count }} |
-                      | Modified Files | ${{ steps.task_autocheck_changed_files_get.outputs.all_modified_files_count }} |
-                      | Renamed Files | ${{ steps.task_autocheck_changed_files_get.outputs.renamed_files_count }} |
-                      | Copied Files | ${{ steps.task_autocheck_changed_files_get.outputs.deleted_files_count }} |
-                      | Deleted Files | ${{ steps.task_autocheck_changed_files_get.outputs.deleted_files_count }} |
+                      | Added Files | ${{ steps.task_prscan_changed_files_get.outputs.added_files_count }} |
+                      | Modified Files | ${{ steps.task_prscan_changed_files_get.outputs.all_modified_files_count }} |
+                      | Renamed Files | ${{ steps.task_prscan_changed_files_get.outputs.renamed_files_count }} |
+                      | Copied Files | ${{ steps.task_prscan_changed_files_get.outputs.deleted_files_count }} |
+                      | Deleted Files | ${{ steps.task_prscan_changed_files_get.outputs.deleted_files_count }} |
                       `;
 
                       message.push        ( md_table );
@@ -960,11 +972,12 @@ jobs:
 
             - name: >-
                 🕛 Get Weekly Commit List
-              id: task_autocheck_set_weekly_commit_list
+              id: task_prscan_set_weekly_commit_list
               run: |
                   echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
                   git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
                   echo 'EOF' >> $GITHUB_ENV
+
 
             # #
             #   Autoscan › Notify Github › Success
@@ -1004,11 +1017,11 @@ jobs:
                       - Status: `${{ github.event.pull_request.state }}`
 
                       ### Scan Results
-                      - Added Files: ${{ steps.task_autocheck_changed_files_get.outputs.added_files_count }}
-                      - Modified Files: ${{ steps.task_autocheck_changed_files_get.outputs.all_modified_files_count }}
-                      - Renamed Files: ${{ steps.task_autocheck_changed_files_get.outputs.renamed_files_count }}
-                      - Copied Files: ${{ steps.task_autocheck_changed_files_get.outputs.copied_files_count }}
-                      - Deleted Files: ${{ steps.task_autocheck_changed_files_get.outputs.deleted_files_count }}
+                      - Added Files: ${{ steps.task_prscan_added_files_get.outputs.added_files_count }}
+                      - Modified Files: ${{ steps.task_prscan_added_files_get.outputs.all_modified_files_count }}
+                      - Renamed Files: ${{ steps.task_prscan_added_files_get.outputs.renamed_files_count }}
+                      - Copied Files: ${{ steps.task_prscan_added_files_get.outputs.copied_files_count }}
+                      - Deleted Files: ${{ steps.task_prscan_added_files_get.outputs.deleted_files_count }}
 
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
@@ -1055,11 +1068,11 @@ jobs:
                       - Status: `${{ github.event.pull_request.state }}`
 
                       ### Scan Results
-                      - Added Files: ${{ steps.task_autocheck_changed_files_get.outputs.added_files_count }}
-                      - Modified Files: ${{ steps.task_autocheck_changed_files_get.outputs.all_modified_files_count }}
-                      - Renamed Files: ${{ steps.task_autocheck_changed_files_get.outputs.renamed_files_count }}
-                      - Copied Files: ${{ steps.task_autocheck_changed_files_get.outputs.copied_files_count }}
-                      - Deleted Files: ${{ steps.task_autocheck_changed_files_get.outputs.deleted_files_count }}
+                      - Added Files: ${{ steps.task_prscan_added_files_get.outputs.added_files_count }}
+                      - Modified Files: ${{ steps.task_prscan_added_files_get.outputs.all_modified_files_count }}
+                      - Renamed Files: ${{ steps.task_prscan_added_files_get.outputs.renamed_files_count }}
+                      - Copied Files: ${{ steps.task_prscan_added_files_get.outputs.copied_files_count }}
+                      - Deleted Files: ${{ steps.task_prscan_added_files_get.outputs.deleted_files_count }}
 
                   embed-color: ${{ job.status == 'success' && '5763719' || '15418782' }}
                   embed-footer-text: "Completed at ${{ env.NOW }} UTC"
