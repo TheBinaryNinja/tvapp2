@@ -9,14 +9,31 @@
 #                   https://git.binaryninja.net/BinaryNinja/tvapp2
 #                   https://github.com/aetherinox/docker-base-alpine
 #
-#   you can build your own image by running
-#       amd64       docker build --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 -t tvapp2:1.0.0-amd64 -f Dockerfile .
-#       arm64       docker build --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:1.0.0-arm64 -f Dockerfile.aarch64 .
+#   build your own image by running
+#       amd64                   docker build --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 -t tvapp2:latest -t tvapp2:1.5.0 -t tvapp2:1.5.0-amd64 -f Dockerfile .
+#       arm64                   docker build --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 -t tvapp2:1.5.0-arm64 -f Dockerfile.aarch64 .
 #
-#   if you prefer to use `docker buildx`
-#       create      docker buildx create --driver docker-container --name container --bootstrap --use
-#       amd64       docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/amd64 --output type=docker --output type=docker .
-#       arm64       docker buildx build --no-cache --pull --build-arg VERSION=1.0.0 --build-arg BUILDDATE=20250218 -t tvapp2:latest -t tvapp2:1.0.0 --platform=linux/arm64 --output type=docker --output type=docker .
+#   OR; build using `docker buildx`
+#       create                  docker buildx create --driver docker-container --name container --bootstrap --use
+#       amd64                   docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=stable --tag ghcr.io/thebinaryninja/tvapp2:1.5.0-amd64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --pull --push .
+#       arm64                   docker buildx build --build-arg ARCH=arm64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=stable --tag ghcr.io/thebinaryninja/tvapp2:1.5.0-arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/arm64 --output type=docker --allow network.host --network host --no-cache --pull --push .
+#
+#   OR; build single amd64 image
+#       create                  docker buildx create --driver docker-container --name container --bootstrap --use
+#       amd64                   docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=stable --tag ghcr.io/thebinaryninja/tvapp2:1.5.0 --tag ghcr.io/thebinaryninja/tvapp2:1.5 --tag ghcr.io/thebinaryninja/tvapp2:1 --tag ghcr.io/thebinaryninja/tvapp2:latest --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --push .
+#
+#   OR; build official image (publish)
+#       create                  docker buildx create --driver docker-container --name container --bootstrap --use
+#       amd64-stable            docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=stable --tag ghcr.io/thebinaryninja/tvapp2:1.5.0-amd64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --pull --push .
+#       arm64-stable            docker buildx build --build-arg ARCH=arm64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=stable --tag ghcr.io/thebinaryninja/tvapp2:1.5.0-arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/arm64 --output type=docker --allow network.host --network host --no-cache --pull --push .
+#       amd64-dev               docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=development --tag ghcr.io/thebinaryninja/tvapp2:development-amd64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --pull --push .
+#       arm64-dev               docker buildx build --build-arg ARCH=arm64 --build-arg VERSION=1.5.0 --build-arg BUILDDATE=20260812 --build-arg RELEASE=development --tag ghcr.io/thebinaryninja/tvapp2:development-arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/arm64 --output type=docker --allow network.host --network host --no-cache --pull --push .
+#       amd64-stable-hash       docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.5.0-amd64
+#       arm64-stable-hash       docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:1.5.0-arm64
+#       amd64-dev-hash          docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-amd64
+#       arm64-dev-hash          docker buildx imagetools inspect ghcr.io/thebinaryninja/tvapp2:development-arm64
+#       merge-stable            docker buildx imagetools create --tag ghcr.io/thebinaryninja/tvapp2:1.5.0 --tag ghcr.io/thebinaryninja/tvapp2:1.5 --tag ghcr.io/thebinaryninja/tvapp2:1 --tag ghcr.io/thebinaryninja/tvapp2:latest sha256:0abe1b1c119959b3b1ccc23c56a7ee2c4c908c6aaef290d4ab2993859d807a3b sha256:e68b9de8669eac64d4e4d2a8343c56705e05e9a907cf0b542343f9b536d9c473
+#       merge-dev               docker buildx imagetools create --tag ghcr.io/thebinaryninja/tvapp2:development sha256:8f36385a28c8f6eb7394d903c9a7a2765b06f94266b32628389ee9e3e3d7e69d sha256:c719ccb034946e3f0625003f25026d001768794e38a1ba8aafc9146291d548c5
 # #
 
 # #
@@ -28,13 +45,15 @@
 # #
 
 ARG ARCH=amd64
-FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:3.21
+ARG ALPINE_VERSION=3.21
+FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:${ALPINE_VERSION}
 
 # #
 #   Set Args
 # #
 
 ARG ARCH=amd64
+ARG ALPINE_VERSION=3.21
 ARG BUILDDATE
 ARG VERSION
 ARG RELEASE
@@ -60,6 +79,9 @@ LABEL org.opencontainers.image.registry="local"
 LABEL org.opencontainers.image.release="${RELEASE}"
 LABEL org.tvapp2.image.maintainers="Aetherinox, iFlip721, Optx"
 LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
+LABEL org.tvapp2.image.build-version-alpine="${ALPINE_VERSION}"
+LABEL org.tvapp2.image.build-architecture="${ARCH}"
+LABEL org.tvapp2.image.build-release="${RELEASE}"
 
 # #
 #   Set Env Var
@@ -91,6 +113,7 @@ ENV TZ="Etc/UTC"
 RUN \
     apk add --no-cache \
         wget \
+        curl \
         bash \
         nano \
         npm \
