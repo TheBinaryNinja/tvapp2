@@ -169,17 +169,17 @@ Our repositories make use of the following commit tags:
 
 | Type | Description |
 | --- | --- |
-| `feat` | <sup><sub>Introduce new feature</sub></sup> |
-| `fix` | <sup><sub>Bug fix</sub></sup> |
-| `chore` | <sup><sub>Includes technical or preventative maintenance task that is necessary for managing the app or repo, such as updating grunt tasks, but is not tied to any specific feature. Usually done for maintenance purposes.<br/>E.g: Edit .gitignore, .prettierrc, .prettierignore, .gitignore, eslint.config.js file</sub></sup> |
-| `revert` | <sup><sub>Revert a previous commit</sub></sup> |
-| `style` | <sup><sub>Update / reformat style of source code. Does not change the way app is implemented. Changes that do not affect the meaning of the code<br />E.g: white-space, formatting, missing semi-colons, change tabs to spaces, etc)</sub></sup> |
-| `docs` | <sup><sub>Change website or markdown documents. Does not mean changes to the documentation generator script itself, only the documents created from the generator. <br/>E.g: documentation, readme.md or markdown |
-| `build` | <sup><sub>Changes to the build / compilation / packaging process or auxiliary tools such as doc generation<br />E.g: create new build tasks, update release script, etc.</sub></sup> |
-| `refactor` | <sup><sub>Change to production code that leads to no behavior difference,<br/>E.g: split files, rename variables, rename package, improve code style, etc.</sub></sup> |
-| `test` | <sup><sub>Add or refactor tests, no production code change. Changes the suite of automated tests for the app.</sub></sup> |
-| `ci` | <sup><sub>Changes related to Continuous Integration (usually `yml` and other configuration files).</sub></sup> |
-| `perf` | <sup><sub>Performance improvement of algorithms or execution time of the app. Does not change an existing feature.</sub></sup> |
+| `feat` | Introduce new feature |
+| `fix` | Bug fix |
+| `chore` | Includes technical or preventative maintenance task that is necessary for managing the app or repo, such as updating grunt tasks, but is not tied to any specific feature. Usually done for maintenance purposes.<br/>E.g: Edit .gitignore, .prettierrc, .prettierignore, .gitignore, eslint.config.js file |
+| `revert` | Revert a previous commit |
+| `style` | Update / reformat style of source code. Does not change the way app is implemented. Changes that do not affect the meaning of the code<br />E.g: white-space, formatting, missing semi-colons, change tabs to spaces, etc) |
+| `docs` | Change website or markdown documents. Does not mean changes to the documentation generator script itself, only the documents created from the generator. <br/>E.g: documentation, readme.md or markdown |
+| `build` | Changes to the build / compilation / packaging process or auxiliary tools such as doc generation<br />E.g: create new build tasks, update release script, etc. |
+| `refactor` | Change to production code that leads to no behavior difference,<br/>E.g: split files, rename variables, rename package, improve code style, etc. |
+| `test` | Add or refactor tests, no production code change. Changes the suite of automated tests for the app. |
+| `ci` | Changes related to Continuous Integration (usually `yml` and other configuration files). |
+| `perf` | Performance improvement of algorithms or execution time of the app. Does not change an existing feature. |
 
 <br />
 
