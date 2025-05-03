@@ -156,6 +156,7 @@ For the [environment variables](#environment-variables), you may specify these i
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
+| `WEB_PROXY_HEADER` | `x-forwarded-for` | Defines the header to look for when finding a client's IP address. Used to get a client's IP when behind a reverse proxy or Cloudflare |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |
 | `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
@@ -313,7 +314,7 @@ subgraph GRAPH_TVAPP ["Build tvapp2:latest"]
      Dockerfile.aarch64**`"]
     obj_step12["`&gt; docker build &bsol;
     --build-arg VERSION=1.0.0 &bsol;
-    --build-arg BUILDDATE=20250225 &bsol;
+    --build-arg BUILDDATE=20260812 &bsol;
     -t tvapp:latest &bsol;
     -t tvapp:1.0.0-amd64 &bsol;
     -f Dockerfile . &bsol;`"]
@@ -335,7 +336,7 @@ direction TB
      Dockerfile.aarch64**`"]
     obj_step22["`&gt; docker build &bsol;
     --build-arg VERSION=3.20 &bsol;
-    --build-arg BUILDDATE=20250225 &bsol;
+    --build-arg BUILDDATE=20260812 &bsol;
     -t docker-alpine-base:latest &bsol;
     -t docker-alpine-base:3.20-amd64 &bsol;
     -f Dockerfile . &bsol;`"]
@@ -574,6 +575,7 @@ docker buildx build \
   --build-arg ARCH=amd64 \
   --build-arg VERSION=1.5.0 \
   --build-arg BUILDDATE=20260812 \
+  --build-arg RELEASE=stable \
   --tag ghcr.io/thebinaryninja/tvapp2:1.5.0 \
   --tag ghcr.io/thebinaryninja/tvapp2:1.5 \
   --tag ghcr.io/thebinaryninja/tvapp2:1 \
@@ -602,6 +604,7 @@ docker buildx build \
   --build-arg ARCH=arm64 \
   --build-arg VERSION=1.5.0 \
   --build-arg BUILDDATE=20260812 \
+  --build-arg RELEASE=stable \
   --tag ghcr.io/thebinaryninja/tvapp2:1.5.0 \
   --tag ghcr.io/thebinaryninja/tvapp2:1.5 \
   --tag ghcr.io/thebinaryninja/tvapp2:1 \
@@ -770,6 +773,7 @@ docker buildx build \
   --build-arg ARCH=amd64 \
   --build-arg VERSION=1.5.0 \
   --build-arg BUILDDATE=20260812 \
+  --build-arg RELEASE=stable \
   --tag ghcr.io/thebinaryninja/tvapp2:1.5.0-amd64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
@@ -796,6 +800,7 @@ docker buildx build \
   --build-arg ARCH=arm64 \
   --build-arg VERSION=1.5.0 \
   --build-arg BUILDDATE=20260812 \
+  --build-arg RELEASE=stable \
   --tag ghcr.io/thebinaryninja/tvapp2:1.5.0-arm64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
@@ -822,6 +827,7 @@ docker buildx build \
   --build-arg ARCH=amd64 \
   --build-arg VERSION=1.5.0 \
   --build-arg BUILDDATE=20260812 \
+  --build-arg RELEASE=development \
   --tag ghcr.io/thebinaryninja/tvapp2:development-amd64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
@@ -848,6 +854,7 @@ docker buildx build \
   --build-arg ARCH=arm64 \
   --build-arg VERSION=1.5.0 \
   --build-arg BUILDDATE=20260812 \
+  --build-arg RELEASE=development \
   --tag ghcr.io/thebinaryninja/tvapp2:development-arm64 \
   --attest type=provenance,disabled=true \
   --attest type=sbom,disabled=true \
@@ -1199,6 +1206,7 @@ This docker container contains the following env variables:
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
+| `WEB_PROXY_HEADER` | `x-forwarded-for` | Defines the header to look for when finding a client's IP address. Used to get a client's IP when behind a reverse proxy or Cloudflare |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
 | `FILE_URL` | `urls.txt` | Filename for `urls.txt` cache file |
 | `FILE_M3U` | `playlist.m3u8` | Filename for M3U playlist file |
