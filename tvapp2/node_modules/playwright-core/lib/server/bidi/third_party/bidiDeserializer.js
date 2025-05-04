@@ -1,93 +1,98 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var bidiDeserializer_exports = {};
+__export(bidiDeserializer_exports, {
+  BidiDeserializer: () => BidiDeserializer
 });
-exports.BidiDeserializer = void 0;
+module.exports = __toCommonJS(bidiDeserializer_exports);
 /**
  * @license
  * Copyright 2024 Google Inc.
  * Modifications copyright (c) Microsoft Corporation.
  * SPDX-License-Identifier: Apache-2.0
  */
-
-/* eslint-disable object-curly-spacing */
-
-/**
- * @internal
- */
 class BidiDeserializer {
   static deserialize(result) {
-    var _result$value, _result$value2, _result$value3, _result$value4;
-    if (!result) return undefined;
+    if (!result)
+      return void 0;
     switch (result.type) {
-      case 'array':
-        return (_result$value = result.value) === null || _result$value === void 0 ? void 0 : _result$value.map(value => {
+      case "array":
+        return result.value?.map((value) => {
           return BidiDeserializer.deserialize(value);
         });
-      case 'set':
-        return (_result$value2 = result.value) === null || _result$value2 === void 0 ? void 0 : _result$value2.reduce((acc, value) => {
+      case "set":
+        return result.value?.reduce((acc, value) => {
           return acc.add(BidiDeserializer.deserialize(value));
-        }, new Set());
-      case 'object':
-        return (_result$value3 = result.value) === null || _result$value3 === void 0 ? void 0 : _result$value3.reduce((acc, tuple) => {
-          const {
-            key,
-            value
-          } = BidiDeserializer._deserializeTuple(tuple);
+        }, /* @__PURE__ */ new Set());
+      case "object":
+        return result.value?.reduce((acc, tuple) => {
+          const { key, value } = BidiDeserializer._deserializeTuple(tuple);
           acc[key] = value;
           return acc;
         }, {});
-      case 'map':
-        return (_result$value4 = result.value) === null || _result$value4 === void 0 ? void 0 : _result$value4.reduce((acc, tuple) => {
-          const {
-            key,
-            value
-          } = BidiDeserializer._deserializeTuple(tuple);
+      case "map":
+        return result.value?.reduce((acc, tuple) => {
+          const { key, value } = BidiDeserializer._deserializeTuple(tuple);
           return acc.set(key, value);
-        }, new Map());
-      case 'promise':
+        }, /* @__PURE__ */ new Map());
+      case "promise":
         return {};
-      case 'regexp':
+      case "regexp":
         return new RegExp(result.value.pattern, result.value.flags);
-      case 'date':
+      case "date":
         return new Date(result.value);
-      case 'undefined':
-        return undefined;
-      case 'null':
+      case "undefined":
+        return void 0;
+      case "null":
         return null;
-      case 'number':
+      case "number":
         return BidiDeserializer._deserializeNumber(result.value);
-      case 'bigint':
+      case "bigint":
         return BigInt(result.value);
-      case 'boolean':
+      case "boolean":
         return Boolean(result.value);
-      case 'string':
+      case "string":
         return result.value;
     }
     throw new Error(`Deserialization of type ${result.type} not supported.`);
   }
   static _deserializeNumber(value) {
     switch (value) {
-      case '-0':
+      case "-0":
         return -0;
-      case 'NaN':
+      case "NaN":
         return NaN;
-      case 'Infinity':
+      case "Infinity":
         return Infinity;
-      case '-Infinity':
+      case "-Infinity":
         return -Infinity;
       default:
         return value;
     }
   }
   static _deserializeTuple([serializedKey, serializedValue]) {
-    const key = typeof serializedKey === 'string' ? serializedKey : BidiDeserializer.deserialize(serializedKey);
+    const key = typeof serializedKey === "string" ? serializedKey : BidiDeserializer.deserialize(serializedKey);
     const value = BidiDeserializer.deserialize(serializedValue);
-    return {
-      key,
-      value
-    };
+    return { key, value };
   }
 }
-exports.BidiDeserializer = BidiDeserializer;
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  BidiDeserializer
+});

@@ -1,33 +1,33 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var accessibility_exports = {};
+__export(accessibility_exports, {
+  Accessibility: () => Accessibility
 });
-exports.Accessibility = void 0;
-/**
- * Copyright 2017 Google Inc. All rights reserved.
- * Modifications copyright (c) Microsoft Corporation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+module.exports = __toCommonJS(accessibility_exports);
 function axNodeFromProtocol(axNode) {
   const result = {
     ...axNode,
-    value: axNode.valueNumber !== undefined ? axNode.valueNumber : axNode.valueString,
-    checked: axNode.checked === 'checked' ? true : axNode.checked === 'unchecked' ? false : axNode.checked,
-    pressed: axNode.pressed === 'pressed' ? true : axNode.pressed === 'released' ? false : axNode.pressed,
-    children: axNode.children ? axNode.children.map(axNodeFromProtocol) : undefined
+    value: axNode.valueNumber !== void 0 ? axNode.valueNumber : axNode.valueString,
+    checked: axNode.checked === "checked" ? true : axNode.checked === "unchecked" ? false : axNode.checked,
+    pressed: axNode.pressed === "pressed" ? true : axNode.pressed === "released" ? false : axNode.pressed,
+    children: axNode.children ? axNode.children.map(axNodeFromProtocol) : void 0
   };
   delete result.valueNumber;
   delete result.valueString;
@@ -35,16 +35,15 @@ function axNodeFromProtocol(axNode) {
 }
 class Accessibility {
   constructor(channel) {
-    this._channel = void 0;
     this._channel = channel;
   }
   async snapshot(options = {}) {
-    const root = options.root ? options.root._elementChannel : undefined;
-    const result = await this._channel.accessibilitySnapshot({
-      interestingOnly: options.interestingOnly,
-      root
-    });
+    const root = options.root ? options.root._elementChannel : void 0;
+    const result = await this._channel.accessibilitySnapshot({ interestingOnly: options.interestingOnly, root });
     return result.rootAXNode ? axNodeFromProtocol(result.rootAXNode) : null;
   }
 }
-exports.Accessibility = Accessibility;
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  Accessibility
+});
