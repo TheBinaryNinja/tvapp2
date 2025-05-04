@@ -73,7 +73,7 @@
     ],
     "dependencies": {
         "playwright": "^1.51.0",
-        "user-agents": "^1.1.480",
+        "user-agents": "^1.1.529",
         "chalk": "^5.3.0",
         "ejs": "^3.1.10",
         "moment": "2.30.1",
