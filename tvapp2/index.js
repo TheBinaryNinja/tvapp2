@@ -1026,10 +1026,10 @@ async function getTokenizedUrl( channelUrl, req )
             chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.redBright( `<error>` ), chalk.gray( `${ err.message }` ),
             chalk.redBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
-            chalk.redBright( `<streamHost>` ), chalk.gray( `${ streamHost }` ),
-            chalk.redBright( `<streamName>` ), chalk.gray( `${ streamName }` ),
+            chalk.redBright( `<streamHost>` ), chalk.gray( `not defined` ),
+            chalk.redBright( `<streamName>` ), chalk.gray( `not defined` ),
             chalk.redBright( `<streamQuality>` ), chalk.gray( `${ envStreamQuality.toLowerCase() }` ),
-            chalk.redBright( `<tokenUrl>` ), chalk.gray( `${ tokenUrl }` ) );
+            chalk.redBright( `<tokenUrl>` ), chalk.gray( `not defined` ) );
 
         return null;
     }
@@ -1408,7 +1408,7 @@ async function serveM3U( res, req )
     Serves IPTV .xml guide data
 */
 
-async function serveXML( response, req )
+async function serveXML( res, req )
 {
     try
     {
@@ -1417,7 +1417,7 @@ async function serveXML( response, req )
         const baseUrl = `${ protocol }://${ host }`;
         const formattedContent = fs.readFileSync( FILE_XML, 'utf-8' );
 
-        response.writeHead( 200, {
+        res.writeHead( 200, {
             'Content-Type': 'application/xml',
             'Content-Disposition': 'inline; filename="' + envFileXML
         });
@@ -1431,11 +1431,10 @@ async function serveXML( response, req )
             chalk.greenBright( `<path>` ), chalk.gray( `${ FILE_XML }` ),
             chalk.greenBright( `<file>` ), chalk.gray( `${ envFileXML }` ) );
 
-        response.end( formattedContent );
+        res.end( formattedContent );
     }
     catch ( err )
     {
-
         const statusCheck =
         {
             ip: envIpContainer,
@@ -1451,7 +1450,7 @@ async function serveXML( response, req )
             timestamp: Date.now()
         };
 
-        response.writeHead( statusCheck.code, {
+        res.writeHead( statusCheck.code, {
             'Content-Type': 'text/plain'
         });
 
@@ -1472,7 +1471,7 @@ async function serveXML( response, req )
     Serves IPTV .gz guide data
 */
 
-async function serveGZP( response, req )
+async function serveGZP( res, req )
 {
     try
     {
@@ -1481,7 +1480,7 @@ async function serveGZP( response, req )
         const baseUrl = `${ protocol }://${ host }`;
         const formattedContent = fs.readFileSync( FILE_GZP );
 
-        response.writeHead( 200, {
+        res.writeHead( 200, {
             'Content-Type': 'application/gzip',
             'Content-Disposition': 'inline; filename="' + envFileGZP
         });
@@ -1495,11 +1494,10 @@ async function serveGZP( response, req )
             chalk.greenBright( `<path>` ), chalk.gray( `${ FILE_GZP }` ),
             chalk.greenBright( `<file>` ), chalk.gray( `${ envFileGZP }` ) );
 
-        response.end( formattedContent );
+        res.end( formattedContent );
     }
     catch ( err )
     {
-
         const statusCheck =
         {
             ip: envIpContainer,
@@ -1515,7 +1513,7 @@ async function serveGZP( response, req )
             timestamp: Date.now()
         };
 
-        response.writeHead( statusCheck.code, {
+        res.writeHead( statusCheck.code, {
             'Content-Type': 'text/plain'
         });
 
@@ -1585,10 +1583,9 @@ function getCache( key, req )
 
 async function initialize()
 {
+    const start = performance.now();
     try
     {
-        const start = performance.now();
-
         Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Starting TVApp2 container. Assigning bound IP to host network adapter` ),
             chalk.blueBright( `<hostIp>` ), chalk.gray( `${ envWebIP }` ),
@@ -1703,7 +1700,6 @@ const server = http.createServer( ( request, response ) =>
 
         if ( subdomainRestart.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
         {
-
             /*
                 Not highly technical, but good enough for starting out until Express is integrated.
                     if restart command is triggered using website, allow it to pass through without an API key.
