@@ -319,7 +319,6 @@ async function downloadFile( url, filePath )
 {
     return new Promise( ( resolve, reject ) =>
     {
-
         Log.info( `file`, chalk.yellow( `[download]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to download external file` ),
             chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
@@ -329,24 +328,30 @@ async function downloadFile( url, filePath )
         const httpModule = isHttps ? https : http;
         const file = fs.createWriteStream( filePath );
         httpModule
-            .get( url, ( response ) =>
+            .get( url, ( res ) =>
             {
-                if ( response.statusCode !== 200 )
+                Log.info( `file`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Getting response from file download request` ),
+                    chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
+                    chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
+                    chalk.blueBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
+
+                if ( res.statusCode !== 200 )
                 {
                     Log.error( `file`, chalk.redBright( `[download]` ), chalk.white( `❌` ),
                         chalk.redBright( `<msg>` ), chalk.gray( `Attempt to download external file returned non-200 status` ),
-                        chalk.redBright( `<code>` ), chalk.gray( `${ response.statusCode }` ),
+                        chalk.redBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
                         chalk.redBright( `<src>` ), chalk.gray( `${ url }` ),
                         chalk.redBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
 
-                    return reject( new Error( `Failed to download file: ${ url }. Status code: ${ response.statusCode }` ) );
+                    return reject( new Error( `Failed to download file: ${ url }. Status code: ${ res.statusCode }` ) );
                 }
-                response.pipe( file );
+                res.pipe( file );
                 file.on( 'finish', () =>
                 {
                     Log.ok( `file`, chalk.yellow( `[download]` ), chalk.white( `✅` ),
                         chalk.greenBright( `<msg>` ), chalk.gray( `Successfully downloaded external file` ),
-                        chalk.greenBright( `<code>` ), chalk.gray( `${ response.statusCode }` ),
+                        chalk.greenBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
                         chalk.greenBright( `<src>` ), chalk.gray( `${ url }` ),
                         chalk.greenBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
 
@@ -480,7 +485,6 @@ async function createGzip( )
 {
     return new Promise( ( resolve, reject ) =>
     {
-
         Log.info( `.gzp`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to create compressed XML gz file` ),
             chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
@@ -616,6 +620,11 @@ async function fetchRemote( url, req )
 {
     return new Promise( ( resolve, reject ) =>
     {
+        Log.info( `remo`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to fetch remote request` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+            chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
+
         const mod = url.startsWith( 'https' ) ? https : http;
         mod
             .get( url, {
@@ -872,10 +881,19 @@ function buildCookieHeader()
     return pairs.join( '; ' );
 }
 
+/*
+    fetch > page
+*/
+
 function fetchPage( url, req )
 {
     return new Promise( ( resolve, reject ) =>
     {
+        Log.info( `http`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to fetch remote page` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+            chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
+
         const opts = {
             method: 'GET',
             headers: {
@@ -923,6 +941,10 @@ function fetchPage( url, req )
             .on( 'error', reject );
     });
 }
+
+/*
+    tokenized url > get
+*/
 
 async function getTokenizedUrl( channelUrl, req )
 {
@@ -1067,6 +1089,10 @@ async function getTokenizedUrl( channelUrl, req )
         return null;
     }
 }
+
+/*
+    serve > m3u playlist
+*/
 
 async function serveM3UPlaylist( req, res )
 {
@@ -1268,6 +1294,10 @@ async function serveM3UPlaylist( req, res )
     }
 }
 
+/*
+    serve > health check
+*/
+
 async function serveHealthCheck( req, res )
 {
     await semaphore.acquire();
@@ -1378,6 +1408,8 @@ async function rewriteM3U( originalUrl, req )
 }
 
 /*
+    serve > m3u
+
     Serves IPTV .m3u playlist
 */
 
@@ -1450,7 +1482,9 @@ async function serveM3U( res, req )
 }
 
 /*
-    Serves IPTV .xml guide data
+    serve > xml
+
+    Serves IPTV uncompressed .xml guide data
 */
 
 async function serveXML( res, req )
@@ -1513,7 +1547,9 @@ async function serveXML( res, req )
 };
 
 /*
-    Serves IPTV .gz guide data
+    serve > gzip
+
+    Serves IPTV compressed .gz guide data
 */
 
 async function serveGZP( res, req )
@@ -2023,7 +2059,6 @@ const server = http.createServer( ( request, response ) =>
         {
             if ( !err )
             {
-
                 Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Request accepted by ejs` ),
                     chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
