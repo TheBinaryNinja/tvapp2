@@ -61,7 +61,6 @@ let FILE_GZP_SIZE = 0;
 let FILE_M3U_MODIFIED = 0;
 let FILE_XML_MODIFIED = 0;
 let FILE_GZP_MODIFIED = 0;
-const FOLDER_WWW = 'www';
 
 /*
     Define > Environment Variables || Defaults
@@ -318,13 +317,14 @@ const semaphore = new Semaphore( 5 );
 
 async function downloadFile( url, filePath )
 {
-    Log.info( `file`, chalk.yellow( `[download]` ), chalk.white( `ℹ️` ),
-        chalk.blueBright( `<msg>` ), chalk.gray( `Downloading external file` ),
-        chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
-        chalk.blueBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
-
     return new Promise( ( resolve, reject ) =>
     {
+
+        Log.info( `file`, chalk.yellow( `[download]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to download external file` ),
+            chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
+            chalk.blueBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
+
         const isHttps = new URL( url ).protocol === 'https:';
         const httpModule = isHttps ? https : http;
         const file = fs.createWriteStream( filePath );
@@ -334,10 +334,10 @@ async function downloadFile( url, filePath )
                 if ( response.statusCode !== 200 )
                 {
                     Log.error( `file`, chalk.redBright( `[download]` ), chalk.white( `❌` ),
-                        chalk.redBright( `<msg>` ), chalk.gray( `Attempt to download file returned non-200 status` ),
+                        chalk.redBright( `<msg>` ), chalk.gray( `Attempt to download external file returned non-200 status` ),
+                        chalk.redBright( `<code>` ), chalk.gray( `${ response.statusCode }` ),
                         chalk.redBright( `<src>` ), chalk.gray( `${ url }` ),
-                        chalk.redBright( `<dest>` ), chalk.gray( `${ filePath }` ),
-                        chalk.redBright( `<code>` ), chalk.gray( `${ response.statusCode }` ) );
+                        chalk.redBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
 
                     return reject( new Error( `Failed to download file: ${ url }. Status code: ${ response.statusCode }` ) );
                 }
@@ -345,10 +345,10 @@ async function downloadFile( url, filePath )
                 file.on( 'finish', () =>
                 {
                     Log.ok( `file`, chalk.yellow( `[download]` ), chalk.white( `✅` ),
-                        chalk.greenBright( `<msg>` ), chalk.gray( `Successfully downloaded and wrote new file` ),
+                        chalk.greenBright( `<msg>` ), chalk.gray( `Successfully downloaded external file` ),
+                        chalk.greenBright( `<code>` ), chalk.gray( `${ response.statusCode }` ),
                         chalk.greenBright( `<src>` ), chalk.gray( `${ url }` ),
-                        chalk.greenBright( `<dest>` ), chalk.gray( `${ filePath }` ),
-                        chalk.greenBright( `<code>` ), chalk.gray( `${ response.statusCode }` ) );
+                        chalk.greenBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
 
                     file.close( () => resolve( true ) );
                 });
@@ -356,7 +356,7 @@ async function downloadFile( url, filePath )
             .on( 'error', ( err ) =>
             {
                 Log.error( `file`, chalk.redBright( `[download]` ), chalk.white( `❌` ),
-                    chalk.redBright( `<msg>` ), chalk.gray( `Failed to download source file` ),
+                    chalk.redBright( `<msg>` ), chalk.gray( `Failed to download external source file` ),
                     chalk.redBright( `<error>` ), chalk.gray( `${ err.message }` ),
                     chalk.redBright( `<src>` ), chalk.gray( `${ url }` ),
                     chalk.redBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
@@ -442,7 +442,7 @@ async function getFile( url, filePath )
     try
     {
         Log.debug( `file`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to download file` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to download external file` ),
             chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
             chalk.blueBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
 
@@ -453,9 +453,9 @@ async function getFile( url, filePath )
         if ( fs.existsSync( filePath ) )
         {
             Log.warn( `file`, chalk.yellow( `[requests]` ), chalk.white( `⚠️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `Download failed - Using existing local file ${ filePath }` ),
-                chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
-                chalk.blueBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
+                chalk.yellowBright( `<msg>` ), chalk.gray( `Download failed - Using existing local file ${ filePath }` ),
+                chalk.yellowBright( `<src>` ), chalk.gray( `${ url }` ),
+                chalk.yellowBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
         }
         else
         {
@@ -478,76 +478,72 @@ async function getFile( url, filePath )
 
 async function createGzip( )
 {
-    Log.info( `gzip`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
-        chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to create compressed XML gz file` ),
-        chalk.blueBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-        chalk.blueBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
-
     return new Promise( ( resolve, reject ) =>
     {
-        Log.debug( `gzip`, chalk.yellow( `[generate]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Promise to create compressed gz started` ),
-            chalk.blueBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-            chalk.blueBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+
+        Log.info( `.gzp`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to create compressed XML gz file` ),
+            chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+            chalk.blueBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
         fs.readFile( FILE_XML, ( err, buf ) =>
         {
-            Log.debug( `gzip`, chalk.yellow( `[generate]` ), chalk.white( `⚙️` ),
+            Log.debug( `.gzp`, chalk.yellow( `[generate]` ), chalk.white( `⚙️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Reading source XML file` ),
-                chalk.blueBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                chalk.blueBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                chalk.blueBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
             if ( err )
             {
-                Log.error( `gzip`, chalk.redBright( `[generate]` ), chalk.white( `❌` ),
+                Log.error( `.gzp`, chalk.redBright( `[generate]` ), chalk.white( `❌` ),
                     chalk.redBright( `<msg>` ), chalk.gray( `Could not read source XML file` ),
                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
-                    chalk.redBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                    chalk.redBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                    chalk.redBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                    chalk.redBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
                 return reject( new Error( `Could not read file ${ envFileXML }. Error: ${ err }` ) );
             }
 
             zlib.gzip( buf, ( err, buf ) =>
             {
-                Log.debug( `gzip`, chalk.yellow( `[generate]` ), chalk.white( `⚙️` ),
+                Log.debug( `.gzp`, chalk.yellow( `[generate]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Starting zlib.gzip` ),
-                    chalk.blueBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                    chalk.blueBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                    chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                    chalk.blueBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
                 if ( err )
                 {
-                    Log.error( `gzip`, chalk.redBright( `[generate]` ), chalk.white( `❌` ),
+                    Log.error( `.gzp`, chalk.redBright( `[generate]` ), chalk.white( `❌` ),
                         chalk.redBright( `<msg>` ), chalk.gray( `Could not create gz archive` ),
                         chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
-                        chalk.redBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                        chalk.redBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                        chalk.redBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                        chalk.redBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
                     return reject( new Error( `Could not create ${ envFileGZP }. Error: ${ err }` ) );
                 }
 
-                Log.info( `gzip`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
+                Log.info( `.gzp`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Started creating gz archive from XML source` ),
-                    chalk.blueBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                    chalk.blueBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                    chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                    chalk.blueBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
                 fs.writeFile( `${ FILE_GZP }`, buf, ( err ) =>
                 {
                     if ( err )
                     {
-                        Log.error( `gzip`, chalk.redBright( `[generate]` ), chalk.white( `❌` ),
+                        Log.error( `.gzp`, chalk.redBright( `[generate]` ), chalk.white( `❌` ),
                             chalk.redBright( `<msg>` ), chalk.gray( `Could not write to and create gz archive` ),
                             chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
-                            chalk.redBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                            chalk.redBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                            chalk.redBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                            chalk.redBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
                         return reject( new Error( `Could not write XML file ${ envFileXML } to ${ envFileGZP }. Error: ${ err }` ) );
                     }
 
-                    Log.ok( `gzip`, chalk.yellow( `[generate]` ), chalk.white( `✅` ),
+                    Log.ok( `.gzp`, chalk.yellow( `[generate]` ), chalk.white( `✅` ),
                         chalk.greenBright( `<msg>` ), chalk.gray( `Successfully created compressed gz archive from XML source file` ),
-                        chalk.greenBright( `<src>` ), chalk.gray( `${ envFileXML }` ),
-                        chalk.greenBright( `<dest>` ), chalk.gray( `${ envFileGZP }` ) );
+                        chalk.greenBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                        chalk.greenBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
                     resolve( true );
                 });
@@ -566,22 +562,29 @@ async function getGzip( )
 {
     try
     {
+        Log.debug( `.gzp`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to create compressed gzip from uncompressed XML data` ),
+            chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+            chalk.blueBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
+
         await createGzip( );
     }
     catch ( err )
     {
         if ( fs.existsSync( FILE_XML ) )
         {
-            Log.warn( `gzip`, chalk.yellow( `[compress]` ), chalk.white( `⚠️` ),
-                chalk.blueBright( `<msg>` ), chalk.yellowBright( `Source xml file found, but gzip failed generate a compressed .gz fileL` ),
-                chalk.blueBright( `<src>` ), chalk.gray( `${ FILE_XML }` ) );
+            Log.warn( `.gzp`, chalk.yellow( `[requests]` ), chalk.white( `⚠️` ),
+                chalk.yellowBright( `<msg>` ), chalk.yellowBright( `Cannot get compressed gzip; but source XML file found and can be used` ),
+                chalk.yellowBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                chalk.yellowBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
         }
         else
         {
-            Log.error( `gzip`, chalk.redBright( `[compress]` ), chalk.white( `❌` ),
-                chalk.redBright( `<msg>` ), chalk.gray( `Source XML file not found; cannot create compressed gzip` ),
+            Log.error( `.gzp`, chalk.redBright( `[requests]` ), chalk.white( `❌` ),
+                chalk.redBright( `<msg>` ), chalk.gray( `Failed to get compressed gzip, and source XML file not found` ),
                 chalk.redBright( `<error>` ), chalk.gray( `${ err.message }` ),
-                chalk.redBright( `<src>` ), chalk.gray( `${ FILE_XML }` ) );
+                chalk.redBright( `<src>` ), chalk.gray( `${ FILE_XML }` ),
+                chalk.redBright( `<dest>` ), chalk.gray( `${ FILE_GZP }` ) );
 
             throw err;
         }
@@ -621,15 +624,17 @@ async function fetchRemote( url, req )
                 }
             }, ( resp ) =>
             {
-                Log.info( `conn`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Processing encoding types for remote fetch` ),
+                Log.info( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Getting response from remote fetch request` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.blueBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
                     chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
 
                 if ( resp.statusCode !== 200 )
                 {
-                    Log.error( `conn`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
-                        chalk.redBright( `<msg>` ), chalk.gray( `Server returned status code other than 200` ),
+                    Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                        chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch returned status code other than 200` ),
+                        chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                         chalk.redBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
                         chalk.redBright( `<url>` ), chalk.gray( `${ url }` ) );
 
@@ -650,8 +655,9 @@ async function fetchRemote( url, req )
                         {
                             if ( err )
                             {
-                                Log.error( `conn`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
-                                    chalk.redBright( `<msg>` ), chalk.gray( `Could not complete encoding type ${ encoding }` ),
+                                Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                                    chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch could not complete encoding type ${ encoding }` ),
+                                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
                                     chalk.redBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
                                     chalk.redBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
@@ -660,8 +666,9 @@ async function fetchRemote( url, req )
                                 return reject( err );
                             }
 
-                            Log.debug( `conn`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
-                                chalk.blueBright( `<msg>` ), chalk.gray( `Processing encoding type ${ encoding }` ),
+                            Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                                chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch detected encoding type ${ encoding }; decoding` ),
+                                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                 chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
                                 chalk.blueBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
                                 chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
@@ -675,8 +682,9 @@ async function fetchRemote( url, req )
                         {
                             if ( err )
                             {
-                                Log.error( `conn`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
-                                    chalk.redBright( `<msg>` ), chalk.gray( `Could not complete encoding type ${ encoding }` ),
+                                Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                                    chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch could not complete encoding type ${ encoding }` ),
+                                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
                                     chalk.redBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
                                     chalk.redBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
@@ -685,8 +693,9 @@ async function fetchRemote( url, req )
                                 return reject( err );
                             }
 
-                            Log.debug( `conn`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
-                                chalk.blueBright( `<msg>` ), chalk.gray( `Processing encoding type ${ encoding }` ),
+                            Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                                chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch detected encoding type ${ encoding }; decoding` ),
+                                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                 chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
                                 chalk.blueBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
                                 chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
@@ -700,8 +709,9 @@ async function fetchRemote( url, req )
                         {
                             if ( err )
                             {
-                                Log.error( `conn`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
-                                    chalk.redBright( `<msg>` ), chalk.gray( `Could not complete encoding type ${ encoding } (brotli decompress)` ),
+                                Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                                    chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch could not complete encoding type ${ encoding } (brotli decompress)` ),
+                                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
                                     chalk.redBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
                                     chalk.redBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
@@ -710,8 +720,9 @@ async function fetchRemote( url, req )
                                 return reject( err );
                             }
 
-                            Log.debug( `conn`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
-                                chalk.blueBright( `<msg>` ), chalk.gray( `Processing encoding type ${ encoding } (brotli decompress)` ),
+                            Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                                chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch detected encoding type ${ encoding } (brotli decompress); decoding` ),
+                                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                 chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
                                 chalk.blueBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
                                 chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
@@ -721,6 +732,13 @@ async function fetchRemote( url, req )
                     }
                     else
                     {
+                        Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                            chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch contains no headers to decode; resolving buffer` ),
+                            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                            chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
+                            chalk.blueBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
+                            chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
+
                         resolve( buffer );
                     }
                 });
@@ -728,6 +746,12 @@ async function fetchRemote( url, req )
             .on( 'error', reject );
     });
 }
+
+/*
+    Serve Keys
+
+    @url        https://tvapp2.domain.lan/keys?uri=https://v16.thetvapp.to/hls/WABCDT1/tracks-v2a1/mono.m3u8?token=a0b2C-1ae-qaxAV5iKAd8g&expires=1746394920&user_id=EjLZVsIiJphafFxXRVWRdVWPvzTqpWBZbchvsTwpAlrQZzFuZMpdSn==
+*/
 
 async function serveKey( req, res )
 {
@@ -765,8 +789,8 @@ async function serveKey( req, res )
             return res.end( JSON.stringify( statusCheck ) );
         }
 
-        Log.debug( `conn`, chalk.yellow( `[response]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Valid paramUrl specified; establishing connection` ),
+        Log.debug( `keys`, chalk.yellow( `[response]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Valid paramUrl specified; establishing connection to serve key to client` ),
             chalk.blueBright( `<cat>` ), chalk.gray( `serveKey` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ),
@@ -777,8 +801,8 @@ async function serveKey( req, res )
             'Content-Type': 'application/octet-stream'
         });
 
-        Log.ok( `key`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
-            chalk.greenBright( `<msg>` ), chalk.greenBright( `Found valid uri parameter` ),
+        Log.ok( `keys`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
+            chalk.greenBright( `<msg>` ), chalk.gray( `Serving key to client` ),
             chalk.greenBright( `<cat>` ), chalk.gray( `serveKey` ),
             chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.greenBright( `<code>` ), chalk.gray( `200` ),
@@ -795,7 +819,7 @@ async function serveKey( req, res )
             ip: envIpContainer,
             gateway: envIpGateway,
             client: clientIp( req ),
-            message: `Failed to serve key; try{} failed`,
+            message: `Failed to serve key; try{} failed. Ensure you specify a valid uri to tvapp / tvpass`,
             error: `${ err.message }`,
             status: 'unhealthy',
             ref: req.url,
@@ -809,7 +833,7 @@ async function serveKey( req, res )
             'Content-Type': 'application/json'
         });
 
-        Log.error( `key`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
+        Log.error( `keys`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
             chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
             chalk.redBright( `<cat>` ), chalk.gray( `serveKey` ),
             chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
@@ -848,7 +872,7 @@ function buildCookieHeader()
     return pairs.join( '; ' );
 }
 
-function fetchPage( url )
+function fetchPage( url, req )
 {
     return new Promise( ( resolve, reject ) =>
     {
@@ -865,15 +889,17 @@ function fetchPage( url )
             {
                 Log.info( `http`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `status code returned` ),
-                    chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ),
-                    chalk.blueBright( `<status>` ), chalk.gray( `${ res.statusCode }` ) );
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                    chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
+                    chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
 
                 if ( res.statusCode !== 200 )
                 {
                     Log.debug( `http`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
                         chalk.blueBright( `<msg>` ), chalk.gray( `failed to load url; status 200 was not returned` ),
-                        chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ),
-                        chalk.blueBright( `<status>` ), chalk.gray( `${ res.statusCode }` ) );
+                        chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
+                        chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
 
                     return reject( new Error( `page did not return code 200 status ${ res.statusCode } => ${ url }` ) );
                 }
@@ -881,10 +907,11 @@ function fetchPage( url )
                 if ( res.headers['set-cookie'])
                 {
                     Log.debug( `http`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `setting headers` ),
-                    chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ),
-                    chalk.blueBright( `<header>` ), chalk.gray( `set-cookie` ),
-                    chalk.blueBright( `<status>` ), chalk.gray( `${ res.statusCode }` ) );
+                        chalk.blueBright( `<msg>` ), chalk.gray( `setting headers` ),
+                        chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
+                        chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ),
+                        chalk.blueBright( `<header>` ), chalk.gray( `set-cookie` ) );
 
                     parseSetCookieHeaders( res.headers['set-cookie']);
                 }
@@ -901,13 +928,12 @@ async function getTokenizedUrl( channelUrl, req )
 {
     try
     {
-        const html = await fetchPage( channelUrl );
-
+        const html = await fetchPage( channelUrl, req );
         let streamName;
         let streamHost;
 
-        Log.debug( `m3u8`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Attempting to tokenize url ` ),
+        Log.debug( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to get tokenize url ` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ) );
 
@@ -924,7 +950,7 @@ async function getTokenizedUrl( channelUrl, req )
             const streamNameMatch = html.match( /id="stream_name" name="([^"]+)"/ );
             if ( !streamNameMatch )
             {
-                Log.error( `m3u8`, chalk.yellow( `[tokenize]` ), chalk.white( `❌` ),
+                Log.error( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `❌` ),
                     chalk.redBright( `<msg>` ), chalk.gray( `Cannot find streamNameMatch; returned empty` ),
                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.redBright( `<url>` ), chalk.grey( `${ channelUrl }` ),
@@ -935,7 +961,7 @@ async function getTokenizedUrl( channelUrl, req )
 
             streamName = streamNameMatch[1];
 
-            Log.debug( `m3u8`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
+            Log.debug( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `streamName found` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
@@ -954,10 +980,10 @@ async function getTokenizedUrl( channelUrl, req )
         };
 
         const tokenUrl = `https://${ streamHost }/token/${ streamName }?quality=${ envStreamQuality.toLowerCase() }`;
-        const tokenResponse = await fetchPage( tokenUrl );
+        const tokenResponse = await fetchPage( tokenUrl, req );
         let tokenizedUrl;
 
-        Log.debug( `m3u8`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
+        Log.debug( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Generating tokenized final stream URL` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
@@ -972,7 +998,7 @@ async function getTokenizedUrl( channelUrl, req )
             const json = JSON.parse( tokenResponse );
             tokenizedUrl = json.url;
 
-            Log.debug( `m3u8`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
+            Log.debug( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Returned token response in json format` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
@@ -985,7 +1011,7 @@ async function getTokenizedUrl( channelUrl, req )
         }
         catch ( err )
         {
-            Log.error( `m3u8`, chalk.redBright( `[tokenize]` ), chalk.white( `❌` ),
+            Log.error( `play`, chalk.redBright( `[tokenize]` ), chalk.white( `❌` ),
                 chalk.redBright( `<msg>` ), chalk.gray( `Failed to parse token JSON for channel` ),
                 chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.redBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
@@ -1000,7 +1026,7 @@ async function getTokenizedUrl( channelUrl, req )
 
         if ( !tokenizedUrl )
         {
-            Log.error( `m3u8`, chalk.redBright( `[tokenize]` ), chalk.white( `❌` ),
+            Log.error( `play`, chalk.redBright( `[tokenize]` ), chalk.white( `❌` ),
                 chalk.redBright( `<msg>` ), chalk.gray( `No URL found in token JSON for channel` ),
                 chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.redBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
@@ -1013,7 +1039,7 @@ async function getTokenizedUrl( channelUrl, req )
             return null;
         }
 
-        Log.ok( `m3u8`, chalk.yellow( `[tokenize]` ), chalk.white( `✅` ),
+        Log.ok( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `✅` ),
             chalk.greenBright( `<msg>` ), chalk.gray( `Successfully generated token for stream` ),
             chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.greenBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ),
@@ -1028,7 +1054,7 @@ async function getTokenizedUrl( channelUrl, req )
     }
     catch ( err )
     {
-        Log.error( `m3u8`, chalk.redBright( `[tokenize]` ), chalk.white( `❌` ),
+        Log.error( `play`, chalk.redBright( `[tokenize]` ), chalk.white( `❌` ),
             chalk.redBright( `<msg>` ), chalk.gray( `Fatal error fetching token` ),
             chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.redBright( `<error>` ), chalk.gray( `${ err.message }` ),
@@ -1047,6 +1073,11 @@ async function serveM3UPlaylist( req, res )
     await semaphore.acquire();
     try
     {
+        Log.debug( `plst`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to serve M3U playlist` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+            chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ) );
+
         /*
             paramUrl > decodedUrl > tokenizedUrl
         */
@@ -1072,7 +1103,7 @@ async function serveM3UPlaylist( req, res )
                 'Content-Type': 'application/json'
             });
 
-            Log.error( `m3u8`, chalk.redBright( `[response]` ), chalk.white( `❌` ),
+            Log.error( `plst`, chalk.redBright( `[response]` ), chalk.white( `❌` ),
                 chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
                 chalk.redBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
@@ -1090,7 +1121,7 @@ async function serveM3UPlaylist( req, res )
                 Location: decodedUrl
             });
 
-            Log.notice( `m3u8`, chalk.yellow( `[response]` ), chalk.white( `📌` ),
+            Log.notice( `plst`, chalk.yellow( `[response]` ), chalk.white( `📌` ),
                 chalk.yellowBright( `<msg>` ), chalk.gray( `decodedUrl ends with .ts script; (302) redirecting` ),
                 chalk.yellowBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.yellowBright( `<code>` ), chalk.gray( `302` ),
@@ -1112,8 +1143,8 @@ async function serveM3UPlaylist( req, res )
                 'Content-Disposition': 'inline; filename="' + envFileM3U
             });
 
-            Log.debug( `m3u8`, chalk.yellow( `[response]` ), chalk.white( `⚙️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `serving already cached m3u playlist to client` ),
+            Log.debug( `plst`, chalk.yellow( `[response]` ), chalk.white( `⚙️` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `serving cachedUrl m3u playlist to client` ),
                 chalk.blueBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.blueBright( `<code>` ), chalk.gray( `200` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
@@ -1125,7 +1156,8 @@ async function serveM3UPlaylist( req, res )
             return;
         }
 
-        Log.info( `m3u8`, chalk.yellow( `[response]` ), chalk.white( `ℹ️` ),
+        Log.info( `plst`, chalk.yellow( `[response]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `request not cached; generating new tokenizedUrl for m3u playlist to client` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
             chalk.blueBright( `<paramUrl>` ), chalk.gray( `${ paramUrl }` ),
@@ -1157,7 +1189,7 @@ async function serveM3UPlaylist( req, res )
                 'Content-Type': 'application/json'
             });
 
-            Log.error( `m3u8`, chalk.redBright( `[response]` ), chalk.white( `❌` ),
+            Log.error( `plst`, chalk.redBright( `[response]` ), chalk.white( `❌` ),
                 chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
                 chalk.redBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
@@ -1166,7 +1198,6 @@ async function serveM3UPlaylist( req, res )
                 chalk.redBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ) );
 
             res.end( JSON.stringify( statusCheck ) );
-
             return;
         }
 
@@ -1179,18 +1210,17 @@ async function serveM3UPlaylist( req, res )
             'Content-Disposition': 'inline; filename="' + envFileM3U
         });
 
-        res.end( rewrittenPlaylist );
-
-        Log.ok( `m3u8`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
-            chalk.greenBright( `<msg>` ), chalk.gray( `Serving new playlist to client` ),
+        Log.ok( `plst`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
+            chalk.greenBright( `<msg>` ), chalk.gray( `Serving new tokenizedUrl with m3u playlist to client` ),
             chalk.greenBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
             chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.greenBright( `<code>` ), chalk.gray( `200` ),
             chalk.greenBright( `<playlist>` ), chalk.gray( `${ envFileM3U }` ),
             chalk.greenBright( `<paramUrl>` ), chalk.gray( `${ paramUrl }` ),
             chalk.greenBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ),
-            chalk.greenBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ),
-            chalk.greenBright( `<hdUrl>` ), chalk.gray( `${ hdUrl }` ) );
+            chalk.greenBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ) );
+
+        res.end( rewrittenPlaylist );
     }
     catch ( err )
     {
@@ -1215,7 +1245,7 @@ async function serveM3UPlaylist( req, res )
                 'Content-Type': 'application/json'
             });
 
-            Log.error( `m3u8`, chalk.redBright( `[response]` ), chalk.white( `❌` ),
+            Log.error( `plst`, chalk.redBright( `[response]` ), chalk.white( `❌` ),
                 chalk.redBright( `<msg>` ), chalk.gray( `Failed to serve m3u playlist` ),
                 chalk.redBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.redBright( `<error>` ), chalk.gray( `${ statusCheck.message }` ),
@@ -1261,10 +1291,10 @@ async function serveHealthCheck( req, res )
         });
 
         Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
-            chalk.greenBright( `<msg>` ), chalk.gray( `health check response` ),
+            chalk.greenBright( `<msg>` ), chalk.gray( `response` ),
             chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
-            chalk.greenBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
             chalk.greenBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
+            chalk.greenBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
             chalk.greenBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
 
         res.end( JSON.stringify( statusCheck ) );
@@ -1295,8 +1325,8 @@ async function serveHealthCheck( req, res )
 
             Log.error( `/api`, chalk.redBright( `[health]` ), chalk.white( `❌` ),
                 chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message } response` ),
-                chalk.redBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
                 chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
+                chalk.redBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
                 chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.redBright( `<error>` ), chalk.gray( `${ err.message }` ),
                 chalk.redBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
@@ -1316,7 +1346,7 @@ async function serveHealthCheck( req, res )
 
 async function rewriteM3U( originalUrl, req )
 {
-    const rawData = await fetchRemote( originalUrl );
+    const rawData = await fetchRemote( originalUrl, req );
     const protocol = req.headers['x-forwarded-proto']?.split( ',' )[0] || ( req.socket.encrypted ? 'https' : 'http' );
     const host = req.headers.host;
     const baseUrl = `${ protocol }://${ host }`;
@@ -1366,7 +1396,7 @@ async function serveM3U( res, req )
                 'Content-Disposition': 'inline; filename="' + envFileM3U
             });
 
-        Log.ok( `m3u8`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
+        Log.ok( `.m3u`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
             chalk.greenBright( `<msg>` ), chalk.gray( `Successfully served m3u8 channel playlist data` ),
             chalk.greenBright( `<cat>` ), chalk.gray( `serveM3U` ),
             chalk.greenBright( `<code>` ), chalk.gray( `200` ),
@@ -1398,7 +1428,7 @@ async function serveM3U( res, req )
             'Content-Type': 'application/json'
         });
 
-        Log.error( `m3u8`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
+        Log.error( `.m3u`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
             chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
             chalk.redBright( `<cat>` ), chalk.gray( `serveM3U` ),
             chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
@@ -1429,7 +1459,7 @@ async function serveXML( res, req )
             'Content-Disposition': 'inline; filename="' + envFileXML
         });
 
-        Log.ok( `xml`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
+        Log.ok( `.xml`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
             chalk.greenBright( `<msg>` ), chalk.gray( `Successfully served uncompressed xml / epg guide data` ),
             chalk.greenBright( `<cat>` ), chalk.gray( `serveXML` ),
             chalk.greenBright( `<code>` ), chalk.gray( `200` ),
@@ -1461,7 +1491,7 @@ async function serveXML( res, req )
             'Content-Type': 'text/plain'
         });
 
-        Log.error( `xml`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
+        Log.error( `.xml`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
             chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
             chalk.redBright( `<cat>` ), chalk.gray( `serveXML` ),
             chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
@@ -1492,7 +1522,7 @@ async function serveGZP( res, req )
             'Content-Disposition': 'inline; filename="' + envFileGZP
         });
 
-        Log.ok( `gzip`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
+        Log.ok( `.gzp`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
             chalk.greenBright( `<msg>` ), chalk.gray( `Successfully served compressed gzip xml/epg guide data` ),
             chalk.greenBright( `<cat>` ), chalk.gray( `serveGZP` ),
             chalk.greenBright( `<code>` ), chalk.gray( `200` ),
@@ -1524,7 +1554,7 @@ async function serveGZP( res, req )
             'Content-Type': 'text/plain'
         });
 
-        Log.error( `gzip`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
+        Log.error( `.gzp`, chalk.yellow( `[response]` ), chalk.white( `❌` ),
             chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
             chalk.redBright( `<cat>` ), chalk.gray( `serveGZP` ),
             chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
@@ -1599,13 +1629,13 @@ async function initialize()
             chalk.blueBright( `<containerIp>` ), chalk.gray( `${ envIpContainer }` ),
             chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
 
-        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<variable>` ), chalk.gray( `FILE_URL` ),
-            chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_URL }` ) );
+        /*
+            Debug > network
+        */
 
-        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<variable>` ), chalk.gray( `FILE_M3U` ),
-            chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_M3U }` ) );
+        Log.debug( `.net`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `IP_CONTAINER` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envIpContainer }` ) );
+        Log.debug( `.net`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `IP_GATEWAY` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envIpGateway }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `RELEASE` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envAppRelease }` ) );
 
         /*
             Debug > Verbose > environment vars
@@ -1617,6 +1647,51 @@ async function initialize()
             Log.verbose( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `📣` ), chalk.blueBright( `<name>` ), chalk.gray( `${ key }` ), chalk.blueBright( `<value>` ), chalk.gray( `${ env[key] }` ) );
         });
 
+        /*
+            Debug > environment vars
+
+            we could just loop process.env; but that will show every container env var. We just want this app
+        */
+
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `URL_REPO` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envUrlRepo }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_IP` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebIP }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_PORT` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebPort }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_FOLDER` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebFolder }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_ENCODING` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envWebEncoding }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `WEB_PROXY_HEADER` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envProxyHeader }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `STREAM_QUALITY` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envStreamQuality }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `API_KEY` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envApiKey }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `FILE_URL` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envFileURL }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `FILE_M3U` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envFileM3U }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `FILE_EPG` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envFileXML }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `FILE_GZP` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envFileGZP }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `HEALTH_TIMER` ), chalk.blueBright( `<value>` ), chalk.gray( `${ envHealthTimer }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `LOG_LEVEL` ), chalk.blueBright( `<value>` ), chalk.gray( `${ LOG_LEVEL }` ) );
+        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `USERAGENT` ), chalk.blueBright( `<value>` ), chalk.gray( `${ USERAGENT }` ) );
+
+        /*
+            Debug > vars > external urls
+        */
+
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `extURL` ), chalk.blueBright( `<value>` ), chalk.gray( `${ extURL }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `extXML` ), chalk.blueBright( `<value>` ), chalk.gray( `${ extXML }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `extM3U` ), chalk.blueBright( `<value>` ), chalk.gray( `${ extM3U }` ) );
+
+        /*
+            Debug > vars > subdomain keywords
+        */
+
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainGZP` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainGZP.join() }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainM3U` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainM3U.join() }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainEPG` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainEPG.join() }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainKey` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainKey.join() }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainChan` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainChan.join() }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainHealth` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainHealth.join() }` ) );
+        Log.debug( `.var`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ), chalk.blueBright( `<name>` ), chalk.gray( `subdomainRestart` ), chalk.blueBright( `<value>` ), chalk.gray( `${ subdomainRestart.join() }` ) );
+
+        /*
+            get files
+        */
 
         await getFile( extURL, FILE_URL );
         await getFile( extXML, FILE_XML );
@@ -2034,7 +2109,7 @@ const server = http.createServer( ( request, response ) =>
 {
     if ( !envApiKey )
         Log.warn( `/api`, chalk.yellow( `[callback]` ), chalk.white( `⚠️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `API_KEY environment variable not defined for api, leaving blank` ) );
+            chalk.yellowBright( `<msg>` ), chalk.gray( `API_KEY environment variable not defined for api, leaving blank` ) );
     else
         Log.ok( `/api`, chalk.yellow( `[callback]` ), chalk.white( `✅` ),
             chalk.greenBright( `<msg>` ), chalk.gray( `API_KEY environment variable successfully assigned` ) );
