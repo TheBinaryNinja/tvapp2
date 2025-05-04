@@ -171,8 +171,14 @@ class Log
 
     static trace( ...msg )
     {
-        if ( LOG_LEVEL >= 6 )
+        if ( LOG_LEVEL >= 7 )
             console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
+    }
+
+    static verbose( ...msg )
+    {
+        if ( LOG_LEVEL >= 6 )
+            console.debug( chalk.white.bgBlack.blackBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
     static debug( ...msg )
@@ -1601,13 +1607,16 @@ async function initialize()
             chalk.blueBright( `<variable>` ), chalk.gray( `FILE_M3U` ),
             chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_M3U }` ) );
 
-        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<variable>` ), chalk.gray( `FILE_XML` ),
-            chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_XML }` ) );
+        /*
+            Debug > Verbose > environment vars
+        */
 
-        Log.debug( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<variable>` ), chalk.gray( `FILE_GZP` ),
-            chalk.blueBright( `<value>` ), chalk.gray( `${ FILE_GZP }` ) );
+        const env = process.env;
+        Object.keys( env ).forEach( ( key  ) =>
+        {
+            Log.verbose( `.env`, chalk.yellow( `[assigner]` ), chalk.white( `📣` ), chalk.blueBright( `<name>` ), chalk.gray( `${ key }` ), chalk.blueBright( `<value>` ), chalk.gray( `${ env[key] }` ) );
+        });
+
 
         await getFile( extURL, FILE_URL );
         await getFile( extXML, FILE_XML );
