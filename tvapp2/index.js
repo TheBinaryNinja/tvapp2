@@ -888,7 +888,7 @@ function fetchPage( url, req )
             .get( url, opts, ( res ) =>
             {
                 Log.info( `http`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `status code returned` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Status code returned` ),
                     chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
                     chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
@@ -896,7 +896,7 @@ function fetchPage( url, req )
                 if ( res.statusCode !== 200 )
                 {
                     Log.debug( `http`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
-                        chalk.blueBright( `<msg>` ), chalk.gray( `failed to load url; status 200 was not returned` ),
+                        chalk.blueBright( `<msg>` ), chalk.gray( `Failed to load url; status 200 was not returned` ),
                         chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                         chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
                         chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
@@ -907,7 +907,7 @@ function fetchPage( url, req )
                 if ( res.headers['set-cookie'])
                 {
                     Log.debug( `http`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
-                        chalk.blueBright( `<msg>` ), chalk.gray( `setting headers` ),
+                        chalk.blueBright( `<msg>` ), chalk.gray( `Setting headers` ),
                         chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                         chalk.blueBright( `<code>` ), chalk.gray( `${ res.statusCode }` ),
                         chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ),
@@ -933,7 +933,7 @@ async function getTokenizedUrl( channelUrl, req )
         let streamHost;
 
         Log.debug( `play`, chalk.yellow( `[tokenize]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to get tokenize url ` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to get tokenize url` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<channelUrl>` ), chalk.gray( `${ channelUrl }` ) );
 
@@ -1073,10 +1073,12 @@ async function serveM3UPlaylist( req, res )
     await semaphore.acquire();
     try
     {
+        const method = req.method || 'GET';
         Log.debug( `plst`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to serve M3U playlist` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
-            chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ) );
+            chalk.blueBright( `<url>` ), chalk.gray( `${ req.url }` ),
+            chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
         /*
             paramUrl > decodedUrl > tokenizedUrl
@@ -1108,7 +1110,8 @@ async function serveM3UPlaylist( req, res )
                 chalk.redBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
                 chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
-                chalk.redBright( `<expected>` ), chalk.gray( `http://${ req.headers.host }/channel?url=XXXX` ) );
+                chalk.redBright( `<expected>` ), chalk.gray( `http://${ req.headers.host }/channel?url=XXXX` ),
+                chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             res.end( JSON.stringify( statusCheck ) );
             return;
@@ -1127,7 +1130,8 @@ async function serveM3UPlaylist( req, res )
                 chalk.yellowBright( `<code>` ), chalk.gray( `302` ),
                 chalk.yellowBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.yellowBright( `<paramUrl>` ), chalk.gray( `${ paramUrl }` ),
-                chalk.yellowBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ) );
+                chalk.yellowBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ),
+                chalk.yellowBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             res.end();
             return;
@@ -1144,25 +1148,27 @@ async function serveM3UPlaylist( req, res )
             });
 
             Log.debug( `plst`, chalk.yellow( `[response]` ), chalk.white( `⚙️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `serving cachedUrl m3u playlist to client` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Serving cachedUrl m3u playlist to client` ),
                 chalk.blueBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
                 chalk.blueBright( `<code>` ), chalk.gray( `200` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<paramUrl>` ), chalk.gray( `${ paramUrl }` ),
                 chalk.blueBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ),
-                chalk.blueBright( `<cachedUrl>` ), chalk.gray( `${ cachedUrl }` ) );
+                chalk.blueBright( `<cachedUrl>` ), chalk.gray( `${ cachedUrl }` ),
+                chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             res.end( rewrittenPlaylist );
             return;
         }
 
         Log.info( `plst`, chalk.yellow( `[response]` ), chalk.white( `ℹ️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `request not cached; generating new tokenizedUrl for m3u playlist to client` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Request not cached; generating new tokenizedUrl for m3u playlist to client` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<cat>` ), chalk.gray( `serveM3UPlaylist` ),
             chalk.blueBright( `<paramUrl>` ), chalk.gray( `${ paramUrl }` ),
             chalk.blueBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ),
-            chalk.blueBright( `<cachedUrl>` ), chalk.gray( `${ cachedUrl }` ) );
+            chalk.blueBright( `<cachedUrl>` ), chalk.gray( `${ cachedUrl }` ),
+            chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
         /*
             get tokenized url
@@ -1195,7 +1201,8 @@ async function serveM3UPlaylist( req, res )
                 chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
                 chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.redBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ),
-                chalk.redBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ) );
+                chalk.redBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ),
+                chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             res.end( JSON.stringify( statusCheck ) );
             return;
@@ -1218,7 +1225,8 @@ async function serveM3UPlaylist( req, res )
             chalk.greenBright( `<playlist>` ), chalk.gray( `${ envFileM3U }` ),
             chalk.greenBright( `<paramUrl>` ), chalk.gray( `${ paramUrl }` ),
             chalk.greenBright( `<decodedUrl>` ), chalk.gray( `${ decodedUrl }` ),
-            chalk.greenBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ) );
+            chalk.greenBright( `<tokenizedUrl>` ), chalk.gray( `${ tokenizedUrl }` ),
+            chalk.greenBright( `<method>` ), chalk.gray( `${ method }` ) );
 
         res.end( rewrittenPlaylist );
     }
@@ -1291,7 +1299,7 @@ async function serveHealthCheck( req, res )
         });
 
         Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
-            chalk.greenBright( `<msg>` ), chalk.gray( `response` ),
+            chalk.greenBright( `<msg>` ), chalk.gray( `Response` ),
             chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.greenBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
             chalk.greenBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
@@ -1580,7 +1588,7 @@ function setCache( key, value, ttl, req )
     });
 
     Log.debug( `cache`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
-        chalk.blueBright( `<msg>` ), chalk.gray( `new key created` ),
+        chalk.blueBright( `<msg>` ), chalk.gray( `New key created` ),
         chalk.blueBright( `<cat>` ), chalk.gray( `setCache` ),
         chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
         chalk.blueBright( `<key>` ), chalk.gray( `${ key }` ),
@@ -1602,7 +1610,7 @@ function getCache( key, req )
     {
         if ( cached )
             Log.debug( `cache`, chalk.yellow( `[get]` ), chalk.white( `⚙️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `key has expired, marked for deletion` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Key has expired, marked for deletion` ),
                 chalk.blueBright( `<cat>` ), chalk.gray( `getCache` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<key>` ), chalk.gray( `${ key }` ) );
@@ -1783,6 +1791,14 @@ const server = http.createServer( ( request, response ) =>
             loadFile            channel?url=https%3A%2F%2Ftvpass.org%2Fchannel%2Fabc-wabc-new-york-ny%2F
         */
 
+        Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Request started` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+            chalk.blueBright( `<request.url>` ), chalk.gray( `${ request.url }` ),
+            chalk.blueBright( `<reqUrl>` ), chalk.gray( `${ reqUrl }` ),
+            chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+            chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
         if ( subdomainRestart.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
         {
             /*
@@ -1818,7 +1834,7 @@ const server = http.createServer( ( request, response ) =>
                 });
 
                 Log.error( `http`, chalk.yellow( `[requests]` ), chalk.white( `❌` ),
-                    chalk.redBright( `<msg>` ), chalk.gray( `unauthorized (401): restart attempt did not specify api key using ?key=XXX parameter` ),
+                    chalk.redBright( `<msg>` ), chalk.gray( `Unauthorized (401): restart attempt did not specify api key using ?key=XXX parameter` ),
                     chalk.redBright( `<type>` ), chalk.gray( `api/restart` ),
                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                     chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
@@ -1848,7 +1864,7 @@ const server = http.createServer( ( request, response ) =>
                 });
 
                 Log.error( `http`, chalk.yellow( `[requests]` ), chalk.white( `❌` ),
-                    chalk.redBright( `<msg>` ), chalk.gray( `unauthorized (401): incorrect api key specified` ),
+                    chalk.redBright( `<msg>` ), chalk.gray( `Unauthorized (401): incorrect api key specified` ),
                     chalk.redBright( `<type>` ), chalk.gray( `api/restart` ),
                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                     chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
@@ -1879,7 +1895,7 @@ const server = http.createServer( ( request, response ) =>
             });
 
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access restart api` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
@@ -1889,23 +1905,10 @@ const server = http.createServer( ( request, response ) =>
             return;
         }
 
-        if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
-        {
-            Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
-                chalk.blueBright( `<type>` ), chalk.gray( `api` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
-                chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
-                chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
-
-            await serveHealthCheck( request, response );
-            return;
-        }
-
         if ( subdomainM3U.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access m3u playlist` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `m3u playlist` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
@@ -1915,10 +1918,10 @@ const server = http.createServer( ( request, response ) =>
             return;
         }
 
-        if ( subdomainChan.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+        if ( subdomainChan.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
         {
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access channel` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `channel` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
@@ -1931,7 +1934,7 @@ const server = http.createServer( ( request, response ) =>
         if ( subdomainKey.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access key` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `key` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
@@ -1944,8 +1947,8 @@ const server = http.createServer( ( request, response ) =>
         if ( subdomainEPG.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
-                chalk.blueBright( `<type>` ), chalk.gray( `epg-uncompressed` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access epg (uncompressed)` ),
+                chalk.blueBright( `<type>` ), chalk.gray( `epg (uncompressed)` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
@@ -1957,8 +1960,8 @@ const server = http.createServer( ( request, response ) =>
         if ( subdomainGZP.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
-                chalk.blueBright( `<type>` ), chalk.gray( `epg-compressed` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access epg gzip (compressed)` ),
+                chalk.blueBright( `<type>` ), chalk.gray( `epg (compressed)` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
@@ -1970,14 +1973,25 @@ const server = http.createServer( ( request, response ) =>
         if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `→` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `request to access page` ),
-                chalk.blueBright( `<type>` ), chalk.gray( `api` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),
+                chalk.blueBright( `<type>` ), chalk.gray( `api/health` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
             await serveHealthCheck( request, response );
             return;
         }
+
+        /*
+            the request wasn't part of any of our pre-defined subdomains; see if the request is to load a html / css / js file
+        */
+
+        Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Request not captured by subdomain keyword checks; sending request to ejs` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+            chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+            chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
         /*
             General Template & .html / .css / .js
@@ -2009,6 +2023,13 @@ const server = http.createServer( ( request, response ) =>
         {
             if ( !err )
             {
+
+                Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Request accepted by ejs` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
                 /*
                     This allows us to serve all files locally: css, js, etc.
                     the file loaded is dependent on what comes to the right of the period.
@@ -2045,13 +2066,21 @@ const server = http.createServer( ( request, response ) =>
                 response.end( data );
 
                 Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
-                    chalk.greenBright( `<msg>` ), chalk.gray( `request to load file` ),
+                    chalk.greenBright( `<msg>` ), chalk.gray( `Request to load file` ),
                     chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                     chalk.greenBright( `<file>` ), chalk.gray( `${ loadFile }` ),
-                    chalk.greenBright( `<mime>` ), chalk.gray( `${ fileMime }` ) );
+                    chalk.greenBright( `<mime>` ), chalk.gray( `${ fileMime }` ),
+                    chalk.greenBright( `<method>` ), chalk.gray( `${ method }` ) );
             }
             else
             {
+                Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Request rejected by ejs` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.blueBright( `<error>` ), chalk.gray( `${ err }` ),
+                    chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
                 if ( loadFile === 'discovery.json' )
                 {
                     Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
@@ -2080,7 +2109,9 @@ const server = http.createServer( ( request, response ) =>
                     chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
                     chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
-                    chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ) );
+                    chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
+                    chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
 
                 response.end( JSON.stringify( statusCheck ) );
             }
@@ -2093,7 +2124,7 @@ const server = http.createServer( ( request, response ) =>
         });
 
         Log.error( `http`, chalk.redBright( `[requests]` ), chalk.white( `❌` ),
-            chalk.redBright( `<msg>` ), chalk.gray( `cannot handle request` ),
+            chalk.redBright( `<msg>` ), chalk.gray( `Cannot handle request` ),
             chalk.redBright( `<code>` ), chalk.gray( `500` ),
             chalk.redBright( `<error>` ), chalk.gray( `${ err }` ) );
 
@@ -2119,7 +2150,7 @@ const server = http.createServer( ( request, response ) =>
     server.listen( envWebPort, envWebIP, () =>
     {
         Log.ok( `core`, chalk.yellow( `[initiate]` ), chalk.white( `✅` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `server is now running on` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Server is now running on` ),
             chalk.blueBright( `<address>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ) );
     });
 })();
