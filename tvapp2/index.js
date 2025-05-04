@@ -47,7 +47,7 @@ chalk.level = 3;
 /*
     Define > General
 
-    @note       if you change `FOLDER_WWW`; ensure you re-name the folder where the
+    @note       if you change `envWebFolder`; ensure you re-name the folder where the
                 website assets are stored.
 */
 
@@ -77,6 +77,7 @@ const envFileGZP = process.env.FILE_GZP || 'xmltv.xml.gz';
 const envApiKey = process.env.API_KEY || null;
 const envWebIP = process.env.WEB_IP || '0.0.0.0';
 const envWebPort = process.env.WEB_PORT || `4124`;
+const envWebFolder = process.env.WEB_FOLDER || 'www';
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
@@ -222,21 +223,21 @@ if ( process.pkg )
 
     const basePath = path.dirname( process.execPath );
 
-    FILE_URL = path.join( basePath, FOLDER_WWW, `${ envFileURL }` );
-    FILE_M3U = path.join( basePath, FOLDER_WWW, `${ envFileM3U }` );
-    FILE_XML = path.join( basePath, FOLDER_WWW, `${ envFileXML }` );
+    FILE_URL = path.join( basePath, envWebFolder, `${ envFileURL }` );
+    FILE_M3U = path.join( basePath, envWebFolder, `${ envFileM3U }` );
+    FILE_XML = path.join( basePath, envWebFolder, `${ envFileXML }` );
     FILE_XML.length;
-    FILE_GZP = path.join( basePath, FOLDER_WWW, `${ envFileGZP }` );
+    FILE_GZP = path.join( basePath, envWebFolder, `${ envFileGZP }` );
 }
 else
 {
     Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
         chalk.blueBright( `<msg>` ), chalk.gray( `Starting server utilizing processed locals` ) );
 
-    FILE_URL = path.resolve( __dirname, FOLDER_WWW, `${ envFileURL }` );
-    FILE_M3U = path.resolve( __dirname, FOLDER_WWW, `${ envFileM3U }` );
-    FILE_XML = path.resolve( __dirname, FOLDER_WWW, `${ envFileXML }` );
-    FILE_GZP = path.resolve( __dirname, FOLDER_WWW, `${ envFileGZP }` );
+    FILE_URL = path.resolve( __dirname, envWebFolder, `${ envFileURL }` );
+    FILE_M3U = path.resolve( __dirname, envWebFolder, `${ envFileM3U }` );
+    FILE_XML = path.resolve( __dirname, envWebFolder, `${ envFileXML }` );
+    FILE_GZP = path.resolve( __dirname, envWebFolder, `${ envFileGZP }` );
 }
 
 /*
@@ -1899,7 +1900,7 @@ const server = http.createServer( ( request, response ) =>
             read the loaded asset file
         */
 
-        ejs.renderFile( `./${ FOLDER_WWW }/${ loadFile }`,
+        ejs.renderFile( `./${ envWebFolder }/${ loadFile }`,
             {
                 fileM3U: envFileM3U,
                 sizeM3U: FILE_M3U_SIZE,
@@ -1954,7 +1955,7 @@ const server = http.createServer( ( request, response ) =>
                 */
 
                 if ( fileMime !== 'text/html' )
-                    data = fs.readFileSync( `./${ FOLDER_WWW }/${ loadFile }` );
+                    data = fs.readFileSync( `./${ envWebFolder }/${ loadFile }` );
 
                 response.setHeader( 'Content-type', fileMime );
                 response.end( data );
