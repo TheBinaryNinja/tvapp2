@@ -300,6 +300,97 @@ class Semaphore
 }
 
 /*
+    Check Service Status
+
+    this function attempts to see if a specified domain is up.
+    will first start with the URL you provide.
+        if try 1 fails, it will determine if that URL used protocol https or https and then flip to the other
+        if try 2 fails with the opposite protocol; domain is considered down
+*/
+
+async function serviceCheck( service, uri )
+{
+    /* try 1 */
+
+    try
+    {
+        const response = await fetch( uri );
+
+        /* try 1 > domain down */
+        if ( response.status !== 200 )
+        {
+            Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ) );
+            return;
+        }
+
+        /* try 1 > domain up */
+        Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uri }` ) );
+    }
+    catch ( err )
+    {
+        /*
+            try 2 > http
+        */
+
+        if ( /^https:\/\//i.test( uri ) )
+        {
+            const uriRetry = uri.replace( /^https:\/\//ig, 'http://' );
+            Log.info( `ping`, chalk.yellow( `[response]` ), chalk.white( `⚠️` ), chalk.yellowBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service via SSL; trying http protocol` ), chalk.yellowBright( `<service>` ), chalk.gray( `${ service }` ), chalk.yellowBright( `<uriAttempt1>` ), chalk.gray( `${ uri }` ), chalk.redBright( `(failed)` ), chalk.yellowBright( `<uriAttempt2>` ), chalk.gray( `${ uriRetry }` ), chalk.blueBright( `(pending)` ) );
+
+            try
+            {
+                const response = await fetch( uriRetry );
+
+                /* try 2 > http > domain down */
+                if ( response.status !== 200 )
+                {
+                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                    return;
+                }
+
+                /* try 2 > http > domain up */
+                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+            }
+            catch ( err )
+            {
+                /* try 2 > http > domain not exist */
+                Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, address does not exist` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ), chalk.redBright( `<message>` ), chalk.gray( `${ err }` ) );
+            }
+        }
+
+        /*
+            try 2 > https
+        */
+
+        else if ( /^http:\/\//i.test( uri ) )
+        {
+            const uriRetry = uri.replace( /^http:\/\//ig, 'https://' );
+            Log.info( `ping`, chalk.yellow( `[response]` ), chalk.white( `⚠️` ), chalk.yellowBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service via SSL; trying https protocol` ), chalk.yellowBright( `<service>` ), chalk.gray( `${ service }` ), chalk.yellowBright( `<uriAttempt1>` ), chalk.gray( `${ uri }` ), chalk.redBright( `(failed)` ), chalk.yellowBright( `<uriAttempt2>` ), chalk.gray( `${ uriRetry }` ), chalk.blueBright( `(pending)` ) );
+
+            try
+            {
+                const response = await fetch( uriRetry );
+
+                /* try 2 > https > domain down */
+                if ( response.status !== 200 )
+                {
+                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                    return;
+                }
+
+                /* try 2 > https > domain up */
+                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+            }
+            catch ( err )
+            {
+                /* try 2 > https > domain not exist */
+                Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, address does not exist` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ), chalk.redBright( `<message>` ), chalk.gray( `${ err }` ) );
+            }
+        }
+    }
+}
+
+/*
     Semaphore > Initialize
 
     @arg        int threads_max
@@ -854,10 +945,14 @@ async function serveKey( req, res )
     }
 }
 
-function parseSetCookieHeaders( setCookieValues )
+/*
+    cookies > headers > parse
+*/
+
+function cookieHeadersSetParse( values )
 {
-    if ( !Array.isArray( setCookieValues ) ) return;
-    setCookieValues.forEach( ( line ) =>
+    if ( !Array.isArray( values ) ) return;
+    values.forEach( ( line ) =>
     {
         const [cookiePair] = line.split( ';' );
         if ( cookiePair )
@@ -871,7 +966,11 @@ function parseSetCookieHeaders( setCookieValues )
     });
 }
 
-function buildCookieHeader()
+/*
+    cookies > headers > build
+*/
+
+function cookieHeadersBuild()
 {
     const pairs = [];
     for ( const [ k, v ] of Object.entries( gCookies ) )
@@ -899,7 +998,7 @@ function fetchPage( url, req )
             headers: {
                 'User-Agent': USERAGENT,
                 Accept: '*/*',
-                Cookie: buildCookieHeader()
+                Cookie: cookieHeadersBuild()
             }
         };
         https
@@ -931,7 +1030,7 @@ function fetchPage( url, req )
                         chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ),
                         chalk.blueBright( `<header>` ), chalk.gray( `set-cookie` ) );
 
-                    parseSetCookieHeaders( res.headers['set-cookie']);
+                    cookieHeadersSetParse( res.headers['set-cookie']);
                 }
 
                 let data = '';
@@ -2173,6 +2272,10 @@ const server = http.createServer( ( request, response ) =>
 
 ( async() =>
 {
+    /*
+        check if api key has been provided as env var
+    */
+
     if ( !envApiKey )
         Log.warn( `/api`, chalk.yellow( `[callback]` ), chalk.white( `⚠️` ),
             chalk.yellowBright( `<msg>` ), chalk.gray( `API_KEY environment variable not defined for api, leaving blank` ) );
@@ -2180,7 +2283,23 @@ const server = http.createServer( ( request, response ) =>
         Log.ok( `/api`, chalk.yellow( `[callback]` ), chalk.white( `✅` ),
             chalk.greenBright( `<msg>` ), chalk.gray( `API_KEY environment variable successfully assigned` ) );
 
+    /*
+        initialize
+    */
+
     await initialize();
+
+    /*
+        check service status that we depend on
+    */
+
+    serviceCheck( 'TVPass.org', 'https://tvpass.org' );
+    serviceCheck( 'TheTVApp.to', 'https://thetvapp.to' );
+    serviceCheck( 'MoveOnJoy.com', 'https://moveonjoy.com' );
+
+    /*
+        start web server
+    */
 
     server.listen( envWebPort, envWebIP, () =>
     {
