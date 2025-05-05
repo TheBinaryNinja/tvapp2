@@ -70,6 +70,10 @@
   - [Environment Variables](#environment-variables-1)
   - [Mountable Volumes](#mountable-volumes-1)
   - [Docker health check](#docker-health-check)
+  - [Logging](#logging)
+    - [Trace (7)](#trace-7)
+    - [Verbose (6)](#verbose-6)
+    - [Debug (5)](#debug-5)
 - [Traefik Integration](#traefik-integration)
   - [Labels](#labels)
   - [Dynamic.yml](#dynamicyml)
@@ -155,6 +159,7 @@ For the [environment variables](#environment-variables), you may specify these i
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
+| `WEB_FOLDER` | `www` | Internal container folder to keep TVApp2 web files in. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
 | `WEB_PROXY_HEADER` | `x-forwarded-for` | Defines the header to look for when finding a client's IP address. Used to get a client's IP when behind a reverse proxy or Cloudflare |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
@@ -165,7 +170,7 @@ For the [environment variables](#environment-variables), you may specify these i
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
-| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`6` Trace <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
+| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`7` Trace <sup><sub>& below</sub></sup><br />`6` Verbose <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
 
 <br />
 <br />
@@ -1205,6 +1210,7 @@ This docker container contains the following env variables:
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
 | `WEB_IP` | `0.0.0.0` | IP to use for webserver |
 | `WEB_PORT` | `4124` | Port to use for webserver |
+| `WEB_FOLDER` | `www` | Internal container folder to keep TVApp2 web files in. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `WEB_ENCODING` | `deflate, br` | Defines the HTTP `Accept-Encoding` request and response header. This value specifies what content encoding the sender can understand<br /><br />Gzip compression can be enabled by specifying `'gzip, deflate, br'` |
 | `WEB_PROXY_HEADER` | `x-forwarded-for` | Defines the header to look for when finding a client's IP address. Used to get a client's IP when behind a reverse proxy or Cloudflare |
 | `URL_REPO` | `https://git.binaryninja.net/BinaryNinja/` | Determines where the data files will be downloaded from. Do not change this or you will be unable to get M3U and EPG data. |
@@ -1215,7 +1221,7 @@ This docker container contains the following env variables:
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
-| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`6` Trace <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
+| `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`7` Trace <sup><sub>& below</sub></sup><br />`6` Verbose <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
 
 <br />
 <br />
@@ -1275,6 +1281,92 @@ health check:
 ```
 
 <br />
+
+### Logging
+
+This docker container includes numerous log levels you can switch between in order to see exactly what the docker container is doing during operations.
+
+Out-of-box, the default value is set to `4`:
+
+```yml
+        environment:
+            - TZ=Etc/UTC
+            - LOG_LEVEL=4
+```
+
+<br />
+
+The default level of `info (4)` will give you all messages related to running your container. It should be enough for everyday users. This log level includes:
+
+- All informative messages
+- All errors
+- All warnings
+- All notices
+
+<br />
+
+However, this container supports three levels with high verbosity:
+- **Trace**: 7
+- **Verbose**: 6
+- **Debug**: 5
+
+<br />
+
+#### Trace (7)
+
+This **LOG_LEVEL** will output anything that you can see with **debug** `LOG_LEVEL=5`; but with the addition that each log output to your console will show a complete traceback of how the log was triggered.
+
+<br />
+
+> [!NOTE]
+> Users should be cautioned that using `LOG_LEVEL=7` will generate a large amount of logs to your console, especially when you initiate watching an IPTV channel.
+
+<br />
+
+```shell
+Trace:  tvapp2  → .gzp [requests] ⚙️ <msg> Requesting to create compressed gzip from uncompressed XML data <src> /usr/bin/app/www/xmltv.xml <dest> /usr/bin/app/www/xmltv.xml.gz
+    at Log.debug (file:///usr/bin/app/index.js:182:21)
+    at getGzip (file:///usr/bin/app/index.js:658:13)
+    at initialize (file:///usr/bin/app/index.js:1840:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async file:///usr/bin/app/index.js:2288:5
+```
+
+<br />
+
+#### Verbose (6)
+
+This **LOG_LEVEL** will output anything that you can see with **debug** `LOG_LEVEL=5`; as well as even deeper logs; such as every environment variable your TVApp2 container has assigned. You should not need to use this log level unless you are troubleshooting an issue or if instructed to do so by the developers.
+
+```shell
+tvapp2  → .env [assigner] 📣 <name> npm_config_user_agent <value> npm/10.9.1 node/v22.13.1 linux x64 workspaces/false
+tvapp2  → .env [assigner] 📣 <name> HOSTNAME <value> tvapp2
+tvapp2  → .env [assigner] 📣 <name> SHLVL <value> 4
+tvapp2  → .env [assigner] 📣 <name> HOME <value> /root
+tvapp2  → .env [assigner] 📣 <name> OLDPWD <value> /run/s6/legacy-services/tvapp2
+```
+
+<br />
+
+#### Debug (5)
+
+This **LOG_LEVEL** will output many of the steps that this container takes to create new XML guide and M3U playlist files. It will also output the environment variables you have set associated with the docker image itself.
+
+<br />
+
+```shell
+tvapp2  → .net [assigner] ⚙️ <name> IP_CONTAINER <value> 172.18.0.7
+tvapp2  → .net [assigner] ⚙️ <name> IP_GATEWAY <value> 172.18.0.1
+tvapp2  → .env [assigner] ⚙️ <name> RELEASE <value> stable
+tvapp2  → .env [assigner] ⚙️ <name> WEB_IP <value> 0.0.0.0
+tvapp2  → .env [assigner] ⚙️ <name> WEB_PORT <value> 4124
+tvapp2  → .env [assigner] ⚙️ <name> WEB_FOLDER <value> www
+tvapp2  → file [requests] ⚙️ <msg> Requesting to download external file <src> https://git.binaryninja.net/binaryninja//XMLTV-EPG/raw/branch/main/xmltv.1.xml <dest> /usr/bin/app/www/xmltv.xml
+```
+
+<br />
+
+
 
 ---
 

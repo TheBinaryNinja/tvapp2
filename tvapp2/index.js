@@ -96,7 +96,7 @@ const extM3U = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
 
 let urls = [];
 const gCookies = {};
-const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
+const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0';
 
 /*
     Web url shortcuts
@@ -138,7 +138,7 @@ const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileI
     not be the same as the rgb value. It's best to just stick to Chalk's default colors.
 
     Various levels of logs with the following usage:
-        Log.trace(`This is trace`)
+        Log.verbose(`This is verbose`)
         Log.debug(`This is debug`)
         Log.info(`This is info`)
         Log.ok(`This is ok`)
@@ -168,12 +168,6 @@ class Log
         return chalk.gray( `[${ now.toLocaleTimeString() }]` );
     }
 
-    static trace( ...msg )
-    {
-        if ( LOG_LEVEL >= 7 )
-            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
-    }
-
     static verbose( ...msg )
     {
         if ( LOG_LEVEL >= 6 )
@@ -182,7 +176,9 @@ class Log
 
     static debug( ...msg )
     {
-        if ( LOG_LEVEL >= 5 )
+        if ( LOG_LEVEL >= 7 )
+            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
+        else if ( LOG_LEVEL >= 5 )
             console.debug( chalk.white.bgGray.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
