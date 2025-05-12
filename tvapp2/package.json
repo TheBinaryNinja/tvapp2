@@ -74,7 +74,7 @@
     "dependencies": {
         "node-cron": "^4.0.3",
         "playwright": "^1.52.0",
-        "user-agents": "^1.1.529",
+        "user-agents": "^1.1.537",
         "chalk": "^5.3.0",
         "ejs": "^3.1.10",
         "moment": "2.30.1",
