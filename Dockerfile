@@ -103,6 +103,7 @@ ENV FILE_M3U="playlist.m3u8"
 ENV FILE_EPG="xmltv.xml"
 ENV FILE_TAR="xmltv.xml.gz"
 ENV HEALTH_TIMER=600000
+ENV TASK_CRON_SYNC="0 0 */3 * *"
 ENV LOG_LEVEL=4
 ENV TZ="Etc/UTC"
 

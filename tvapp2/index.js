@@ -12,6 +12,7 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
+import cron, { schedule } from 'node-cron';
 
 /*
     Old CJS variables converted to ESM
@@ -80,7 +81,8 @@ const envWebFolder = process.env.WEB_FOLDER || 'www';
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
-const LOG_LEVEL = process.env.LOG_LEVEL || 10;
+const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
+const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 
 /*
     Define > Externals
@@ -1762,6 +1764,10 @@ async function initialize()
     const start = performance.now();
     try
     {
+        Log.info( `core`, chalk.yellow( `[schedule]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Container set to refresh IPTV data on specified cron duration` ),
+            chalk.blueBright( `<schedule>` ), chalk.whiteBright.bgBlack( ` ${ envTaskCronSync } ` ) );
+
         Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Starting TVApp2 container. Assigning bound IP to host network adapter` ),
             chalk.blueBright( `<hostIp>` ), chalk.gray( `${ envWebIP }` ),
@@ -2305,3 +2311,15 @@ const server = http.createServer( ( request, response ) =>
     });
 })();
 
+/*
+    Initialize Cron
+*/
+
+cron.schedule( envTaskCronSync, async() =>
+{
+    Log.ok( `task`, chalk.yellow( `[resync]` ), chalk.white( `✅` ),
+        chalk.blueBright( `<msg>` ), chalk.gray( `Ran cron / task to re-sync IPTV data` ),
+        chalk.blueBright( `<schedule>` ), chalk.whiteBright.bgBlack( ` ${ envTaskCronSync } ` ) );
+
+    await initialize();
+});
