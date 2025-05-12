@@ -168,6 +168,8 @@ For the [environment variables](#environment-variables), you may specify these i
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
 | `FILE_GZP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
+| `TASK_CRON_SYNC` | `0 0 */3 * *` | Defines how often to refresh the M3U and XML IPTV data |
+| `HEALTH_TIMER` | `600000` | How often (in milliseconds) to run a health check |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`7` Trace <sup><sub>& below</sub></sup><br />`6` Verbose <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
@@ -1219,6 +1221,8 @@ This docker container contains the following env variables:
 | `FILE_EPG` | `xmltv.xml` | Filename for XML guide data file |
 | `FILE_GZP` | `xmltv.xml.gz` | Filename for XML compressed as gzip .gz |
 | `STREAM_QUALITY` | `hd` | Stream quality<br />Can be either `hd` or `sd` |
+| `TASK_CRON_SYNC` | `0 0 */3 * *` | Defines how often to refresh the M3U and XML IPTV data |
+| `HEALTH_TIMER` | `600000` | How often (in milliseconds) to run a health check |
 | `DIR_BUILD` | `/usr/src/app` | Path inside container where TVApp2 will be built. <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `DIR_RUN` | `/usr/bin/app` | Path inside container where TVApp2 will be placed after it is built <br /><br /> <sup>⚠️ This should not be used unless you know what you're doing</sup> |
 | `LOG_LEVEL` | `4` | Level of logging to display in console<br/>`7` Trace <sup><sub>& below</sub></sup><br />`6` Verbose <sup><sub>& below</sub></sup><br />`5` Debug <sup><sub>& below</sub></sup><br />`4` Info <sup><sub>& below</sub></sup><br />`3` Notice <sup><sub>& below</sub></sup><br />`2` Warn <sup><sub>& below</sub></sup><br />`1` Error <sup><sub>only</sub></sup> |
