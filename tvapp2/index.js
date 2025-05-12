@@ -13,6 +13,7 @@ import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
 import cron, { schedule } from 'node-cron';
+import * as crons from 'cron';
 
 /*
     Old CJS variables converted to ESM
@@ -1764,9 +1765,24 @@ async function initialize()
     const start = performance.now();
     try
     {
-        Log.info( `core`, chalk.yellow( `[schedule]` ), chalk.white( `ℹ️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Container set to refresh IPTV data on specified cron duration` ),
-            chalk.blueBright( `<schedule>` ), chalk.whiteBright.bgBlack( ` ${ envTaskCronSync } ` ) );
+        const validation = crons.validateCronExpression( envTaskCronSync );
+        if ( !validation.valid )
+        {
+            Log.error( `core`, chalk.yellow( `[schedule]` ), chalk.white( `❌` ),
+                chalk.redBright( `<msg>` ), chalk.gray( `Specified cron schedule is not valid` ),
+                chalk.redBright( `<schedule>` ), chalk.whiteBright.bgBlack( ` ${ envTaskCronSync } ` ) );
+        }
+        else
+        {
+            const cronNextRunDt = new Date( crons.sendAt( envTaskCronSync ) );
+            const cronNextRun = moment( cronNextRunDt ).format( 'MM-DD-YYYY h:mm A' );
+
+            Log.info( `core`, chalk.yellow( `[schedule]` ), chalk.white( `ℹ️` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `TVApp2 will refresh channel and guide data at` ),
+                chalk.blueBright( `<schedule>` ), chalk.whiteBright.gray( ` ${ envTaskCronSync } ` ),
+                chalk.blueBright( `<nextrun>` ), chalk.whiteBright.gray( ` ${ cronNextRun } ` ),
+                chalk.blueBright( `<nextrunIso>` ), chalk.whiteBright.gray( ` ${ cronNextRunDt } ` ) );
+        }
 
         Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Starting TVApp2 container. Assigning bound IP to host network adapter` ),
@@ -2312,7 +2328,7 @@ const server = http.createServer( ( request, response ) =>
 })();
 
 /*
-    Initialize Cron
+    Crons > Next Sync
 */
 
 cron.schedule( envTaskCronSync, async() =>
@@ -2322,4 +2338,32 @@ cron.schedule( envTaskCronSync, async() =>
         chalk.blueBright( `<schedule>` ), chalk.whiteBright.bgBlack( ` ${ envTaskCronSync } ` ) );
 
     await initialize();
+});
+
+/*
+    Crons > Announce Next Sync
+    should show every 30 minutes
+*/
+
+cron.schedule( '*/30 * * * *', async() =>
+{
+    const validation = crons.validateCronExpression( envTaskCronSync );
+    if ( !validation.valid )
+    {
+        Log.error( `core`, chalk.yellow( `[schedule]` ), chalk.white( `❌` ),
+            chalk.redBright( `<msg>` ), chalk.gray( `Specified cron schedule is not valid. Re-write the cron so that it is properly formatted` ),
+            chalk.redBright( `<env>` ), chalk.gray( `TASK_CRON_SYNC` ),
+            chalk.redBright( `<schedule>` ), chalk.whiteBright.bgBlack( ` ${ envTaskCronSync } ` ) );
+    }
+    else
+    {
+        const cronNextRunDt = new Date( crons.sendAt( envTaskCronSync ) );
+        const cronNextRun = moment( cronNextRunDt ).format( 'MM-DD-YYYY h:mm A' );
+
+        Log.info( `core`, chalk.yellow( `[schedule]` ), chalk.white( `ℹ️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Next IPTV data refresh at` ),
+            chalk.blueBright( `<schedule>` ), chalk.whiteBright.gray( ` ${ envTaskCronSync } ` ),
+            chalk.blueBright( `<nextrun>` ), chalk.whiteBright.gray( ` ${ cronNextRun } ` ),
+            chalk.blueBright( `<nextrunIso>` ), chalk.whiteBright.gray( ` ${ cronNextRunDt } ` ) );
+    }
 });

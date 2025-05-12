@@ -72,6 +72,7 @@
         "iptv"
     ],
     "dependencies": {
+        "cron": "^4.3.0",
         "node-cron": "^4.0.3",
         "playwright": "^1.52.0",
         "user-agents": "^1.1.537",
