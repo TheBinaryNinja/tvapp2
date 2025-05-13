@@ -114,6 +114,8 @@ env:
     BOT_NAME_2:                     BinaryServ
     BOT_NAME_DEPENDABOT:            dependabot[bot]
     BOT_NAME_RENOVATE:              renovate[bot]
+    GPG_KEY_BASE64:                 ${{ secrets.ADMINSERV_GPG_KEY_B64 }}
+    GPG_KEY_PASSPHRASE:             ${{ secrets.ADMINSERV_GPG_PASSPHRASE }}
 
 # #
 #   Jobs
@@ -347,6 +349,22 @@ jobs:
                   echo "Tag already present: ${{ steps.task_release_tag_create.outputs.tag_exists }}"
 
             # #
+            #   Release › GPG Key
+            # #
+
+            - name: 'Import signing key'
+              if: env.GPG_KEY_BASE64 != '' && env.GPG_KEY_PASSPHRASE == ''
+              run: |
+                  echo $GPG_KEY_BASE64 | base64 -di | gpg --import
+
+            - name: 'Import signing key and strip passphrase'
+              if: env.GPG_KEY_BASE64 != '' && env.GPG_KEY_PASSPHRASE != ''
+              run: |
+                  echo "$GPG_KEY_BASE64" | base64 -di > /tmp/signing-key.gpg
+                  echo "$GPG_KEY_PASSPHRASE" | gpg --pinentry-mode loopback --passphrase-fd 0 --import /tmp/signing-key.gpg
+                  (echo "$GPG_KEY_PASSPHRASE"; echo; echo) | gpg --command-fd 0 --pinentry-mode loopback --change-passphrase $(gpg --list-secret-keys --with-colons 2> /dev/null | grep '^sec:' | cut --delimiter ':' --fields 5 | tail -n 1)
+
+            # #
             #   Release › Checksum › Stable
             # #
 
@@ -355,9 +373,6 @@ jobs:
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
                   filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
-
-                  #  import gpg key (base64)
-                  echo '${{ secrets.ADMINSERV_GPG_KEY_B64 }}' | base64 -d -i - | gpg --import --batch
 
                   #  get sha1 and sha256 for .zip and .gz files
                   find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo sha256 --clearsign > sha1sum.txt.asc
@@ -388,9 +403,6 @@ jobs:
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
                   filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip"
-
-                  #  import gpg key (base64)
-                  echo '${{ secrets.ADMINSERV_GPG_KEY_B64 }}' | base64 -d -i - | gpg --import --batch
 
                   #  get sha1 and sha256 for .zip and .gz files
                   find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo sha256 --clearsign > sha1sum.txt.asc
