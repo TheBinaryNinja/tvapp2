@@ -297,8 +297,8 @@ jobs:
                   echo Building STABLE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                   zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip Dockerfile Dockerfile.aarch64 docker-compose.yml docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
 
-                  echo Building STABLE Package ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip
-                  zip -r ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip docker-compose.yml README.md LICENSE
+                  echo Building STABLE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-docker-compose.zip
+                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-docker-compose.zip docker-compose.yml README.md LICENSE
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
@@ -618,7 +618,7 @@ jobs:
                   draft: false
                   generate_release_notes: false
                   files: |
-                      ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip
+                      ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-docker-compose.zip
                       ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                       sha1sum.txt.asc
                       sha256sum.txt.asc
@@ -652,7 +652,7 @@ jobs:
                   draft: false
                   generate_release_notes: false
                   files: |
-                      ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
+                      ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
                       ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
                       sha1sum.txt.asc
                       sha256sum.txt.asc
