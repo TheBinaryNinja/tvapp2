@@ -360,7 +360,7 @@ jobs:
                   echo '${{ secrets.ADMINSERV_GPG_KEY_B64 }}' | base64 -d -i - | gpg --import --batch
 
                   #  get sha1 and sha256 for .zip and .gz files
-                  find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo 256 --clearsign > sha1sum.txt.asc
+                  find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo sha256 --clearsign > sha1sum.txt.asc
                   find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha256sum | gpg --digest-algo sha256 --clearsign > sha256sum.txt.asc
 
                   #  get sha1sum; assign to variable
@@ -393,7 +393,7 @@ jobs:
                   echo '${{ secrets.ADMINSERV_GPG_KEY_B64 }}' | base64 -d -i - | gpg --import --batch
 
                   #  get sha1 and sha256 for .zip and .gz files
-                  find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo 256 --clearsign > sha1sum.txt.asc
+                  find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo sha256 --clearsign > sha1sum.txt.asc
                   find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha256sum | gpg --digest-algo sha256 --clearsign > sha256sum.txt.asc
 
                   #  get sha1sum; assign to variable
