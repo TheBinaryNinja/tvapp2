@@ -355,13 +355,28 @@ jobs:
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
                   filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
-                  sha256="$(shasum --algorithm 256 ${filename_zip} | awk '{ print $1 }')"
-                  shasum --algorithm 256 ${filename_zip} > SHA256SUMS.txt
+
+                  #  import gpg key (base64)
+                  echo '${{ secrets.ADMINSERV_GPG_KEY_B64 }}' | base64 -d | gpg --import
+
+                  #  get sha1 and sha256 for .zip and .gz files
+                  find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo 256 --clearsign > sha1sum.txt.asc
+                  find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha256sum | gpg --digest-algo sha256 --clearsign > sha256sum.txt.asc
+
+                  #  get sha1sum; assign to variable
+                  sha1sum="$(shasum --algorithm 1 ${filename_zip} | awk '{ print $1 }')"
+                  echo "SHA1SUM=${sha1sum}" >> $GITHUB_ENV
+
+                  #  get sha256sum; assign to variable
+                  sha256sum="$(shasum --algorithm 256 ${filename_zip} | awk '{ print $1 }')"
+                  echo "SHA256SUM=${sha256sum}" >> $GITHUB_ENV
+
+                  #  no longer needed, replaced by find . command
+                  #  shasum --algorithm 256 ${filename_zip} > SHA256SUMS.txt
                   echo "FILE_ZIP=${filename_zip}" >> $GITHUB_ENV
-                  echo "SHA256SUM=${sha256}" >> $GITHUB_ENV
 
                   filename_compose_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-docker-compose.zip"
-                  sha256_compose="$(shasum --algorithm 256 ${filename_compose_zip} | awk '{ print $1 }')"
+                  sha256sum_compose="$(shasum --algorithm 256 ${filename_compose_zip} | awk '{ print $1 }')"
                   echo "FILE_COMPOSE_ZIP=${filename_compose_zip}" >> $GITHUB_ENV
 
             # #
@@ -372,8 +387,12 @@ jobs:
               id: task_release_checksum_rc_set
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
+                  #  get filename
                   filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip"
+                  #  get sha256 checksum
                   sha256="$(shasum --algorithm 256 ${filename_zip} | awk '{ print $1 }')"
+
+                  #  write sha256sum to file
                   shasum --algorithm 256 ${filename_zip} > SHA256SUMS.txt
                   echo "FILE_ZIP=${filename_zip}" >> $GITHUB_ENV
                   echo "SHA256SUM=${sha256}" >> $GITHUB_ENV
@@ -412,7 +431,7 @@ jobs:
               if: ${{ startsWith( inputs.PRERELEASE, false ) }}
               run: |
                   echo Zipping STABLE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
-                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip SHA256SUMS.txt
+                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip sha1sum.txt.asc sha256sum.txt.asc
                   ls
 
             # #
@@ -424,7 +443,7 @@ jobs:
               if: ${{ startsWith( inputs.PRERELEASE, true ) }}
               run: |
                   echo Zipping PRE-RELEASE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
-                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip SHA256SUMS.txt
+                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip sha1sum.txt.asc sha256sum.txt.asc
                   ls
 
             # #
@@ -578,7 +597,8 @@ jobs:
                   files: |
                       ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-docker-compose.zip
                       ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
-                      SHA256SUMS.txt
+                      sha1sum.txt.asc
+                      sha256sum.txt.asc
                   prerelease: false
                   body: |
                       ${{ steps.task_release_changelog_categorized.outputs.changelog }}
@@ -611,7 +631,8 @@ jobs:
                   files: |
                       ${{ env.PROJECT_NAME }}-v${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
                       ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
-                      SHA256SUMS.txt
+                      sha1sum.txt.asc
+                      sha256sum.txt.asc
                   prerelease: false
                   body: |
                       > [!WARNING]
