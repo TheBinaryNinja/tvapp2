@@ -2325,6 +2325,11 @@ const server = http.createServer( ( request, response ) =>
             chalk.blueBright( `<msg>` ), chalk.gray( `Server is now running on` ),
             chalk.blueBright( `<ipPublic>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ),
             chalk.blueBright( `<ipDocker>` ), chalk.whiteBright.bgBlack( ` ${ envIpContainer }:${ envWebPort } ` ) );
+
+        Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `✅` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Running TVApp2 version` ),
+            chalk.blueBright( `<version>` ), chalk.gray( ` ${ version } ` ),
+            chalk.blueBright( `<release>` ), chalk.gray( ` ${ envAppRelease } ` ) );
     });
 })();
 

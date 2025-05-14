@@ -796,8 +796,6 @@ docker buildx build \
   --pull \
   --push \
   .
-
-
 ```
 
 <br />
