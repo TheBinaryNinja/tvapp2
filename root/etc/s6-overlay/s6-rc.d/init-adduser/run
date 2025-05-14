@@ -106,28 +106,51 @@ fi
 #   s6 > branding
 # #
 
-if { [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; } || [[ ! ${TVAPP_FIRST_PARTY} = "true" ]]; then
-    cat /etc/s6-overlay/s6-rc.d/init-adduser/branding
-else
-    cat /run/branding
-fi
+printf '%-1s\n' " ${c[greyd]}──────────────────────────────────────────────────────────────────────────────────────────${c[end]}"
+printf '%-1s\n' " ${c[greyd]}                                 TVApp2 Docker Image${c[end]}"
+printf '%-1s\n' " ${c[greyd]}──────────────────────────────────────────────────────────────────────────────────────────${c[end]}"
+
+printf '%-2s\n' " ${c[greyd]}The TvApp2 image allows you to fetch M3U playlist and EPG data for numerous IPTV ${c[end]}"
+printf '%-2s\n' " ${c[greyd]}services online. ${c[end]}"
+echo -e
+printf '%-2s\n' " ${c[greyd]}Once the files are fetched by the image, you can visit the self-hosted webpage, copy ${c[end]}"
+printf '%-2s\n' " ${c[greyd]}the links to the M3U and EPG files; and add them to your favorite IPTV app such as ${c[end]}"
+printf '%-2s\n' " ${c[greyd]}Jellyfin, Plex, or Emby. ${c[end]}"
+echo -e
+printf '%-2s\n' " ${c[greyd]}For more information about this project; visit the links below. This app is served on ${c[end]}"
+printf '%-2s\n' " ${c[greyd]}multiple repositories as backup. Use any of the repo links below: ${c[end]}"
+echo -e
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}TVApp2 Repo 1${c[end]}" "${c[end]}https://github.com/TheBinaryNinja/tvapp2 ${c[end]}"
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}TVApp2 Repo 2${c[end]}" "${c[end]}https://git.binaryninja.net/BinaryNinja/tvapp2 ${c[end]}"
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}Base Alpine Image${c[end]}" "${c[end]}https://github.com/Aetherinox/docker-base-alpine ${c[end]}"
+echo -e
+
+printf '%-2s\n' " ${c[greyd]}If you are making this container available on a public-facing domain, please consider ${c[end]}"
+printf '%-2s\n' " ${c[greyd]}using Traefik and Authentik to protect this container from outside access. Your M3U ${c[end]}"
+printf '%-2s\n' " ${c[greyd]}and EPG files will be available for the public to download and use. ${c[end]}"
+
+# if { [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; } || [[ ! ${TVAPP_FIRST_PARTY} = "true" ]]; then
+#     cat /etc/s6-overlay/s6-rc.d/init-adduser/branding
+# else
+#     cat /run/branding
+# fi
 
 # #
 #   branding > non-root user
 # #
 
 if [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
-echo ""
-echo "        User:Group              $(id -u dockerx):$(id -g dockerx)"
+echo -e
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}User:Group${c[end]}" "${c[end]}$(id -u dockerx):$(id -g dockerx)${c[end]}"
 else
-echo "        User:Group              $(stat /run -c %u):$(stat /run -c %g)"
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}User:Group${c[end]}" "${c[end]}$(stat /run -c %u):$(stat /run -c %g)${c[end]}"
 fi
-echo "        Port(s)                 $(echo $WEB_PORT)"
-echo "        Gateway                 $(echo $IP_GATEWAY)"
-echo "        Web Server              $(echo $IP_CONTAINER:$WEB_PORT)"
-echo "        App Folder              $(echo $DIR_RUN)"
-echo ""
-echo '──────────────────────────────────────────────────────────────────────────────────────────'
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}Port(s)${c[end]}" "${c[end]}$(echo $WEB_PORT)${c[end]}"
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}Gateway${c[end]}" "${c[end]}$(echo $IP_GATEWAY)${c[end]}"
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}Web Server${c[end]}" "${c[end]}$(echo $IP_CONTAINER:$WEB_PORT)${c[end]}"
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}App Folder${c[end]}" "${c[end]}$(echo $DIR_RUN)${c[end]}"
+echo -e
+printf '%-1s\n' " ${c[greyd]}──────────────────────────────────────────────────────────────────────────────────────────${c[end]}"
 
 # #
 #   set permissions
