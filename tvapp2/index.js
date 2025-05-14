@@ -2323,7 +2323,8 @@ const server = http.createServer( ( request, response ) =>
     {
         Log.ok( `core`, chalk.yellow( `[initiate]` ), chalk.white( `✅` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Server is now running on` ),
-            chalk.blueBright( `<address>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ) );
+            chalk.blueBright( `<ipPublic>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envWebPort } ` ),
+            chalk.blueBright( `<ipDocker>` ), chalk.whiteBright.bgBlack( ` ${ envIpContainer }:${ envWebPort } ` ) );
     });
 })();
 
