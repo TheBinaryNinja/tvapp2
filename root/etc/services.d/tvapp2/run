@@ -1,14 +1,113 @@
-#!/usr/bin/with-contenv sh
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
 
 # #
-#   Store env variables in s6
+#   defaults
+# #
+
+PUID=${PUID:-911}
+PGID=${PGID:-911}
+DIR_BUILD=${DIR_BUILD:-/usr/src/app}
+DIR_RUN=${DIR_RUN:-/usr/bin/app}
+bHasError=false
+
+# #
+#   define > colors
+#
+#   Use the color table at:
+#       - https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+# #
+
+declare -A c=(
+    [end]=$'\e[0m'
+    [white]=$'\e[97m'
+    [bold]=$'\e[1m'
+    [dim]=$'\e[2m'
+    [underline]=$'\e[4m'
+    [strike]=$'\e[9m'
+    [blink]=$'\e[5m'
+    [inverted]=$'\e[7m'
+    [hidden]=$'\e[8m'
+    [black]=$'\e[0;30m'
+    [redl]=$'\e[0;91m'
+    [redd]=$'\e[0;31m'
+    [magental]=$'\e[0;95m'
+    [magentad]=$'\e[0;35mm'
+    [bluel]=$'\e[0;94m'
+    [blued]=$'\e[0;34m'
+    [cyanl]=$'\e[0;96m'
+    [cyand]=$'\e[0;36m'
+    [greenl]=$'\e[0;92m'
+    [greend]=$'\e[0;32m'
+    [yellowl]=$'\e[0;93m'
+    [yellowd]=$'\e[0;33m'
+    [greyl]=$'\e[0;37m'
+    [greyd]=$'\e[0;90m'
+    [navy]=$'\e[38;5;62m'
+    [olive]=$'\e[38;5;144m'
+    [peach]=$'\e[38;5;210m'
+)
+
+# #
+#   unicode for emojis
+#       https://apps.timwhitlock.info/emoji/tables/unicode
+# #
+
+declare -A icon=(
+    ["symbolic link"]=$'\xF0\x9F\x94\x97' # 🔗
+    ["regular file"]=$'\xF0\x9F\x93\x84' # 📄
+    ["directory"]=$'\xF0\x9F\x93\x81' # 📁
+    ["regular empty file"]=$'\xe2\xad\x95' # ⭕
+    ["log"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["1"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["2"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["3"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["4"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["5"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["pem"]=$'\xF0\x9F\x94\x92' # 🔑
+    ["pub"]=$'\xF0\x9F\x94\x91' # 🔒
+    ["pfx"]=$'\xF0\x9F\x94\x92' # 🔑
+    ["p12"]=$'\xF0\x9F\x94\x92' # 🔑
+    ["key"]=$'\xF0\x9F\x94\x91' # 🔒
+    ["crt"]=$'\xF0\x9F\xAA\xAA ' # 🪪
+    ["gz"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["zip"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["gzip"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["deb"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["sh"]=$'\xF0\x9F\x97\x94' # 🗔
+)
+
+# #
+#   define > system
+# #
+
+sys_os_ver="1.0.0"
+sys_os_name="Unknown"
+
+# #
+#   s6 > store env variables
+# #
+
+printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Fetching docker container and gateway addresses${c[end]}"
+
+# #
+#   get container ips
 # #
 
 ip_gateway=$(/sbin/ip route|awk '/default/ { print $3 }')
 ip_container=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 
-printf "$ip_gateway" > /var/run/s6/container_environment/IP_GATEWAY
-printf "$ip_container" > /var/run/s6/container_environment/IP_CONTAINER
+if [ -d "/var/run/s6/container_environment/" ]; then
+    printf "$ip_gateway" > /var/run/s6/container_environment/IP_GATEWAY
+    printf "$ip_container" > /var/run/s6/container_environment/IP_CONTAINER
+else
+    printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot generate s6-overlay env files; folder ${c[redl]}/var/run/s6/container_environment/${c[end]} does not exist${c[end]}"
+    bHasError=true
+fi
+
+# #
+#   s6 > export env vars
+# #
 
 export IP_GATEWAY=$ip_gateway
 export IP_GATEWAY=$ip_container
@@ -17,8 +116,75 @@ export IP_GATEWAY=$ip_container
 #   install and startup for tvapp2
 # #
 
-cp -r ${DIR_BUILD}/* ${DIR_RUN}
-rm -rf ${DIR_BUILD}/*
-cd ${DIR_RUN}
-npm install --omit=dev
-npm start
+printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Copying ${c[bluel]}${DIR_BUILD}${c[end]} to ${c[bluel]}${DIR_RUN}${c[end]}"
+if [ -z "${DIR_BUILD}" ]; then
+    printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot copy; env var ${c[redl]}\${DIR_BUILD}${c[end]} missing${c[end]}"
+    bHasError=true
+else
+    if [ -d "${DIR_BUILD}" ]; then
+        cp -r ${DIR_BUILD}/* ${DIR_RUN}
+    else
+        printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot copy folder ${c[redl]}${DIR_BUILD}${c[end]} to ${c[redl]}${DIR_RUN}${c[end]}; build folder ${c[redl]}${DIR_BUILD}${c[end]} does not exist${c[end]}"
+        bHasError=true
+    fi
+fi
+
+# #
+#   remove build directory
+# #
+
+printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Remove ${c[bluel]}${DIR_BUILD}/${c[end]}"
+if [ -z "${DIR_BUILD}" ]; then
+    printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot remove; env var ${c[redl]}\${DIR_BUILD}${c[end]} missing${c[end]}"
+else
+    if [ -d "${DIR_BUILD}" ]; then
+        rm -rf ${DIR_BUILD}/*
+    else
+        printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot remove; build folder ${c[redl]}${DIR_BUILD}${c[end]} does not exist${c[end]}"
+    fi
+fi
+
+# #
+#   cd to BUILD_RUN directory
+# #
+
+printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Changing to run directory ${c[bluel]}${DIR_RUN}/${c[end]}"
+if [ -z "${DIR_RUN}" ]; then
+    printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot cd; env var ${c[redl]}\${DIR_RUN}${c[end]} missing${c[end]}"
+    bHasError=true
+else
+    if [ -d "${DIR_RUN}" ]; then
+        cd ${DIR_RUN}
+    else
+        printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot cd; run folder ${c[redl]}${DIR_RUN}${c[end]} does not exist${c[end]}"
+        bHasError=true
+    fi
+fi
+
+# #
+#   install tvapp2 via npm
+# #
+
+printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Running command ${c[bluel]}npm install --omit=dev${c[end]}"
+if ! [ -x "$(command -v npm)" ]; then
+    printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot install TVApp2 with npm because package ${c[redl]}npm${c[end]} not installed${c[end]}"
+    bHasError=true
+else
+    npm install --omit=dev
+
+    printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Running command ${c[bluel]}npm start${c[end]}"
+    npm start
+fi
+
+# #
+#   finished run script
+# #
+
+printf '%-29s %-65s\n' "  ${c[greenl]}OK${c[end]}" "${c[end]}Finished initializing script${c[end]}"
+if [ "$bHasError" = true ] ; then
+    printf '%-29s %-65s\n' "" ""
+    printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Fatal errors were detected${c[end]}"
+    printf '%-29s %-65s\n' "  ${c[redl]}${c[end]}" "${c[end]}The run script detected that certain steps failed. This app may not${c[end]}"
+    printf '%-29s %-65s\n' "  ${c[redl]}${c[end]}" "${c[end]}work properly. Try restarting the container.${c[end]}"
+    printf '%-29s %-65s\n' "" ""
+fi

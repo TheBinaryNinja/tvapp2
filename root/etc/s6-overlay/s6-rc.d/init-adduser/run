@@ -1,22 +1,120 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
+# #
+#   defaults
+# #
+
 PUID=${PUID:-911}
 PGID=${PGID:-911}
+DIR_BUILD=${DIR_BUILD:-/usr/src/app}
+DIR_RUN=${DIR_RUN:-/usr/bin/app}
+bHasError=false
+
+# #
+#   define > colors
+#
+#   Use the color table at:
+#       - https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+# #
+
+declare -A c=(
+    [end]=$'\e[0m'
+    [white]=$'\e[97m'
+    [bold]=$'\e[1m'
+    [dim]=$'\e[2m'
+    [underline]=$'\e[4m'
+    [strike]=$'\e[9m'
+    [blink]=$'\e[5m'
+    [inverted]=$'\e[7m'
+    [hidden]=$'\e[8m'
+    [black]=$'\e[0;30m'
+    [redl]=$'\e[0;91m'
+    [redd]=$'\e[0;31m'
+    [magental]=$'\e[0;95m'
+    [magentad]=$'\e[0;35mm'
+    [bluel]=$'\e[0;94m'
+    [blued]=$'\e[0;34m'
+    [cyanl]=$'\e[0;96m'
+    [cyand]=$'\e[0;36m'
+    [greenl]=$'\e[0;92m'
+    [greend]=$'\e[0;32m'
+    [yellowl]=$'\e[0;93m'
+    [yellowd]=$'\e[0;33m'
+    [greyl]=$'\e[0;37m'
+    [greyd]=$'\e[0;90m'
+    [navy]=$'\e[38;5;62m'
+    [olive]=$'\e[38;5;144m'
+    [peach]=$'\e[38;5;210m'
+)
+
+# #
+#   unicode for emojis
+#       https://apps.timwhitlock.info/emoji/tables/unicode
+# #
+
+declare -A icon=(
+    ["symbolic link"]=$'\xF0\x9F\x94\x97' # 🔗
+    ["regular file"]=$'\xF0\x9F\x93\x84' # 📄
+    ["directory"]=$'\xF0\x9F\x93\x81' # 📁
+    ["regular empty file"]=$'\xe2\xad\x95' # ⭕
+    ["log"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["1"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["2"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["3"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["4"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["5"]=$'\xF0\x9F\x93\x9C' # 📜
+    ["pem"]=$'\xF0\x9F\x94\x92' # 🔑
+    ["pub"]=$'\xF0\x9F\x94\x91' # 🔒
+    ["pfx"]=$'\xF0\x9F\x94\x92' # 🔑
+    ["p12"]=$'\xF0\x9F\x94\x92' # 🔑
+    ["key"]=$'\xF0\x9F\x94\x91' # 🔒
+    ["crt"]=$'\xF0\x9F\xAA\xAA ' # 🪪
+    ["gz"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["zip"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["gzip"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["deb"]=$'\xF0\x9F\x93\xA6' # 📦
+    ["sh"]=$'\xF0\x9F\x97\x94' # 🗔
+)
+
+# #
+#   get container ips
+# #
 
 IP_GATEWAY=$(/sbin/ip route|awk '/default/ { print $3 }')
 IP_CONTAINER=$(ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
+
+# #
+#   usermod
+#       -o, --non-unique              allow using duplicate (non-unique) UID
+#       -g, --gid GROUP               force use GROUP as new primary group
+#       -G, --groups GROUPS           new list of supplementary GROUPS
+#       -u, --uid UID                 new UID for the user account
+#       -U, --unlock                  unlock the user account
+#
+#   groupmod
+#       -g, --gid GID                 change the group ID to GID
+#       -o, --non-unique              allow to use a duplicate (non-unique) GID
+# #
 
 if [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
     groupmod -o -g "$PGID" dockerx
     usermod -o -u "$PUID" dockerx
 fi
 
+# #
+#   s6 > branding
+# #
+
 if { [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; } || [[ ! ${TVAPP_FIRST_PARTY} = "true" ]]; then
     cat /etc/s6-overlay/s6-rc.d/init-adduser/branding
 else
     cat /run/branding
 fi
+
+# #
+#   branding > non-root user
+# #
 
 if [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
 echo ""
@@ -30,6 +128,10 @@ echo "        Web Server              $(echo $IP_CONTAINER:$WEB_PORT)"
 echo "        App Folder              $(echo $DIR_RUN)"
 echo ""
 echo '──────────────────────────────────────────────────────────────────────────────────────────'
+
+# #
+#   set permissions
+# #
 
 if [[ -z ${TVAPP_READ_ONLY_FS} ]] && [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
     aetherxown dockerx:dockerx /app
