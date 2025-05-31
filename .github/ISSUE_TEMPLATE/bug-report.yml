@@ -126,9 +126,9 @@ body:
   - type: textarea
     id: docker-compose
     attributes:
-      label: docker-compose.yml
+      label: docker-compose.yml / Run command
       description: |
-        Copy / paste your `docker-compose.yml` file here
+        Copy / paste your `docker-compose.yml` file or run command here
 
   - type: textarea
     id: logs
@@ -137,6 +137,7 @@ body:
       description: |
         Paste your docker logs here.
         You can get your docker logs by opening terminal and running `docker logs tvapp2`
+        To get detailed logs, set the environment variable `LOG_LEVEL=5` and restart the container.
 
   - type: textarea
     id: screenshots
