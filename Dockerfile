@@ -116,6 +116,7 @@ RUN \
         wget \
         curl \
         bash \
+        git \
         nano \
         npm \
         openssl
