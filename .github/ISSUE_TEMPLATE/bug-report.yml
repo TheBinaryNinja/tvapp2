@@ -14,6 +14,9 @@ body:
         4. Before creating this bug report, ensure you updated your applications to the latest versions.
            Check your configurations to ensure there are no typos or errors.
            Docker users should attempt to re-pull the TVApp2 image to ensure caching is not the cause of an issue.
+        5. To get detailed logs of the issue, set the environment variable:
+               `LOG_LEVEL=5`
+           Restart the docker container and you should get more detailed logs.
 
         <br />
 
