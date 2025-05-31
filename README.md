@@ -7,7 +7,7 @@
 
 <div align="center">
 
-<img src="docs/img/screenshots/01.png" height="320">
+<img src="docs/img/screenshots/01.gif" height="450">
 
 <br />
 <br />
