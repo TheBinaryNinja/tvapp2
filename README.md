@@ -164,13 +164,13 @@ The following is a list of environment variables you can tell within your Docker
 > ✔️ Correct
 > ```yml
 > environment:
->    - CRON_TIME=*/60 * * * *
+>    - TASK_CRON_SYNC=*/60 * * * *
 > ```
 >
 > ❌ Incorrect
 > ```yml
 > environment:
->    - CRON_TIME="*/60 * * * *"
+>    - TASK_CRON_SYNC="*/60 * * * *"
 > ```
 
 <br />
