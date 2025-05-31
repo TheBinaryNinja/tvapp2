@@ -20,15 +20,17 @@ Makes use of the generous work over at [https://github.com/dtankdempse/thetvapp-
 </div>
 
 <br />
+<br />
 
 > [!WARNING]  
 > In december 2024, the developer [https://github.com/dtankdempse/](https://github.com/dtankdempse/) stopped working on his version of the main TVApp grabber, which this branch depended on and caused our docker image to become useless.
 > After 2024, our container was completetly re-developed from the ground up to handle all of the playlist and xml generation in-house.
 >
-> This branch services as an archive for the original container, however, it no longer works.
+> This branch serves as an archive for the original version, however, it no longer works.
 >
 > To get the most recent working build, visit the [main](https://github.com/TheBinaryNinja/tvapp2/tree/main) branch.
 
+<br />
 <br />
 
 <div align="center">
