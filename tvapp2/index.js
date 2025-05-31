@@ -309,6 +309,11 @@ class Semaphore
 
 async function serviceCheck( service, uri )
 {
+    Log.info( `ping`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
+        chalk.blueBright( `<msg>` ), chalk.gray( `Checking for connection` ),
+        chalk.blueBright( `<service>` ), chalk.gray( ` ${ service } ` ),
+        chalk.blueBright( `<address>` ), chalk.gray( ` ${ uri } ` ) );
+
     /* try 1 */
 
     try
