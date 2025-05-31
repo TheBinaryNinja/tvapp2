@@ -421,7 +421,7 @@ jobs:
                       org.opencontainers.image.registry=github
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${GIT_SHA1}
+                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -433,7 +433,7 @@ jobs:
                       org.opencontainers.image.registry=github
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${GIT_SHA1}
+                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
 
             # #
             #   Release › Github › Build and Push › Amd64
