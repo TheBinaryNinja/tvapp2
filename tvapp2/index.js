@@ -12,6 +12,7 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
+import * as child from 'child_process';
 import cron, { schedule } from 'node-cron';
 import * as crons from 'cron';
 
@@ -29,6 +30,7 @@ const cache = new Map();
 const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
 const __filename = fileURLToPath( import.meta.url ); // get resolved path to file
 const __dirname = path.dirname( __filename ); // get name of directory
+const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
 
 /*
     chalk.level
@@ -2192,9 +2194,11 @@ const server = http.createServer( ( request, response ) =>
                 appRelease: envAppRelease,
                 appName: name,
                 appVersion: version,
-                appUrlGithub: repository.url,
+                appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
                 appUrlDiscord: discord.url,
-                appUrlDocs: docs.url
+                appUrlDocs: docs.url,
+                appGitHashShort: gitHash.substring( 0, 9 ),
+                appGitHashLong: gitHash
             }, ( err, data ) =>
         {
             if ( !err )
