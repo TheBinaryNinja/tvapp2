@@ -30,7 +30,9 @@ const cache = new Map();
 const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
 const __filename = fileURLToPath( import.meta.url ); // get resolved path to file
 const __dirname = path.dirname( __filename ); // get name of directory
-# const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
+/*
+const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
+*/
 const gitHash = `f6484e00dea57891cdeb3123aca124ca7388b22b`;
 
 /*
