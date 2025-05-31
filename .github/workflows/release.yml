@@ -483,34 +483,6 @@ jobs:
                   avatarSize: 42
 
             # #
-            #   Release › Checksum › Add (Stable)
-            # #
-
-            - name: '📦 Zip › Add Checksum › Stable'
-              id: task_release_zip_st
-              if: |
-                  startsWith( inputs.RC_RELEASE, false ) ||
-                  startsWith( env.RC_RELEASE, false )
-              run: |
-                  echo Zipping STABLE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
-                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip sha1sum.txt.asc sha256sum.txt.asc
-                  ls
-
-            # #
-            #   Release › Checksum › Add (Release Candidate)
-            # #
-
-            - name: '📦 Zip › Add Checksum › RC'
-              id: task_release_zip_rc
-              if: |
-                  startsWith( inputs.RC_RELEASE, true ) ||
-                  startsWith( env.RC_RELEASE, true )
-              run: |
-                  echo Zipping PRE-RELEASE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip
-                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip sha1sum.txt.asc sha256sum.txt.asc
-                  ls
-
-            # #
             #   Release › Changelog › Generate Tags
             #
             #   generates a changelog from the github api. requires a PREVIOUS_TAG in order to figure
