@@ -154,7 +154,7 @@ For the [environment variables](#environment-variables), you may specify these i
 
 #### Environment Variables
 
-This following is a list of environment variables you can tell within your Docker container.
+The following is a list of environment variables you can tell within your Docker container.
 
 <br />
 
