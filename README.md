@@ -154,7 +154,7 @@ For the [environment variables](#environment-variables), you may specify these i
 
 #### Environment Variables
 
-The following is a list of environment variables you can tell within your Docker container.
+The following is a list of environment variables you can declare within your `docker-compose.yml` or docker run command:
 
 <br />
 
