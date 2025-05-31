@@ -154,6 +154,27 @@ For the [environment variables](#environment-variables), you may specify these i
 
 #### Environment Variables
 
+This following is a list of environment variables you can tell within your Docker container.
+
+<br />
+
+> [!CAUTION]  
+> Do **not** add `"` quotation marks to environment variables.
+>
+> ✔️ Correct
+> ```yml
+> environment:
+>    - CRON_TIME=*/60 * * * *
+> ```
+>
+> ❌ Incorrect
+> ```yml
+> environment:
+>    - CRON_TIME="*/60 * * * *"
+> ```
+
+<br />
+
 | Env Var | Default | Description |
 | --- | --- | --- |
 | `TZ` | `Etc/UTC` | Timezone for error / log reporting |
