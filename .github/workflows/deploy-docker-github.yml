@@ -588,7 +588,6 @@ jobs:
                   echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
                   echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
                   echo "env.NOW_DOCKER_TS ........................ ${{ env.NOW_DOCKER_TS }}"
-                  echo "env.DOCKER_IMAGE ......................... ${{ env.DOCKER_IMAGE }}"
                   echo "env.REGISTRY_REPO_ORG_AUTHOR_LC .......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
                   echo "env.REGISTRY_REPO_AUTHOR_LC .............. ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
                   echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
