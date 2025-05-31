@@ -77,23 +77,23 @@ on:
                 type:               boolean
 
             # #
-            #   ENABLE:     released version will be marked as pre-release
-            #   DISABLE:    release version will be marked as stable / normal release
+            #   true            released version will be marked as a development build and will have the v1.x.x-development tag instead of -latest
+            #   false           release version will be marked with -latest docker tag
             # #
 
-            PRERELEASE:
+            RC_RELEASE:
                 description:        '🧪 Build RC (Pre-release)'
                 required:           true
                 default:            false
                 type:               boolean
 
             # #
-            #   Release Candidate version number
-            #   this will be added to the end of your released app in the releases page.
-            #     e.g: tvapp2-v1.0.0-rc.1
+            #   only needed if env variable `RC_ONLY` = true
+            #   sets the version number for the release candidate
+            #       e.g: noxenv-v1.0.0-rc.1
             # #
 
-            VERSION_RC:
+            RC_VERSION:
                 description:        '🧪 RC (Pre-release) Ver (tvapp2-rc.v1)'
                 required:           false
                 type:               string
@@ -105,10 +105,10 @@ on:
 
 env:
     PROJECT_NAME:                   ${{ github.event.inputs.PROJECT_NAME || 'tvapp2' }}
-    CHANGELOG_MODE_COMMIT:          true
-    SHOW_UNCATEGORIZED:             false
-    PRERELEASE:                     false
-    VERSION_RC:                     '1'
+    CHANGELOG_MODE_COMMIT:          ${{ github.event.inputs.CHANGELOG_MODE_COMMIT || true }}
+    SHOW_UNCATEGORIZED:             ${{ github.event.inputs.SHOW_UNCATEGORIZED || false }}
+    RC_RELEASE:                     ${{ github.event.inputs.RC_RELEASE || false }}
+    RC_VERSION:                     ${{ github.event.inputs.RC_VERSION || '1' }}
     ASSIGN_USER:                    Aetherinox
     BOT_NAME_1:                     EuropaServ
     BOT_NAME_2:                     BinaryServ
@@ -210,6 +210,20 @@ jobs:
         steps:
 
             # #
+            #   Release › Set Env Variables
+            # #
+
+            - name: >-
+                🕛 Get Timestamp
+              id: task_release_label_set_timestamp
+              run: |
+                  echo "YEAR=$(date +'%Y')" >> $GITHUB_ENV
+                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
+                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
+                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
+                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+
+            # #
             #   Release › Checkout
             # #
 
@@ -220,17 +234,22 @@ jobs:
                   fetch-depth: 0
 
             # #
-            #   Release › Set Env Variables
+            #   Release › Start
             # #
 
             - name: >-
-                🕛 Get Timestamp
-              id: task_release_label_set_timestamp
+                ✅ Start
+              id: task_release_start
               run: |
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV
+                echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                echo " Starting Documentation Build script"
+                echo " Runner .............. ${{ runner.name }}"
+                echo " Workflow ............ ${{ github.workflow }} (#${{ github.workflow_ref }})"
+                echo " Run Number .......... #${{ github.run_number }}"
+                echo " Run ID .............. https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                echo " Triggered By ........ ${{ github.actor }}"
+                echo " Time ................ ${{ env.NOW_LONG }}"
+                echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
 
             # #
             #   Release › Print Version Debug
@@ -290,9 +309,11 @@ jobs:
             #   Release › Build › Stable
             # #
 
-            - name: '🔨 Build › Stable ( ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip )'
+            - name: '🔨 Build › Stable › ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip'
               id: task_release_build_st
-              if: ${{ startsWith( inputs.PRERELEASE, false ) }}
+              if: |
+                  startsWith( inputs.RC_RELEASE, false ) ||
+                  startsWith( env.RC_RELEASE, false )
               run: |
                   echo Building STABLE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                   zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip Dockerfile Dockerfile.aarch64 docker-compose.yml docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
@@ -306,15 +327,17 @@ jobs:
             #   Release › Build › Release Candidate
             # #
 
-            - name: '🔨 Build › RC ( ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip )'
+            - name: '🔨 Build › Release Candidate › ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip'
               id: task_release_build_rc
-              if: ${{ startsWith( inputs.PRERELEASE, true ) }}
+              if: |
+                  startsWith( inputs.RC_RELEASE, true ) ||
+                  startsWith( env.RC_RELEASE, true )
               run: |
-                  echo Building PRE-RELEASE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
-                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip Dockerfile Dockerfile.aarch64 docker-compose.yml docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
+                  echo Building PRE-RELEASE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip
+                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip Dockerfile Dockerfile.aarch64 docker-compose.yml docker-entrypoint.sh root/ tvapp2/package.json README.md LICENSE
 
-                  echo Building PRE-RELEASE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
-                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip docker-compose.yml README.md LICENSE
+                  echo Building PRE-RELEASE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}-docker-compose.zip
+                  zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}-docker-compose.zip docker-compose.yml README.md LICENSE
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
@@ -349,15 +372,25 @@ jobs:
                   echo "Tag already present: ${{ steps.task_release_tag_create.outputs.tag_exists }}"
 
             # #
-            #   Release › GPG Key
+            #   Release › GPG › Import Key (No Passphrase)
+            #
+            #   requires your GPG private key, converted to base64 binary .gpg (not armored .asc)
             # #
 
-            - name: 'Import signing key'
+            - name: '🪪 GPG › Import Signing Key › W/o Passphrase'
+              id: task_release_gpg_import_nopass
               if: env.GPG_KEY_BASE64 != '' && env.GPG_KEY_PASSPHRASE == ''
               run: |
                   echo $GPG_KEY_BASE64 | base64 -di | gpg --import
 
-            - name: 'Import signing key and strip passphrase'
+            # #
+            #   Release › GPG › Import Key (With Passphrase)
+            #
+            #   requires your GPG private key, converted to base64 binary .gpg (not armored .asc)
+            # #
+
+            - name: '🪪 GPG › Import Signing Key › w/ Passphrase'
+              id: task_release_gpg_import_withpass
               if: env.GPG_KEY_BASE64 != '' && env.GPG_KEY_PASSPHRASE != ''
               run: |
                   echo "$GPG_KEY_BASE64" | base64 -di > /tmp/signing-key.gpg
@@ -370,7 +403,9 @@ jobs:
 
             - name: '🆔 Checksum › Stable'
               id: task_release_checksum_st_set
-              if: ${{ startsWith( inputs.PRERELEASE, false ) }}
+              if: |
+                  startsWith( inputs.RC_RELEASE, false ) ||
+                  startsWith( env.RC_RELEASE, false )
               run: |
                   filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip"
 
@@ -398,11 +433,13 @@ jobs:
             #   Release › Checksum › Release Candidate
             # #
 
-            - name: '🆔 Checksum › RC'
+            - name: '🆔 Checksum › Release Candidate'
               id: task_release_checksum_rc_set
-              if: ${{ startsWith( inputs.PRERELEASE, true ) }}
+              if: |
+                  startsWith( inputs.RC_RELEASE, true ) ||
+                  startsWith( env.RC_RELEASE, true )
               run: |
-                  filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip"
+                  filename_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip"
 
                   #  get sha1 and sha256 for .zip and .gz files
                   find . -maxdepth 1 \( -name '*.zip' -o -name '*.gz' \) -printf '%P\n' | xargs -r sha1sum | gpg --digest-algo sha256 --clearsign > sha1sum.txt.asc
@@ -420,7 +457,7 @@ jobs:
                   #  shasum --algorithm 256 ${filename_zip} > SHA256SUMS.txt
                   echo "FILE_ZIP=${filename_zip}" >> $GITHUB_ENV
 
-                  filename_compose_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip"
+                  filename_compose_zip="${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}-docker-compose.zip"
                   sha256_compose="$(shasum --algorithm 256 ${filename_compose_zip} | awk '{ print $1 }')"
                   echo "FILE_COMPOSE_ZIP=${filename_compose_zip}" >> $GITHUB_ENV
 
@@ -451,7 +488,9 @@ jobs:
 
             - name: '📦 Zip › Add Checksum › Stable'
               id: task_release_zip_st
-              if: ${{ startsWith( inputs.PRERELEASE, false ) }}
+              if: |
+                  startsWith( inputs.RC_RELEASE, false ) ||
+                  startsWith( env.RC_RELEASE, false )
               run: |
                   echo Zipping STABLE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
                   zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip sha1sum.txt.asc sha256sum.txt.asc
@@ -463,14 +502,22 @@ jobs:
 
             - name: '📦 Zip › Add Checksum › RC'
               id: task_release_zip_rc
-              if: ${{ startsWith( inputs.PRERELEASE, true ) }}
+              if: |
+                  startsWith( inputs.RC_RELEASE, true ) ||
+                  startsWith( env.RC_RELEASE, true )
               run: |
-                  echo Zipping PRE-RELEASE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
-                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip sha1sum.txt.asc sha256sum.txt.asc
+                  echo Zipping PRE-RELEASE Package .zip ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip
+                  zip -jr ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip sha1sum.txt.asc sha256sum.txt.asc
                   ls
 
             # #
-            #   Release › Generate Tags
+            #   Release › Changelog › Generate Tags
+            #
+            #   generates a changelog from the github api. requires a PREVIOUS_TAG in order to figure
+            #   out the changes made between the two versions.
+            #
+            #   outputs:
+            #     ${{ steps.changelog.outputs.changelog }}
             # #
 
             - name: '📝 Changelog › Pre Setup (Categorized Commits)'
@@ -585,13 +632,55 @@ jobs:
                   echo "$CHANGELOG_UNCATEGORIZED"
 
             # #
-            #   Release › List Tree
+            #   Release › Verbose › List Tree
             # #
 
-            - name: '⚙️ Debug › Tree Listing'
-              id: task_release_debug_tree
+            - name: '⚙️ Verbose › Tree Listing'
+              id: task_release_verbose_tree
               run: |
                   tree
+
+            # #
+            #   Release › Verbose › Changelog › Print Categorized
+            # #
+
+            - name: '⚙️ Verbose › Changelog › Categorized'
+              id: task_release_changelog_verbose_categorized
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, false ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, false )
+              env:
+                  CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+              run: |
+                  echo
+                  echo "---- CHANGELOG [ Categorized ] -----------------------------------------------"
+                  echo
+                  echo "$CHANGELOG_CATEGORIZED"
+                  echo
+                  echo "---- CHANGELOG ---------------------------------------------------------------"
+                  echo
+
+            # #
+            #   Release › Verbose › Changelog › Print Uncategorized
+            # #
+
+            - name: '⚙️ Verbose › Changelog › Uncategorized'
+              id: task_release_changelog_verbose_uncategorized
+              if: |
+                  startsWith( inputs.SHOW_UNCATEGORIZED, true ) ||
+                  startsWith( env.SHOW_UNCATEGORIZED, true )
+              env:
+                  CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+              run: |
+                  echo
+                  echo "---- CHANGELOG [ Uncategorized ] ---------------------------------------------"
+                  echo
+                  echo "$CHANGELOG_UNCATEGORIZED"
+                  echo
+                  echo "---- CHANGELOG ---------------------------------------------------------------"
+                  echo
 
             # #
             #   Release › Post Release (Stable)
@@ -605,10 +694,12 @@ jobs:
             - name: '🏳️ Post › Stable'
               id: task_release_bundle_st
               if: |
-                  startsWith( inputs.PRERELEASE, false ) ||
-                  startsWith( env.PRERELEASE, false )
+                  startsWith( inputs.RC_RELEASE, false ) ||
+                  startsWith( env.RC_RELEASE, false )
               uses: softprops/action-gh-release@v2
               env:
+                  CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
                   GITHUB_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
               with:
                   token: ${{ secrets.ADMINSERV_TOKEN_CL }}
@@ -636,14 +727,16 @@ jobs:
             #           ${{ steps.task_release_bundle_st.outputs.id
             # #
 
-            - name: "🏳️ Post › Release Candidate"
+            - name: '🏳️ Post › Release Candidate'
               id: task_release_bundle_rc
               if: |
-                  startsWith( inputs.PRERELEASE, true ) ||
-                  startsWith( env.PRERELEASE, true )
+                  startsWith( inputs.RC_RELEASE, true ) ||
+                  startsWith( env.RC_RELEASE, true )
               uses: softprops/action-gh-release@v2
               env:
-                  GITHUB_TOKEN: ${{ secrets.ADMINSERV_TOKEN }}
+                  CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                  CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
+                  GITHUB_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
               with:
                   token: ${{ secrets.ADMINSERV_TOKEN }}
                   name: v${{ env.PACKAGE_VERSION }}
@@ -652,8 +745,8 @@ jobs:
                   draft: false
                   generate_release_notes: false
                   files: |
-                      ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}-docker-compose.zip
-                      ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.VERSION_RC }}.zip
+                      ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}-docker-compose.zip
+                      ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip
                       sha1sum.txt.asc
                       sha256sum.txt.asc
                   prerelease: false
@@ -699,17 +792,35 @@ jobs:
                   echo "---- CHANGELOG ---------------------------------------------------------------"
 
             # #
-            #   Release › Upload Artifacts › Release Files
+            #   Release › Upload Artifacts › Release Files › Stable
             # #
 
             - name: >-
-                📋 Upload Artifacts › ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
-              id: task_release_artifact
+                📋 Upload Artifacts › Stable › ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+              id: task_release_artifact_stable
               uses: actions/upload-artifact@v4
-              if: always()
+              if: |
+                  startsWith( inputs.RC_RELEASE, false ) ||
+                  startsWith( env.RC_RELEASE, false )
               with:
                   name: "${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}"
                   path: ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+                  retention-days: 30
+
+            # #
+            #   Release › Upload Artifacts › Release Files › Release Candidate
+            # #
+
+            - name: >-
+                📋 Upload Artifacts › RC › ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip
+              id: task_release_artifact_rc
+              uses: actions/upload-artifact@v4
+              if: |
+                  startsWith( inputs.RC_RELEASE, true ) ||
+                  startsWith( env.RC_RELEASE, true )
+              with:
+                  name: "${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}"
+                  path: ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-rc.${{ inputs.RC_VERSION }}.zip
                   retention-days: 30
 
     # #
