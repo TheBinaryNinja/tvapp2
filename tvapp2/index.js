@@ -12,7 +12,6 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
-import * as child from 'child_process';
 import cron, { schedule } from 'node-cron';
 import * as crons from 'cron';
 
@@ -30,10 +29,6 @@ const cache = new Map();
 const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
 const __filename = fileURLToPath( import.meta.url ); // get resolved path to file
 const __dirname = path.dirname( __filename ); // get name of directory
-/*
-const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
-*/
-const gitHash = `f6484e00dea57891cdeb3123aca124ca7388b22b`;
 
 /*
     chalk.level
@@ -115,8 +110,8 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/201
                 http://127.0.0.1:4124/gz
                 http://127.0.0.1:4124/playlist
                 http://127.0.0.1:4124/key
-                http://127.0.0.1:4124/channel?url=https://thetvapp.to/tv/bbc-america-live-stream/
-                http://127.0.0.1:4124/api/health
+                http://127.0.0.1:4124/channel
+                http://127.0.0.1:4124/health
 */
 
 const subdomainGZP = [ 'gzip', 'gz' ];
@@ -1527,34 +1522,11 @@ async function serveM3U( res, req )
         const updatedContent = formattedContent
             .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
             {
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*thetvapp` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
-
                 return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
             })
             .replace( /(https?:\/\/[^\s]*tvpass[^\s]*)/g, ( fullUrl ) =>
             {
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*tvpass` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
-
                 return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
-            })
-            .replace( /(https?:\/\/[^\s]*fl2.moveonjoy[^\s]*)/g, ( fullUrl ) =>
-            {
-                const urlRewrite = fullUrl.replace( 'fl2.moveonjoy', 'fl6.moveonjoy' );
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*fl2.moveonjoy` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ urlRewrite }` ) );
-
-                return `${ urlRewrite }`;
             });
 
             res.writeHead( 200, {
@@ -2197,11 +2169,9 @@ const server = http.createServer( ( request, response ) =>
                 appRelease: envAppRelease,
                 appName: name,
                 appVersion: version,
-                appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
+                appUrlGithub: repository.url,
                 appUrlDiscord: discord.url,
-                appUrlDocs: docs.url,
-                appGitHashShort: gitHash.substring( 0, 9 ),
-                appGitHashLong: gitHash
+                appUrlDocs: docs.url
             }, ( err, data ) =>
         {
             if ( !err )
