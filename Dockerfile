@@ -57,6 +57,7 @@ ARG ALPINE_VERSION=3.21
 ARG BUILDDATE
 ARG VERSION
 ARG RELEASE
+ARG GIT_SHA1=0000000000000000000000000000000000000000
 
 # #
 #   Set Labels
@@ -82,6 +83,7 @@ LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
 LABEL org.tvapp2.image.build-version-alpine="${ALPINE_VERSION}"
 LABEL org.tvapp2.image.build-architecture="${ARCH}"
 LABEL org.tvapp2.image.build-release="${RELEASE}"
+LABEL org.tvapp2.image.build-sha1="${GIT_SHA1}"
 
 # #
 #   Set Env Var
@@ -106,6 +108,7 @@ ENV HEALTH_TIMER=600000
 ENV TASK_CRON_SYNC="0 0 */3 * *"
 ENV LOG_LEVEL=4
 ENV TZ="Etc/UTC"
+ENV GIT_SHA1=${GIT_SHA1:-0000000000000000000000000000000000000000}
 
 # #
 #   Install
@@ -117,6 +120,7 @@ RUN \
         curl \
         bash \
         nano \
+        git \
         npm \
         openssl
 

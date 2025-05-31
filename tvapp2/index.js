@@ -83,6 +83,7 @@ const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
+const envGitSHA1 = process.env.GIT_SHA1 || '0000000000000000000000000000000000000000';
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 
 /*
@@ -2197,9 +2198,11 @@ const server = http.createServer( ( request, response ) =>
                 appRelease: envAppRelease,
                 appName: name,
                 appVersion: version,
-                appUrlGithub: repository.url,
+                appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
                 appUrlDiscord: discord.url,
-                appUrlDocs: docs.url
+                appUrlDocs: docs.url,
+                appGitSHA1Short: envGitSHA1.substring( 0, 9 ),
+                appGitSHA1Long: envGitSHA1
             }, ( err, data ) =>
         {
             if ( !err )

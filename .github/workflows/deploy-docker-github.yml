@@ -277,6 +277,7 @@ jobs:
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                          #  02-25-2025 12:49
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                          #  20250225
                   echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                      #  2025-02-25T12:50:11.569Z
+                  echo "GITHUB_SHA1=`git rev-parse HEAD`" >> ${GITHUB_ENV}
 
             # #
             #   Release › Github › Install Dependencies
@@ -458,6 +459,7 @@ jobs:
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Amd64
@@ -515,6 +517,7 @@ jobs:
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Arm64
@@ -601,6 +604,8 @@ jobs:
                   echo "env.REGISTRY_REPO_ORG_AUTHOR_LC .......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
                   echo "env.REGISTRY_REPO_AUTHOR_LC .............. ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
                   echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
+                  echo "env.GITHUB_SHA ........................... ${{ env.GITHUB_SHA }}"
+                  echo "env.GITHUB_SHA1 .......................... ${{ env.GITHUB_SHA1 }}"
                   echo ""
                   echo "[ DOCKER IMAGES ] --------------------------------------------------------------------------------------"
                   echo "registry ................................. Github GHCR"
