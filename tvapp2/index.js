@@ -110,8 +110,8 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/201
                 http://127.0.0.1:4124/gz
                 http://127.0.0.1:4124/playlist
                 http://127.0.0.1:4124/key
-                http://127.0.0.1:4124/channel
-                http://127.0.0.1:4124/health
+                http://127.0.0.1:4124/channel?url=https://thetvapp.to/tv/bbc-america-live-stream/
+                http://127.0.0.1:4124/api/health
 */
 
 const subdomainGZP = [ 'gzip', 'gz' ];
@@ -1522,7 +1522,7 @@ async function serveM3U( res, req )
         const updatedContent = formattedContent
             .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
             {
-                Log.debug( `.m3u`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
+                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
                     chalk.blueBright( `<keyword>` ), chalk.gray( `*thetvapp` ),
                     chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
@@ -1532,7 +1532,7 @@ async function serveM3U( res, req )
             })
             .replace( /(https?:\/\/[^\s]*tvpass[^\s]*)/g, ( fullUrl ) =>
             {
-                Log.debug( `.m3u`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
+                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
                     chalk.blueBright( `<keyword>` ), chalk.gray( `*tvpass` ),
                     chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
@@ -1543,7 +1543,7 @@ async function serveM3U( res, req )
             .replace( /(https?:\/\/[^\s]*fl2.moveonjoy[^\s]*)/g, ( fullUrl ) =>
             {
                 const urlRewrite = fullUrl.replace( 'fl2.moveonjoy', 'fl6.moveonjoy' );
-                Log.debug( `.m3u`, chalk.yellow( `[assigner]` ), chalk.white( `⚙️` ),
+                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
                     chalk.blueBright( `<keyword>` ), chalk.gray( `*fl2.moveonjoy` ),
                     chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
