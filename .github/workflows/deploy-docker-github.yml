@@ -493,7 +493,7 @@ jobs:
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
-                      ALPINE_VERSION=${{ env.ALPINE_VERSION }}
+                      ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -565,7 +565,7 @@ jobs:
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
-                      ALPINE_VERSION=${{ env.ALPINE_VERSION }}
+                      ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
