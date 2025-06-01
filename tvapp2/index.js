@@ -83,7 +83,6 @@ const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
-const envGitSHA1 = process.env.GIT_SHA1 || '0000000000000000000000000000000000000000';
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 
 /*
@@ -310,11 +309,6 @@ class Semaphore
 
 async function serviceCheck( service, uri )
 {
-    Log.info( `ping`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
-        chalk.blueBright( `<msg>` ), chalk.gray( `Connection attempt` ),
-        chalk.blueBright( `<service>` ), chalk.gray( ` ${ service } ` ),
-        chalk.blueBright( `<address>` ), chalk.gray( ` ${ uri } ` ) );
-
     /* try 1 */
 
     try
@@ -1528,34 +1522,11 @@ async function serveM3U( res, req )
         const updatedContent = formattedContent
             .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
             {
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*thetvapp` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
-
                 return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
             })
             .replace( /(https?:\/\/[^\s]*tvpass[^\s]*)/g, ( fullUrl ) =>
             {
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*tvpass` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
-
                 return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
-            })
-            .replace( /(https?:\/\/[^\s]*fl2.moveonjoy[^\s]*)/g, ( fullUrl ) =>
-            {
-                const urlRewrite = fullUrl.replace( 'fl2.moveonjoy', 'fl6.moveonjoy' );
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*fl2.moveonjoy` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ urlRewrite }` ) );
-
-                return `${ urlRewrite }`;
             });
 
             res.writeHead( 200, {
@@ -2198,11 +2169,9 @@ const server = http.createServer( ( request, response ) =>
                 appRelease: envAppRelease,
                 appName: name,
                 appVersion: version,
-                appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
+                appUrlGithub: repository.url,
                 appUrlDiscord: discord.url,
-                appUrlDocs: docs.url,
-                appGitSHA1Short: envGitSHA1.substring( 0, 9 ),
-                appGitSHA1Long: envGitSHA1
+                appUrlDocs: docs.url
             }, ( err, data ) =>
         {
             if ( !err )
