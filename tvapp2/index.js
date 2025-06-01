@@ -2337,7 +2337,7 @@ const server = http.createServer( ( request, response ) =>
 
     serviceCheck( 'TVPass.org', 'https://tvpass.org' );
     serviceCheck( 'TheTVApp.to', 'https://thetvapp.to' );
-    serviceCheck( 'MoveOnJoy.com', 'https://moveonjoy.com' );
+    serviceCheck( 'MoveOnJoy.com', 'http://moveonjoy.com' );
 
     /*
         start web server
