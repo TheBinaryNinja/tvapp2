@@ -58,6 +58,7 @@ ARG BUILDDATE
 ARG VERSION
 ARG RELEASE
 ARG GIT_SHA1=0000000000000000000000000000000000000000
+ARG REGISTRY=local
 
 # #
 #   Set Labels
@@ -74,16 +75,16 @@ LABEL org.opencontainers.image.repo.3="https://github.com/aetherinox/docker-base
 LABEL org.opencontainers.image.documentation="https://thebinaryninja.github.io/tvapp2"
 LABEL org.opencontainers.image.url="https://github.com/thebinaryninja/tvapp2/pkgs/container/tvapp2"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.architecture="${ARCH}"
+LABEL org.opencontainers.image.architecture="${ARCH:-amd64}"
 LABEL org.opencontainers.image.ref.name="main"
-LABEL org.opencontainers.image.registry="local"
-LABEL org.opencontainers.image.release="${RELEASE}"
+LABEL org.opencontainers.image.registry="${REGISTRY:-local}"
+LABEL org.opencontainers.image.release="${RELEASE:-stable}"
 LABEL org.tvapp2.image.maintainers="Aetherinox, iFlip721, Optx"
-LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE}"
-LABEL org.tvapp2.image.build-version-alpine="${ALPINE_VERSION}"
-LABEL org.tvapp2.image.build-architecture="${ARCH}"
-LABEL org.tvapp2.image.build-release="${RELEASE}"
-LABEL org.tvapp2.image.build-sha1="${GIT_SHA1}"
+LABEL org.tvapp2.image.build-version="Version:- ${VERSION} Date:- ${BUILDDATE:-3.21}"
+LABEL org.tvapp2.image.build-version-alpine="${ALPINE_VERSION:-3.21}"
+LABEL org.tvapp2.image.build-architecture="${ARCH:-amd64}"
+LABEL org.tvapp2.image.build-release="${RELEASE:-stable}"
+LABEL org.tvapp2.image.build-sha1="${GIT_SHA1:-0000000000000000000000000000000000000000}"
 
 # #
 #   Set Env Var
@@ -91,7 +92,7 @@ LABEL org.tvapp2.image.build-sha1="${GIT_SHA1}"
 
 ENV NODE_VERSION=22.8.0
 ENV YARN_VERSION=1.22.22
-ENV RELEASE="${RELEASE}"
+ENV RELEASE="${RELEASE:-stable}"
 ENV DIR_BUILD=/usr/src/app
 ENV DIR_RUN=/usr/bin/app
 ENV URL_REPO="https://git.binaryninja.net/binaryninja/"

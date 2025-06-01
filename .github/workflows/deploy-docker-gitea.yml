@@ -75,6 +75,21 @@ on:
                 type:           string
 
             # #
+            #   Registry Name
+            #
+            #   options:
+            #       - github
+            #       - dockerhub
+            #       - gitea
+            # #
+
+            IMAGE_REGISTRY:
+                description:    '📘 Registry Name'
+                required:       true
+                default:        'gitea'
+                type:           string
+
+            # #
             #   Gitea › Author
             #
             #   used in github image path
@@ -106,10 +121,22 @@ on:
             # #
 
             IMAGE_GITEA_WEBSITE:
-              description:      '🌎 Gitea Website'
-              required:         true
-              default:          'git.binaryninja.net'
-              type:             string
+                description:    '🌎 Gitea Website'
+                required:       true
+                default:        'git.binaryninja.net'
+                type:           string
+
+            # #
+            #   Alpine Version
+            #
+            #   specifies the alpine base docker image version
+            # #
+
+            ALPINE_VERSION:
+                description:    '📀 Alpine Version'
+                required:       true
+                default:        '3.21'
+                type:           string
 
             # #
             #   true            no changes to the repo will be made
@@ -148,9 +175,11 @@ on:
 env:
     IMAGE_NAME:                 ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
     IMAGE_VERSION:              ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
+    IMAGE_REGISTRY:             ${{ github.event.inputs.IMAGE_VERSION || 'gitea' }}
     IMAGE_GITEA_AUTHOR:         ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
     IMAGE_GITEA_USERNAME:       ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
     IMAGE_GITEA_WEBSITE:        ${{ github.event.inputs.IMAGE_GITEA_WEBSITE || 'git.binaryninja.net' }}
+    ALPINE_VERSION:             ${{ github.event.inputs.ALPINE_VERSION || '3.21' }}
 
     BOT_NAME_1:                 EuropaServ
     BOT_NAME_2:                 BinaryServ
@@ -292,7 +321,7 @@ jobs:
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                          #  02-25-2025 12:49
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                          #  20250225
                   echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                      #  2025-02-25T12:50:11.569Z
-                  echo "GITHUB_SHA1=`git rev-parse HEAD`" >> ${GITHUB_ENV}
+                  echo "GITHUB_SHA1=$(git rev-parse HEAD)" >> $GITHUB_ENV                                                                                           #  012cd0cc44c576c4a57b8a18d86793f244d1080a
 
             # #
             #   Release › Gitea › Install Dependencies
@@ -436,10 +465,11 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-                      org.opencontainers.image.registry=gitea
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -448,10 +478,11 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-                      org.opencontainers.image.registry=gitea
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Gitea › Meta › arm64
@@ -488,10 +519,11 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-                      org.opencontainers.image.registry=gitea
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -500,10 +532,11 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-                      org.opencontainers.image.registry=gitea
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Gitea › Meta › Release
@@ -552,8 +585,11 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-                      org.opencontainers.image.registry=gitea
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -562,8 +598,11 @@ jobs:
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
-                      org.opencontainers.image.registry=gitea
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Gitea › Build and Push › Amd64
@@ -589,6 +628,7 @@ jobs:
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
+                      ALPINE_VERSION=${{ env.ALPINE_VERSION }}
 
             # #
             #   Release › Gitea › Export Digest › Amd64
@@ -642,6 +682,7 @@ jobs:
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
+                      ALPINE_VERSION=${{ env.ALPINE_VERSION }}
 
             # #
             #   Release › Gitea › Export Digest › Arm64
