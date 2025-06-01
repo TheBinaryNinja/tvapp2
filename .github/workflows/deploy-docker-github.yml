@@ -277,6 +277,7 @@ jobs:
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                          #  02-25-2025 12:49
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                          #  20250225
                   echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                      #  2025-02-25T12:50:11.569Z
+                  echo "GITHUB_SHA1=`git rev-parse HEAD`" >> ${GITHUB_ENV}
 
             # #
             #   Release › Github › Install Dependencies
@@ -419,6 +420,8 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=github
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -429,6 +432,8 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=github
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
 
             # #
             #   Release › Github › Build and Push › Amd64
@@ -458,6 +463,7 @@ jobs:
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Amd64
@@ -515,6 +521,7 @@ jobs:
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Arm64
@@ -545,6 +552,63 @@ jobs:
                   retention-days: 10
 
             # #
+            #   Release › Github › Checkpoint
+            # #
+
+            - name: '⚠️ Checkpoint'
+              id: task_release_gh_checkpoint
+              run: |
+                  echo ""
+                  echo "---- [ GITHUB ] ----------------------------------------------------------------------------------------"
+                  echo "github.actor.............................. ${{ github.actor }}"
+                  echo "github.ref ............................... ${{ github.ref }}"
+                  echo "github.ref_name .......................... ${{ github.ref_name }}"
+                  echo "github.event_name ........................ ${{ github.event_name }}"
+                  echo "github.repository_owner .................. ${{ github.repository_owner }}"
+                  echo "github.repository ........................ ${{ github.repository }}"
+                  echo "github.sha ............................... ${{ github.sha }}"
+                  echo -e ""
+                  echo "---- [ INPUTS ] ----------------------------------------------------------------------------------------"
+                  echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
+                  echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
+                  echo "inputs.IMAGE_GHCR_AUTHOR ................. ${{ inputs.IMAGE_GHCR_AUTHOR }}"
+                  echo "inputs.IMAGE_GHCR_USERNAME ............... ${{ inputs.IMAGE_GHCR_USERNAME }}"
+                  echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
+                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
+                  echo -e ""
+                  echo "---- [ ENV ] -------------------------------------------------------------------------------------------"
+                  echo "env.IMAGE_NAME ........................... ${{ env.IMAGE_NAME }}"
+                  echo "env.IMAGE_VERSION ........................ ${{ env.IMAGE_VERSION }}"
+                  echo "env.IMAGE_VERSION_1DIGIT ................. ${{ env.IMAGE_VERSION_1DIGIT }}"
+                  echo "env.IMAGE_VERSION_2DIGIT ................. ${{ env.IMAGE_VERSION_2DIGIT }}"
+                  echo "env.IMAGE_GHCR_AUTHOR .................... ${{ env.IMAGE_GHCR_AUTHOR }}"
+                  echo "env.IMAGE_GHCR_USERNAME .................. ${{ env.IMAGE_GHCR_USERNAME }}"
+                  echo "env.NOW .................................. ${{ env.NOW }}"
+                  echo "env.NOW_SHORT ............................ ${{ env.NOW_SHORT }}"
+                  echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
+                  echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
+                  echo "env.NOW_DOCKER_TS ........................ ${{ env.NOW_DOCKER_TS }}"
+                  echo "env.REGISTRY_REPO_ORG_AUTHOR_LC .......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
+                  echo "env.REGISTRY_REPO_AUTHOR_LC .............. ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
+                  echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
+                  echo "env.GITHUB_SHA1 .......................... ${{ env.GITHUB_SHA1 }}"
+                  echo -e ""
+                  echo "---- [ DOCKER IMAGES ] ---------------------------------------------------------------------------------"
+                  echo "registry ................................. Github GHCR"
+                  echo "tags ..................................... ${{ steps.task_release_gh_meta.outputs.tags }}"
+                  echo "labels ................................... ${{ steps.task_release_gh_meta.outputs.labels }}"
+                  echo "digest ................................... ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
+                  echo -e ""
+                  echo "(release) tags ........................... ${{ steps.task_release_gh_meta.outputs.tags }}"
+                  echo "(release) labels ......................... ${{ steps.task_release_gh_meta.outputs.labels }}"
+                  echo -e ""
+                  echo "---- [ DOCKER DIGESTS ] --------------------------------------------------------------------------------"
+                  echo "docker image id (amd64) .................. ${{ steps.task_release_gh_push_amd64.outputs.imageid }}"
+                  echo "docker digest (amd64) .................... ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
+                  echo "docker image id (arm64) .................. ${{ steps.task_release_gh_push_arm64.outputs.imageid }}"
+                  echo "docker digest (arm64) .................... ${{ steps.task_release_gh_push_arm64.outputs.digest }}"
+
+            # #
             #   Release › Github › Push Manifest
             # #
 
@@ -560,62 +624,6 @@ jobs:
                       ghcr.io/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gh_push_arm64.outputs.digest }}
                   index-annotations: |
                       ${{ steps.task_release_gh_meta.outputs.labels }}
-
-            # #
-            #   Release › Github › Checkpoint
-            # #
-
-            - name: '⚠️ Checkpoint'
-              id: task_release_gh_checkpoint
-              run: |
-                  echo ""
-                  echo "[ GITHUB ] ---------------------------------------------------------------------------------------------"
-                  echo "github.actor.............................. ${{ github.actor }}"
-                  echo "github.ref ............................... ${{ github.ref }}"
-                  echo "github.ref_name .......................... ${{ github.ref_name }}"
-                  echo "github.event_name ........................ ${{ github.event_name }}"
-                  echo "github.repository_owner .................. ${{ github.repository_owner }}"
-                  echo "github.repository ........................ ${{ github.repository }}"
-                  echo ""
-                  echo "[ INPUTS ] ---------------------------------------------------------------------------------------------"
-                  echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
-                  echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
-                  echo "inputs.IMAGE_GHCR_AUTHOR ................. ${{ inputs.IMAGE_GHCR_AUTHOR }}"
-                  echo "inputs.IMAGE_GHCR_USERNAME ............... ${{ inputs.IMAGE_GHCR_USERNAME }}"
-                  echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
-                  echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
-                  echo ""
-                  echo "[ ENV ] ------------------------------------------------------------------------------------------------"
-                  echo "env.IMAGE_NAME ........................... ${{ env.IMAGE_NAME }}"
-                  echo "env.IMAGE_VERSION ........................ ${{ env.IMAGE_VERSION }}"
-                  echo "env.IMAGE_VERSION_1DIGIT ................. ${{ env.IMAGE_VERSION_1DIGIT }}"
-                  echo "env.IMAGE_VERSION_2DIGIT ................. ${{ env.IMAGE_VERSION_2DIGIT }}"
-                  echo "env.IMAGE_GHCR_AUTHOR .................... ${{ env.IMAGE_GHCR_AUTHOR }}"
-                  echo "env.IMAGE_GHCR_USERNAME .................. ${{ env.IMAGE_GHCR_USERNAME }}"
-                  echo "env.NOW .................................. ${{ env.NOW }}"
-                  echo "env.NOW_SHORT ............................ ${{ env.NOW_SHORT }}"
-                  echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
-                  echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
-                  echo "env.NOW_DOCKER_TS ........................ ${{ env.NOW_DOCKER_TS }}"
-                  echo "env.DOCKER_IMAGE ......................... ${{ env.DOCKER_IMAGE }}"
-                  echo "env.REGISTRY_REPO_ORG_AUTHOR_LC .......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
-                  echo "env.REGISTRY_REPO_AUTHOR_LC .............. ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
-                  echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
-                  echo ""
-                  echo "[ DOCKER IMAGES ] --------------------------------------------------------------------------------------"
-                  echo "registry ................................. Github GHCR"
-                  echo "tags ..................................... ${{ steps.task_release_gh_meta.outputs.tags }}"
-                  echo "labels ................................... ${{ steps.task_release_gh_meta.outputs.labels }}"
-                  echo "digest ................................... ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
-                  echo ""
-                  echo "(release) tags ........................... ${{ steps.task_release_gh_meta.outputs.tags }}"
-                  echo "(release) labels ......................... ${{ steps.task_release_gh_meta.outputs.labels }}"
-                  echo ""
-                  echo "[ DOCKER DIGESTS ] -------------------------------------------------------------------------------------"
-                  echo "docker image id (amd64) .................. ${{ steps.task_release_gh_push_amd64.outputs.imageid }}"
-                  echo "docker digest (amd64) .................... ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
-                  echo "docker image id (arm64) .................. ${{ steps.task_release_gh_push_arm64.outputs.imageid }}"
-                  echo "docker digest (arm64) .................... ${{ steps.task_release_gh_push_arm64.outputs.digest }}"
 
             # #
             #   Release › Github › Get Weekly Commits

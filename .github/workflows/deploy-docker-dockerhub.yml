@@ -280,6 +280,7 @@ jobs:
                   echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                          #  02-25-2025 12:49
                   echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                          #  20250225
                   echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                      #  2025-02-25T12:50:11.569Z
+                  echo "GITHUB_SHA1=`git rev-parse HEAD`" >> ${GITHUB_ENV}
 
             # #
             #   Release › Dockerhub › Install Dependencies
@@ -421,6 +422,8 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=dockerhub
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
                   annotations: |
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -431,6 +434,8 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=dockerhub
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${GITHUB_SHA1}
 
             # #
             #   Release › Dockerhub › Build and Push › Amd64
@@ -455,6 +460,7 @@ jobs:
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Dockerhub › Export Digest › Amd64
@@ -507,6 +513,7 @@ jobs:
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
+                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Dockerhub › Export Digest › Arm64
@@ -537,22 +544,6 @@ jobs:
                   retention-days: 10
 
             # #
-            #   Release › Dockerhub › Push Manifest
-            # #
-
-            - name: '📦 Push Manifest'
-              id: task_release_dh_manifest
-              uses: int128/docker-manifest-create-action@v2
-              with:
-                tags: |
-                    ${{ steps.task_release_dh_meta.outputs.tags }}
-                sources: |
-                    ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}
-                    ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}
-                index-annotations: |
-                    ${{ steps.task_release_dh_meta.outputs.labels }}
-
-            # #
             #   Release › Dockerhub › Checkpoint › Amd64
             # #
 
@@ -560,23 +551,24 @@ jobs:
               id: task_release_dh_checkpoint
               run: |
                   echo ""
-                  echo "[ GITHUB ] ---------------------------------------------------------------------------------------------"
+                  echo "---- [ GITHUB ] ----------------------------------------------------------------------------------------"
                   echo "github.actor.............................. ${{ github.actor }}"
                   echo "github.ref ............................... ${{ github.ref }}"
                   echo "github.ref_name .......................... ${{ github.ref_name }}"
                   echo "github.event_name ........................ ${{ github.event_name }}"
                   echo "github.repository_owner .................. ${{ github.repository_owner }}"
                   echo "github.repository ........................ ${{ github.repository }}"
-                  echo ""
-                  echo "[ INPUTS ] ---------------------------------------------------------------------------------------------"
+                  echo "github.sha ............................... ${{ github.sha }}"
+                  echo -e ""
+                  echo "---- [ INPUTS ] ----------------------------------------------------------------------------------------"
                   echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
                   echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
                   echo "inputs.IMAGE_DOCKERHUB_AUTHOR ............ ${{ inputs.IMAGE_DOCKERHUB_AUTHOR }}"
                   echo "inputs.IMAGE_DOCKERHUB_USERNAME .......... ${{ inputs.IMAGE_DOCKERHUB_USERNAME }}"
                   echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
                   echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
-                  echo ""
-                  echo "[ ENV ] ------------------------------------------------------------------------------------------------"
+                  echo -e ""
+                  echo "---- [ ENV ] -------------------------------------------------------------------------------------------"
                   echo "env.IMAGE_NAME ........................... ${{ env.IMAGE_NAME }}"
                   echo "env.IMAGE_VERSION ........................ ${{ env.IMAGE_VERSION }}"
                   echo "env.IMAGE_VERSION_1DIGIT ................. ${{ env.IMAGE_VERSION_1DIGIT }}"
@@ -591,21 +583,38 @@ jobs:
                   echo "env.REGISTRY_REPO_ORG_AUTHOR_LC .......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
                   echo "env.REGISTRY_REPO_AUTHOR_LC .............. ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
                   echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
-                  echo ""
-                  echo "[ DOCKER IMAGES ] --------------------------------------------------------------------------------------"
+                  echo "env.GITHUB_SHA1 .......................... ${{ env.GITHUB_SHA1 }}"
+                  echo -e ""
+                  echo "---- [ DOCKER IMAGES ] ---------------------------------------------------------------------------------"
                   echo "registry ................................. Dockerhub"
                   echo "tags ..................................... ${{ steps.task_release_dh_meta.outputs.tags }}"
                   echo "labels ................................... ${{ steps.task_release_dh_meta.outputs.labels }}"
                   echo "digest ................................... ${{ steps.task_release_dh_push_amd64.outputs.digest }}"
-                  echo ""
+                  echo -e ""
                   echo "(release) tags ........................... ${{ steps.task_release_dh_meta.outputs.tags }}"
                   echo "(release) labels ......................... ${{ steps.task_release_dh_meta.outputs.labels }}"
-                  echo ""
-                  echo "[ DOCKER DIGESTS ] -------------------------------------------------------------------------------------"
+                  echo -e ""
+                  echo "---- [ DOCKER DIGESTS ] --------------------------------------------------------------------------------"
                   echo "docker image id (amd64) .................. ${{ steps.task_release_dh_push_amd64.outputs.imageid }}"
                   echo "docker digest (amd64) .................... ${{ steps.task_release_dh_push_amd64.outputs.digest }}"
                   echo "docker image id (arm64) .................. ${{ steps.task_release_dh_push_arm64.outputs.imageid }}"
                   echo "docker digest (arm64) .................... ${{ steps.task_release_dh_push_arm64.outputs.digest }}"
+
+            # #
+            #   Release › Dockerhub › Push Manifest
+            # #
+
+            - name: '📦 Push Manifest'
+              id: task_release_dh_manifest
+              uses: int128/docker-manifest-create-action@v2
+              with:
+                tags: |
+                    ${{ steps.task_release_dh_meta.outputs.tags }}
+                sources: |
+                    ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_dh_push_amd64.outputs.digest }}
+                    ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_dh_push_arm64.outputs.digest }}
+                index-annotations: |
+                    ${{ steps.task_release_dh_meta.outputs.labels }}
 
             # #
             #   Release › Dockerhub › Get Weekly Commits
