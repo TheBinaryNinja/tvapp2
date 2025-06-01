@@ -442,6 +442,7 @@ jobs:
                   flavor: |
                       latest=false
                   labels: |
+                      org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -455,6 +456,7 @@ jobs:
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
                   annotations: |
+                      org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -497,6 +499,7 @@ jobs:
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |
+                      org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
@@ -569,6 +572,7 @@ jobs:
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |
+                      org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
