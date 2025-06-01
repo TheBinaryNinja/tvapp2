@@ -12,6 +12,7 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
+import * as child from 'child_process';
 import cron, { schedule } from 'node-cron';
 import * as crons from 'cron';
 
