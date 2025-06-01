@@ -30,6 +30,10 @@ const cache = new Map();
 const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
 const __filename = fileURLToPath( import.meta.url ); // get resolved path to file
 const __dirname = path.dirname( __filename ); // get name of directory
+/*
+const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
+*/
+const gitHash = `f6484e00dea57891cdeb3123aca124ca7388b22b`;
 
 /*
     chalk.level
@@ -111,8 +115,8 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/201
                 http://127.0.0.1:4124/gz
                 http://127.0.0.1:4124/playlist
                 http://127.0.0.1:4124/key
-                http://127.0.0.1:4124/channel
-                http://127.0.0.1:4124/health
+                http://127.0.0.1:4124/channel?url=https://thetvapp.to/tv/bbc-america-live-stream/
+                http://127.0.0.1:4124/api/health
 */
 
 const subdomainGZP = [ 'gzip', 'gz' ];
@@ -2193,9 +2197,11 @@ const server = http.createServer( ( request, response ) =>
                 appRelease: envAppRelease,
                 appName: name,
                 appVersion: version,
-                appUrlGithub: repository.url,
+                appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
                 appUrlDiscord: discord.url,
-                appUrlDocs: docs.url
+                appUrlDocs: docs.url,
+                appGitHashShort: gitHash.substring( 0, 9 ),
+                appGitHashLong: gitHash
             }, ( err, data ) =>
         {
             if ( !err )
