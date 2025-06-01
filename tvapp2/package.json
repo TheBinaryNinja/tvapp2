@@ -75,7 +75,7 @@
         "cron": "^4.3.1",
         "node-cron": "^4.1.0",
         "playwright": "^1.52.0",
-        "user-agents": "^1.1.556",
+        "user-agents": "^1.1.557",
         "chalk": "^5.4.1",
         "ejs": "^3.1.10",
         "moment": "2.30.1",
