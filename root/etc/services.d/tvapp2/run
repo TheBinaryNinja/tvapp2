@@ -121,7 +121,7 @@ if [ -z "${DIR_BUILD}" ]; then
     printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot copy; env var ${c[redl]}\${DIR_BUILD}${c[end]} missing${c[end]}"
     bHasError=true
 else
-    if [ -d "${DIR_BUILD}" ]; then
+    if [ -d "${DIR_BUILD}/" ]; then
         cp -r ${DIR_BUILD}/* ${DIR_RUN}
     else
         printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot copy folder ${c[redl]}${DIR_BUILD}${c[end]} to ${c[redl]}${DIR_RUN}${c[end]}; build folder ${c[redl]}${DIR_BUILD}${c[end]} does not exist${c[end]}"
@@ -138,9 +138,9 @@ if [ -z "${DIR_BUILD}" ]; then
     printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot remove; env var ${c[redl]}\${DIR_BUILD}${c[end]} missing${c[end]}"
 else
     if [ -d "${DIR_BUILD}" ]; then
-        rm -rf ${DIR_BUILD}/*
+        rm -rf "${DIR_BUILD}/"
     else
-        printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot remove; build folder ${c[redl]}${DIR_BUILD}${c[end]} does not exist${c[end]}"
+        printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot remove; build folder ${c[redl]}${DIR_BUILD}${c[end]} does not exist. Restart the container to re-initialize build folder.${c[end]}"
     fi
 fi
 
