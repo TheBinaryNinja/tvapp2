@@ -2338,6 +2338,8 @@ const server = http.createServer( ( request, response ) =>
     serviceCheck( 'TVPass.org', 'https://tvpass.org' );
     serviceCheck( 'TheTVApp.to', 'https://thetvapp.to' );
     serviceCheck( 'MoveOnJoy.com', 'http://moveonjoy.com' );
+    serviceCheck( 'Daddylive.dad', 'https://daddylive.dad' );
+    serviceCheck( 'Newkso.ru', 'https://zekonew.newkso.ru/zeko' );
 
     /*
         start web server
