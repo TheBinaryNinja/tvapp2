@@ -33,7 +33,6 @@ const __dirname = path.dirname( __filename ); // get name of directory
 /*
 const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
 */
-const gitHash = `f6484e00dea57891cdeb3123aca124ca7388b22b`;
 
 /*
     chalk.level
@@ -88,6 +87,7 @@ const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
+const envGitSHA1 = process.env.GIT_SHA1 || '0000000000000000000000000000000000000000';
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 
 /*
@@ -2200,8 +2200,8 @@ const server = http.createServer( ( request, response ) =>
                 appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
                 appUrlDiscord: discord.url,
                 appUrlDocs: docs.url,
-                appGitHashShort: gitHash.substring( 0, 9 ),
-                appGitHashLong: gitHash
+                appGitHashShort: envGitSHA1.substring( 0, 9 ),
+                appGitHashLong: envGitSHA1
             }, ( err, data ) =>
         {
             if ( !err )
