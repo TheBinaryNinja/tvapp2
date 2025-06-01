@@ -120,7 +120,7 @@ on:
             #   specifies the alpine base docker image version
             # #
 
-            ALPINE_VERSION:
+            IMAGE_ALPINE_VERSION:
                 description:    '📀 Alpine Version'
                 required:       true
                 default:        '3.21'
@@ -166,7 +166,7 @@ env:
     IMAGE_REGISTRY:             ${{ github.event.inputs.IMAGE_VERSION || 'github' }}
     IMAGE_GHCR_AUTHOR:          ${{ github.event.inputs.IMAGE_GHCR_AUTHOR || 'BinaryNinja' }}
     IMAGE_GHCR_USERNAME:        ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'BinaryNinja' }}
-    ALPINE_VERSION:             ${{ github.event.inputs.ALPINE_VERSION || '3.21' }}
+    IMAGE_ALPINE_VERSION:       ${{ github.event.inputs.IMAGE_ALPINE_VERSION || '3.21' }}
 
     BOT_NAME_1:                 EuropaServ
     BOT_NAME_2:                 BinaryServ
@@ -449,7 +449,7 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
-                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
                   annotations: |
@@ -462,7 +462,7 @@ jobs:
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
                       org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
-                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_VERSION }}
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
 
@@ -476,19 +476,17 @@ jobs:
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
                   allow: |
-                    network.host
+                      network.host
                   network: host
                   context: .
                   file: Dockerfile
                   platforms: linux/amd64
                   push: ${{ github.event_name != 'pull_request' }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
-                  tags: |
-                      ${{ steps.task_release_gh_meta.outputs.tags }}
-                  annotations: |
-                      ${{ steps.task_release_gh_meta.outputs.annotations }}
                   provenance: false
                   sbom: false
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
                   build-args: |-
                       ARCH=amd64
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
@@ -496,6 +494,21 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
                       ALPINE_VERSION=${{ env.ALPINE_VERSION }}
+                  annotations: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.architecture=amd64
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
+                      org.tvapp2.image.build-architecture=amd64
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Amd64
@@ -535,19 +548,17 @@ jobs:
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
                   allow: |
-                    network.host
+                      network.host
                   network: host
                   context: .
                   file: Dockerfile
                   platforms: linux/arm64
                   push: ${{ github.event_name != 'pull_request' }}
                   labels: ${{ steps.task_release_gh_meta.outputs.labels }}
-                  tags: |
-                      ${{ steps.task_release_gh_meta.outputs.tags }}
-                  annotations: |
-                      ${{ steps.task_release_gh_meta.outputs.annotations }}
                   provenance: false
                   sbom: false
+                  tags: |
+                      ${{ steps.task_release_gh_meta.outputs.tags }}
                   build-args: |-
                       ARCH=arm64
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
@@ -555,6 +566,21 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
                       ALPINE_VERSION=${{ env.ALPINE_VERSION }}
+                  annotations: |
+                      org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
+                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.licenses=MIT
+                      org.opencontainers.image.architecture=arm64
+                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
+                      org.opencontainers.image.ref.name=${{ github.ref_name }}
+                      org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
+                      org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
+                      org.tvapp2.image.build-architecture=arm64
+                      org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
+                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Arm64
