@@ -166,7 +166,7 @@ fi
 # #
 
 printf '%-29s %-65s\n' "  ${c[bluel]}STATUS${c[end]}" "${c[end]}Running command ${c[bluel]}npm install --omit=dev${c[end]}"
-if [ ! -x "$(command -v npm)" ]; then
+if ! command -v npm; then
     printf '%-29s %-65s\n' "  ${c[redl]}ERROR${c[end]}" "${c[end]}Cannot install TVApp2 with npm because package ${c[redl]}npm${c[end]} not installed${c[end]}"
     bHasError=true
 else
