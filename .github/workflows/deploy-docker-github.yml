@@ -453,7 +453,7 @@ jobs:
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
-                  annotations: |
+                  annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -496,7 +496,7 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
-                  annotations: |
+                  annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
@@ -569,7 +569,7 @@ jobs:
                       BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
                       GIT_SHA1=${{ env.GITHUB_SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
-                  annotations: |
+                  annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
