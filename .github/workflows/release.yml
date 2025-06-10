@@ -674,7 +674,7 @@ jobs:
               if: |
                   startsWith( inputs.RC_RELEASE, false ) ||
                   startsWith( env.RC_RELEASE, false )
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v2.2.2
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
@@ -712,7 +712,7 @@ jobs:
               if: |
                   startsWith( inputs.RC_RELEASE, true ) ||
                   startsWith( env.RC_RELEASE, true )
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v2.2.2
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
