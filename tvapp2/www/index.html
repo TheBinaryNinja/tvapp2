@@ -125,7 +125,7 @@
                 <div class="container">
                     <div class="col text-center text-muted text-small text-nowrap">
                         <small>Developed by BinaryNinja - <a data-bs-toggle="tooltip" title="v<%= appVersion %> <%= appRelease %> (<%= appGitHashShort %>)" href="<%= appUrlGithub %>"><%= appName %> (<%= appRelease %>)</a> v<%= appVersion %> <a target="_blank" data-bs-toggle="tooltip" title="View Github commit" href="<%= appUrlGithub %>/commit/<%= appGitHashLong %>"><%= appGitHashShort %></a></small><br />
-                        <small>This utility is for educational purposes only</small>
+                        <small>Uptime <a id="uptime" href="" data-bs-toggle="tooltip" title="<%= appUptimeLong %>"> <%= appUptimeShort %> </a> | Startup <a id="startup" href=""><%= appStartup %>s</a></small>
                     </div>
                 </div>
             </div>
@@ -299,6 +299,7 @@
             let timerDelayMS            = 10000;
             let timerStartMS            = Date.now(); // returns milliseconds
             const timerHealthRun        = '<%= healthTimer %>'; // time in milliseconds until health check ran AFTER initial run
+            const timerUptime           = 1000;
 
             /*
                 Action > Healthcheck
@@ -317,7 +318,7 @@
                     url: 'api/health',
                     type: 'GET',
                     data: {
-                        internal: 1
+                        query: 'healthcheck'
                     },
                     beforeSend: function( data )
                     {
@@ -362,6 +363,54 @@
                 }).responseText;
             }
 
+            function runUptime()
+            {
+                console.log('run uptime')
+                const toastTypeClass = [];
+                toastTypeClass[ 'DEFAULT' ]     = 'text-bg-primary';
+                toastTypeClass[ 'UNHEALTHY' ]   = 'text-bg-warning';
+                toastTypeClass[ 'HEALTHY' ]     = 'text-bg-success';
+                toastTypeClass[ 'ERROR' ]       = 'text-bg-danger';
+
+                $.ajax(
+                {
+                    url: 'api/health',
+                    type: 'GET',
+                    data: {
+                        query: 'uptime'
+                    },
+                    success: function( data )
+                    {
+                        const status = data.message;
+                        const code = data.code;
+                        const uptime = data.uptimeHuman;
+                        if ( status )
+                        {
+                            $('a#uptime').text(`${ uptime }`);
+                        }
+                    },
+                    error: function( data )
+                    {
+                        const toastClass = toastTypeClass['ERROR'];
+                        const toastElm = document.getElementById('tvapp2Toast');
+                        toastElm.classList.add(toastClass);
+
+                        $('.toast #toast-title').html(`Could not get uptime from api`);
+                        $('.toast #toast-message').html(`Failed to communicate with the api. Try restarting the docker container to restore connection.`);
+                        $('#tvapp2Toast').toast('show');
+                    }
+                }).always(function()
+                {
+                    timerDelayMS = parseInt(timerUptime);
+                    timerStartMS = Date.now();
+
+                    setTimeout(function()
+                    {
+                        runUptime();
+                    }, parseInt(timerUptime));
+                }).responseText;
+            }
+
             /*
                 Action > Do Resync
             */
@@ -373,7 +422,7 @@
                     url: 'api/restart',
                     type: 'GET',
                     data: {
-                        internal: 1
+                        query: 'sync'
                     },
                     beforeSend: function( data )
                     {
@@ -492,6 +541,7 @@
             */
 
             setTimeout( function() { runHealthCheck(); }, timerDelayMS );
+            setTimeout( function() { runUptime(); }, 1000 );
 
             /*
                 Action > Tooltip Resync Timers
