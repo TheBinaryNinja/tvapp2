@@ -899,7 +899,8 @@ async function serveKey( req, res )
                 method: req.method || 'GET',
                 code: 400,
                 uptime: Math.round( process.uptime() ),
-                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 timestamp: Date.now()
             };
 
@@ -955,7 +956,8 @@ async function serveKey( req, res )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
-            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
             timestamp: Date.now()
         };
 
@@ -1253,7 +1255,8 @@ async function serveM3UPlaylist( req, res )
                 method: req.method || 'GET',
                 code: 404,
                 uptime: Math.round( process.uptime() ),
-                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 timestamp: Date.now()
             };
 
@@ -1344,7 +1347,8 @@ async function serveM3UPlaylist( req, res )
                 method: req.method || 'GET',
                 code: 500,
                 uptime: Math.round( process.uptime() ),
-                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 timestamp: Date.now()
             };
 
@@ -1403,7 +1407,8 @@ async function serveM3UPlaylist( req, res )
                 method: req.method || 'GET',
                 code: 500,
                 uptime: Math.round( process.uptime() ),
-                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 timestamp: Date.now()
             };
 
@@ -1453,7 +1458,8 @@ async function serveHealthCheck( req, res )
             method: req.method || 'GET',
             code: 200,
             uptime: Math.round( process.uptime() ),
-            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
             timestamp: Date.now()
         };
 
@@ -1491,7 +1497,8 @@ async function serveHealthCheck( req, res )
                 method: req.method || 'GET',
                 code: 503,
                 uptime: Math.round( process.uptime() ),
-                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 timestamp: Date.now()
             };
 
@@ -1622,7 +1629,8 @@ async function serveM3U( res, req )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
-            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
             timestamp: Date.now()
         };
 
@@ -1688,7 +1696,8 @@ async function serveXML( res, req )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
-            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
             timestamp: Date.now()
         };
 
@@ -1754,7 +1763,8 @@ async function serveGZP( res, req )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
-            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+            uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
             timestamp: Date.now()
         };
 
@@ -2047,7 +2057,8 @@ const server = http.createServer( ( req, resp ) =>
                     message: `must specify api key: http://${ req.headers.host }/api/restart?key=XXXXXXXX`,
                     status: `unauthorized`, ref: req.url, method: method || 'GET', code: 401,
                     uptime: Math.round( process.uptime() ), timestamp: Date.now(),
-                    uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' )
+                    uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                    uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' )
                 };
 
                 resp.writeHead( statusCheck.code, {
@@ -2078,7 +2089,8 @@ const server = http.createServer( ( req, resp ) =>
                     message: `incorrect api key specified: http://${ req.headers.host }/api/restart?key=XXXXXXXX`,
                     status: `unauthorized`, ref: req.url, method: method || 'GET', code: 401,
                     uptime: Math.round( process.uptime() ), timestamp: Date.now(),
-                    uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' )
+                    uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                    uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' )
                 };
 
                 resp.writeHead( statusCheck.code, {
@@ -2109,7 +2121,8 @@ const server = http.createServer( ( req, resp ) =>
                 method: method || 'GET',
                 code: 200,
                 uptime: Math.round( process.uptime() ),
-                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 timestamp: Date.now()
             };
 

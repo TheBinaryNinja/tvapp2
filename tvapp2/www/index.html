@@ -365,7 +365,6 @@
 
             function runUptime()
             {
-                console.log('run uptime')
                 const toastTypeClass = [];
                 toastTypeClass[ 'DEFAULT' ]     = 'text-bg-primary';
                 toastTypeClass[ 'UNHEALTHY' ]   = 'text-bg-warning';
@@ -383,10 +382,14 @@
                     {
                         const status = data.message;
                         const code = data.code;
-                        const uptime = data.uptimeHuman;
+                        const uptimeShort = data.uptimeShort;
+                        const uptimeLong = data.uptimeLong;
                         if ( status )
                         {
-                            $('a#uptime').text(`${ uptime }`);
+                            $('a#uptime').text(`${ uptimeShort }`);
+
+                            const tooltip = bootstrap.Tooltip.getInstance('#uptime') // Returns a Bootstrap tooltip instance
+                            tooltip.setContent( { '.tooltip-inner': `App started ${ uptimeLong }` } )
                         }
                     },
                     error: function( data )
