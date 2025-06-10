@@ -510,7 +510,7 @@ All of the needed Docker files already exist in the repository. To get started, 
 mkdir tvapp2 && cd tvapp2
 
 # to clone from our gitea website
-git clone https://git.binaryninja.net/binarynina/tvapp2.git ./
+git clone https://git.binaryninja.net/binaryninja/tvapp2.git ./
 
 # to clone from our github website
 git clone https://github.com/thebinaryninja/tvapp2.git ./
@@ -676,7 +676,7 @@ All of the needed Docker files already exist in the repository. To get started, 
 mkdir tvapp2 && cd tvapp2
 
 # to clone from our gitea website
-git clone https://git.binaryninja.net/binarynina/tvapp2.git ./
+git clone https://git.binaryninja.net/binaryninja/tvapp2.git ./
 
 # to clone from our github website
 git clone https://github.com/thebinaryninja/tvapp2.git ./
