@@ -58,7 +58,7 @@ chalk.level = 3;
 
 */
 
-TimeAgo.addDefaultLocale(en);
+TimeAgo.addDefaultLocale( en );
 const timeAgo = new TimeAgo( );
 
 /*
