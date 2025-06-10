@@ -100,10 +100,20 @@
         "node": ">=20"
     },
     "files": [
-        "root",
         "LICENSE",
         "README.md",
+        "root.js",
         "index.js",
-        "manifest.json"
+        "manifest.json",
+        "classes/CLib.js",
+        "classes/Log.js",
+        "classes/Semaphore.js",
+        "classes/Storage.js",
+        "classes/Tuner.js",
+        "www/index.html",
+        "www/hdhomerun.html",
+        "www/favicon.ico",
+        "www/css/tvapp2.min.css",
+        "www/js/tvapp2.min.js"
   ]
 }
