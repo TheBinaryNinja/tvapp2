@@ -12,8 +12,12 @@ import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
 import moment from 'moment';
-import * as child from 'child_process';
+import TimeAgo from 'javascript-time-ago';
+import en from 'javascript-time-ago/locale/en';
+import nconf from 'nconf';
+import crypto from 'node:crypto';
 import cron, { schedule } from 'node-cron';
+import * as child from 'child_process';
 import * as crons from 'cron';
 
 /*
@@ -49,6 +53,13 @@ const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
 */
 
 chalk.level = 3;
+
+/*
+
+*/
+
+TimeAgo.addDefaultLocale(en);
+const timeAgo = new TimeAgo( );
 
 /*
     Define > General
@@ -89,6 +100,7 @@ const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
 const envGitSHA1 = process.env.GIT_SHA1 || '0000000000000000000000000000000000000000';
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
+let TIME_STARTUP = 0;
 
 /*
     Define > Externals
@@ -179,45 +191,45 @@ class Log
     static verbose( ...msg )
     {
         if ( LOG_LEVEL >= 6 )
-            console.debug( chalk.white.bgBlack.blackBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
+            console.debug( chalk.white.bgBlack.blackBright.bold( ` ${ name } ` ), chalk.white( `⚙️` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
     static debug( ...msg )
     {
         if ( LOG_LEVEL >= 7 )
-            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
+            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `⚙️` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
         else if ( LOG_LEVEL >= 5 )
-            console.debug( chalk.white.bgGray.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
+            console.debug( chalk.white.bgGray.bold( ` ${ name } ` ), chalk.white( `⚙️` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
     static info( ...msg )
     {
         if ( LOG_LEVEL >= 4 )
-            console.info( chalk.white.bgBlueBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.blueBright( msg.join( ' ' ) ) );
+            console.info( chalk.white.bgBlueBright.bold( ` ${ name } ` ), chalk.white( `ℹ️` ), this.now(), chalk.blueBright( msg.join( ' ' ) ) );
     }
 
     static ok( ...msg )
     {
         if ( LOG_LEVEL >= 4 )
-            console.log( chalk.white.bgGreen.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.greenBright( msg.join( ' ' ) ) );
+            console.log( chalk.white.bgGreen.bold( ` ${ name } ` ), chalk.white( `✅` ), this.now(), chalk.greenBright( msg.join( ' ' ) ) );
     }
 
     static notice( ...msg )
     {
         if ( LOG_LEVEL >= 3 )
-            console.log( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
+            console.log( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `📌` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
     }
 
     static warn( ...msg )
     {
         if ( LOG_LEVEL >= 2 )
-            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
+            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `⚠️` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
     }
 
     static error( ...msg )
     {
         if ( LOG_LEVEL >= 1 )
-            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( `→` ), this.now(), chalk.redBright( msg.join( ' ' ) ) );
+            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( `❌` ), this.now(), chalk.redBright( msg.join( ' ' ) ) );
     }
 }
 
@@ -231,7 +243,6 @@ if ( process.pkg )
         chalk.blueBright( `<msg>` ), chalk.gray( `Starting server utilizing process.execPath` ) );
 
     const basePath = path.dirname( process.execPath );
-
     FILE_URL = path.join( basePath, envWebFolder, `${ envFileURL }` );
     FILE_M3U = path.join( basePath, envWebFolder, `${ envFileM3U }` );
     FILE_XML = path.join( basePath, envWebFolder, `${ envFileXML }` );
@@ -248,6 +259,64 @@ else
     FILE_XML = path.resolve( __dirname, envWebFolder, `${ envFileXML }` );
     FILE_GZP = path.resolve( __dirname, envWebFolder, `${ envFileGZP }` );
 }
+
+/*
+    helper > sleep
+*/
+
+function sleep( ms )
+{
+    return new Promise( ( resolve ) =>
+    {
+        setTimeout( resolve, ms );
+    });
+}
+
+/*
+    Semaphore > Declare
+
+    allows multiple threads to work with the same shared resources
+*/
+
+class Semaphore
+{
+    constructor( max )
+    {
+        this.max = max;
+        this.queue = [];
+        this.active = 0;
+    }
+
+    async acquire()
+    {
+        if ( this.active < this.max )
+        {
+            this.active++;
+            return;
+        }
+
+        return new Promise( ( resolve ) => this.queue.push( resolve ) );
+    }
+
+    release()
+    {
+        this.active--;
+        if ( this.queue.length > 0 )
+        {
+            const resolve = this.queue.shift();
+            this.active++;
+            resolve();
+        }
+    }
+}
+
+/*
+    Semaphore > Initialize
+
+    @arg        int threads_max
+*/
+
+const semaphore = new Semaphore( 5 );
 
 /*
     Get Client IP
@@ -267,43 +336,6 @@ const clientIp = ( req ) =>
     envIpContainer );
 
 /*
-
-/*
-    Semaphore > Declare
-
-    allows multiple threads to work with the same shared resources
-*/
-
-class Semaphore
-{
-    constructor( max )
-    {
-        this.max = max;
-        this.queue = [];
-        this.active = 0;
-    }
-    async acquire()
-    {
-        if ( this.active < this.max )
-        {
-            this.active++;
-            return;
-        }
-        return new Promise( ( resolve ) => this.queue.push( resolve ) );
-    }
-    release()
-    {
-        this.active--;
-        if ( this.queue.length > 0 )
-        {
-            const resolve = this.queue.shift();
-            this.active++;
-            resolve();
-        }
-    }
-}
-
-/*
     Check Service Status
 
     this function attempts to see if a specified domain is up.
@@ -318,17 +350,17 @@ async function serviceCheck( service, uri )
 
     try
     {
-        const response = await fetch( uri );
+        const resp = await fetch( uri );
 
         /* try 1 > domain down */
-        if ( response.status !== 200 )
+        if ( resp.status !== 200 )
         {
-            Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ) );
+            Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ) );
             return;
         }
 
         /* try 1 > domain up */
-        Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uri }` ) );
+        Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uri }` ) );
     }
     catch ( err )
     {
@@ -343,17 +375,17 @@ async function serviceCheck( service, uri )
 
             try
             {
-                const response = await fetch( uriRetry );
+                const resp = await fetch( uriRetry );
 
                 /* try 2 > http > domain down */
-                if ( response.status !== 200 )
+                if ( resp.status !== 200 )
                 {
-                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
                     return;
                 }
 
                 /* try 2 > http > domain up */
-                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
             }
             catch ( err )
             {
@@ -373,17 +405,17 @@ async function serviceCheck( service, uri )
 
             try
             {
-                const response = await fetch( uriRetry );
+                const resp = await fetch( uriRetry );
 
                 /* try 2 > https > domain down */
-                if ( response.status !== 200 )
+                if ( resp.status !== 200 )
                 {
-                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
                     return;
                 }
 
                 /* try 2 > https > domain up */
-                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ response.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
             }
             catch ( err )
             {
@@ -393,14 +425,6 @@ async function serviceCheck( service, uri )
         }
     }
 }
-
-/*
-    Semaphore > Initialize
-
-    @arg        int threads_max
-*/
-
-const semaphore = new Semaphore( 5 );
 
 /*
     Func > Download File
@@ -715,7 +739,7 @@ async function fetchRemote( url, req )
 {
     return new Promise( ( resolve, reject ) =>
     {
-        Log.info( `remo`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
+        Log.info( `live`, chalk.yellow( `[generate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Preparing to fetch remote request` ),
             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<url>` ), chalk.gray( `${ url }` ) );
@@ -728,7 +752,7 @@ async function fetchRemote( url, req )
                 }
             }, ( resp ) =>
             {
-                Log.info( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
+                Log.info( `live`, chalk.yellow( `[retrieve]` ), chalk.white( `ℹ️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Getting response from remote fetch request` ),
                     chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.blueBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
@@ -736,7 +760,7 @@ async function fetchRemote( url, req )
 
                 if ( resp.statusCode !== 200 )
                 {
-                    Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                    Log.error( `live`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
                         chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch returned status code other than 200` ),
                         chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                         chalk.redBright( `<code>` ), chalk.gray( `${ resp.statusCode }` ),
@@ -759,7 +783,7 @@ async function fetchRemote( url, req )
                         {
                             if ( err )
                             {
-                                Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                                Log.error( `live`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
                                     chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch could not complete encoding type ${ encoding }` ),
                                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
@@ -770,7 +794,7 @@ async function fetchRemote( url, req )
                                 return reject( err );
                             }
 
-                            Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                            Log.debug( `live`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
                                 chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch detected encoding type ${ encoding }; decoding` ),
                                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                 chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
@@ -786,7 +810,7 @@ async function fetchRemote( url, req )
                         {
                             if ( err )
                             {
-                                Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                                Log.error( `live`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
                                     chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch could not complete encoding type ${ encoding }` ),
                                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
@@ -797,7 +821,7 @@ async function fetchRemote( url, req )
                                 return reject( err );
                             }
 
-                            Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                            Log.debug( `live`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
                                 chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch detected encoding type ${ encoding }; decoding` ),
                                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                 chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
@@ -813,7 +837,7 @@ async function fetchRemote( url, req )
                         {
                             if ( err )
                             {
-                                Log.error( `remo`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
+                                Log.error( `live`, chalk.redBright( `[retrieve]` ), chalk.white( `❌` ),
                                     chalk.redBright( `<msg>` ), chalk.gray( `Remote fetch could not complete encoding type ${ encoding } (brotli decompress)` ),
                                     chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
@@ -824,7 +848,7 @@ async function fetchRemote( url, req )
                                 return reject( err );
                             }
 
-                            Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                            Log.debug( `live`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
                                 chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch detected encoding type ${ encoding } (brotli decompress); decoding` ),
                                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                                 chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
@@ -836,7 +860,7 @@ async function fetchRemote( url, req )
                     }
                     else
                     {
-                        Log.debug( `remo`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
+                        Log.debug( `live`, chalk.yellow( `[retrieve]` ), chalk.white( `⚙️` ),
                             chalk.blueBright( `<msg>` ), chalk.gray( `Remote fetch contains no headers to decode; resolving buffer` ),
                             chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                             chalk.blueBright( `<encoding>` ), chalk.gray( `${ encoding }` ),
@@ -875,6 +899,7 @@ async function serveKey( req, res )
                 method: req.method || 'GET',
                 code: 400,
                 uptime: Math.round( process.uptime() ),
+                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                 timestamp: Date.now()
             };
 
@@ -930,6 +955,7 @@ async function serveKey( req, res )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
+            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
             timestamp: Date.now()
         };
 
@@ -1227,6 +1253,7 @@ async function serveM3UPlaylist( req, res )
                 method: req.method || 'GET',
                 code: 404,
                 uptime: Math.round( process.uptime() ),
+                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                 timestamp: Date.now()
             };
 
@@ -1317,6 +1344,7 @@ async function serveM3UPlaylist( req, res )
                 method: req.method || 'GET',
                 code: 500,
                 uptime: Math.round( process.uptime() ),
+                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                 timestamp: Date.now()
             };
 
@@ -1375,6 +1403,7 @@ async function serveM3UPlaylist( req, res )
                 method: req.method || 'GET',
                 code: 500,
                 uptime: Math.round( process.uptime() ),
+                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                 timestamp: Date.now()
             };
 
@@ -1424,6 +1453,7 @@ async function serveHealthCheck( req, res )
             method: req.method || 'GET',
             code: 200,
             uptime: Math.round( process.uptime() ),
+            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
             timestamp: Date.now()
         };
 
@@ -1431,12 +1461,16 @@ async function serveHealthCheck( req, res )
             'Content-Type': 'application/json'
         });
 
-        Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
-            chalk.greenBright( `<msg>` ), chalk.gray( `Response` ),
-            chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
-            chalk.greenBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
-            chalk.greenBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
-            chalk.greenBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
+        const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
+        if ( paramQuery !== 'query' )
+        {
+            Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
+                chalk.greenBright( `<msg>` ), chalk.gray( `Response` ),
+                chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                chalk.greenBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
+                chalk.greenBright( `<status>` ), chalk.gray( `${ statusCheck.status }` ),
+                chalk.greenBright( `<uptime>` ), chalk.gray( `${ process.uptime() }` ) );
+        }
 
         res.end( JSON.stringify( statusCheck ) );
         return;
@@ -1457,6 +1491,7 @@ async function serveHealthCheck( req, res )
                 method: req.method || 'GET',
                 code: 503,
                 uptime: Math.round( process.uptime() ),
+                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                 timestamp: Date.now()
             };
 
@@ -1587,6 +1622,7 @@ async function serveM3U( res, req )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
+            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
             timestamp: Date.now()
         };
 
@@ -1652,6 +1688,7 @@ async function serveXML( res, req )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
+            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
             timestamp: Date.now()
         };
 
@@ -1717,6 +1754,7 @@ async function serveGZP( res, req )
             method: req.method || 'GET',
             code: 500,
             uptime: Math.round( process.uptime() ),
+            uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
             timestamp: Date.now()
         };
 
@@ -1904,9 +1942,10 @@ async function initialize()
         FILE_GZP_MODIFIED = getFileModified( FILE_GZP );
 
         const end = performance.now();
+        TIME_STARTUP = `${ end - start }`;
         Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `TVApp2 container is ready` ),
-            chalk.blueBright( `<time>` ), chalk.gray( `took ${ end - start }ms` ),
+            chalk.blueBright( `<time>` ), chalk.gray( `took ${ TIME_STARTUP }ms` ),
             chalk.blueBright( `<ip>` ), chalk.gray( `${ envIpContainer }` ),
             chalk.blueBright( `<gateway>` ), chalk.gray( `${ envIpGateway }` ),
             chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
@@ -1940,7 +1979,7 @@ async function initialize()
                     })
 */
 
-const server = http.createServer( ( request, response ) =>
+const server = http.createServer( ( req, resp ) =>
 {
     /*
         If request.url === '/'; load index.html as default page
@@ -1951,8 +1990,8 @@ const server = http.createServer( ( request, response ) =>
                 /www/css/tvapp2.min.css
     */
 
-    const method = request.method || 'GET';
-    let reqUrl = request.url;
+    const method = req.method || 'GET';
+    let reqUrl = req.url;
     if ( reqUrl === '/' )
         reqUrl = 'index.html';
 
@@ -1974,8 +2013,8 @@ const server = http.createServer( ( request, response ) =>
 
         Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Request started` ),
-            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
-            chalk.blueBright( `<request.url>` ), chalk.gray( `${ request.url }` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+            chalk.blueBright( `<request.url>` ), chalk.gray( `${ req.url }` ),
             chalk.blueBright( `<reqUrl>` ), chalk.gray( `${ reqUrl }` ),
             chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
             chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
@@ -1997,31 +2036,32 @@ const server = http.createServer( ( request, response ) =>
                 @todo               integrate real api system after express replaces node http
             */
 
-            const apiKey = new URL( request.url, `http://${ request.headers.host }` ).searchParams.get( 'key' );
-            const referer = request.headers.referer || null;
+            const apiKey = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'key' );
+            const referer = req.headers.referer || null;
 
-            if ( ( !referer && envApiKey && !apiKey ) || ( referer && !referer.includes( request.headers.host ) ) )
+            if ( ( !referer && envApiKey && !apiKey ) || ( referer && !referer.includes( req.headers.host ) ) )
             {
                 const statusCheck =
                 {
-                    ip: envIpContainer, gateway: envIpGateway, client: clientIp( request ),
-                    message: `must specify api key: http://${ request.headers.host }/api/restart?key=XXXXXXXX`,
-                    status: `unauthorized`, ref: request.url, method: method || 'GET', code: 401,
-                    uptime: Math.round( process.uptime() ), timestamp: Date.now()
+                    ip: envIpContainer, gateway: envIpGateway, client: clientIp( req ),
+                    message: `must specify api key: http://${ req.headers.host }/api/restart?key=XXXXXXXX`,
+                    status: `unauthorized`, ref: req.url, method: method || 'GET', code: 401,
+                    uptime: Math.round( process.uptime() ), timestamp: Date.now(),
+                    uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' )
                 };
 
-                response.writeHead( statusCheck.code, {
+                resp.writeHead( statusCheck.code, {
                     'Content-Type': 'application/json'
                 });
 
                 Log.error( `http`, chalk.yellow( `[requests]` ), chalk.white( `❌` ),
                     chalk.redBright( `<msg>` ), chalk.gray( `Unauthorized (401): restart attempt did not specify api key using ?key=XXX parameter` ),
                     chalk.redBright( `<type>` ), chalk.gray( `api/restart` ),
-                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-                response.end( JSON.stringify( statusCheck ) );
+                resp.end( JSON.stringify( statusCheck ) );
 
                 return;
             }
@@ -2034,24 +2074,25 @@ const server = http.createServer( ( request, response ) =>
             {
                 const statusCheck =
                 {
-                    ip: envIpContainer, gateway: envIpGateway, client: clientIp( request ),
-                    message: `incorrect api key specified: http://${ request.headers.host }/api/restart?key=XXXXXXXX`,
-                    status: `unauthorized`, ref: request.url, method: method || 'GET', code: 401,
-                    uptime: Math.round( process.uptime() ), timestamp: Date.now()
+                    ip: envIpContainer, gateway: envIpGateway, client: clientIp( req ),
+                    message: `incorrect api key specified: http://${ req.headers.host }/api/restart?key=XXXXXXXX`,
+                    status: `unauthorized`, ref: req.url, method: method || 'GET', code: 401,
+                    uptime: Math.round( process.uptime() ), timestamp: Date.now(),
+                    uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' )
                 };
 
-                response.writeHead( statusCheck.code, {
+                resp.writeHead( statusCheck.code, {
                     'Content-Type': 'application/json'
                 });
 
                 Log.error( `http`, chalk.yellow( `[requests]` ), chalk.white( `❌` ),
                     chalk.redBright( `<msg>` ), chalk.gray( `Unauthorized (401): incorrect api key specified` ),
                     chalk.redBright( `<type>` ), chalk.gray( `api/restart` ),
-                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-                response.end( JSON.stringify( statusCheck ) );
+                resp.end( JSON.stringify( statusCheck ) );
                 return;
             }
 
@@ -2061,28 +2102,29 @@ const server = http.createServer( ( request, response ) =>
             {
                 ip: envIpContainer,
                 gateway: envIpGateway,
-                client: clientIp( request ),
+                client: clientIp( req ),
                 message: 'Restart command received',
                 status: 'ok',
-                ref: request.url,
+                ref: req.url,
                 method: method || 'GET',
                 code: 200,
                 uptime: Math.round( process.uptime() ),
+                uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                 timestamp: Date.now()
             };
 
-            response.writeHead( statusCheck.code, {
+            resp.writeHead( statusCheck.code, {
                 'Content-Type': 'application/json'
             });
 
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access restart api` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `api/restart` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            response.end( JSON.stringify( statusCheck ) );
+            resp.end( JSON.stringify( statusCheck ) );
             return;
         }
 
@@ -2091,11 +2133,11 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access m3u playlist` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `m3u playlist` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            await serveM3U( response, request );
+            await serveM3U( resp, req );
             return;
         }
 
@@ -2104,11 +2146,11 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access channel` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `channel` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            await serveM3UPlaylist( request, response );
+            await serveM3UPlaylist( req, resp );
             return;
         }
 
@@ -2117,11 +2159,11 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access key` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `key` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            await serveKey( request, response );
+            await serveKey( req, resp );
             return;
         }
 
@@ -2130,11 +2172,11 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access epg (uncompressed)` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `epg (uncompressed)` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            await serveXML( response, request );
+            await serveXML( resp, req );
             return;
         }
 
@@ -2143,24 +2185,29 @@ const server = http.createServer( ( request, response ) =>
             Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access epg gzip (compressed)` ),
                 chalk.blueBright( `<type>` ), chalk.gray( `epg (compressed)` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                 chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            await serveGZP( response, request );
+            await serveGZP( resp, req );
             return;
         }
 
         if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `→` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),
-                chalk.blueBright( `<type>` ), chalk.gray( `api/health` ),
-                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
-                chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
-                chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+            const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
 
-            await serveHealthCheck( request, response );
+            if ( paramQuery !== 'uptime' )
+            {
+                Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),
+                    chalk.blueBright( `<type>` ), chalk.gray( `api/health` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                    chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+            }
+
+            await serveHealthCheck( req, resp );
             return;
         }
 
@@ -2170,7 +2217,7 @@ const server = http.createServer( ( request, response ) =>
 
         Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Request not captured by subdomain keyword checks; sending request to ejs` ),
-            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
             chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
             chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
@@ -2201,14 +2248,17 @@ const server = http.createServer( ( request, response ) =>
                 appUrlDiscord: discord.url,
                 appUrlDocs: docs.url,
                 appGitHashShort: envGitSHA1.substring( 0, 9 ),
-                appGitHashLong: envGitSHA1
+                appGitHashLong: envGitSHA1,
+                appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
+                appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                appStartup: Math.round( TIME_STARTUP ) / 1000
             }, ( err, data ) =>
         {
             if ( !err )
             {
                 Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Request accepted by ejs` ),
-                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
@@ -2244,21 +2294,33 @@ const server = http.createServer( ( request, response ) =>
                 if ( fileMime !== 'text/html' )
                     data = fs.readFileSync( `./${ envWebFolder }/${ loadFile }` );
 
-                response.setHeader( 'Content-type', fileMime );
-                response.end( data );
+                resp.setHeader( 'Content-type', fileMime );
+                resp.end( data );
 
-                Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
-                    chalk.greenBright( `<msg>` ), chalk.gray( `Request to load file` ),
-                    chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
-                    chalk.greenBright( `<file>` ), chalk.gray( `${ loadFile }` ),
-                    chalk.greenBright( `<mime>` ), chalk.gray( `${ fileMime }` ),
-                    chalk.greenBright( `<method>` ), chalk.gray( `${ method }` ) );
+                if ( fileMime === 'text/html' || fileMime === 'application/xml' || fileMime === 'application/json' )
+                {
+                    Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
+                        chalk.greenBright( `<msg>` ), chalk.gray( `Request to load file` ),
+                        chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.greenBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                        chalk.greenBright( `<mime>` ), chalk.gray( `${ fileMime }` ),
+                        chalk.greenBright( `<method>` ), chalk.gray( `${ method }` ) );
+                }
+                else
+                {
+                    Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                        chalk.blueBright( `<msg>` ), chalk.gray( `Request to load file` ),
+                        chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                        chalk.blueBright( `<mime>` ), chalk.gray( `${ fileMime }` ),
+                        chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+                }
             }
             else
             {
                 Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Request rejected by ejs` ),
-                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.blueBright( `<error>` ), chalk.gray( `${ err }` ),
                     chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
@@ -2273,35 +2335,36 @@ const server = http.createServer( ( request, response ) =>
                 {
                     ip: envIpContainer,
                     gateway: envIpGateway,
-                    client: clientIp( request ),
+                    client: clientIp( req ),
                     message: 'Page not found',
                     status: 'healthy',
-                    ref: request.url,
+                    ref: req.url,
                     method: method || 'GET',
                     code: 404,
                     uptime: Math.round( process.uptime() ),
+                    uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
                     timestamp: Date.now()
                 };
 
-                response.writeHead( statusCheck.code, {
+                resp.writeHead( statusCheck.code, {
                     'Content-Type': 'application/json'
                 });
 
                 Log.error( `http`, chalk.redBright( `[requests]` ), chalk.white( `❌` ),
                     chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
-                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( request ) }` ),
+                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
                     chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
                     chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-                response.end( JSON.stringify( statusCheck ) );
+                resp.end( JSON.stringify( statusCheck ) );
             }
         });
     };
     handleRequest().catch( ( err ) =>
     {
-        response.writeHead( 500, {
+        resp.writeHead( 500, {
             'Content-Type': 'text/plain'
         });
 
@@ -2310,7 +2373,7 @@ const server = http.createServer( ( request, response ) =>
             chalk.redBright( `<code>` ), chalk.gray( `500` ),
             chalk.redBright( `<error>` ), chalk.gray( `${ err }` ) );
 
-        response.end( 'Internal Server Error' );
+        resp.end( 'Internal Server Error' );
     });
 });
 
