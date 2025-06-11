@@ -31,8 +31,8 @@
 #                           act -W .github/workflows/deploy-docker-github.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
 # #
 
-name: "📦 Deploy › Docker › Github"
-run-name: "📦 Deploy › Docker › Github"
+name: '📦 Deploy › Docker › Github'
+run-name: '📦 Deploy › Docker › Github'
 
 # #
 #   Triggers
@@ -148,6 +148,54 @@ on:
                 default:        false
                 type:           boolean
 
+            # #
+            #   Discord Bot › Name
+            #
+            #   The discord bot name
+            # #
+
+            DISCORD_BOT_NAME:
+                description:    '🤖 Bot Name'
+                required:       true
+                default:        'Europa'
+                type:           string
+
+            # #
+            #   Discord Bot › Avatar
+            #
+            #   The discord bot avatar to show; let's use some weird picture
+            # #
+
+            DISCORD_BOT_AVATAR:
+                description:    '🤖 Avatar URL'
+                required:       true
+                default:        'https://i.imgur.com/UqwMom1.jpeg'
+                type:           string
+
+            # #
+            #   Discord Bot › Author Icon URL
+            #
+            #   A small picture shown to the top-right of each post
+            # #
+
+            DISCORD_BOT_EMBED_AUTHOR_ICON:
+                description:    '🤖 Embed Author Icon'
+                required:       true
+                default:        'https://avatars.githubusercontent.com/u/200161462'
+                type:           string
+
+            # #
+            #   Discord Bot › Thumbnail URL
+            #
+            #   A small picture shown to the top-right of each post
+            # #
+
+            DISCORD_BOT_EMBED_THUMBNAIL:
+                description:    '🤖 Embed Thumbnail URL'
+                required:       true
+                default:        'https://avatars.githubusercontent.com/u/200161462'
+                type:           string
+
     # #
     #   Trigger › Push
     # #
@@ -161,17 +209,21 @@ on:
 # #
 
 env:
-    IMAGE_NAME:                 ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_VERSION:              ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
-    IMAGE_REGISTRY:             ${{ github.event.inputs.IMAGE_VERSION || 'github' }}
-    IMAGE_GHCR_AUTHOR:          ${{ github.event.inputs.IMAGE_GHCR_AUTHOR || 'BinaryNinja' }}
-    IMAGE_GHCR_USERNAME:        ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'BinaryNinja' }}
-    IMAGE_ALPINE_VERSION:       ${{ github.event.inputs.IMAGE_ALPINE_VERSION || '3.21' }}
+    IMAGE_NAME:                       ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
+    IMAGE_VERSION:                    ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
+    IMAGE_REGISTRY:                   ${{ github.event.inputs.IMAGE_VERSION || 'github' }}
+    IMAGE_GHCR_AUTHOR:                ${{ github.event.inputs.IMAGE_GHCR_AUTHOR || 'BinaryNinja' }}
+    IMAGE_GHCR_USERNAME:              ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'BinaryNinja' }}
+    IMAGE_ALPINE_VERSION:             ${{ github.event.inputs.IMAGE_ALPINE_VERSION || '3.21' }}
+    DISCORD_BOT_NAME:                 ${{ github.event.inputs.DISCORD_BOT_NAME || 'Europa' }}
+    DISCORD_BOT_AVATAR:               ${{ github.event.inputs.DISCORD_BOT_AVATAR || 'https://i.imgur.com/UqwMom1.jpeg' }}
+    DISCORD_BOT_EMBED_AUTHOR_ICON:    ${{ github.event.inputs.DISCORD_BOT_EMBED_AUTHOR_ICON || 'https://avatars.githubusercontent.com/u/200161462' }}
+    DISCORD_BOT_EMBED_THUMBNAIL:      ${{ github.event.inputs.DISCORD_BOT_EMBED_THUMBNAIL || 'https://avatars.githubusercontent.com/u/200161462' }}
 
-    BOT_NAME_1:                 EuropaServ
-    BOT_NAME_2:                 BinaryServ
-    BOT_NAME_DEPENDABOT:        dependabot[bot]
-    BOT_NAME_RENOVATE:          renovate[bot]
+    BOT_NAME_1:                       EuropaServ
+    BOT_NAME_2:                       BinaryServ
+    BOT_NAME_DEPENDABOT:              dependabot[bot]
+    BOT_NAME_RENOVATE:                renovate[bot]
 
 # #
 #   Jobs
@@ -201,30 +253,128 @@ jobs:
         steps:
 
             # #
-            #   Release › Tags › Start
+            #   Tags › Cleanup › Checkout
             # #
 
-            - name: '🏳️ Start'
-              id: task_release_tags_start
-              run: |
-                  echo "Creating Tag"
-
-            # #
-            #   Release › Tags › Checkout
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_tags_checkout
+            - name: '☑️ Checkout'
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
             # #
-            #   Release › Tags › Fix Permissions
+            #   Tags › Cleanup › Job Information
+            # #
+
+            - name: >-
+                  🔄 Load Job
+              uses: qoomon/actions--context@v4
+              id: 'context'
+
+            # #
+            #   Tags › Cleanup › Start
+            # #
+
+            - name: >-
+                  ✅ Start
+              run: |
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo " Starting Job ${{ steps.context.outputs.job_name }}"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+
+                  YEAR="$(date +'%Y')"
+                  echo "YEAR=${YEAR}" >> $GITHUB_ENV
+
+                  NOW="$(date +'%m-%d-%Y %H:%M:%S')"                                                #  02-25-2025 12:49:48
+                  echo "NOW=${NOW}" >> $GITHUB_ENV
+
+                  NOW_SHORT="$(date +'%m-%d-%Y')"                                                   #  02-25-2025
+                  echo "NOW_SHORT=${NOW_SHORT}" >> $GITHUB_ENV
+
+                  NOW_LONG="$(date +'%m-%d-%Y %H:%M')"                                              #  02-25-2025 12:49
+                  echo "NOW_LONG=${NOW_LONG}" >> $GITHUB_ENV
+
+                  NOW_DOCKER="$(date +'%Y%m%d')"                                                    #  20250225
+                  echo "NOW_DOCKER=${NOW_DOCKER}" >> $GITHUB_ENV
+
+                  NOW_DOCKER_TS="$(date -u +'%FT%T.%3NZ')"                                          #  2025-02-25T12:50:11.569Z
+                  echo "NOW_DOCKER_TS=${NOW_DOCKER_TS}" >> $GITHUB_ENV
+
+                  SHA1="$(git rev-parse HEAD)"                                                      #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1=${SHA1}" >> $GITHUB_ENV
+
+                  SHA1_GH="$(echo ${GITHUB_SHA})"                                                   #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1_GH=${SHA1_GH}" >> $GITHUB_ENV
+
+                  PKG_VER_1DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1)"              #  3.22 > 3
+                  echo "PKG_VER_1DIGIT=${PKG_VER_1DIGIT}" >> $GITHUB_ENV
+
+                  PKG_VER_2DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"    #  3.22 > 3.2
+                  echo "PKG_VER_2DIGIT=${PKG_VER_2DIGIT}" >> $GITHUB_ENV
+
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  sudo apt -qq update
+                  sudo apt -qq install tree
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  echo " Runner .............. ${{ runner.name }}"
+                  echo " Workflow ............ ${{ github.workflow }} (#${{ github.workflow_ref }})"
+                  echo " Run Number .......... ${{ github.run_number }}"
+                  echo " Ref ................. ${{ github.ref }}"
+                  echo " Ref Name ............ ${{ github.ref_name }}"
+                  echo " Event Name .......... ${{ github.event_name }}"
+                  echo " Repo ................ ${{ github.repository }}"
+                  echo " Repo Owner .......... ${{ github.repository_owner }}"
+                  echo " Run ID .............. https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  echo " Triggered By ........ ${{ github.actor }}"
+                  echo " SHA 1 (GITHUB_SHA) .. ${GITHUB_SHA}"
+                  echo " SHA 2 (github.sha) .. ${{ github.sha }}"
+                  echo " SHA 3 (env.SHA1) .... ${SHA1}"
+                  echo " SHA 4 (env.SHA1_GH) . ${SHA1_GH}"
+                  echo " Workspace ........... ${{ github.workspace }}"
+                  echo " PWD ................. ${PWD}"
+                  echo " Job Name ............ ${{ steps.context.outputs.job_name }}"
+                  echo " Job ID .............. ${{ steps.context.outputs.job_id }}"
+                  echo " Job URL ............. ${{ steps.context.outputs.job_url }}"
+                  echo " Run ID .............. ${{ steps.context.outputs.run_id }}"
+                  echo " Run Attempt ......... ${{ steps.context.outputs.run_attempt }}"
+                  echo " Run Number .......... ${{ steps.context.outputs.run_number }}"
+                  echo " Run URL ............. ${{ steps.context.outputs.run_url }}"
+                  echo " Run Env ............. ${{ steps.context.outputs.environment }}"
+                  echo " Run Env URL ......... ${{ steps.context.outputs.environment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Deployment URL .. ${{ steps.context.outputs.deployment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Runner Name ..... ${{ steps.context.outputs.runner_name }}"
+                  echo " Run Runner ID ....... ${{ steps.context.outputs.runner_id }}"
+                  echo " Year ................ ${YEAR}"
+                  echo " Now ................. ${NOW}"
+                  echo " Now (Short) ......... ${NOW_SHORT}"
+                  echo " Now (Long) .......... ${NOW_LONG}"
+                  echo " Now (Docker) ........ ${NOW_DOCKER}"
+                  echo " Now (Docker TS) ..... ${NOW_DOCKER_TS}"
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  tree -I node_modules -I .git
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+
+            # #
+            #   Tags › Tags › Fix Permissions
             # #
 
             - name: '#️⃣ Manage Permissions'
-              id: task_release_tags_permissions
               run: |
                   find ./ -name 'run' -exec chmod 755 {} \;
                   WRONG_PERM=$(find ./  -path "./.git" -prune -o \( -name "run" -o -name "finish" -o -name "check" \) -not -perm -u=x,g=x,o=x -print)
@@ -239,13 +389,12 @@ jobs:
                   fi
 
             # #
-            #   Release › Tags › Create Tag
+            #   Tags › Tags › Create Tag
             #
             #   only called in dispatch mode
             # #
 
             - uses: rickstaa/action-create-tag@v1
-              id: task_release_tags_create
               if: ( github.event_name != 'workflow_dispatch' && inputs.DRY_RUN == false )
               with:
                   tag: "${{ env.IMAGE_VERSION }}"
@@ -273,47 +422,137 @@ jobs:
         steps:
 
             # #
-            #   Release › Github › Start › Amd64
+            #   Release › Github › Checkout
             # #
 
-            - name: '🏳️ Start'
-              id: task_release_gh_start
-              run: |
-                  echo "Starting Github docker release"
-
-            # #
-            #   Release › Github › Checkout › Amd64
-            # #
-
-            - name: '✅ Checkout'
-              id: task_release_gh_checkout
+            - name: '☑️ Checkout'
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
             # #
-            #   Release › Github › Get Timestamp
+            #   Release › Github › Job Information
             # #
 
-            - name: '🕛 Get Timestamp'
-              id: task_release_set_timestamp
+            - name: >-
+                  🔄 Load Job
+              uses: qoomon/actions--context@v4
+              id: 'context'
+
+            # #
+            #   Release › Github › Start
+            # #
+
+            - name: >-
+                  ✅ Start
               run: |
-                  echo "IMAGE_VERSION_1DIGIT=`echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1`" >> ${GITHUB_ENV}                                                   #  1
-                  echo "IMAGE_VERSION_2DIGIT=`echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-2`" >> ${GITHUB_ENV}                                                   #  1.0
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo " Starting Job ${{ steps.context.outputs.job_name }}"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+
+                  YEAR="$(date +'%Y')"
+                  echo "YEAR=${YEAR}" >> $GITHUB_ENV
+
+                  NOW="$(date +'%m-%d-%Y %H:%M:%S')"                                                #  02-25-2025 12:49:48
+                  echo "NOW=${NOW}" >> $GITHUB_ENV
+
+                  NOW_SHORT="$(date +'%m-%d-%Y')"                                                   #  02-25-2025
+                  echo "NOW_SHORT=${NOW_SHORT}" >> $GITHUB_ENV
+
+                  NOW_LONG="$(date +'%m-%d-%Y %H:%M')"                                              #  02-25-2025 12:49
+                  echo "NOW_LONG=${NOW_LONG}" >> $GITHUB_ENV
+
+                  NOW_DOCKER="$(date +'%Y%m%d')"                                                    #  20250225
+                  echo "NOW_DOCKER=${NOW_DOCKER}" >> $GITHUB_ENV
+
+                  NOW_DOCKER_TS="$(date -u +'%FT%T.%3NZ')"                                          #  2025-02-25T12:50:11.569Z
+                  echo "NOW_DOCKER_TS=${NOW_DOCKER_TS}" >> $GITHUB_ENV
+
+                  SHA1="$(git rev-parse HEAD)"                                                      #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1=${SHA1}" >> $GITHUB_ENV
+
+                  SHA1_GH="$(echo ${GITHUB_SHA})"                                                   #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1_GH=${SHA1_GH}" >> $GITHUB_ENV
+
+                  PKG_VER_1DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1)"              #  3.22 > 3
+                  echo "PKG_VER_1DIGIT=${PKG_VER_1DIGIT}" >> $GITHUB_ENV
+
+                  PKG_VER_2DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"    #  3.22 > 3.2
+                  echo "PKG_VER_2DIGIT=${PKG_VER_2DIGIT}" >> $GITHUB_ENV
+
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  sudo apt -qq update
+                  sudo apt -qq install tree
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  echo " Runner .............. ${{ runner.name }}"
+                  echo " Workflow ............ ${{ github.workflow }} (#${{ github.workflow_ref }})"
+                  echo " Run Number .......... ${{ github.run_number }}"
+                  echo " Ref ................. ${{ github.ref }}"
+                  echo " Ref Name ............ ${{ github.ref_name }}"
+                  echo " Event Name .......... ${{ github.event_name }}"
+                  echo " Repo ................ ${{ github.repository }}"
+                  echo " Repo Owner .......... ${{ github.repository_owner }}"
+                  echo " Run ID .............. https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  echo " Triggered By ........ ${{ github.actor }}"
+                  echo " SHA 1 (GITHUB_SHA) .. ${GITHUB_SHA}"
+                  echo " SHA 2 (github.sha) .. ${{ github.sha }}"
+                  echo " SHA 3 (env.SHA1) .... ${SHA1}"
+                  echo " SHA 4 (env.SHA1_GH) . ${SHA1_GH}"
+                  echo " Workspace ........... ${{ github.workspace }}"
+                  echo " PWD ................. ${PWD}"
+                  echo " Job Name ............ ${{ steps.context.outputs.job_name }}"
+                  echo " Job ID .............. ${{ steps.context.outputs.job_id }}"
+                  echo " Job URL ............. ${{ steps.context.outputs.job_url }}"
+                  echo " Run ID .............. ${{ steps.context.outputs.run_id }}"
+                  echo " Run Attempt ......... ${{ steps.context.outputs.run_attempt }}"
+                  echo " Run Number .......... ${{ steps.context.outputs.run_number }}"
+                  echo " Run URL ............. ${{ steps.context.outputs.run_url }}"
+                  echo " Run Env ............. ${{ steps.context.outputs.environment }}"
+                  echo " Run Env URL ......... ${{ steps.context.outputs.environment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Deployment URL .. ${{ steps.context.outputs.deployment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Runner Name ..... ${{ steps.context.outputs.runner_name }}"
+                  echo " Run Runner ID ....... ${{ steps.context.outputs.runner_id }}"
+                  echo " Year ................ ${YEAR}"
+                  echo " Now ................. ${NOW}"
+                  echo " Now (Short) ......... ${NOW_SHORT}"
+                  echo " Now (Long) .......... ${NOW_LONG}"
+                  echo " Now (Docker) ........ ${NOW_DOCKER}"
+                  echo " Now (Docker TS) ..... ${NOW_DOCKER_TS}"
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  tree -I node_modules -I .git
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+
+            # #
+            #   Release › Github › Set Vars
+            # #
+
+            - name: '🕛 Set Vars'
+              run: |
                   echo "REGISTRY_REPO_ORG_AUTHOR_LC=`echo ${{ env.IMAGE_GHCR_AUTHOR }}/${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}        #  thebinaryninja/tvapp2
                   echo "REGISTRY_REPO_AUTHOR_LC=`echo ${{ env.IMAGE_GHCR_AUTHOR }} | tr '[:upper:]' '[:lower:]'`" >> ${GITHUB_ENV}                                  #  thebinaryninja
-                  echo "DOCKER_SHA=${GITHUB_SHA}" >> $GITHUB_ENV                                                                                                    #  71fad013cfce9116ec62779e4a7e627fe4c33627
-                  echo "NOW=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV                                                                                            #  02-25-2025 12:49:48
-                  echo "NOW_SHORT=$(date +'%m-%d-%Y')" >> $GITHUB_ENV                                                                                               #  02-25-2025
-                  echo "NOW_LONG=$(date +'%m-%d-%Y %H:%M')" >> $GITHUB_ENV                                                                                          #  02-25-2025 12:49
-                  echo "NOW_DOCKER_LABEL=$(date +'%Y%m%d')" >> $GITHUB_ENV                                                                                          #  20250225
-                  echo "NOW_DOCKER_TS=$(date -u +'%FT%T.%3NZ')" >> $GITHUB_ENV                                                                                      #  2025-02-25T12:50:11.569Z
-                  echo "GITHUB_SHA1=$(git rev-parse HEAD)" >> $GITHUB_ENV                                                                                           #  012cd0cc44c576c4a57b8a18d86793f244d1080a
 
             # #
             #   Release › Github › Install Dependencies
             # #
 
             - name: '📦 Install Dependencies'
-              id: task_release_gh_dependencies
               run:
                   sudo apt-get install -qq dos2unix
 
@@ -322,7 +561,6 @@ jobs:
             # #
 
             - name: '🔐 Apply dos2unix'
-              id: task_release_gh_dos2unix
               run: |
                   echo "⚠️⚠️⚠️ Running DOS2UNIX ⚠️⚠️⚠️"
                   find ./ \( -path "./.git" -o -path "./docs" -o -path "./.github" -o -path "*.png" -o -path "*.jpg" \) -prune -o -name '*' -print | xargs dos2unix --
@@ -333,7 +571,6 @@ jobs:
             # #
 
             - name: '#️⃣ Manage Permissions'
-              id: task_release_gh_permissions
               run: |
                   find ./ -name 'run' -exec chmod 755 {} \;
                   WRONG_PERM=$(find ./  -path "./.git" -prune -o \( -name "run" -o -name "finish" -o -name "check" \) -not -perm -u=x,g=x,o=x -print)
@@ -352,7 +589,6 @@ jobs:
             # #
 
             - name: '⚙️ Set up QEMU'
-              id: task_release_gh_qemu
               uses: docker/setup-qemu-action@v3
 
             # #
@@ -360,7 +596,6 @@ jobs:
             # #
 
             - name: '⚙️ Setup Buildx'
-              id: task_release_gh_buildx
               uses: docker/setup-buildx-action@v3
               with:
                   version: latest
@@ -371,7 +606,6 @@ jobs:
             # #
 
             - name: '⚙️ Login to Github'
-              id: task_release_gh_registry
               uses: docker/login-action@v3
               with:
                   registry: ghcr.io
@@ -394,11 +628,12 @@ jobs:
 
                     const { promises: fs } = require('fs')
 
-                    const main = async () => {
-                      const path = "README.md"
-                      let content = await fs.readFile(path, 'utf8')
+                    const main = async () =>
+                    {
+                        const path = "README.md"
+                        let content = await fs.readFile(path, 'utf8')
 
-                      core.setOutput('content', content)
+                        core.setOutput('content', content)
                     }
 
                     main().catch(err => core.setFailed(err.message))
@@ -427,10 +662,10 @@ jobs:
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
 
                       #  tag            add 1.0               ( dispatch only + no dev )
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.IMAGE_VERSION_2DIGIT }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.PKG_VER_2DIGIT }}
 
                       #  tag            add 1                 ( dispatch only + no dev )
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.IMAGE_VERSION_1DIGIT }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=400,prefix=,suffix=,value=${{ env.PKG_VER_1DIGIT }}
 
                       #  tag            add development       ( dispatch only + only dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=,value=development
@@ -444,29 +679,29 @@ jobs:
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
-                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
+                      org.tvapp2.image.build-sha1=${{ env.SHA1 }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
-                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
+                      org.tvapp2.image.build-sha1=${{ env.SHA1 }}
 
             # #
             #   Release › Github › Build and Push › Amd64
@@ -483,18 +718,18 @@ jobs:
                   context: .
                   file: Dockerfile
                   platforms: linux/amd64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   provenance: false
                   sbom: false
+                  push: ${{ github.event_name != 'pull_request' }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   tags: |
                       ${{ steps.task_release_gh_meta.outputs.tags }}
                   build-args: |-
                       ARCH=amd64
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
-                      BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
-                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
+                      BUILDDATE=${{ env.NOW_DOCKER }}
+                      GIT_SHA1=${{ env.SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
@@ -502,23 +737,22 @@ jobs:
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.architecture=amd64
-                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-architecture=amd64
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
+                      org.tvapp2.image.build-sha1=${{ env.SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Amd64
             # #
 
             - name: '📄 Export Digest (linux/amd64)'
-              id: task_release_gh_digest_export_amd64
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               run: |
                   mkdir -p /tmp/build-digest-amd64
@@ -532,7 +766,6 @@ jobs:
             # #
 
             - name: '🔼 Upload Digest (linux/amd64)'
-              id: task_release_gh_digest_upload_amd64
               uses: actions/upload-artifact@v4
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
@@ -556,18 +789,18 @@ jobs:
                   context: .
                   file: Dockerfile
                   platforms: linux/arm64
-                  push: ${{ github.event_name != 'pull_request' }}
-                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   provenance: false
                   sbom: false
+                  push: ${{ github.event_name != 'pull_request' }}
+                  labels: ${{ steps.task_release_gh_meta.outputs.labels }}
                   tags: |
                       ${{ steps.task_release_gh_meta.outputs.tags }}
                   build-args: |-
                       ARCH=arm64
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
                       VERSION=${{ env.IMAGE_VERSION }}
-                      BUILDDATE=${{ env.NOW_DOCKER_LABEL }}
-                      GIT_SHA1=${{ env.GITHUB_SHA1 }}
+                      BUILDDATE=${{ env.NOW_DOCKER }}
+                      GIT_SHA1=${{ env.SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
@@ -575,23 +808,22 @@ jobs:
                       org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.architecture=arm64
-                      org.opencontainers.image.revision=${{ github.sha }}
+                      org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER_LABEL }}"
+                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-architecture=arm64
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
-                      org.tvapp2.image.build-sha1=${{ env.GITHUB_SHA1 }}
+                      org.tvapp2.image.build-sha1=${{ env.SHA1 }}
 
             # #
             #   Release › Github › Export Digest › Arm64
             # #
 
             - name: '📄 Export Digest (linux/arm64)'
-              id: task_release_gh_digest_export_arm64
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               run: |
                   mkdir -p /tmp/build-digest-arm64
@@ -605,7 +837,6 @@ jobs:
             # #
 
             - name: '🔼 Upload Digest (linux/arm64)'
-              id: task_release_gh_digest_upload_arm64
               uses: actions/upload-artifact@v4
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
@@ -619,9 +850,8 @@ jobs:
             # #
 
             - name: '⚠️ Checkpoint'
-              id: task_release_gh_checkpoint
               run: |
-                  echo ""
+                  echo "‎"
                   echo "---- [ GITHUB ] ----------------------------------------------------------------------------------------"
                   echo "github.actor.............................. ${{ github.actor }}"
                   echo "github.ref ............................... ${{ github.ref }}"
@@ -630,7 +860,7 @@ jobs:
                   echo "github.repository_owner .................. ${{ github.repository_owner }}"
                   echo "github.repository ........................ ${{ github.repository }}"
                   echo "github.sha ............................... ${{ github.sha }}"
-                  echo -e ""
+                  echo "‎"
                   echo "---- [ INPUTS ] ----------------------------------------------------------------------------------------"
                   echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
                   echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
@@ -638,45 +868,47 @@ jobs:
                   echo "inputs.IMAGE_GHCR_USERNAME ............... ${{ inputs.IMAGE_GHCR_USERNAME }}"
                   echo "inputs.DEV_RELEASE ....................... ${{ inputs.DEV_RELEASE }}"
                   echo "inputs.DRY_RUN ........................... ${{ inputs.DRY_RUN }}"
-                  echo -e ""
+                  echo "‎"
                   echo "---- [ ENV ] -------------------------------------------------------------------------------------------"
                   echo "env.IMAGE_NAME ........................... ${{ env.IMAGE_NAME }}"
                   echo "env.IMAGE_VERSION ........................ ${{ env.IMAGE_VERSION }}"
-                  echo "env.IMAGE_VERSION_1DIGIT ................. ${{ env.IMAGE_VERSION_1DIGIT }}"
-                  echo "env.IMAGE_VERSION_2DIGIT ................. ${{ env.IMAGE_VERSION_2DIGIT }}"
+                  echo "env.PKG_VER_1DIGIT ....................... ${{ env.PKG_VER_1DIGIT }}"
+                  echo "env.PKG_VER_2DIGIT ....................... ${{ env.PKG_VER_2DIGIT }}"
                   echo "env.IMAGE_GHCR_AUTHOR .................... ${{ env.IMAGE_GHCR_AUTHOR }}"
                   echo "env.IMAGE_GHCR_USERNAME .................. ${{ env.IMAGE_GHCR_USERNAME }}"
                   echo "env.NOW .................................. ${{ env.NOW }}"
                   echo "env.NOW_SHORT ............................ ${{ env.NOW_SHORT }}"
                   echo "env.NOW_LONG ............................. ${{ env.NOW_LONG }}"
-                  echo "env.NOW_DOCKER_LABEL ..................... ${{ env.NOW_DOCKER_LABEL }}"
+                  echo "env.NOW_DOCKER ........................... ${{ env.NOW_DOCKER }}"
                   echo "env.NOW_DOCKER_TS ........................ ${{ env.NOW_DOCKER_TS }}"
                   echo "env.REGISTRY_REPO_ORG_AUTHOR_LC .......... ${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}"
                   echo "env.REGISTRY_REPO_AUTHOR_LC .............. ${{ env.REGISTRY_REPO_AUTHOR_LC }}"
-                  echo "env.DOCKER_SHA ........................... ${{ env.DOCKER_SHA }}"
-                  echo "env.GITHUB_SHA1 .......................... ${{ env.GITHUB_SHA1 }}"
-                  echo -e ""
+                  echo " SHA 1 (GITHUB_SHA) ...................... ${GITHUB_SHA}"
+                  echo " SHA 2 (github.sha) ...................... ${{ github.sha }}"
+                  echo " SHA 3 (env.SHA1) ........................ ${{ env.SHA1 }}"
+                  echo " SHA 4 (env.SHA1_GH) ..................... ${{ env.SHA1_GH }}"
+                  echo "‎"
                   echo "---- [ DOCKER IMAGES ] ---------------------------------------------------------------------------------"
                   echo "registry ................................. Github GHCR"
                   echo "tags ..................................... ${{ steps.task_release_gh_meta.outputs.tags }}"
                   echo "labels ................................... ${{ steps.task_release_gh_meta.outputs.labels }}"
                   echo "digest ................................... ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
-                  echo -e ""
+                  echo "‎"
                   echo "(release) tags ........................... ${{ steps.task_release_gh_meta.outputs.tags }}"
                   echo "(release) labels ......................... ${{ steps.task_release_gh_meta.outputs.labels }}"
-                  echo -e ""
+                  echo "‎"
                   echo "---- [ DOCKER DIGESTS ] --------------------------------------------------------------------------------"
                   echo "docker image id (amd64) .................. ${{ steps.task_release_gh_push_amd64.outputs.imageid }}"
                   echo "docker digest (amd64) .................... ${{ steps.task_release_gh_push_amd64.outputs.digest }}"
                   echo "docker image id (arm64) .................. ${{ steps.task_release_gh_push_arm64.outputs.imageid }}"
                   echo "docker digest (arm64) .................... ${{ steps.task_release_gh_push_arm64.outputs.digest }}"
+                  echo "‎"
 
             # #
             #   Release › Github › Push Manifest
             # #
 
             - name: '📦 Push Manifest'
-              id: task_release_gh_manifest
               uses: int128/docker-manifest-create-action@v2
               with:
                   push: ${{ !inputs.DRY_RUN }}
@@ -693,7 +925,6 @@ jobs:
             # #
 
             - name: '🕛 Get Weekly Commit List'
-              id: task_release_set_weekly_commit_list
               run: |
                   echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
                   git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
@@ -707,8 +938,8 @@ jobs:
               uses: tsickert/discord-webhook@v7.0.0
               if: success()
               with:
-                  username: 'Io'
-                  avatar-url: 'https://i.imgur.com/8BVDkla.jpg'
+                  username: ${{ env.DISCORD_BOT_NAME }}
+                  avatar-url: ${{ env.DISCORD_BOT_AVATAR }}
                   webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
                   embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
@@ -773,30 +1004,19 @@ jobs:
         steps:
 
             # #
-            #   Release › Cleanup
-            # #
-
-            - name: '🏳️ Start'
-              id: task_cleanup_gh_start
-              run: |
-                  echo "Cleaning up untagged docker images"
-
-            # #
             #   Release › Cleanup › Checkout
             # #
 
             - name: '✅ Checkout'
-              id: task_cleanup_gh_checkout
               uses: actions/checkout@v4
               with:
-                fetch-depth: 0
+                  fetch-depth: 0
 
             # #
             #   Release › Cleanup › Clean Untagged Images
             # #
 
             - name: '🧹 Clean Untagged Images'
-              id: task_cleanup_clean
               uses: quartx-analytics/ghcr-cleaner@v1
               with:
                   owner-type: org

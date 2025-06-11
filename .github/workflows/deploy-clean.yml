@@ -80,7 +80,6 @@ on:
                 default:        '1000'
                 type:           string
 
-
             # #
             #   Discord Bot › Name
             #
