@@ -1,0 +1,302 @@
+# #
+#   @type               github workflow
+#   @author             Aetherinox
+#   @url                https://github.com/Aetherinox
+#   @usage              cleans up the cache for a repository.
+#   
+#   
+#   You can view your current cached items by going to Github and going to the page:
+#       https://github.com/USERNAME/REPO/actions/caches
+#   
+#   Caches have branch scope restrictions in place, which means some caches have limited usage options. For more information
+#   on cache scope restrictions, see Restrictions for accessing a cache, earlier in this article. If caches limited to a specific
+#   branch are using a lot of storage quota, it may cause caches from the default branch to be created and deleted at a high frequency.
+#   
+#   For example, a repository could have many new pull requests opened, each with their own caches that are restricted to that branch.
+#   These caches could take up the majority of the cache storage for that repository. Once a repository has reached its maximum cache
+#   storage, the cache eviction policy will create space by deleting the caches in order of last access date, from oldest to most
+#   recent. In order to prevent cache thrashing when this happens, you can set up workflows to delete caches on a faster cadence than
+#   the cache eviction policy will. You can use the GitHub CLI to delete caches for specific branches.
+#   
+#   @reference          https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/caching-dependencies-to-speed-up-workflows#deleting-cache-entries
+#   
+#   
+#   @secrets            secrets.SELF_TOKEN                                          self github personal access token (fine-grained)
+#                       secrets.SELF_TOKEN_CL                                       self github personal access token (classic)
+#                       secrets.NPM_TOKEN                                           self npmjs access token
+#                       secrets.PYPI_API_TOKEN                                      self Pypi API token (production site) - https://pypi.org/
+#                       secrets.PYPI_API_TEST_TOKEN                                 self Pypi API token (test site) - https://test.pypi.org/
+#                       secrets.SELF_DOCKERHUB_TOKEN                                self Dockerhub token
+#                       secrets.CODECOV_TOKEN                                       codecov upload token for nodejs projects
+#                       secrets.MAXMIND_GELITE_TOKEN                                maxmind API token
+#                       secrets.CF_ACCOUNT_ID                                       cloudflare account id
+#                       secrets.CF_ACCOUNT_TOKEN                                    cloudflare account token
+#                       secrets.ORG_TOKEN                                           org github personal access token (fine-grained)
+#                       secrets.ORG_TOKEN_CL                                        org github personal access token (classic)
+#                       secrets.ORG_DOCKERHUB_TOKEN                                 org dockerhub secret
+#                       secrets.ORG_GITEA_TOKEN                                     org gitea personal access token (classic) with package:write permission
+#                       secrets.BOT_GPG_KEY_ASC                                     bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
+#                       secrets.BOT_GPG_KEY_B64                                     bot gpg private key (binary) converted to base64
+#                       secrets.BOT_GPG_PASSPHRASE                                  bot gpg private key passphrase
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_RELEASES                discord webhook to report release notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_WORKFLOWS               discord webhook to report workflow notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_UPDATES                 discord webhook to report activity notifications from github to discord
+#   
+#
+#   @local              these workflows can be tested locally through the use of `act`
+#                           https://github.com/nektos/act
+#                       Extract act to folder
+#                       Add system env var with path to act.exe
+#                       Run the commands:
+#                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/cache-clean.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
+#                           act -W .github/workflows/cache-clean.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
+# #
+
+# #
+
+name: '🧹 Cache › Clean'
+run-name: '🧹 Cache › Clean'
+
+# #
+#   triggers
+# #
+
+on:
+
+    # #
+    #   Trigger › Workflow Dispatch
+    # #
+
+    workflow_dispatch:
+        inputs:
+
+            # #
+            #   Cache › Num Per Page
+            #   
+            #   this is the number of cached items to fetch per page.
+            # #
+
+            NUM_PER_PAGE:
+                description:    '📦 Number Per Page'
+                required:       true
+                default:        '100'
+                type:           string
+
+# #
+#   environment variables
+# #
+
+env:
+    NUM_PER_PAGE:               ${{ github.event.inputs.NUM_PER_PAGE || '100' }}
+    BOT_NAME_1:                 EuropaServ
+    BOT_NAME_2:                 BinaryServ
+    BOT_NAME_DEPENDABOT:        dependabot[bot]
+    BOT_NAME_RENOVATE:          renovate[bot]
+
+# #
+#   jobs
+# #
+
+jobs:
+    cleanup:
+        name: >-
+            🧹 Cache › Clean
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
+        timeout-minutes: 5
+        permissions: write-all
+
+        steps:
+
+            # #
+            #   Cache › Clean › Checkout
+            # #
+
+            - name: '☑️ Checkout'
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Cache › Clean › Job Information
+            # #
+
+            - name: >-
+                  🔄 Load Job
+              uses: qoomon/actions--context@v4
+              id: 'context'
+
+            # #
+            #   Cache › Clean › Start
+            # #
+
+            - name: >-
+                  ✅ Start
+              run: |
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo " Starting Job ${{ steps.context.outputs.job_name }}"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+
+                  YEAR="$(date +'%Y')"
+                  echo "YEAR=${YEAR}" >> $GITHUB_ENV
+
+                  NOW="$(date +'%m-%d-%Y %H:%M:%S')"                                                #  02-25-2025 12:49:48
+                  echo "NOW=${NOW}" >> $GITHUB_ENV
+
+                  NOW_SHORT="$(date +'%m-%d-%Y')"                                                   #  02-25-2025
+                  echo "NOW_SHORT=${NOW_SHORT}" >> $GITHUB_ENV
+
+                  NOW_LONG="$(date +'%m-%d-%Y %H:%M')"                                              #  02-25-2025 12:49
+                  echo "NOW_LONG=${NOW_LONG}" >> $GITHUB_ENV
+
+                  NOW_DOCKER="$(date +'%Y%m%d')"                                                    #  20250225
+                  echo "NOW_DOCKER=${NOW_DOCKER}" >> $GITHUB_ENV
+
+                  NOW_DOCKER_TS="$(date -u +'%FT%T.%3NZ')"                                          #  2025-02-25T12:50:11.569Z
+                  echo "NOW_DOCKER_TS=${NOW_DOCKER_TS}" >> $GITHUB_ENV
+
+                  SHA1="$(git rev-parse HEAD)"                                                      #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1=${SHA1}" >> $GITHUB_ENV
+
+                  SHA1_GH="$(echo ${GITHUB_SHA})"                                                   #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1_GH=${SHA1_GH}" >> $GITHUB_ENV
+
+                  PKG_VER_1DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1)"              #  3.22 > 3
+                  echo "PKG_VER_1DIGIT=${PKG_VER_1DIGIT}" >> $GITHUB_ENV
+
+                  PKG_VER_2DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"    #  3.22 > 3.2
+                  echo "PKG_VER_2DIGIT=${PKG_VER_2DIGIT}" >> $GITHUB_ENV
+
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  sudo apt -qq update
+                  sudo apt -qq install tree
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  echo " Runner .............. ${{ runner.name }}"
+                  echo " Workflow ............ ${{ github.workflow }} (#${{ github.workflow_ref }})"
+                  echo " Run Number .......... ${{ github.run_number }}"
+                  echo " Ref ................. ${{ github.ref }}"
+                  echo " Ref Name ............ ${{ github.ref_name }}"
+                  echo " Event Name .......... ${{ github.event_name }}"
+                  echo " Repo ................ ${{ github.repository }}"
+                  echo " Repo Owner .......... ${{ github.repository_owner }}"
+                  echo " Run ID .............. https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  echo " Triggered By ........ ${{ github.actor }}"
+                  echo " SHA 1 (GITHUB_SHA) .. ${GITHUB_SHA}"
+                  echo " SHA 2 (github.sha) .. ${{ github.sha }}"
+                  echo " SHA 3 (env.SHA1) .... ${SHA1}"
+                  echo " SHA 4 (env.SHA1_GH) . ${SHA1_GH}"
+                  echo " Workspace ........... ${{ github.workspace }}"
+                  echo " PWD ................. ${PWD}"
+                  echo " Job Name ............ ${{ steps.context.outputs.job_name }}"
+                  echo " Job ID .............. ${{ steps.context.outputs.job_id }}"
+                  echo " Job URL ............. ${{ steps.context.outputs.job_url }}"
+                  echo " Run ID .............. ${{ steps.context.outputs.run_id }}"
+                  echo " Run Attempt ......... ${{ steps.context.outputs.run_attempt }}"
+                  echo " Run Number .......... ${{ steps.context.outputs.run_number }}"
+                  echo " Run URL ............. ${{ steps.context.outputs.run_url }}"
+                  echo " Run Env ............. ${{ steps.context.outputs.environment }}"
+                  echo " Run Env URL ......... ${{ steps.context.outputs.environment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Deployment URL .. ${{ steps.context.outputs.deployment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Runner Name ..... ${{ steps.context.outputs.runner_name }}"
+                  echo " Run Runner ID ....... ${{ steps.context.outputs.runner_id }}"
+                  echo " Year ................ ${YEAR}"
+                  echo " Now ................. ${NOW}"
+                  echo " Now (Short) ......... ${NOW_SHORT}"
+                  echo " Now (Long) .......... ${NOW_LONG}"
+                  echo " Now (Docker) ........ ${NOW_DOCKER}"
+                  echo " Now (Docker TS) ..... ${NOW_DOCKER_TS}"
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  tree -I node_modules -I .git
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+
+            # #
+            #   Cache › Clean › Start
+            #   
+            #   You can view your current cached items by going to Github and going to the page:
+            #       https://github.com/USERNAME/REPO/actions/caches
+            #   
+            #   Caches have branch scope restrictions in place, which means some caches have limited usage options. For more information
+            #   on cache scope restrictions, see Restrictions for accessing a cache, earlier in this article. If caches limited to a specific
+            #   branch are using a lot of storage quota, it may cause caches from the default branch to be created and deleted at a high frequency.
+            #   
+            #   For example, a repository could have many new pull requests opened, each with their own caches that are restricted to that branch.
+            #   These caches could take up the majority of the cache storage for that repository. Once a repository has reached its maximum cache
+            #   storage, the cache eviction policy will create space by deleting the caches in order of last access date, from oldest to most
+            #   recent. In order to prevent cache thrashing when this happens, you can set up workflows to delete caches on a faster cadence than
+            #   the cache eviction policy will. You can use the GitHub CLI to delete caches for specific branches.
+            #   
+            #   @reference      https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/caching-dependencies-to-speed-up-workflows#deleting-cache-entries
+            # #
+
+            - name: >-
+                🪣 Cache › Clean
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                          try
+                          {
+                              const cacheConf =
+                              {
+                                  owner: context.repo.owner,
+                                  repo: context.repo.repo,
+                                  per_page: ${{ env.NUM_PER_PAGE }},
+                              };
+
+                              console.log( `✅ Starting to clean cache; showing ${{ env.NUM_PER_PAGE }} cached items per page` )
+                              const caches = await github.rest.actions.getActionsCacheList( cacheConf )
+
+                              while( caches.data.actions_caches.length )
+                              {
+                                  for ( const cache of caches.data.actions_caches )
+                                  {
+                                      console.log( `⚠️ Clearing cache id: ${cache.key} (${cache.id})` )
+                                      const res = await github.rest.actions.deleteActionsCacheById(
+                                      {
+                                          owner: context.repo.owner,
+                                          repo: context.repo.repo,
+                                          cache_id: cache.id,
+                                      });
+
+                                      console.log( `✔️ Cache item ${cache.key} (${cache.id}) cleared at ${new Date().toISOString()}` )
+                                  }
+
+                                  caches = await github.rest.actions.getActionsCacheList(congif);
+                                  console.log( `Getting another ${caches.data.actions_caches.length} caches from github ...` );
+                              }
+
+                              console.log( `✔️ Finished cleaning the cache` );
+                          }
+                          catch( e )
+                          {
+                              console.log( `❌ The workflow has terminated with an error:`, e )
+                              return;
+                          }
+
+            # #
+            #   Cache › Clean › Get Weekly Commits
+            # #
+
+            - name: >-
+                🕛 Get Weekly Commit List
+              run: |
+                  echo 'WEEKLY_COMMITS<<EOF' >> $GITHUB_ENV
+                  git log --format="[\`%h\`](${{ github.server_url }}/${{ github.repository }}/commit/%H) %s - %an" --since=7.days >> $GITHUB_ENV
+                  echo 'EOF' >> $GITHUB_ENV
