@@ -148,54 +148,6 @@ on:
                 default:        false
                 type:           boolean
 
-            # #
-            #   Discord Bot › Name
-            #
-            #   The discord bot name
-            # #
-
-            DISCORD_BOT_NAME:
-                description:    '🤖 Bot Name'
-                required:       true
-                default:        'Europa'
-                type:           string
-
-            # #
-            #   Discord Bot › Avatar
-            #
-            #   The discord bot avatar to show; let's use some weird picture
-            # #
-
-            DISCORD_BOT_AVATAR:
-                description:    '🤖 Avatar URL'
-                required:       true
-                default:        'https://i.imgur.com/UqwMom1.jpeg'
-                type:           string
-
-            # #
-            #   Discord Bot › Author Icon URL
-            #
-            #   A small picture shown to the top-right of each post
-            # #
-
-            DISCORD_BOT_EMBED_AUTHOR_ICON:
-                description:    '🤖 Embed Author Icon'
-                required:       true
-                default:        'https://avatars.githubusercontent.com/u/200161462'
-                type:           string
-
-            # #
-            #   Discord Bot › Thumbnail URL
-            #
-            #   A small picture shown to the top-right of each post
-            # #
-
-            DISCORD_BOT_EMBED_THUMBNAIL:
-                description:    '🤖 Embed Thumbnail URL'
-                required:       true
-                default:        'https://avatars.githubusercontent.com/u/200161462'
-                type:           string
-
     # #
     #   Trigger › Push
     # #
@@ -215,10 +167,10 @@ env:
     IMAGE_GHCR_AUTHOR:                ${{ github.event.inputs.IMAGE_GHCR_AUTHOR || 'BinaryNinja' }}
     IMAGE_GHCR_USERNAME:              ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'BinaryNinja' }}
     IMAGE_ALPINE_VERSION:             ${{ github.event.inputs.IMAGE_ALPINE_VERSION || '3.21' }}
-    DISCORD_BOT_NAME:                 ${{ github.event.inputs.DISCORD_BOT_NAME || 'Europa' }}
-    DISCORD_BOT_AVATAR:               ${{ github.event.inputs.DISCORD_BOT_AVATAR || 'https://i.imgur.com/UqwMom1.jpeg' }}
-    DISCORD_BOT_EMBED_AUTHOR_ICON:    ${{ github.event.inputs.DISCORD_BOT_EMBED_AUTHOR_ICON || 'https://avatars.githubusercontent.com/u/200161462' }}
-    DISCORD_BOT_EMBED_THUMBNAIL:      ${{ github.event.inputs.DISCORD_BOT_EMBED_THUMBNAIL || 'https://avatars.githubusercontent.com/u/200161462' }}
+    DISCORD_BOT_NAME:                 'Europa'
+    DISCORD_BOT_AVATAR:               'https://i.imgur.com/UqwMom1.jpeg'
+    DISCORD_BOT_EMBED_AUTHOR_ICON:    'https://avatars.githubusercontent.com/u/200161462'
+    DISCORD_BOT_EMBED_THUMBNAIL:      'https://avatars.githubusercontent.com/u/200161462'
 
     BOT_NAME_1:                       EuropaServ
     BOT_NAME_2:                       BinaryServ
