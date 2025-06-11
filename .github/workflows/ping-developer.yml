@@ -1,0 +1,323 @@
+# #
+#   @type               github workflow
+#   @author             Aetherinox
+#   @url                https://github.com/Aetherinox
+#   @usage              pings the developer when an issue comment is made
+#
+#   @secrets            secrets.SELF_TOKEN                                          self github personal access token (fine-grained)
+#                       secrets.SELF_TOKEN_CL                                       self github personal access token (classic)
+#                       secrets.NPM_TOKEN                                           self npmjs access token
+#                       secrets.PYPI_API_TOKEN                                      self Pypi API token (production site) - https://pypi.org/
+#                       secrets.PYPI_API_TEST_TOKEN                                 self Pypi API token (test site) - https://test.pypi.org/
+#                       secrets.SELF_DOCKERHUB_TOKEN                                self Dockerhub token
+#                       secrets.CODECOV_TOKEN                                       codecov upload token for nodejs projects
+#                       secrets.MAXMIND_GELITE_TOKEN                                maxmind API token
+#                       secrets.CF_ACCOUNT_ID                                       cloudflare account id
+#                       secrets.CF_ACCOUNT_TOKEN                                    cloudflare account token
+#                       secrets.ORG_TOKEN                                           org github personal access token (fine-grained)
+#                       secrets.ORG_TOKEN_CL                                        org github personal access token (classic)
+#                       secrets.ORG_DOCKERHUB_TOKEN                                 org dockerhub secret
+#                       secrets.ORG_GITEA_TOKEN                                     org gitea personal access token (classic) with package:write permission
+#                       secrets.BOT_GPG_KEY_ASC                                     bot gpg private key (armored) | BEGIN PGP PRIVATE KEY BLOCK
+#                       secrets.BOT_GPG_KEY_B64                                     bot gpg private key (binary) converted to base64
+#                       secrets.BOT_GPG_PASSPHRASE                                  bot gpg private key passphrase
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_RELEASES                discord webhook to report release notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_WORKFLOWS               discord webhook to report workflow notifications from github to discord
+#                       secrets.DISCORD_WEBHOOK_CHAN_GITHUB_UPDATES                 discord webhook to report activity notifications from github to discord
+#
+#   @local              these workflows can be tested locally through the use of `act`
+#                           https://github.com/nektos/act
+#                       Extract act to folder
+#                       Add system env var with path to act.exe
+#                       Run the commands:
+#                           git pull https://github.com/username/repo
+#                           act -W .github/workflows/ping-developer.yml -P ubuntu-latest=catthehacker/ubuntu:full-22.04
+#                           act -W .github/workflows/ping-developer.yml -s TOKEN_CL=XXXXXXXXXX --pull=false
+# #
+
+name: '💬 Ping › Developer'
+run-name: '💬 Ping › Developer'
+
+# #
+#   triggers
+# #
+
+on:
+    issue_comment:
+        types: [created]
+
+# #
+#   environment variables
+# #
+
+env:
+    DEPLOYMENT_ENV:             ${{ github.event.inputs.DEPLOYMENT_ENV || 'orion' }}
+    BOT_NAME_1:                 EuropaServ
+    BOT_NAME_2:                 BinaryServ
+    BOT_NAME_DEPENDABOT:        dependabot[bot]
+    BOT_NAME_RENOVATE:          renovate[bot]
+
+# #
+#   jobs
+#
+#   env not available for job.if
+# #
+
+jobs:
+    deploy:
+        name: >-
+            💬 Issue › Accept
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
+        timeout-minutes: 5
+        if: |
+            contains(github.event.comment.body, '/ping')
+        steps:
+
+            # #
+            #   Ping › Checkout
+            # #
+
+            - name: '☑️ Checkout'
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            # #
+            #   Ping › Job Information
+            # #
+
+            - name: >-
+                  🔄 Load Job
+              uses: qoomon/actions--context@v4
+              id: 'context'
+
+            # #
+            #   Ping › Start
+            # #
+
+            - name: >-
+                  ✅ Start
+              run: |
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo " Starting Job ${{ steps.context.outputs.job_name }}"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+
+                  YEAR="$(date +'%Y')"
+                  echo "YEAR=${YEAR}" >> $GITHUB_ENV
+
+                  NOW="$(date +'%m-%d-%Y %H:%M:%S')"                                                #  02-25-2025 12:49:48
+                  echo "NOW=${NOW}" >> $GITHUB_ENV
+
+                  NOW_SHORT="$(date +'%m-%d-%Y')"                                                   #  02-25-2025
+                  echo "NOW_SHORT=${NOW_SHORT}" >> $GITHUB_ENV
+
+                  NOW_LONG="$(date +'%m-%d-%Y %H:%M')"                                              #  02-25-2025 12:49
+                  echo "NOW_LONG=${NOW_LONG}" >> $GITHUB_ENV
+
+                  NOW_DOCKER="$(date +'%Y%m%d')"                                                    #  20250225
+                  echo "NOW_DOCKER=${NOW_DOCKER}" >> $GITHUB_ENV
+
+                  NOW_DOCKER_TS="$(date -u +'%FT%T.%3NZ')"                                          #  2025-02-25T12:50:11.569Z
+                  echo "NOW_DOCKER_TS=${NOW_DOCKER_TS}" >> $GITHUB_ENV
+
+                  SHA1="$(git rev-parse HEAD)"                                                      #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1=${SHA1}" >> $GITHUB_ENV
+
+                  SHA1_GH="$(echo ${GITHUB_SHA})"                                                   #  71fad013cfce9116ec62779e4a7e627fe4c33627
+                  echo "SHA1_GH=${SHA1_GH}" >> $GITHUB_ENV
+
+                  PKG_VER_1DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1)"              #  3.22 > 3
+                  echo "PKG_VER_1DIGIT=${PKG_VER_1DIGIT}" >> $GITHUB_ENV
+
+                  PKG_VER_2DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"    #  3.22 > 3.2
+                  echo "PKG_VER_2DIGIT=${PKG_VER_2DIGIT}" >> $GITHUB_ENV
+
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  sudo apt -qq update
+                  sudo apt -qq install tree
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  echo " Runner .............. ${{ runner.name }}"
+                  echo " Workflow ............ ${{ github.workflow }} (#${{ github.workflow_ref }})"
+                  echo " Run Number .......... ${{ github.run_number }}"
+                  echo " Ref ................. ${{ github.ref }}"
+                  echo " Ref Name ............ ${{ github.ref_name }}"
+                  echo " Event Name .......... ${{ github.event_name }}"
+                  echo " Repo ................ ${{ github.repository }}"
+                  echo " Repo Owner .......... ${{ github.repository_owner }}"
+                  echo " Run ID .............. https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  echo " Triggered By ........ ${{ github.actor }}"
+                  echo " SHA 1 (GITHUB_SHA) .. ${GITHUB_SHA}"
+                  echo " SHA 2 (github.sha) .. ${{ github.sha }}"
+                  echo " SHA 3 (env.SHA1) .... ${SHA1}"
+                  echo " SHA 4 (env.SHA1_GH) . ${SHA1_GH}"
+                  echo " Workspace ........... ${{ github.workspace }}"
+                  echo " PWD ................. ${PWD}"
+                  echo " Job Name ............ ${{ steps.context.outputs.job_name }}"
+                  echo " Job ID .............. ${{ steps.context.outputs.job_id }}"
+                  echo " Job URL ............. ${{ steps.context.outputs.job_url }}"
+                  echo " Run ID .............. ${{ steps.context.outputs.run_id }}"
+                  echo " Run Attempt ......... ${{ steps.context.outputs.run_attempt }}"
+                  echo " Run Number .......... ${{ steps.context.outputs.run_number }}"
+                  echo " Run URL ............. ${{ steps.context.outputs.run_url }}"
+                  echo " Run Env ............. ${{ steps.context.outputs.environment }}"
+                  echo " Run Env URL ......... ${{ steps.context.outputs.environment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Deployment URL .. ${{ steps.context.outputs.deployment_url }}"
+                  echo " Run Deployment ...... ${{ steps.context.outputs.deployment_id }}"
+                  echo " Run Runner Name ..... ${{ steps.context.outputs.runner_name }}"
+                  echo " Run Runner ID ....... ${{ steps.context.outputs.runner_id }}"
+                  echo " Year ................ ${YEAR}"
+                  echo " Now ................. ${NOW}"
+                  echo " Now (Short) ......... ${NOW_SHORT}"
+                  echo " Now (Long) .......... ${NOW_LONG}"
+                  echo " Now (Docker) ........ ${NOW_DOCKER}"
+                  echo " Now (Docker TS) ..... ${NOW_DOCKER_TS}"
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+                  tree -I node_modules -I .git
+                  echo "‎"
+                  echo "‎"
+                  echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
+                  echo "‎"
+                  echo "‎"
+
+            # #
+            #   Ping › Developer › Send Mail
+            #   
+            #   Add Label to accepted PR
+            #   
+            #   port 465
+            #       server_port: 465
+            #       secure: true
+            #       ignore_cert: false
+            #   
+            #   port 587
+            #       server_port: 587
+            #       secure: false
+            # #
+
+            - name: >-
+                  📨 Send mail
+              id: task_ping_developer_mail
+              uses: dawidd6/action-send-mail@v5
+              with:
+                  server_address: ${{ secrets.EMAIL_SMTP }}
+                  server_port: 465
+                  secure: true
+                  username: ${{ secrets.EMAIL_FROM }}
+                  password: ${{ secrets.EMAIL_KEY }}
+                  subject: "Github: Ping notification from ${{ github.repository }}"
+                  to: ${{ secrets.EMAIL_TO }}
+                  from: ${{ secrets.EMAIL_FROM }}
+                  html_body: |
+                      <!DOCTYPE html>
+                      <html>
+                      <head>
+                      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+                      <title>Title</title>
+
+                      <style>
+                      body {
+                      background: url('https://images.unsplash.com/photo-1541422348463-9bc715520974?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZGFyayUyMG1vdW50YWlufGVufDB8fDB8fHww');
+                      font-size:9pt;
+                      margin:0;
+                      padding:0;
+                      }
+                      .background-overlay {
+                      background-color: #1111119f;
+                      }
+                      .background-header {
+                      background: url('https://process.fs.teachablecdn.com/ADNupMnWyR7kCWRvm76Laz/resize=width:705/https://cdn.filestackcontent.com/MipxnobQRRS5h7raz9aM');
+                      background-size: cover;
+                      background-size: 100%;
+                      background-color:#1b1b1b;
+                      padding:5px;
+                      height:100px;
+                      }
+                      </style>
+                      </head>
+
+                      <body>
+                      <div class="background-overlay">
+                      <center>
+                      <div class="background-header">
+                      <a href="https://github.com/${{ github.repository }}"><img style="height:80px;padding-top:10px;" src="https://cdn0.iconfinder.com/data/icons/shift-logotypes/32/Github-512.png"></a>
+                      </div>
+                      </center>
+
+                      <div style="font-size:9pt;padding: 20px;color:#FFF;">
+                      <h3><span style="font-size:9pt;color:#cc6613;">[Github]</span> <span style="font-size:9pt;color:#FFF;">Dear ${{github.repository_owner}},</span></h3>
+                      <p style="font-size:9pt;color:#FFF;"><br />You have received a ping notification from <a href="https://github.com/${{ github.repository }}">${{ github.repository }}</a> by <a href="https://github.com/${{ github.event.comment.user.login }}">${{ github.event.comment.user.login }}</a>.</p>
+                      <br>
+                      <br>
+                      <center>
+                      <table cellspacing="0" cellpadding="0" width="40%" class="center">
+                      <tbody>
+                      <tr>
+                      <td
+                      style="font-size:9pt;background-color:#8a2138;color:#FFF;padding:6px;padding-left:10px;"><b>Repository</b></td>
+                      <td style="font-size:9pt;padding-left:5px;color:#b3b3b3;background-color:#1b1b1b;padding-left:10px;">${{ github.repository }}</td>
+                      </tr>
+                      <tr>
+                      <td
+                      style="font-size:9pt;background-color:#8a2138;color:#FFF;padding:6px;padding-left:10px;"><b>Date</b></td>
+                      <td style="font-size:9pt;padding-left:5px;color:#b3b3b3;background-color:#0f0f0f;padding-left:10px;">${{ env.NOW }}</td>
+                      </tr>
+                      <tr>
+                      <td
+                      style="font-size:9pt;background-color:#8a2138;color:#FFF;padding:6px;padding-left:10px;"><b>Commenter</b></td>
+                      <td style="font-size:9pt;padding-left:5px;color:#b3b3b3;background-color:#1b1b1b;padding-left:10px;">${{ github.event.comment.user.login }}</td>
+                      </tr>
+                      <tr>
+                      <td
+                      style="font-size:9pt;background-color:#8a2138;color:#FFF;padding:6px;padding-left:10px;"><b>Issue #</b></td>
+                      <td style="font-size:9pt;padding-left:5px;color:#b3b3b3;background-color:#0f0f0f;padding-left:10px;">${{ github.event.issue.number }}</td>
+                      </tr>
+                      <tr>
+                      <td
+                      style="font-size:9pt;background-color:#8a2138;color:#FFF;padding:6px;padding-left:10px;"><b>Action</b></td>
+                      <td style="font-size:9pt;padding-left:5px;color:#b3b3b3;background-color:#1b1b1b;padding-left:10px;">Notification</td>
+                      </tr>
+                      </tbody>
+                      </table>
+                      </center>
+
+                      <br><br>
+
+                      <center>
+                      <div style="font-family:Consolas;">
+
+                      <textarea readonly=true style="font-size:9pt;width:60%;background-color:#363636;color:#FFF;padding:15px;border:1px solid #5a5a5a;" id="w3review" name="w3review" rows="20" cols="100">
+                      ${{ github.event.comment.body }}
+                      </textarea>
+
+                      </div>
+                      </center>
+
+                      <p>&nbsp;</p>
+                      <p style="color:#FFF;"><br /> ~ Github
+                      </p>
+                      </div>
+
+                      <br /><br />
+
+                      <div style="background-color:#1b1b1b;padding:5px;line-height:70px;height:70px;text-align:center;">
+                      <span style="color:#FFF;font-size:8pt;">Copyright &copy; ${{ env.YEAR }}</span>
+                      </div>
+                      </div>
+                      </body>
+                      </html>
+                  ignore_cert: true
+                  convert_markdown: true
+                  priority: normal
