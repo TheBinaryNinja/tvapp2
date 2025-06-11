@@ -104,11 +104,15 @@ on:
 # #
 
 env:
-    ASSIGN_USER:                    Aetherinox
-    BOT_NAME_1:                     EuropaServ
-    BOT_NAME_2:                     BinaryServ
-    BOT_NAME_DEPENDABOT:            dependabot[bot]
-    BOT_NAME_RENOVATE:              renovate[bot]
+    DISCORD_BOT_NAME:                 ${{ github.event.inputs.DISCORD_BOT_NAME || 'Europa' }}
+    DISCORD_BOT_AVATAR:               ${{ github.event.inputs.DISCORD_BOT_AVATAR || 'https://i.imgur.com/UqwMom1.jpeg' }}
+    DISCORD_BOT_EMBED_AUTHOR_ICON:    ${{ github.event.inputs.DISCORD_BOT_EMBED_AUTHOR_ICON || 'https://avatars.githubusercontent.com/u/200161462' }}
+    DISCORD_BOT_EMBED_THUMBNAIL:      ${{ github.event.inputs.DISCORD_BOT_EMBED_THUMBNAIL || 'https://avatars.githubusercontent.com/u/200161462' }}
+    ASSIGN_USER:                      Aetherinox
+    BOT_NAME_1:                       EuropaServ
+    BOT_NAME_2:                       BinaryServ
+    BOT_NAME_DEPENDABOT:              dependabot[bot]
+    BOT_NAME_RENOVATE:                renovate[bot]
 
     LABELS_JSON: |
       [
