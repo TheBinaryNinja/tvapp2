@@ -895,7 +895,7 @@ jobs:
                   webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_RELEASES }}
                   embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-thumbnail-url: 'https://i.imgur.com/zDIzE8T.jpg'
+                  embed-thumbnail-url: ${{ env.DISCORD_BOT_EMBED_THUMBNAIL }}
                   embed-description: |
                       ### 📦 ᲼Deploy (Github) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
@@ -935,7 +935,7 @@ jobs:
                   embed-timestamp: "${{ env.NOW_LONG }}"
                   embed-author-name: "${{ github.repository_owner }}"
                   embed-author-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                  embed-author-icon-url: "https://avatars.githubusercontent.com/u/200161462"
+                  embed-author-icon-url: ${{ env.DISCORD_BOT_EMBED_AUTHOR_ICON }}
 
     # #
     #   Job › Docker Release › Cleanup
