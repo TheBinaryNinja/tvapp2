@@ -81,8 +81,8 @@ declare -A icon=(
 #   distro info
 # #
 
-sys_os_ver="1.0.0"
 sys_os_name="Unknown"
+sys_os_ver="1.0.0"
 
 if [ -e /etc/alpine-release ]; then
     sys_os_name="Alpine"
