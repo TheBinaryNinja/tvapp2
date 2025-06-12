@@ -145,7 +145,7 @@ export default
             'import/no-webpack-loader-syntax': 'off',
             'import/no-relative-parent-imports': 'error',
             'import/first': 'error',
-            'import/no-default-export': 'always',
+            'import/no-default-export': 'off',
             'node/no-callback-literal': 0,
 
             /*
