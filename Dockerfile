@@ -45,7 +45,7 @@
 # #
 
 ARG ARCH=amd64
-ARG ALPINE_VERSION=3.21
+ARG ALPINE_VERSION=3.22
 FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:${ALPINE_VERSION}
 
 # #
@@ -53,7 +53,7 @@ FROM --platform=linux/${ARCH} ghcr.io/aetherinox/alpine-base:${ALPINE_VERSION}
 # #
 
 ARG ARCH=amd64
-ARG ALPINE_VERSION=3.21
+ARG ALPINE_VERSION=3.22
 ARG BUILDDATE
 ARG VERSION
 ARG RELEASE
@@ -90,8 +90,9 @@ LABEL org.tvapp2.image.build-sha1="${GIT_SHA1:-000000000000000000000000000000000
 #   Set Env Var
 # #
 
-ENV NODE_VERSION=22.8.0
+ENV NODE_VERSION=22.16.0
 ENV YARN_VERSION=1.22.22
+ENV NPM_VERSION=10.9.2
 ENV RELEASE="${RELEASE:-stable}"
 ENV DIR_BUILD=/usr/src/app
 ENV DIR_RUN=/usr/bin/app
