@@ -201,6 +201,12 @@ p
     background-color:           #151515;
 }
 
+.footer-sub
+{
+    font-size: 0.9rem;
+    color: #717171;
+}
+
 .footer a,
 .footer a:focus,
 .footer a:hover

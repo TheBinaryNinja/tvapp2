@@ -125,7 +125,7 @@
                 <div class="container">
                     <div class="col text-center text-muted text-small text-nowrap">
                         <small>Developed by BinaryNinja - <a data-bs-toggle="tooltip" title="v<%= appVersion %> <%= appRelease %> (<%= appGitHashShort %>)" href="<%= appUrlGithub %>"><%= appName %> (<%= appRelease %>)</a> v<%= appVersion %> <a target="_blank" data-bs-toggle="tooltip" title="View Github commit" href="<%= appUrlGithub %>/commit/<%= appGitHashLong %>"><%= appGitHashShort %></a></small><br />
-                        <small>Uptime <a id="uptime" href="" data-bs-toggle="tooltip" title="<%= appUptimeLong %>"> <%= appUptimeShort %> </a> | Startup <a id="startup" href=""><%= appStartup %>s</a></small>
+                        <span class="footer-sub"><small>Uptime <a id="uptime" href="" data-bs-toggle="tooltip" title="<%= appUptimeLong %>"> <%= appUptimeShort %> </a> | Startup <a id="startup" data-bs-toggle="tooltip" title="Startup time" href=""><%= appStartup %>s</a> | OS <a id="os" href="" data-bs-toggle="tooltip" title="Server operating system" href=""><%= serverOs %></a></small></span>
                     </div>
                 </div>
             </div>
