@@ -10,6 +10,7 @@ import http from 'http';
 import https from 'https';
 import os from 'node:os';
 import osName from 'os-name';
+import getos from 'getos';
 import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
@@ -102,7 +103,13 @@ const envHealthTimer = process.env.HEALTH_TIMER || 600000;
 const envTaskCronSync = process.env.TASK_CRON_SYNC || '0 0 */3 * *';
 const envGitSHA1 = process.env.GIT_SHA1 || '0000000000000000000000000000000000000000';
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
-let TIME_STARTUP = 0;
+
+/*
+    Server
+*/
+
+let serverOs = 'Unknown';
+let serverStartup = 0;
 
 /*
     Define > Externals
@@ -151,6 +158,36 @@ const fileIpGateway = '/var/run/s6/container_environment/IP_GATEWAY';
 const fileIpContainer = '/var/run/s6/container_environment/IP_CONTAINER';
 const envIpGateway = fs.existsSync( fileIpGateway ) ? fs.readFileSync( fileIpGateway, 'utf8' ) : `0.0.0.0`;
 const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileIpContainer, 'utf8' ) : `0.0.0.0`;
+
+/*
+    Get Server OS
+
+    attempts to get the OS of a server a few different ways; and not just show "Linux".
+
+    Windows machines will show          Windows 11
+    Linux machines will show            Linux Alpine (3.22.0)
+*/
+
+getos( function( e, json )
+{
+
+    if( e )
+        return osName( os.platform(), os.release() )
+
+    if ( json.os === 'win32' )
+        serverOs = osName( os.platform(), os.release() );
+
+    if ( json.os === 'linux' )
+    {
+        if ( json.dist )
+            serverOs = json.dist
+
+        if ( json.release )
+            serverOs = serverOs.concat(" ", '(' + json.release + ')' );
+    }
+
+    return serverOs;
+})
 
 /*
     Define > Logs
@@ -1957,10 +1994,10 @@ async function initialize()
         FILE_GZP_MODIFIED = getFileModified( FILE_GZP );
 
         const end = performance.now();
-        TIME_STARTUP = `${ end - start }`;
+        serverStartup = `${ end - start }`;
         Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `TVApp2 container is ready` ),
-            chalk.blueBright( `<time>` ), chalk.gray( `took ${ TIME_STARTUP }ms` ),
+            chalk.blueBright( `<time>` ), chalk.gray( `took ${ serverStartup }ms` ),
             chalk.blueBright( `<ip>` ), chalk.gray( `${ envIpContainer }` ),
             chalk.blueBright( `<gateway>` ), chalk.gray( `${ envIpGateway }` ),
             chalk.blueBright( `<port>` ), chalk.gray( `${ envWebPort }` ) );
@@ -2273,8 +2310,8 @@ const server = http.createServer( ( req, resp ) =>
                 appGitHashLong: envGitSHA1,
                 appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
                 appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
-                appStartup: Math.round( TIME_STARTUP ) / 1000,
-                serverOs: osName(os.platform(), os.release())
+                appStartup: Math.round( serverStartup ) / 1000,
+                serverOs: serverOs
             }, ( err, data ) =>
         {
             if ( !err )
@@ -2365,7 +2402,8 @@ const server = http.createServer( ( req, resp ) =>
                     method: method || 'GET',
                     code: 404,
                     uptime: Math.round( process.uptime() ),
-                    uptimeHuman: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                    uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                    uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                     timestamp: Date.now()
                 };
 
