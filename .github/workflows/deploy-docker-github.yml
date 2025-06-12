@@ -123,7 +123,7 @@ on:
             IMAGE_ALPINE_VERSION:
                 description:    '📀 Alpine Version'
                 required:       true
-                default:        '3.21'
+                default:        '3.22'
                 type:           string
 
             # #
@@ -166,7 +166,7 @@ env:
     IMAGE_REGISTRY:                   ${{ github.event.inputs.IMAGE_VERSION || 'github' }}
     IMAGE_GHCR_AUTHOR:                ${{ github.event.inputs.IMAGE_GHCR_AUTHOR || 'BinaryNinja' }}
     IMAGE_GHCR_USERNAME:              ${{ github.event.inputs.IMAGE_GHCR_USERNAME || 'BinaryNinja' }}
-    IMAGE_ALPINE_VERSION:             ${{ github.event.inputs.IMAGE_ALPINE_VERSION || '3.21' }}
+    IMAGE_ALPINE_VERSION:             ${{ github.event.inputs.IMAGE_ALPINE_VERSION || '3.22' }}
     DISCORD_BOT_NAME:                 'Europa'
     DISCORD_BOT_AVATAR:               'https://i.imgur.com/UqwMom1.jpeg'
     DISCORD_BOT_EMBED_AUTHOR_ICON:    'https://avatars.githubusercontent.com/u/200161462'
@@ -205,7 +205,7 @@ jobs:
         steps:
 
             # #
-            #   Tags › Cleanup › Checkout
+            #   Release › Tags › Checkout
             # #
 
             - name: '☑️ Checkout'
@@ -214,7 +214,7 @@ jobs:
                   fetch-depth: 0
 
             # #
-            #   Tags › Cleanup › Job Information
+            #   Release › Tags › Job Information
             # #
 
             - name: >-
@@ -223,7 +223,7 @@ jobs:
               id: 'context'
 
             # #
-            #   Tags › Cleanup › Start
+            #   Release › Tags › Start
             # #
 
             - name: >-
