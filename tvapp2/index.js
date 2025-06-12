@@ -2271,7 +2271,8 @@ const server = http.createServer( ( req, resp ) =>
                 appGitHashLong: envGitSHA1,
                 appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
                 appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
-                appStartup: Math.round( TIME_STARTUP ) / 1000
+                appStartup: Math.round( TIME_STARTUP ) / 1000,
+                serverOs: osName(os.platform(), os.release())
             }, ( err, data ) =>
         {
             if ( !err )
