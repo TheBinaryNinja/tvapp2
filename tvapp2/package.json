@@ -83,7 +83,8 @@
         "express": "^5.1.0",
         "nconf": "^1.0.0-beta.2",
         "javascript-time-ago": "^2.5.11",
-        "os-name": "^6.1.0"
+        "os-name": "^6.1.0",
+        "getos": "^3.2.1"
     },
     "devDependencies": {
         "@aetherinox/noxenv": "^1.1.1",

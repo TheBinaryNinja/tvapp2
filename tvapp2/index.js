@@ -8,6 +8,8 @@ import fs from 'fs';
 import path from 'path';
 import http from 'http';
 import https from 'https';
+import os from 'node:os';
+import osName from 'os-name';
 import zlib from 'zlib';
 import chalk from 'chalk';
 import ejs from 'ejs';
