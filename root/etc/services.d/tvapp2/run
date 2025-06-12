@@ -78,11 +78,16 @@ declare -A icon=(
 )
 
 # #
-#   define > system
+#   distro info
 # #
 
 sys_os_ver="1.0.0"
 sys_os_name="Unknown"
+
+if [ -e /etc/alpine-release ]; then
+    sys_os_name="Alpine"
+    sys_os_ver="$(cat /etc/alpine-release)"
+fi
 
 # #
 #   s6 > store env variables

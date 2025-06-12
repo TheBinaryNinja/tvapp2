@@ -78,6 +78,18 @@ declare -A icon=(
 )
 
 # #
+#   distro info
+# #
+
+sys_os_ver="1.0.0"
+sys_os_name="Unknown"
+
+if [ -e /etc/alpine-release ]; then
+    sys_os_name="Alpine"
+    sys_os_ver="$(cat /etc/alpine-release)"
+fi
+
+# #
 #   get container ips
 # #
 
@@ -141,6 +153,7 @@ printf '%-2s\n' " ${c[greyd]}and EPG files will be available for the public to d
 
 if [[ -z ${TVAPP_NON_ROOT_USER} ]]; then
 echo -e
+printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}System(s)${c[end]}" "${c[end]}${sys_os_ver} ${sys_os_ver}${c[end]}"
 printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}User:Group${c[end]}" "${c[end]}$(id -u dockerx):$(id -g dockerx)${c[end]}"
 else
 printf '%-6s %-35s %-65s\n' "" " ${c[greenl]}User:Group${c[end]}" "${c[end]}$(stat /run -c %u):$(stat /run -c %g)${c[end]}"
