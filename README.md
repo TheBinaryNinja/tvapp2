@@ -403,7 +403,7 @@ Prior to building the  docker image, you **must** ensure the sections below are 
 
 <br />
 
- If the listed tasks above are not performed, your docker container will throw the following errors when started:
+If the listed tasks above are not performed, your docker container will throw the following errors when started:
 
 - `Failed to open apk database: Permission denied`
 - `s6-rc: warning: unable to start service init-adduser: command exited 127`
@@ -466,9 +466,13 @@ sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
   ./root/etc/s6-overlay/s6-rc.d/init-samples/run \
   ./root/etc/s6-overlay/s6-rc.d/init-version-checks/run \
   ./root/etc/s6-overlay/s6-rc.d/svc-cron/run \
-  ./root/etc/services.d/tvapp2/run
+  ./root/etc/s6-overlay/s6-rc.d/svc-php-fpm/run \
+  ./root/etc/s6-overlay/s6-rc.d/svc-nginx/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-php/run \
+  ./root/etc/s6-overlay/s6-rc.d/init-nginx/run
 ```
 
+<br />
 <br />
 
 ### Build Images
@@ -755,10 +759,20 @@ You should see your name:
 
 <br />
 
-Next, in order to build the `amd64` and `arm64` images on the same machine; you must install **QEMU** using:
+Next, in order to build the `amd64` and `arm64` images on the same machine; you must install **QEMU** which is an emulator. Open your terminal and run the following command:
 
 ```shell
 docker run --privileged --rm tonistiigi/binfmt --install all
+```
+
+<br />
+
+If you are building these docker images using Github workflow, you will also need to use `QEMU` with the following action:
+
+```yml
+            - name: '⚙️ Set up QEMU'
+              id: task_release_gh_qemu
+              uses: docker/setup-qemu-action@v3
 ```
 
 <br />
@@ -1781,7 +1795,7 @@ Sign into the Authentik admin panel, go to the left-side navigation, select **Ap
 
 <br />
 
-<p align="center"><img style="width: 40%;text-align: center;" src="docs/img/authentik/01.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Providers</code></sup></small></p>
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/01.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Providers</code></sup></small></p>
 
 <br />
 
@@ -1817,7 +1831,7 @@ Once finished, click **Create**. Then on the left-side menu, select **Applicatio
 
 <br />
 
-<p align="center"><img style="width: 40%;text-align: center;" src="docs/img/authentik/05.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Applications</code></sup></small></p>
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/05.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Applications</code></sup></small></p>
 
 <br />
 
@@ -1843,7 +1857,7 @@ Save, and then on the left-side menu, select **Applications** -> **Outposts**:
 
 <br />
 
-<p align="center"><img style="width: 40%;text-align: center;" src="docs/img/authentik/07.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Outposts</code></sup></small></p>
+<p align="center"><img style="width: 80%;text-align: center;" src="docs/img/authentik/07.png"><br><small><sup><b>Authentik:</b> Select <code>Applications</code> › <code>Outposts</code></sup></small></p>
 
 <br />
 

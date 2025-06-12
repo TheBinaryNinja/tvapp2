@@ -3,6 +3,7 @@
 # #
 
 node_modules/
+tvapp2/node_modules/
 jspm_packages/
 
 # #
