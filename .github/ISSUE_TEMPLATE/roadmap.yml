@@ -41,6 +41,7 @@ body:
             - Distribution
             - Documentation
             - M3U / EPG Functionality
+            - Refactor (Code)
             - Repository
             - S6-Overlay
         default: 0
