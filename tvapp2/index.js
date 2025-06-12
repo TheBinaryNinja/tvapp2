@@ -1296,7 +1296,7 @@ async function serveM3UPlaylist( req, res )
             return;
         }
 
-        const cachedUrl = getCache( decodedUrl, req );
+        const cachedUrl = getCache( req, decodedUrl );
         if ( cachedUrl )
         {
             const rewrittenPlaylist = await rewriteM3U( cachedUrl, req );
@@ -1369,7 +1369,7 @@ async function serveM3UPlaylist( req, res )
             return;
         }
 
-        setCache( decodedUrl, tokenizedUrl, 4 * 60 * 60 * 1000, req );
+        setCache( req, decodedUrl, tokenizedUrl, 4 * 60 * 60 * 1000 );
         const hdUrl = tokenizedUrl.replace( 'tracks-v2a1', 'tracks-v1a1' );
         const rewrittenPlaylist = await rewriteM3U( hdUrl, req );
 
@@ -1441,10 +1441,14 @@ async function serveHealthCheck( req, res )
     try
     {
         const paramUrl = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'api' );
+        const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
         if ( !paramUrl )
         {
-            Log.debug( `/api`, chalk.yellow( `[health]` ), chalk.white( `⚙️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `No API key passed to health check` ) );
+            if ( paramQuery !== 'uptime' )
+            {
+                Log.debug( `/api`, chalk.yellow( `[health]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `No API key passed to health check` ) );
+            }
         }
 
         const statusCheck =
@@ -1467,8 +1471,7 @@ async function serveHealthCheck( req, res )
             'Content-Type': 'application/json'
         });
 
-        const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
-        if ( paramQuery !== 'query' )
+        if ( paramQuery !== 'uptime' )
         {
             Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
                 chalk.greenBright( `<msg>` ), chalk.gray( `Response` ),
@@ -1789,7 +1792,7 @@ async function serveGZP( res, req )
     cache > set
 */
 
-function setCache( key, value, ttl, req )
+function setCache( req, key, value, ttl )
 {
     const expiry = Date.now() + ttl;
     cache.set( key, {
@@ -1809,7 +1812,7 @@ function setCache( key, value, ttl, req )
     cache > get
 */
 
-function getCache( key, req )
+function getCache( req, key )
 {
     const cached = cache.get( key );
     if ( cached && cached.expiry > Date.now() )
@@ -2021,13 +2024,17 @@ const server = http.createServer( ( req, resp ) =>
             loadFile            channel?url=https%3A%2F%2Ftvpass.org%2Fchannel%2Fabc-wabc-new-york-ny%2F
         */
 
-        Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
-            chalk.blueBright( `<msg>` ), chalk.gray( `Request started` ),
-            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
-            chalk.blueBright( `<request.url>` ), chalk.gray( `${ req.url }` ),
-            chalk.blueBright( `<reqUrl>` ), chalk.gray( `${ reqUrl }` ),
-            chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
-            chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+        const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
+        if ( paramQuery !== 'uptime' )
+        {
+            Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `Request started` ),
+                chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                chalk.blueBright( `<request.url>` ), chalk.gray( `${ req.url }` ),
+                chalk.blueBright( `<reqUrl>` ), chalk.gray( `${ reqUrl }` ),
+                chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+        }
 
         if ( subdomainRestart.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) )
         {
