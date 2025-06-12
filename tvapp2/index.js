@@ -168,11 +168,10 @@ const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileI
     Linux machines will show            Linux Alpine (3.22.0)
 */
 
-getos( function( e, json )
+getos( ( e, json ) =>
 {
-
-    if( e )
-        return osName( os.platform(), os.release() )
+    if ( e )
+        return osName( os.platform(), os.release() );
 
     if ( json.os === 'win32' )
         serverOs = osName( os.platform(), os.release() );
@@ -180,14 +179,14 @@ getos( function( e, json )
     if ( json.os === 'linux' )
     {
         if ( json.dist )
-            serverOs = json.dist
+            serverOs = json.dist;
 
         if ( json.release )
-            serverOs = serverOs.concat(" ", '(' + json.release + ')' );
+            serverOs = serverOs.concat( ' ', '(' + json.release + ')' );
     }
 
     return serverOs;
-})
+});
 
 /*
     Define > Logs
