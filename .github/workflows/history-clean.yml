@@ -67,27 +67,16 @@ on:
                 type:           string
 
             # #
-            #   Main Branch
+            #   Branch
             #
-            #   main branch re-recreate
+            #   select branch to clean
+            #   you must also run the workflow from that branch
             # #
 
-            BRANCH_MAIN:
-                description:    '🌳 Main Branch'
+            BRANCH:
+                description:    '🌳 Branch'
                 required:       true
                 default:        'main'
-                type:           string
-
-            # #
-            #   Deployment Environment Name
-            #
-            #   this is the name of the deployment item
-            # #
-
-            DEPLOYMENT_ENV:
-                description:    '📦 Deployment Environment'
-                required:       true
-                default:        'orion'
                 type:           string
 
 # #
@@ -96,8 +85,7 @@ on:
 
 env:
     COMMIT_LABEL:               ${{ github.event.inputs.COMMIT_LABEL || 'cleanup' }}
-    BRANCH_MAIN:                ${{ github.event.inputs.BRANCH_MAIN || 'main' }}
-    DEPLOYMENT_ENV:             ${{ github.event.inputs.DEPLOYMENT_ENV || 'orion' }}
+    BRANCH:                     ${{ github.event.inputs.BRANCH || 'main' }}
     BOT_NAME_1:                 EuropaServ
     BOT_NAME_2:                 BinaryServ
     BOT_NAME_DEPENDABOT:        dependabot[bot]
@@ -111,9 +99,11 @@ jobs:
     history-clean:
         name: >-
             🧹 History › Clean
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
-        timeout-minutes: 5
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
+        timeout-minutes: 15
+        permissions:
+            contents: write
         steps:
 
             # #
@@ -254,7 +244,7 @@ jobs:
                   now=$(date -u '+%m/%d/%Y %H:%M')
                   commit_label="${{ env.COMMIT_LABEL }}" >> $GITHUB_ENV
                   echo -e "$commit_label"
-                  commit_message="\\\`️️🧹 $commit_label 🧹\\\` \\\`$now UTC\\\`" >> $GITHUB_ENV
+                  commit_message="chore(maint): \\\`️️🧹 $commit_label 🧹\\\` \\\`$now UTC\\\`" >> $GITHUB_ENV
                   echo -e "$commit_message"
                   echo "COMMIT_MESSAGE=$(echo $commit_message)" >> $GITHUB_ENV
                   echo "NOW=$(echo $now)" >> $GITHUB_ENV
@@ -290,24 +280,25 @@ jobs:
                     git commit -m "${{ env.COMMIT_MESSAGE }}"
 
                     # Delete the old main branch
-                    git branch -D ${{ env.BRANCH_MAIN }}
+                    git branch -D ${{ env.BRANCH }}
 
                     # Rename the new orphan branch to main
-                    git branch -m ${{ env.BRANCH_MAIN }}
+                    git branch -m ${{ env.BRANCH }}
 
                     # Force push the new main branch to the remote repository
-                    git push -f origin ${{ env.BRANCH_MAIN }}
+                    git push -f origin ${{ env.BRANCH }}
 
             # #
             #   History › Clean › References
             # #
 
             - name: >-
-                  🗑️ Clean References
+                  🗑️ Garbage Collection (Aggressive)
               run: |
                     # Remove remote-tracking references to deleted branches (optional)
                     git fetch origin --prune
-
+                    git repack
+                    git prune-packed
                     git reflog expire --expire=now --all
                     git gc --prune=now --aggressive
 
