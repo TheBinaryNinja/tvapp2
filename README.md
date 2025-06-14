@@ -454,6 +454,14 @@ dos2unix with-contenv.v1
 
 <br />
 
+If you do not have dos2unix; you may use `sed:
+
+```shell
+sed -i 's/\r$//' /etc/s6-overlay/s6-rc.d/ci-service-check/file
+```
+
+<br />
+
 You may pre-check if a file is using Windows CRLF or Linux LF by running the command `file <filename>` on the file:
 
 ```shell
