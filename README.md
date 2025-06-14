@@ -412,12 +412,13 @@ If the listed tasks above are not performed, your docker container will throw th
 - `/etc/s6-overlay/s6-rc.d/init-adduser/run: /usr/bin/aetherxown: cannot execute: required file not found`
 
 <br />
+<br />
 
 #### LF over CRLF
 
 You cannot utilize Windows' `Carriage Return Line Feed`. All files must be converted to Unix' `Line Feed`.  This can be done with **[Visual Studio Code](https://code.visualstudio.com/)**. OR; you can run the Linux terminal command `🗔 dos2unix` to convert these files.
 
-If you cloned the files from the official repository [🔆 gitea:binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2) and have not edited them, then you should not need to do this step.
+For the branches **[docker/alpine-base](https://github.com/Aetherinox/docker-base-alpine/tree/docker/alpine-base)** and your main app image, you can use the following recursive commands:
 
 <br />
 
@@ -437,14 +438,49 @@ If you cloned the files from the official repository [🔆 gitea:binaryninja/tva
 find ./ -type f | grep -Ev 'docs|node_modules|.git|*.jpg|*.jpeg|*.png' | xargs dos2unix --
 
 # Change run / binaries
-find ./ -type f -name 'run' | xargs dos2unix --
+find ./ -type f -name 'run' -print | xargs dos2unix --
 ```
 
 <br />
 
+For the branch **[docker/core](https://github.com/Aetherinox/docker-base-alpine/tree/docker/core)**, you can use the following commands:
+
+```shell
+dos2unix docker-images.v3
+dos2unix aetherxown.v1
+dos2unix package-install.v1
+dos2unix with-contenv.v1
+```
+
+<br />
+
+You may pre-check if a file is using Windows CRLF or Linux LF by running the command `file <filename>` on the file:
+
+```shell
+$ file ./root//etc/s6-overlay/s6-rc.d/ci-service-check/type
+./root//etc/s6-overlay/s6-rc.d/ci-service-check/type: ASCII text
+```
+
+<br />
+
+You will get one of three messages listed below:
+
+1. ASCII text, with CRLF, LF line terminators
+2. ASCII text, with CRLF line terminators
+3. ASCII text
+
+<br />
+
+If you get messages `1` or `2`, then you need to run `dos2unix` on the file; otherwise when you bring the container up, you will get errors.
+
+<br />
+<br />
+
 #### Set `+x / 0755` Permissions
 
-The files contained within this repo **MUST** have `chmod 755` /  `+x` executable permissions.
+The files contained within this repo **MUST** have `chmod 755` /  `+x` executable permissions. If you are using our Github workflow sample **[deploy-docker-github.yml](https://github.com/Aetherinox/docker-base-alpine/blob/workflows/samples/deploy-docker-github.yml)**, this is done automatically. If you are building the images manually; you need to do this. Ensure those files have the correct permissions prior to building the Alpine base docker image.
+
+If you are building the **[docker/alpine-base](https://github.com/Aetherinox/docker-base-alpine/tree/docker/alpine-base)** or your main application images, you must ensure the files in those branches have the proper permissions. All of the executable files are named `run`:
 
 ```shell
 find ./ -name 'run' -print -exec sudo chmod +x {} \;
@@ -470,6 +506,17 @@ sudo chmod +x ./root/etc/s6-overlay/s6-rc.d/init-adduser/run \
   ./root/etc/s6-overlay/s6-rc.d/svc-nginx/run \
   ./root/etc/s6-overlay/s6-rc.d/init-php/run \
   ./root/etc/s6-overlay/s6-rc.d/init-nginx/run
+```
+
+<br />
+
+For the branch **[docker/core](https://github.com/Aetherinox/docker-base-alpine/tree/docker/core)**, there are a few files to change. The ending version number may change, but the commands to change the permissions are as follows:
+
+```shell
+sudo chmod +x docker-images.v3 \
+  chmod +x aetherxown.v1 \
+  chmod +x package-install.v1 \
+  chmod +x with-contenv.v1
 ```
 
 <br />
