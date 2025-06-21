@@ -2033,6 +2033,27 @@ If you have issues building your TVApp2 docker image, please refer to the follow
 <br />
 <br />
 
+#### Warning: Step size 60 higher than possible maximum of 59
+
+This error means that you have placed an incorrect value for a cron job. This error can show if you've set:
+
+```shell
+        environment:
+            TASK_CRON_SYNC: "*/60 * * * *"
+```
+
+<br />
+
+To correctly set the value, change your cron to:
+
+```shell
+        environment:
+            TASK_CRON_SYNC: "0 */1 * * *"
+```
+
+<br />
+<br />
+
 #### Run Error: `Error serving playlist: ENOENT: no such file or directory, open /usr/src/app/xmltv.1.xml`
 
 This error occurs at run-time when attempting to spin up your TVApp2 docker container. If you receive this error, restart your TVApp2 docker container. Ensure that your docker container also has access to your docker network so that it can connect to our repository and fetch the data files it needs to generate your playlist.
