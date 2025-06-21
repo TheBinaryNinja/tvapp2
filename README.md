@@ -2033,7 +2033,7 @@ If you have issues building your TVApp2 docker image, please refer to the follow
 <br />
 <br />
 
-#### Warning: Step size 60 higher than possible maximum of 59
+### Run Error: `Warning: Step size 60 higher than possible maximum of 59`
 
 This error means that you have placed an incorrect value for a cron job. This error can show if you've set:
 
@@ -2054,7 +2054,7 @@ To correctly set the value, change your cron to:
 <br />
 <br />
 
-#### Run Error: `Error serving playlist: ENOENT: no such file or directory, open /usr/src/app/xmltv.1.xml`
+### Run Error: `Error serving playlist: ENOENT: no such file or directory, open /usr/src/app/xmltv.1.xml`
 
 This error occurs at run-time when attempting to spin up your TVApp2 docker container. If you receive this error, restart your TVApp2 docker container. Ensure that your docker container also has access to your docker network so that it can connect to our repository and fetch the data files it needs to generate your playlist.
 
@@ -2065,7 +2065,7 @@ If the error continues after doing the above; delete the existing image, and re-
 <br />
 <br />
 
-#### Build Error: `s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle`
+### Build Error: `s6-rc-compile: fatal: invalid /etc/s6-overlay/s6-rc.d/certsync/type: must be oneshot, longrun, or bundle`
 
 This error means that you are attempting to combine files which are utilizing CRLF over LF; which is **CR** = Carriage Return and **LF** = Line Feed
 
@@ -2105,7 +2105,7 @@ find ./ -type f | grep -Ev '.git|*.jpg|*.jpeg|*.png' | sudo xargs dos2unix --
 <br />
 <br />
 
-#### Build Error: `unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied`
+### Build Error: `unable to exec /etc/s6-overlay/s6-rc.d/init-envfile/run: Permission denied`
 
 There are multiple errors you can receive when attempting to run your TVApp2 docker image. You may receive any of the following errors:
 
@@ -2130,7 +2130,7 @@ After you have set these permissions, re-build your docker image using `docker b
 <br />
 <br />
 
-#### Build Error: `[ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel XXXXXXXXXXXXXXX (Source 2) System.Xml.XmlException: '', hexadecimal value 0x1F, is an invalid character. Line 1, position 1.`
+### Build Error: `[ERR] [27] Jellyfin.LiveTv.Guide.GuideManager: Error getting programs for channel XXXXXXXXXXXXXXX (Source 2) System.Xml.XmlException: '', hexadecimal value 0x1F, is an invalid character. Line 1, position 1.`
 
 This error may be seen if you are attempting to import our EPG guide data directly into Jellyfin. The cause of this is due to you having **GZIP Compression** enabled in your header request and response. See the example below; which is in your TVApp2 `📄 docker-compose.yml` file:
 
