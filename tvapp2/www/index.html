@@ -219,6 +219,33 @@
         <script>
 
             /*
+            this is test code. enable the "Show Toast" button and then uncomment this code.
+
+            document.getElementById("btnTestToasts").onclick = function()
+            {
+                var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+                var toastList = toastElList.map(function(toastEl)
+                {
+                    return new bootstrap.Toast(toastEl)
+                });
+
+                toastList.forEach(toast => toast.show());
+                console.log(toastList);
+            };
+            */
+
+            var tooltipList = [].slice.call( document.querySelectorAll( '[data-bs-toggle="tooltip"]' ) )
+            var tooltipList = tooltipList.map( function ( el )
+            {
+                return new bootstrap.Tooltip(el,
+                {
+                    placement: "bottom",
+                    trigger: "hover",
+                    html: true
+                });
+            })
+
+            /*
                 Document Ready
             */
 
