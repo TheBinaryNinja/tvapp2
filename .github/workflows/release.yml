@@ -53,8 +53,8 @@ on:
                 type:               string
 
             # #
-            #   ENABLE:   the changelog generated in releases tab will only display single commits.
-            #   DISABLE:  the changelog shows pull requests completed based on their labels
+            #   true            the changelog generated in releases tab will only display single commits.
+            #   false           the changelog shows pull requests completed based on their labels
             # #
 
             CHANGELOG_MODE_COMMIT:
@@ -64,10 +64,10 @@ on:
                 type:               boolean
 
             # #
-            #   ENABLE:   Will show all types of commits, including uncategorized
-            #   DISABLE:  WIll only show actions that have been categorized using the format
-            #                type(scope): description
-            #                type: description
+            #   true            Will show all types of commits, including uncategorized
+            #   false           WIll only show actions that have been categorized using the format
+            #                       type(scope): description
+            #                       type: description
             # #
 
             SHOW_UNCATEGORIZED:
@@ -256,7 +256,6 @@ jobs:
             # #
 
             - name: '🪪 Test Next Job Version'
-              id: task_release_debug_print_ver
               run: |
                   echo "VERSION: ${{ env.PACKAGE_VERSION }}"
 
@@ -265,7 +264,6 @@ jobs:
             # #
 
             - name: '🪪 NPM › Install & Lint'
-              id: task_release_npm_install
               working-directory: ./tvapp2
               run: |
                   npm ci
@@ -278,7 +276,6 @@ jobs:
             # #
 
             - name: '🪪 Generate IDs'
-              id: task_release_npm_env_generate
               working-directory: ./tvapp2
               run: |
                   npm run root:generate
@@ -300,7 +297,6 @@ jobs:
             # #
 
             - name: '🪪 .ENV › Read'
-              id: task_dotenv_debug_print
               run: |
                   echo "GUID: ${{ steps.task_release_dotenv_get.outputs.GUID }}"
                   echo "UUID: ${{ steps.task_release_dotenv_get.outputs.UUID }}"
@@ -310,7 +306,6 @@ jobs:
             # #
 
             - name: '🔨 Build › Stable › ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}.zip'
-              id: task_release_build_st
               if: |
                   startsWith( inputs.RC_RELEASE, false ) ||
                   startsWith( env.RC_RELEASE, false )
@@ -320,6 +315,7 @@ jobs:
 
                   echo Building STABLE Package ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-docker-compose.zip
                   zip -r ${{ env.PROJECT_NAME }}-${{ env.PACKAGE_VERSION }}-docker-compose.zip docker-compose.yml README.md LICENSE
+                  ls
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.ADMINSERV_TOKEN_CL }}
 
@@ -366,7 +362,6 @@ jobs:
             # #
 
             - name: '🔖 Tag › Confirm ${{ env.PACKAGE_VERSION }}'
-              id: task_release_tag_get
               run: |
                   echo "Tag already present: ${{ env.TAG_EXISTS }}"
                   echo "Tag already present: ${{ steps.task_release_tag_create.outputs.tag_exists }}"
@@ -378,7 +373,6 @@ jobs:
             # #
 
             - name: '🪪 GPG › Import Signing Key › W/o Passphrase'
-              id: task_release_gpg_import_nopass
               if: env.GPG_KEY_BASE64 != '' && env.GPG_KEY_PASSPHRASE == ''
               run: |
                   echo $GPG_KEY_BASE64 | base64 -di | gpg --import
@@ -390,7 +384,6 @@ jobs:
             # #
 
             - name: '🪪 GPG › Import Signing Key › w/ Passphrase'
-              id: task_release_gpg_import_withpass
               if: env.GPG_KEY_BASE64 != '' && env.GPG_KEY_PASSPHRASE != ''
               run: |
                   echo "$GPG_KEY_BASE64" | base64 -di > /tmp/signing-key.gpg
@@ -472,16 +465,15 @@ jobs:
             # #
 
             - name: '🆔 Checksum › Print'
-              id: task_release_checksum_st_get
               run: |
-                  echo "${{ env.SHA256SUM }}"
+                  echo SHA1SUM ............... ${{ env.SHA1SUM }}
+                  echo SHA256SUM ............. ${{ env.SHA256SUM }}
 
             # #
             #   Release › Contributor Images
             # #
 
             - name: '🥸 Contributors › Generate'
-              id: task_release_contribs_generate
               uses: jaywcjlove/github-action-contributors@main
               with:
                   filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
@@ -491,7 +483,7 @@ jobs:
             # #
             #   Release › Changelog › Generate Tags
             #
-            #   generates a changelog from the github api. requires a PREVIOUS_TAG in order to figure
+            #   generates a changelog from the github api. requires a TAG_LAST in order to figure
             #   out the changes made between the two versions.
             #
             #   outputs:
@@ -499,7 +491,6 @@ jobs:
             # #
 
             - name: '📝 Changelog › Pre Setup (Categorized Commits)'
-              id: task_release_changelog_categorized_sha_set
               run: |
                   echo "TAG_LAST=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
                   echo "COMMIT_LAST=$(git rev-parse HEAD)" >> $GITHUB_ENV
@@ -674,7 +665,7 @@ jobs:
               if: |
                   startsWith( inputs.RC_RELEASE, false ) ||
                   startsWith( env.RC_RELEASE, false )
-              uses: softprops/action-gh-release@v2.2.2
+              uses: softprops/action-gh-release@v2
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
@@ -712,7 +703,7 @@ jobs:
               if: |
                   startsWith( inputs.RC_RELEASE, true ) ||
                   startsWith( env.RC_RELEASE, true )
-              uses: softprops/action-gh-release@v2.2.2
+              uses: softprops/action-gh-release@v2
               env:
                   CHANGELOG_CATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
                   CHANGELOG_UNCATEGORIZED: ${{ steps.task_release_changelog_categorized.outputs.changelog }}
@@ -811,7 +802,7 @@ jobs:
 
     job-complete:
         name: >-
-          🆗 Successful Deployment
+            🆗 Successful Deployment
         runs-on: ubuntu-latest
         needs: [ job-initialize, job-release ]
         env:
@@ -872,7 +863,7 @@ jobs:
                   echo "This is the main release. It contains all required docker files, and the TVApp2 `package.json`" >> $GITHUB_STEP_SUMMARY
                   echo "| File                            | Result                        |" >> $GITHUB_STEP_SUMMARY
                   echo "| ------------------------------- | -----------------------       |" >> $GITHUB_STEP_SUMMARY
-                  echo "| 🏷️ **SHA256**                      | ${{ env.SHA_STABLE }}      |" >> $GITHUB_STEP_SUMMARY
-                  echo "| 🏷️ **GUID**                        | ${{ env.GUID }}            |" >> $GITHUB_STEP_SUMMARY
-                  echo "| 🏷️ **UUID**                        | ${{ env.UUID }}            |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🏷️ **SHA256**                   | ${{ env.SHA_STABLE }}         |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🏷️ **GUID**                     | ${{ env.GUID }}               |" >> $GITHUB_STEP_SUMMARY
+                  echo "| 🏷️ **UUID**                     | ${{ env.UUID }}               |" >> $GITHUB_STEP_SUMMARY
 
