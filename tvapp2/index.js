@@ -189,6 +189,28 @@ getos( ( e, json ) =>
 });
 
 /*
+    helper > str2bool
+*/
+
+function str2bool( str )
+{
+    if ( typeof str === 'string' )
+    {
+        const lower = str.toLowerCase();
+        if ([
+            '1', 'true', 'yes', 'y', 't'
+            ].includes( lower ) )
+            str = true;
+        if ([
+            '0', 'false', 'no', 'n', 'f'
+            ].includes( lower ) )
+            str = false;
+        return str;
+    }
+    else return Boolean( str );
+}
+
+/*
     Define > Logs
 
     When assigning text colors, terminals and the windows command prompt can display any color; however apps
@@ -1479,13 +1501,14 @@ async function serveHealthCheck( req, res )
     try
     {
         const paramUrl = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'api' );
-        const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
+        const paramSilent = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'silent' );
+
         if ( !paramUrl )
         {
-            if ( paramQuery !== 'uptime' )
+            if ( str2bool( paramSilent ) !== true )
             {
                 Log.debug( `/api`, chalk.yellow( `[health]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `No API key passed to health check` ) );
+                    chalk.blueBright( `<msg>` ), chalk.gray( `No api-key passed to health check` ) );
             }
         }
 
@@ -1509,7 +1532,7 @@ async function serveHealthCheck( req, res )
             'Content-Type': 'application/json'
         });
 
-        if ( paramQuery !== 'uptime' )
+        if ( str2bool( paramSilent ) !== true )
         {
             Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
                 chalk.greenBright( `<msg>` ), chalk.gray( `Response` ),
@@ -2062,8 +2085,8 @@ const server = http.createServer( ( req, resp ) =>
             loadFile            channel?url=https%3A%2F%2Ftvpass.org%2Fchannel%2Fabc-wabc-new-york-ny%2F
         */
 
-        const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
-        if ( paramQuery !== 'uptime' )
+        const paramSilent = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'silent' );
+        if ( str2bool( paramSilent ) !== true )
         {
             Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `Request started` ),
@@ -2251,11 +2274,27 @@ const server = http.createServer( ( req, resp ) =>
             return;
         }
 
+        /*
+            Endpoint > Health Check
+
+            paramQuery          specifies what type of query is triggered
+                                    options:
+                                        uptime
+                                        healthcheck
+                                        sync
+
+            paramSilent         specifies if logs should be silenced. useful for docker-compose.yml healthcheck so that console
+                                    is not spammed every 30 seconds.
+        */
+
         if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
         {
-            const paramQuery = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'query' );
+            const paramSilent = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'silent' );
 
-            if ( paramQuery !== 'uptime' )
+            // do not show log if query is `uptime`, since uptime runs every 1 second.
+            // do not show logs if query has striggered `silent?=true` in url
+
+            if ( str2bool( paramSilent ) !== true )
             {
                 Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),

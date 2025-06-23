@@ -345,7 +345,8 @@
                     url: 'api/health',
                     type: 'GET',
                     data: {
-                        query: 'healthcheck'
+                        query: 'healthcheck',
+                        silent: false
                     },
                     beforeSend: function( data )
                     {
@@ -403,7 +404,8 @@
                     url: 'api/health',
                     type: 'GET',
                     data: {
-                        query: 'uptime'
+                        query: 'uptime',
+                        silent: true
                     },
                     success: function( data )
                     {
@@ -449,7 +451,8 @@
                     url: 'api/restart',
                     type: 'GET',
                     data: {
-                        query: 'sync'
+                        query: 'sync',
+                        silent: false
                     },
                     beforeSend: function( data )
                     {
