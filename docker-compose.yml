@@ -45,6 +45,6 @@ services:
                 soft: -1
                 hard: -1
         healthcheck:
-            test: [ "CMD", "curl", "--fail", "http://127.0.0.1:4124" ]
+            test: [ "CMD", "curl", "--fail", "http://127.0.0.1:4124/api/health?silent=true" ]
             interval: 30s
             retries: 5
