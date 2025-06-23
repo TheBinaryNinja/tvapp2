@@ -63,18 +63,6 @@ on:
                 type:           string
 
             # #
-            #   Image Version
-            #
-            #   used to create new release tag, and add version to docker image name
-            # #
-
-            IMAGE_VERSION:
-                description:    '🏷️ Image Version'
-                required:       true
-                default:        '1.0.0'
-                type:           string
-
-            # #
             #   Registry Name
             #
             #   options:
@@ -174,8 +162,7 @@ on:
 
 env:
     IMAGE_NAME:                       ${{ github.event.inputs.IMAGE_NAME || 'tvapp2' }}
-    IMAGE_VERSION:                    ${{ github.event.inputs.IMAGE_VERSION || '1.0.0' }}
-    IMAGE_REGISTRY:                   ${{ github.event.inputs.IMAGE_VERSION || 'gitea' }}
+    IMAGE_REGISTRY:                   ${{ github.event.inputs.IMAGE_REGISTRY || 'gitea' }}
     IMAGE_GITEA_AUTHOR:               ${{ github.event.inputs.IMAGE_GITEA_AUTHOR || 'BinaryNinja' }}
     IMAGE_GITEA_USERNAME:             ${{ github.event.inputs.IMAGE_GITEA_USERNAME || 'BinaryNinja' }}
     IMAGE_GITEA_WEBSITE:              ${{ github.event.inputs.IMAGE_GITEA_WEBSITE || 'git.binaryninja.net' }}
@@ -210,6 +197,8 @@ jobs:
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
         timeout-minutes: 4
+        outputs:
+            package_version: ${{ steps.task_initialize_package_getversion.outputs.PACKAGE_VERSION }}
         permissions:
             contents: write
             packages: write
@@ -234,6 +223,26 @@ jobs:
                   🔄 Load Job
               uses: qoomon/actions--context@v4
               id: 'context'
+
+            # #
+            #   Release › Tags › Set › Package.json › Version
+            # #
+
+            - name: '👁️‍🗨️ Package Version › Set'
+              id: task_initialize_package_getversion
+              working-directory: ./tvapp2
+              run: |
+                  VER=$(cat package.json | jq -r '.version')
+                  echo "PACKAGE_VERSION=${VER}" >> $GITHUB_OUTPUT
+                  echo "PACKAGE_VERSION=${VER}" >> $GITHUB_ENV
+
+            # #
+            #   Initialize › Get › Package.json › Version
+            # #
+
+            - name: '👁️‍🗨️ Package Version › Get'
+              run: |
+                  echo "VERSION: ${{ steps.task_initialize_package_getversion.outputs.PACKAGE_VERSION }}"
 
             # #
             #   Release › Tags › Start
@@ -271,10 +280,10 @@ jobs:
                   SHA1_GH="$(echo ${GITHUB_SHA})"                                                   #  71fad013cfce9116ec62779e4a7e627fe4c33627
                   echo "SHA1_GH=${SHA1_GH}" >> $GITHUB_ENV
 
-                  PKG_VER_1DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1)"              #  3.22 > 3
+                  PKG_VER_1DIGIT="$(echo ${{ env.PACKAGE_VERSION }} | cut -d '.' -f1-1)"            #  3.22 > 3
                   echo "PKG_VER_1DIGIT=${PKG_VER_1DIGIT}" >> $GITHUB_ENV
 
-                  PKG_VER_2DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"    #  3.22 > 3.2
+                  PKG_VER_2DIGIT="$(echo ${{ env.PACKAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"  #  3.22 > 3.2
                   echo "PKG_VER_2DIGIT=${PKG_VER_2DIGIT}" >> $GITHUB_ENV
 
                   echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
@@ -364,9 +373,9 @@ jobs:
               id: task_release_tags_create
               if: ( github.event_name != 'workflow_dispatch' && inputs.DRY_RUN == false )
               with:
-                  tag: "${{ env.IMAGE_VERSION }}"
+                  tag: "${{ env.PACKAGE_VERSION }}"
                   tag_exists_error: false
-                  message: '${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}'
+                  message: '${{ env.IMAGE_NAME }}-${{ env.PACKAGE_VERSION }}'
                   gpg_private_key: ${{ secrets.ADMINSERV_GPG_KEY_ASC }}
                   gpg_passphrase: ${{ secrets.ADMINSERV_GPG_PASSPHRASE }}
 
@@ -380,12 +389,14 @@ jobs:
       # runs-on: ubuntu-latest
         runs-on: apollo-x64
         timeout-minutes: 10
+        needs: [ job-docker-release-tags-create ]
         permissions:
             contents: write
             packages: write
             attestations: write
             id-token: write
-        needs: [ job-docker-release-tags-create ]
+        env:
+            PACKAGE_VERSION: ${{ needs.job-docker-release-tags-create.outputs.package_version }}
         steps:
 
             # #
@@ -442,10 +453,10 @@ jobs:
                   SHA1_GH="$(echo ${GITHUB_SHA})"                                                   #  71fad013cfce9116ec62779e4a7e627fe4c33627
                   echo "SHA1_GH=${SHA1_GH}" >> $GITHUB_ENV
 
-                  PKG_VER_1DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -d '.' -f1-1)"              #  3.22 > 3
+                  PKG_VER_1DIGIT="$(echo ${{ env.PACKAGE_VERSION }} | cut -d '.' -f1-1)"            #  3.22 > 3
                   echo "PKG_VER_1DIGIT=${PKG_VER_1DIGIT}" >> $GITHUB_ENV
 
-                  PKG_VER_2DIGIT="$(echo ${{ env.IMAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"    #  3.22 > 3.2
+                  PKG_VER_2DIGIT="$(echo ${{ env.PACKAGE_VERSION }} | cut -f2 -d ":" | cut -c1-3)"  #  3.22 > 3.2
                   echo "PKG_VER_2DIGIT=${PKG_VER_2DIGIT}" >> $GITHUB_ENV
 
                   echo "―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――"
@@ -629,10 +640,10 @@ jobs:
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-amd64,event=tag
 
                       #  tag            add 1.0.0-amd64       ( dispatch only + no dev )
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=500,prefix=,suffix=-amd64,value=${{ env.IMAGE_VERSION }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=500,prefix=,suffix=-amd64,value=${{ env.PACKAGE_VERSION }}
 
                       #  tag            add 1.0.0             ( dispatch only + no dev )
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.PACKAGE_VERSION }}
 
                       #  tag            add 1.0               ( dispatch only + no dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.PKG_VER_2DIGIT }}
@@ -650,28 +661,28 @@ jobs:
                   labels: |
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.SHA1 }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.SHA1 }}
@@ -697,7 +708,7 @@ jobs:
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=-arm64,event=tag
 
                       #  tag            add 1.0.0-arm64       ( dispatch only + no dev )
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=500,prefix=,suffix=-arm64,value=${{ env.IMAGE_VERSION }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=500,prefix=,suffix=-arm64,value=${{ env.PACKAGE_VERSION }}
 
                       #  dispatch       add development-arm64 ( dispatch only + only dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == true }},priority=300,prefix=,suffix=-arm64,value=development
@@ -706,28 +717,28 @@ jobs:
                   labels: |
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.SHA1 }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.SHA1 }}
@@ -756,7 +767,7 @@ jobs:
                       type=ref,enable=${{ github.event_name == 'pull_request' || github.event_name == 'push' }},priority=600,prefix=,suffix=,event=tag
 
                       #  tag            add 1.0.0             ( dispatch only + no dev )
-                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.IMAGE_VERSION }}
+                      type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=450,prefix=,suffix=,value=${{ env.PACKAGE_VERSION }}
 
                       #  tag            add 1.0               ( dispatch only + no dev )
                       type=raw,enable=${{ github.event_name == 'workflow_dispatch' && inputs.DEV_RELEASE == false }},priority=425,prefix=,suffix=,value=${{ env.PKG_VER_2DIGIT }}
@@ -774,28 +785,28 @@ jobs:
                   labels: |
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.SHA1 }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.revision=${{ env.SHA1 }}
                       org.opencontainers.image.vendor=${{ env.REGISTRY_REPO_AUTHOR_LC }}
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
                       org.tvapp2.image.build-sha1=${{ env.SHA1 }}
@@ -824,14 +835,14 @@ jobs:
                   build-args: |-
                       ARCH=amd64
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
-                      VERSION=${{ env.IMAGE_VERSION }}
+                      VERSION=${{ env.PACKAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER }}
                       GIT_SHA1=${{ env.SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.architecture=amd64
                       org.opencontainers.image.revision=${{ env.SHA1 }}
@@ -839,7 +850,7 @@ jobs:
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-architecture=amd64
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
@@ -897,14 +908,14 @@ jobs:
                   build-args: |-
                       ARCH=arm64
                       RELEASE=${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}
-                      VERSION=${{ env.IMAGE_VERSION }}
+                      VERSION=${{ env.PACKAGE_VERSION }}
                       BUILDDATE=${{ env.NOW_DOCKER }}
                       GIT_SHA1=${{ env.SHA1 }}
                       ALPINE_VERSION=${{ env.IMAGE_ALPINE_VERSION }}
                   annotations: |-
                       org.opencontainers.image.description=TVApp2
                       org.opencontainers.image.created=${{ env.NOW_DOCKER_TS }}
-                      org.opencontainers.image.version=${{ env.IMAGE_VERSION }}
+                      org.opencontainers.image.version=${{ env.PACKAGE_VERSION }}
                       org.opencontainers.image.licenses=MIT
                       org.opencontainers.image.architecture=arm64
                       org.opencontainers.image.revision=${{ env.SHA1 }}
@@ -912,7 +923,7 @@ jobs:
                       org.opencontainers.image.ref.name=${{ github.ref_name }}
                       org.opencontainers.image.development=${{ inputs.DEV_RELEASE == true && 'true' || 'false' }}
                       org.opencontainers.image.registry=${{ env.IMAGE_REGISTRY }}
-                      org.tvapp2.image.build-version="Version:- ${{ env.IMAGE_VERSION }} Date:- ${{ env.NOW_DOCKER }}"
+                      org.tvapp2.image.build-version="Version: ${{ env.PACKAGE_VERSION }} Date: ${{ env.NOW_DOCKER }}"
                       org.tvapp2.image.build-version-alpine=${{ env.IMAGE_ALPINE_VERSION }}
                       org.tvapp2.image.build-architecture=arm64
                       org.tvapp2.image.build-release="${{ inputs.DEV_RELEASE == true && 'development' || 'stable' }}"
@@ -964,7 +975,6 @@ jobs:
                   echo "‎"
                   echo "---- [ INPUTS ] ----------------------------------------------------------------------------------------"
                   echo "inputs.IMAGE_NAME ........................ ${{ inputs.IMAGE_NAME }}"
-                  echo "inputs.IMAGE_VERSION ..................... ${{ inputs.IMAGE_VERSION }}"
                   echo "inputs.IMAGE_GITEA_USERNAME .............. ${{ inputs.IMAGE_GITEA_AUTHOR }}"
                   echo "inputs.IMAGE_GITEA_USERNAME .............. ${{ inputs.IMAGE_GITEA_USERNAME }}"
                   echo "inputs.IMAGE_GITEA_WEBSITE ............... ${{ inputs.IMAGE_GITEA_WEBSITE }}"
@@ -973,7 +983,7 @@ jobs:
                   echo "‎"
                   echo "---- [ ENV ] -------------------------------------------------------------------------------------------"
                   echo "env.IMAGE_NAME ........................... ${{ env.IMAGE_NAME }}"
-                  echo "env.IMAGE_VERSION ........................ ${{ env.IMAGE_VERSION }}"
+                  echo "env.PACKAGE_VERSION ...................... ${{ env.PACKAGE_VERSION }}"
                   echo "env.PKG_VER_1DIGIT ....................... ${{ env.PKG_VER_1DIGIT }}"
                   echo "env.PKG_VER_2DIGIT ....................... ${{ env.PKG_VER_2DIGIT }}"
                   echo "env.IMAGE_GITEA_AUTHOR ................... ${{ env.IMAGE_GITEA_AUTHOR }}"
@@ -1052,20 +1062,20 @@ jobs:
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: ${{ env.DISCORD_BOT_EMBED_THUMBNAIL }}
                   embed-description: |
-                      ### 📦 ᲼Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
+                      ### 📦 ᲼Deploy (Gitea) ᲼${{ job.status == 'success' && '✅' || '❌' }}᲼ › `${{ env.IMAGE_NAME }}-${{ env.PACKAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       ${{ inputs.DEV_RELEASE == true && '### ⚠️⚠️ Development / Pre-release ⚠️⚠️' || '' }}
 
                       A new version of the docker container `${{ env.IMAGE_NAME }}` has been released from Github to Gitea. The image is available at:
                       - https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
 
-                      - Version: `${{ env.IMAGE_VERSION }}`
+                      - Version: `${{ env.PACKAGE_VERSION }}`
                       - Release Type: `${{ inputs.DEV_RELEASE == true && '⚠️⚠️ Development / Pre-release ⚠️⚠️' || 'Stable' }}`
-                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}:${{ inputs.DEV_RELEASE == true && 'development' || env.IMAGE_VERSION }}`
+                      - Pull: `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}:${{ inputs.DEV_RELEASE == true && 'development' || env.PACKAGE_VERSION }}`
                       - Pull (amd64): `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gi_push_amd64.outputs.digest }}`
                       - Pull (arm64): `docker pull ${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.REGISTRY_REPO_ORG_AUTHOR_LC }}@${{ steps.task_release_gi_push_arm64.outputs.digest }}`
                       - Dry Run: `${{ inputs.DRY_RUN }}`
                       - Source: `Gitea` https://${{ env.IMAGE_GITEA_WEBSITE }}/${{ env.IMAGE_GITEA_USERNAME }}/${{ env.IMAGE_NAME }}/packages
-                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.IMAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
+                      - Docker Image: `${{ env.IMAGE_NAME }}-${{ env.PACKAGE_VERSION }}${{ inputs.DEV_RELEASE == true && '-development' || '' }}`
                       - Branch: `${{ github.ref_name }}`
                       - Workflow: `${{ github.workflow }} (#${{github.run_number}})`
                       - Runner: `${{ runner.name }}`
