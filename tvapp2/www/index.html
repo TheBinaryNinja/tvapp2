@@ -264,6 +264,26 @@
             })
 
             /*
+                Helper > Get Multiple Elements by ID
+            */
+
+            function getElementsById( ids )
+            {
+                const idList = ids.split(" ");
+                let results = [], item;
+                for ( let i = 0; i < idList.length; i++ )
+                {
+                    item = document.getElementById( idList[ i ] );
+                    if (item)
+                    {
+                        results.push( item );
+                    }
+                }
+
+                return( results );
+            }
+
+            /*
                 Document Ready
             */
 
@@ -400,6 +420,16 @@
                             $('.toast #toast-title').html(`<%= appName %> is ${ status }`);
                             $('.toast #toast-message').html(`Health check returned ${ status } (${ code })`);
                             $('#tvapp2Toast').toast('show');
+
+                            const elementsList = document.querySelectorAll( '#ntfy-firewall, #ntfy-localhost, #ntfy-restart' );
+                            const elementsArray = [...elementsList];
+
+                            elementsArray.forEach(element =>
+                            {
+                                element.style.transition = '1s';
+                                element.style.opacity = '0';
+                                element.style.visibility = 'hidden';
+                            });
                         }
 
                     },
