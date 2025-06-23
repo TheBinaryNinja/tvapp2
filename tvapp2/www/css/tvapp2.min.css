@@ -1,63 +1,52 @@
 /*
-    Boostrap 5 > Table
+    Animations
 */
 
-.table
+@keyframes heartbeat
 {
-    --bs-table-bg:              #1b1b1b;
-    --bs-table-border-color:    #313131;
-}
-
-.table-striped > tbody > tr:nth-of-type(2n+1) > *
-{
-    --bs-table-bg-type:         #242424;
-}
-
-/*
-    Boostrap 5 > Tooltips
-*/
-
-.tooltip-inner
-{
-    background-color:           #3061a1;
-    box-shadow:                 0px 0px 4px black;
-    opacity:                    1;
-    color:                      #FFF;
-}
-
-.tooltip.bs-tooltip-right .tooltip-arrow::before
-{
-    border-right-color:         #3061a1 !important;
-}
-
-.tooltip.bs-tooltip-left .tooltip-arrow::before
-{
-    border-left-color:          #3061a1 !important;
-}
-
-.tooltip.bs-tooltip-bottom .tooltip-arrow::before
-{
-    border-bottom-color:        #3061a1 !important;
-}
-
-.tooltip.bs-tooltip-top .tooltip-arrow::before
-{
-    border-top-color:           #3061a1 !important;
-}
-
-body
-{
-    background-color:           #f8f9fa;
-    padding-bottom:             20px;
-    overflow:                   auto;
-}
-
-@media (prefers-color-scheme: dark)
-{
-    body
+    0%
     {
-        background-color:       #262626;
-        color:                  #fff;
+            transform: scale(1.2);
+    }
+    20%
+    {
+            transform: scale(1.5);
+    }
+    40%
+    {
+            transform: scale(1.2);
+    }
+    60%
+    {
+            transform: scale(1.5);
+    }
+    80%
+    {
+            transform: scale(1.2);
+    }
+    100%
+    {
+            transform: scale(1.2);
+    }
+}
+
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
     }
 }
 
@@ -121,6 +110,95 @@ body
     }
 }
 
+/*
+    General
+*/
+
+body
+{
+    background-color:           #f8f9fa;
+    padding-bottom:             20px;
+    overflow:                   auto;
+}
+
+@media (prefers-color-scheme: dark)
+{
+    body
+    {
+        background-color:       #262626;
+        color:                  #fff;
+    }
+}
+
+
+/*
+    Boostrap 5 > Tooltips
+*/
+
+.tooltip-inner
+{
+    background-color:           #3061a1;
+    box-shadow:                 0px 0px 4px black;
+    opacity:                    1;
+    color:                      #FFF;
+}
+
+.tooltip.bs-tooltip-right .tooltip-arrow::before
+{
+    border-right-color:         #3061a1 !important;
+}
+
+.tooltip.bs-tooltip-left .tooltip-arrow::before
+{
+    border-left-color:          #3061a1 !important;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before
+{
+    border-bottom-color:        #3061a1 !important;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before
+{
+    border-top-color:           #3061a1 !important;
+}
+
+/*
+    Media
+*/
+
+@media (prefers-color-scheme: dark)
+{
+    #list a,
+    #list a:focus,
+    #list a:hover {
+        color:                  #fff;
+    }
+}
+
+@media (prefers-color-scheme: dark)
+{
+    body
+    {
+        background-color:       #262626;
+        color:                  #fff;
+    }
+}
+
+@media screen and (max-width: 480px)
+{
+    .notifications {
+        display: none !important;
+    }
+}
+
+@media screen and (max-height: 640px)
+{
+    .notifications {
+        display: none !important;
+    }
+}
+
 .container
 {
     text-align:                 left;
@@ -140,17 +218,6 @@ body
     font-weight:                100;
 }
 
-.breadcrumb
-{
-    background-color:           transparent;
-    padding:                    0rem 1rem;
-}
-
-.breadcrumb .breadcrumb-item a
-{
-    color:                      #4caf50;
-}
-
 html
 {
     position:                   relative;
@@ -159,14 +226,14 @@ html
 
 a
 {
-    color:                      #FF0E7F !important;
+    color:                      #FF0E7F;
     text-decoration:            underline dotted #606060;
     font-weight:                600;
 }
 
 a:hover
 {
-    color:                      #FFF !important;
+    color:                      #FFF;
     text-decoration:            underline dotted #FF0048;
     font-weight:                600;
 }
@@ -177,65 +244,62 @@ p
     margin-bottom:              0;
 }
 
-.container {
+code
+{
+    font-size:                  96%;
+    color:                      #ffa42e !important;
+    word-break:                 break-word !important;
+    padding-right:              5px;
+    padding-left:               4px;
+}
+
+/*
+    Containers > Base Classes
+*/
+
+.container
+{
     width:                      100%;
     padding:                    0px;
     margin-right:               auto;
     margin-left:                auto;
+    padding-top:                0.5rem;
+    padding-bottom:             0.5rem;
 }
 
-.footer
-{
-    position:                   absolute;
-    bottom:                     0;
-    width:                      100%;
-    margin:                     0;
-    padding-top:                20px;
+.col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-auto, .col-lg, .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-auto, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-auto, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-auto, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-auto {
+    position:                   relative;
+    width:                      auto;
+    min-height:                 1px;
+    padding-right:              15px;
+    padding-left:               15px;
 }
 
-.footer-inner
+.accent1
 {
-    margin:                     0;
-    padding-bottom:             10px;
-    padding-top:                10px;
-    background-color:           #151515;
+    font-weight:                bold;
+    color:                      #d0c273;
 }
 
-.footer-sub
+.accent2
 {
-    font-size: 0.9rem;
-    color: #717171;
+    font-weight:                bold;
+    color:                      #2d6db6;
 }
 
-.footer a,
-.footer a:focus,
-.footer a:hover
+.segment
 {
-    color:                      #FFFFFF;
+    padding-right:              10px;
 }
 
-.footer a
-{
-    color:                      #f7296c;
-}
-
-.navbar
-{
-    padding:                    15px 0;
-}
+/*
+    Container > Header
+*/
 
 .header
 {
     background-color:           #a82147;
     color:                      #fff;
-}
-
-.header .navbar-brand
-{
-    padding:                    0 8px;
-    font-size:                  16px;
-    line-height:                24px;
-    height:                     24px;
 }
 
 .header a
@@ -251,111 +315,84 @@ p
     text-decoration:            none;
 }
 
-#breadcrumbs::before
+.navbar
 {
-    margin-top:                 4px;
-    padding-right:              15px;
-    content:                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' fill='white' width='19px' height='19px'%3E%3Cdefs%3E%3Cstyle%3E.fa-secondary%7Bopacity:.4%7D%3C/style%3E%3C/defs%3E%3Cpath class='fa-primary' d='M160 384H512c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H394.5c-17 0-33.3-6.7-45.3-18.7L322.7 50.7c-12-12-28.3-18.7-45.3-18.7H160c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64z'%3E%3C/path%3E%3Cpath class='fa-secondary' d='M24 96c13.3 0 24 10.7 24 24V344c0 48.6 39.4 88 88 88H456c13.3 0 24 10.7 24 24s-10.7 24-24 24H136C60.9 480 0 419.1 0 344V120c0-13.3 10.7-24 24-24z'%3E%3C/path%3E%3C/svg%3E");
+    padding:                    15px 0;
 }
 
-.breadcrumb-item.active
+.navbar .brand svg
 {
-    color:                      #6c757d;
-    padding-left:               10px;
+    width:                      28px;
+    margin-left:                0px;
 }
 
-.breadcrumb
-{
-    padding-top:                30px;
-}
-
-.header-container
-{
-    padding-top:                30px;
-}
-
-#list a,
-#list a:focus
-{
-    color:                      #ff286e !important;
-    font-weight:                100;
-}
-
-#list a:hover
-{
-    color:                      #FFF !important;
-    text-decoration:            underline dotted #FF0048;
-    font-weight:                100;
-}
-
-#list colgroup
-{
-    display:                    none;
-}
-
-#list .file
-{
-    word-break:                 keep-all;
-    white-space:                normal;
-    min-width:                  7vw !important;
-    text-wrap:                  nowrap;
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    font-weight:                800;
-    vertical-align:             middle;
-}
-
-#list .file a
-{
-    font-weight:                800;
-}
-
-#list .link
-{
-    word-break:                 break-all;
-    white-space:                normal;
-    min-width:                  9vw !important;
-    text-wrap:                  nowrap;
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    vertical-align:             middle;
-}
-
-#list .icon
-{
-    font-size:                  2.2vmin;
-    vertical-align:             middle;
-}
-
-#list .size
-{
-    min-width:                  5vw !important;
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    word-break:                 break-all;
-    white-space:                normal;
-    text-wrap:                  nowrap;
-    vertical-align:             middle;
-}
-
-#list .date
-{
-    min-width:                  5vw !important;
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    word-break:                 break-all;
-    white-space:                normal;
-    text-wrap:                  nowrap;
-    vertical-align:             middle;
-}
-
-#list .desc
-{
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    vertical-align:             middle;
-}
-
-.navbar-social svg
+.navbar .social svg
 {
     font-size:                  clamp(0.7em, 2vw, 1.0em);
     margin-left:                10px;
 }
+
+.navbar .social .heart
+{
+    position:                   relative;
+    animation:                  heartbeat 1s infinite;
+}
+
+/*
+    Container > Body > Intro
+*/
+
+.introduction
+{
+    padding-top: clamp(1.5em, 1vh, 2.5em);
+    padding-bottom: clamp(1.5em, 1vh, 2.5em);
+    border-bottom: 1px dashed #6C6C6C;
+    margin-bottom: clamp(1.5em, 1vh, 2.5em);
+}
+
+.introduction .introduction-body
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.introduction .introduction-body > div
+{
+    height: clamp(6.8em, 1vw, 8.0em);
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-size: clamp(0.6em, 1vw, 0.9em);
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+.introduction .introduction-body img.logo
+{
+    height: 100%;
+    object-fit: contain;
+    padding: 0px;
+    padding-right: 0px;
+    margin: 0 !important;
+    display: flex;
+    padding-right: 30px;
+}
+
+.introduction .introduction-body .desc
+{
+    text-align: justify;
+}
+
+.introduction .introduction-body .badges
+{
+    padding-top: clamp(1.5em, 1vh, 2.5em);
+    text-align: center;
+}
+
+/*
+    Object > Logo
+*/
 
 .logo
 {
@@ -379,6 +416,17 @@ p
     transition:                 all 0.3s;
     opacity:                    1;
     transform:                  scale(1.8);
+}
+
+img.logo-main
+{
+    width: 100px;
+    height: auto;
+}
+
+.examples
+{
+    padding-top: clamp(2.4em, 1vw, 3.0em);
 }
 
 .restart
@@ -415,14 +463,26 @@ p
     animation-timing-function:  linear;
 }
 
+/*
+    Object > Table
+*/
+
+.table
+{
+    --bs-table-bg:              #1b1b1b;
+    --bs-table-border-color:    #313131;
+}
+
+.table-striped > tbody > tr:nth-of-type(2n+1) > *
+{
+    --bs-table-bg-type:         #242424;
+}
+
 .table thead th a
 {
     color:                      #9b9b9b !important;
     font-weight:                normal;
 }
-
-
-
 
 .table td, .table th
 {
@@ -449,34 +509,94 @@ p
     background-color:           rgba(155, 155, 155, 0.075);
 }
 
-.text-accent
-{
-    font-weight:                bold;
-    color:                      #d0c273;
-}
+/*
+    Indicator > Container > Parent
+*/
 
-.ntfy
+.ntfy-parent
 {
     padding-top:                1.5vh;
     padding-bottom:             1.5vh;
     padding-left:               2vh;
     padding-right:              2vh;
     margin-bottom:              1vh;
-    line-height:                25px;
+    line-height:                clamp(1.8em, 1vw, 2.2em);
     width:                      100%;
 }
 
-#ntfy-restart
+/*
+    Indicator > Container > Child
+
+    contains tag and message
+*/
+
+.ntfy-child
 {
-    background-color:           #1a1a1a;
-    font-size:                  clamp(0.5em, 1vw, 0.8em);
-    font-weight:                100;
-    border:                     1px dashed #9e973a;
-    display:                    none;
-    z-index:                    5000 !important;
+    margin:                     0px;
 }
 
-#ntfy-firewall
+/*
+    Indicator > Message Body
+*/
+
+.ntfy-child .msg { }
+
+/*
+    Indicator > Note
+*/
+
+.indicator-note
+{
+    background-color:           #1A1A1A;
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    font-weight:                100;
+    border:                     1px dashed #2257a5;
+    display:                    none;
+}
+
+.indicator-note a
+{
+    color:                      #346fc6 !important;
+}
+
+.indicator-note a:hover
+{
+    color:                      #346fc6 !important;
+    text-decoration:            underline dotted #c5c5c5;
+    font-weight:                600;
+}
+
+.indicator-note a svg
+{
+    color:                      #FFE300;
+    font-size:                  16px;
+}
+
+.ntfy-child span.note
+{
+    color:                      #FFF;
+    background-color:           #2257a5;
+    padding-left:               7px;
+    padding-right:              7px;
+    padding-top:                2px;
+    padding-bottom:             2px;
+    font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    margin-right:               8px;
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.1);
+}
+
+/*
+    Indicator > Warning
+*/
+
+.indicator-warning
 {
     background-color:           #1A1A1A;
     font-size:                  clamp(0.5em, 1vw, 0.8em);
@@ -485,7 +605,49 @@ p
     display:                    none;
 }
 
-#ntfy-localhost
+.indicator-warning a
+{
+    color:                      #FF6C00 !important;
+}
+
+.indicator-warning a:hover
+{
+    color:                      #FF6C00 !important;
+    text-decoration:            underline dotted #c5c5c5;
+    font-weight:                600;
+}
+
+.indicator-warning a svg
+{
+    color:                      #FF6C00;
+    font-size:                  16px;
+}
+
+.ntfy-child span.warning
+{
+    color:                      #FFF;
+    background-color:           #97950A;
+    padding-left:               7px;
+    padding-right:              7px;
+    padding-top:                2px;
+    padding-bottom:             2px;
+    font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    margin-right:               8px;
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.1);
+}
+
+/*
+    Indactor > Danger
+*/
+
+.indicator-danger
 {
     background-color:           #1A1A1A;
     font-size:                  clamp(0.5em, 1vw, 0.8em);
@@ -493,6 +655,347 @@ p
     border:                     1px dashed #FF0048;
     display:                    none;
 }
+
+.indicator-danger a
+{
+    color:                      #FF0048 !important;
+}
+
+.indicator-danger a:hover
+{
+    color:                      #FF0048 !important;
+    text-decoration:            underline dotted #c5c5c5;
+    font-weight:                600;
+}
+
+.indicator-danger a svg
+{
+    color:                      #FF0048;
+    font-size:                  16px;
+}
+
+.ntfy-child span.danger
+{
+    color:                      #FFF;
+    background-color:           #aa102d;
+    padding-left:               7px;
+    padding-right:              7px;
+    padding-top:                2px;
+    padding-bottom:             2px;
+    font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    margin-right:               8px;
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.1);
+}
+
+/*
+    Indactor > Success
+*/
+
+.indicator-success
+{
+    background-color:           #1a1a1a;
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    font-weight:                100;
+    border:                     1px dashed #208848;
+    display:                    none;
+    z-index:                    5000 !important;
+}
+
+.indicator-success a
+{
+    color:                      #208848 !important;
+}
+
+.indicator-success a:hover
+{
+    color:                      #208848 !important;
+    text-decoration:            underline dotted #c5c5c5;
+    font-weight:                600;
+}
+
+.indicator-success a svg
+{
+    color:                      #208848;
+    font-size:                  16px;
+}
+
+.ntfy-child span.success
+{
+    color:                      #FFF;
+    background-color:           #227c1f;
+    padding-left:               7px;
+    padding-right:              7px;
+    padding-top:                2px;
+    padding-bottom:             2px;
+    font-family:                SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    margin-right:               8px;
+    animation-name:             fade-in, scale-in;
+    animation-duration:         1s, 0.5s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  infinite, 1;
+    transition:                 all 0.3s;
+    opacity:                    0.5;
+    transform:                  scale(1.1);
+}
+
+/*
+    Container > Footer
+*/
+
+.footer
+{
+    position:                   absolute;
+    bottom:                     0;
+    width:                      100%;
+    margin:                     0;
+    padding-top:                20px;
+}
+
+.footer .sub
+{
+    margin:                     0;
+    padding-bottom:             10px;
+    padding-top:                10px;
+    background-color:           #151515;
+}
+
+.footer .statistics
+{
+    font-size: 0.9rem;
+    color: #717171;
+}
+
+.footer a,
+.footer a:focus,
+.footer a:hover
+{
+    color:                      #FFFFFF;
+}
+
+.footer a
+{
+    color:                      #f7296c;
+}
+
+/*
+    Container > Placement
+*/
+
+.fixed-top
+{
+    position:                   fixed;
+    top:                        0;
+    right:                      0;
+    left:                       0;
+    z-index:                    200;
+}
+
+.fixed-bottom
+{
+    position:                   fixed;
+    right:                      0;
+    bottom:                     0;
+    left:                       0;
+    z-index:                    200;
+}
+
+.sticky-top
+{
+    @supports (position: sticky)
+    {
+        position:               sticky;
+        top:                    0;
+        z-index:                99999;
+    }
+}
+
+.sticky-bottom
+{
+    position:                   -webkit-sticky;
+    position:                   relative !important;
+    bottom:                     0;
+    z-index:                    500 !important;
+}
+
+.sticky-bottom
+{
+    @supports (position: sticky)
+    {
+        position:               sticky;
+        bottom:                 0;
+        z-index:                200;
+    }
+}
+
+/*
+    Effect > Dimmer
+*/
+
+#dimmer
+{
+	z-index:                    200;
+    position:                   fixed;
+    background-color:           #000000;
+    width:                      100%;
+    float:                      left;
+    height:                     100%;
+    visibility:                 hidden;
+    top:                        0px;
+    left:                       0px;
+}
+
+.aboveDimmer
+{
+	z-index:                    301;
+    position:                   relative;
+}
+
+.dimmer-out
+{
+    transition:                 opacity 1s ease-in-out !important;
+    opacity:                    0 !important;
+}
+
+.dimmer-in
+{
+    opacity:                    0.7;
+    animation-name:             fade-in-dimmer, fade-in-dimmer-repeat;
+    animation-delay:            0s, 0.7s;
+    animation-duration:         0.7s, 1s;
+    animation-timing-function:  ease-in, linear;
+    animation-direction:        alternate, alternate;
+    animation-iteration-count:  1, infinite;
+    transition:                 opacity 250ms ease-in, visibility 0ms ease-in 250ms;
+}
+
+/*
+    Breadcrumb
+*/
+
+.breadcrumb
+{
+    background-color:           transparent;
+    padding:                    0rem 1rem;
+}
+
+.breadcrumb .breadcrumb-item a
+{
+    color:                      #4caf50;
+}
+
+#breadcrumbs::before
+{
+    margin-top:                 4px;
+    padding-right:              15px;
+    content:                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512' fill='white' width='19px' height='19px'%3E%3Cdefs%3E%3Cstyle%3E.fa-secondary%7Bopacity:.4%7D%3C/style%3E%3C/defs%3E%3Cpath class='fa-primary' d='M160 384H512c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H394.5c-17 0-33.3-6.7-45.3-18.7L322.7 50.7c-12-12-28.3-18.7-45.3-18.7H160c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64z'%3E%3C/path%3E%3Cpath class='fa-secondary' d='M24 96c13.3 0 24 10.7 24 24V344c0 48.6 39.4 88 88 88H456c13.3 0 24 10.7 24 24s-10.7 24-24 24H136C60.9 480 0 419.1 0 344V120c0-13.3 10.7-24 24-24z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.breadcrumb-item.active
+{
+    color:                      #6c757d;
+    padding-left:               10px;
+}
+
+.breadcrumb
+{
+    padding-top:                30px;
+}
+
+/*
+    Container > Lists
+*/
+
+#list a,
+#list a:focus
+{
+    color:                      #bbbbbb;
+    font-weight:                100;
+    cursor:                     pointer;
+}
+
+#list a:hover
+{
+    color:                      #FFF !important;
+    text-decoration:            underline dotted #FF0048;
+    font-weight:                100;
+}
+
+#list colgroup
+{
+    display:                    none;
+}
+
+#list .file
+{
+    word-break:                 keep-all;
+    white-space:                normal;
+    min-width:                  7vw !important;
+    text-wrap:                  nowrap;
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    font-weight:                800;
+    vertical-align:             middle;
+}
+
+#list .file a
+{
+    font-weight:                600;
+}
+
+#list .link
+{
+    white-space: normal;
+    min-width: 9vw !important;
+    font-size: clamp(0.5em, 1vw, 0.8em);
+    vertical-align: middle;
+    overflow-wrap: break-word;
+}
+
+#list .link a
+{
+    color:                      #ff286e;
+    font-weight:                400;
+}
+
+#list .link a:hover
+{
+    color:                      #ffffff;
+    font-weight:                400;
+}
+
+#list .icon
+{
+    font-size:                  2.2vmin;
+    vertical-align:             middle;
+    color:                      #5b5b5b;
+}
+
+#list .size,
+#list .date,
+#list .example
+{
+    min-width:                  5vw !important;
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    word-break:                 break-all;
+    white-space:                normal;
+    text-wrap:                  nowrap;
+    vertical-align:             middle;
+}
+
+#list .desc
+{
+    font-size:                  clamp(0.5em, 1vw, 0.8em);
+    vertical-align:             middle;
+}
+
+
 
 span.success
 {
@@ -552,167 +1055,4 @@ span.warning
     transition:                 all 0.3s;
     opacity:                    0.5;
     transform:                  scale(1.1);
-}
-
-code
-{
-    font-size:                  96%;
-    color:                      #ff4985 !important;
-    word-break:                 break-word !important;
-    padding-right:              5px;
-    padding-left:               4px;
-}
-
-@media (prefers-color-scheme: dark)
-{
-    #list a,
-    #list a:focus,
-    #list a:hover {
-        color:                  #fff;
-    }
-}
-
-.col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-auto, .col-lg, .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-auto, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-auto, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-auto, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-auto {
-    position:                   relative;
-    width:                      auto;
-    min-height:                 1px;
-    padding-right:              15px;
-    padding-left:               15px;
-}
-
-.fixed-top
-{
-    position:                   fixed;
-    top:                        0;
-    right:                      0;
-    left:                       0;
-    z-index:                    200;
-}
-
-.fixed-bottom
-{
-    position:                   fixed;
-    right:                      0;
-    bottom:                     0;
-    left:                       0;
-    z-index:                    200;
-}
-
-.sticky-top
-{
-    @supports (position: sticky)
-    {
-        position:               sticky;
-        top:                    0;
-        z-index:                99999;
-    }
-}
-
-.sticky-bottom
-{
-    position:                   -webkit-sticky;
-    position:                   relative !important;
-    bottom:                     0;
-    z-index:                    500 !important;
-}
-
-.sticky-bottom
-{
-    @supports (position: sticky)
-    {
-        position:               sticky;
-        bottom:                 0;
-        z-index:                200;
-    }
-}
-
-.aboveDimmer
-{
-	z-index:                    301;
-    position:                   relative;
-}
-
-@keyframes heartbeat
-{
-    0%
-    {
-            transform: scale(1.2);
-    }
-    20%
-    {
-            transform: scale(1.5);
-    }
-    40%
-    {
-            transform: scale(1.2);
-    }
-    60%
-    {
-            transform: scale(1.5);
-    }
-    80%
-    {
-            transform: scale(1.2);
-    }
-    100%
-    {
-            transform: scale(1.2);
-    }
-}
-
-.heart
-{
-    position:                   relative;
-    animation:                  heartbeat 1s infinite;
-}
-
-@-webkit-keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-.dimmer-out
-{
-    transition:                 opacity 1s ease-in-out !important;
-    opacity:                    0 !important;
-}
-
-.dimmer-in
-{
-    opacity:                    0.7;
-    animation-name:             fade-in-dimmer, fade-in-dimmer-repeat;
-    animation-delay:            0s, 0.7s;
-    animation-duration:         0.7s, 1s;
-    animation-timing-function:  ease-in, linear;
-    animation-direction:        alternate, alternate;
-    animation-iteration-count:  1, infinite;
-    transition:                 opacity 250ms ease-in, visibility 0ms ease-in 250ms;
-}
-
-#dimmer
-{
-	z-index:                    200;
-    position:                   fixed;
-    background-color:           #000000;
-    width:                      100%;
-    float:                      left;
-    height:                     100%;
-    visibility:                 hidden;
-    top:                        0px;
-    left:                       0px;
 }
