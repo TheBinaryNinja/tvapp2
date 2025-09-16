@@ -86,7 +86,7 @@
     },
     "devDependencies": {
         "@aetherinox/noxenv": "^1.1.1",
-        "@types/uuid": "^10.0.0",
+        "@types/uuid": "^11.0.0",
         "all-contributors-cli": "^6.26.1",
         "uuid": "^11.1.0",
         "env-cmd": "^10.1.0",
