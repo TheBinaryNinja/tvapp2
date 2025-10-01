@@ -111,6 +111,7 @@
         "classes/Semaphore.js",
         "classes/Storage.js",
         "classes/Tuner.js",
+        "classes/Utils.js",
         "www/index.html",
         "www/hdhomerun.html",
         "www/favicon.ico",
