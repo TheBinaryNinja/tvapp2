@@ -572,19 +572,6 @@ jobs:
               uses: docker/setup-qemu-action@v3
 
             # #
-            #   Release › Gitea › Setup BuildX › Amd64
-            # #
-
-            - name: '⚙️ Setup Buildx'
-              id: task_release_gi_buildx
-              uses: docker/setup-buildx-action@v3
-              with:
-                  version: latest
-                  driver-opts: 'image=moby/buildkit:latest'
-                  driver: docker
-                  buildkitd-flags: --allow-insecure-entitlement network.host
-
-            # #
             #   Required to fix insecure SSL error with docker buildx
             # #
 
@@ -609,6 +596,19 @@ jobs:
 
             - name: '⚙️ Check Docker Daemon Configuration'
               run: cat /etc/docker/daemon.json
+
+            # #
+            #   Release › Gitea › Setup BuildX › Amd64
+            # #
+
+            - name: '⚙️ Setup Buildx'
+              id: task_release_gi_buildx
+              uses: docker/setup-buildx-action@v3
+              with:
+                  version: latest
+                  driver-opts: 'image=moby/buildkit:latest'
+                  install: true
+                  use: true
 
             # #
             #   Release › Gitea › Registry Login › Amd64
