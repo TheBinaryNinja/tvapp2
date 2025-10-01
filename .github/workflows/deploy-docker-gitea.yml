@@ -572,32 +572,6 @@ jobs:
               uses: docker/setup-qemu-action@v3
 
             # #
-            #   Required to fix insecure SSL error with docker buildx
-            # #
-
-            - name: '⚙️ Configure Docker daemon to allow insecure registry'
-              run: |
-                  echo "Configuring daemon to treat ${REGISTRY_HOST} as insecure"
-                  sudo mkdir -p /etc/docker
-                  sudo tee /etc/docker/daemon.json > /dev/null <<'JSON'
-                  {
-                    "insecure-registries": ["git.binaryninja.net:443"]
-                  }
-                  JSON
-
-                  # Restart Docker
-                  sudo service docker restart
-              env:
-                  REGISTRY_HOST: git.binaryninja.net
-
-            # #
-            #   Make sure change in docker daemon config successful
-            # #
-
-            - name: '⚙️ Check Docker Daemon Configuration'
-              run: cat /etc/docker/daemon.json
-
-            # #
             #   Release › Gitea › Setup BuildX › Amd64
             # #
 
@@ -609,7 +583,7 @@ jobs:
                   driver-opts: |
                     image=moby/buildkit:latest
                     network=host
-                    env.BUILDKIT_TLS_INSECURE=1
+                    --insecure-registry=git.binaryninja.net
                   install: true
                   use: true
 
