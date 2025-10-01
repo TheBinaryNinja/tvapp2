@@ -2348,14 +2348,14 @@ const server = http.createServer( ( req, resp ) =>
                     Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
                         chalk.yellowBright( `<msg>` ), chalk.gray( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
 
-                    const Tuner = new Tuner();
+                    const tunerInstance = new Tuner();  // <-- use a different name
                     const hdHomeRun =
                     {
-                        FriendlyName: Tuner.FriendlyName,
-                        ModelNumber: Tuner.ModelNumber,
-                        FirmwareName: Tuner.FirmwareName,
-                        FirmwareVersion: Tuner.FirmwareVersion,
-                        DeviceID: Tuner.GetDeviceId(),
+                        FriendlyName: tunerInstance.FriendlyName,
+                        ModelNumber: tunerInstance.ModelNumber,
+                        FirmwareName: tunerInstance.FirmwareName,
+                        FirmwareVersion: tunerInstance.FirmwareVersion,
+                        DeviceID: tunerInstance.GetDeviceId(),
                         TunerCount: `10`,
                         BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
                         LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
@@ -2372,6 +2372,10 @@ const server = http.createServer( ( req, resp ) =>
                     resp.writeHead( hdHomeRun.code, {
                         'Content-Type': 'application/json'
                     });
+
+                    resp.end( JSON.stringify( hdHomeRun ) );
+
+                    return; // <- Prevent further code from executing
                 }
 
                 const statusCheck =
@@ -2477,14 +2481,14 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
             read the loaded asset file
         */
 
-        const Tuner = new Tuner();
+        const tunerInstance = new Tuner();
         ejs.renderFile( `./${ envWebFolder }/${ loadFile }`,
             {
-                friendlyName: Tuner.FriendlyName,
-                modelNumber: Tuner.ModelNumber,
-                firmwareName: Tuner.FirmwareName,
-                firmwareVersion: Tuner.FirmwareVersion,
-                deviceId: Tuner.GetDeviceId( ),
+                friendlyName: tunerInstance.FriendlyName,
+                modelNumber: tunerInstance.ModelNumber,
+                firmwareName: tunerInstance.FirmwareName,
+                firmwareVersion: tunerInstance.FirmwareVersion,
+                deviceId: tunerInstance.GetDeviceId( ),
 
                 healthTimer: envHealthTimer,
                 appRelease: envAppRelease,
@@ -2494,7 +2498,11 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                 appUrlDiscord: discord.url,
                 appUrlDocs: docs.url,
                 appGitHashShort: envGitSHA1.substring( 0, 9 ),
-                appGitHashLong: envGitSHA1
+                appGitHashLong: envGitSHA1,
+                appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
+                appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                appStartup: Math.round( serverStartup ) / 1000,
+                serverOs: serverOs
             }, ( err, data ) =>
         {
             if ( !err )
@@ -2579,14 +2587,14 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                     Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
                         chalk.yellowBright( `<msg>` ), chalk.gray( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
 
-                    const Tuner = new Tuner();
+                    const tunerInstance = new Tuner();
                     const hdHomeRun =
                     {
-                        FriendlyName: Tuner.FriendlyName,
-                        ModelNumber: Tuner.ModelNumber,
-                        FirmwareName: Tuner.FirmwareName,
-                        FirmwareVersion: Tuner.FirmwareVersion,
-                        DeviceID: Tuner.GetDeviceId(),
+                        FriendlyName: tunerInstance.FriendlyName,
+                        ModelNumber: tunerInstance.ModelNumber,
+                        FirmwareName: tunerInstance.FirmwareName,
+                        FirmwareVersion: tunerInstance.FirmwareVersion,
+                        DeviceID: tunerInstance.GetDeviceId(),
                         TunerCount: `10`,
                         BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
                         LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
