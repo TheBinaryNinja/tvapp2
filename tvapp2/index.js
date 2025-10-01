@@ -2343,6 +2343,10 @@ const server = http.createServer( ( req, resp ) =>
                     chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
+                /*
+                    Main Server › Discovery.json
+                */
+
                 if ( loadFile === 'discovery.json' )
                 {
                     Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
@@ -2356,7 +2360,7 @@ const server = http.createServer( ( req, resp ) =>
                         FirmwareName: tunerInstance.FirmwareName,
                         FirmwareVersion: tunerInstance.FirmwareVersion,
                         DeviceID: tunerInstance.GetDeviceId(),
-                        TunerCount: `10`,
+                        TunerCount: tunerInstance.SlotsMax,
                         BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
                         LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
                         client: clientIp( req ),
@@ -2595,6 +2599,10 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                     chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
+                /*
+                    HDHomeRun › Discovery.json
+                */
+
                 if ( loadFile === 'discovery.json' )
                 {
                     Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
@@ -2608,7 +2616,7 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                         FirmwareName: tunerInstance.FirmwareName,
                         FirmwareVersion: tunerInstance.FirmwareVersion,
                         DeviceID: tunerInstance.GetDeviceId(),
-                        TunerCount: `10`,
+                        TunerCount: tunerInstance.SlotsMax,
                         BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
                         LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
                         client: clientIp( req ),
@@ -2627,6 +2635,51 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
 
                     Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
                         chalk.blueBright( `<msg>` ), chalk.gray( `Established connection to HDHomeRun` ),
+                        chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.blueBright( `<friendlyName>` ), chalk.gray( `${ hdHomeRun.FriendlyName }` ),
+                        chalk.blueBright( `<modelNumber>` ), chalk.gray( `${ hdHomeRun.ModelNumber }` ),
+                        chalk.blueBright( `<deviceID>` ), chalk.gray( `${ hdHomeRun.DeviceID }` ),
+                        chalk.blueBright( `<tunerCount>` ), chalk.gray( `${ hdHomeRun.TunerCount }` ),
+                        chalk.blueBright( `<urlBase>` ), chalk.whiteBright.bgBlack( ` ${ hdHomeRun.BaseURL } ` ),
+                        chalk.blueBright( `<urlLineup>` ), chalk.whiteBright.bgBlack( ` ${ hdHomeRun.LineupURL } ` ) );
+
+                    resp.end( JSON.stringify( hdHomeRun ) );
+                    return;
+                }
+
+                /*
+                    HDHomeRun › Lineup.json
+                */
+
+                if ( loadFile === 'lineup.json' )
+                {
+                    const tunerInstance = new Tuner();
+                    const hdHomeRun =
+                    {
+                        FriendlyName: tunerInstance.FriendlyName,
+                        ModelNumber: tunerInstance.ModelNumber,
+                        FirmwareName: tunerInstance.FirmwareName,
+                        FirmwareVersion: tunerInstance.FirmwareVersion,
+                        DeviceID: tunerInstance.GetDeviceId(),
+                        TunerCount: tunerInstance.SlotsMax,
+                        BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
+                        LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
+                        client: clientIp( req ),
+                        status: 'healthy',
+                        code: 200,
+                        uptime: Math.round( process.uptime() ),
+                        uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                        uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
+                        timestamp: Date.now(),
+                        channels: `[]`
+                    };
+
+                    resp.writeHead( hdHomeRun.code, {
+                        'Content-Type': 'application/json'
+                    });
+
+                    Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
+                        chalk.blueBright( `<msg>` ), chalk.gray( `Lineup requested` ),
                         chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                         chalk.blueBright( `<friendlyName>` ), chalk.gray( `${ hdHomeRun.FriendlyName }` ),
                         chalk.blueBright( `<modelNumber>` ), chalk.gray( `${ hdHomeRun.ModelNumber }` ),
