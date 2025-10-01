@@ -99,6 +99,7 @@ ENV DIR_RUN=/usr/bin/app
 ENV URL_REPO="https://git.binaryninja.net/binaryninja/"
 ENV WEB_IP="0.0.0.0"
 ENV WEB_PORT=4124
+ENV HDHR_PORT=6077
 ENV WEB_ENCODING="deflate, br"
 ENV WEB_PROXY_HEADER="x-forwarded-for"
 ENV STREAM_QUALITY="hd"
