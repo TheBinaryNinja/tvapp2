@@ -17,8 +17,12 @@ import ejs from 'ejs';
 import moment from 'moment';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import nconf from 'nconf';
-import crypto from 'node:crypto';
+import Log from './classes/Log.js';
+import Storage from './classes/Storage.js';
+import Utils from './classes/Utils.js';
+import CLib from './classes/CLib.js';
+import Semaphore from './classes/Semaphore.js';
+import Tuner from './classes/Tuner.js';
 import cron, { schedule } from 'node-cron';
 import * as child from 'child_process';
 import * as crons from 'cron';
@@ -34,6 +38,8 @@ import { fileURLToPath } from 'url';
 */
 
 const cache = new Map();
+const clib = new CLib();
+
 
 /*
     Import package.json values
@@ -1556,7 +1562,7 @@ async function serveHealthCheck( req, res )
 
         if ( !paramUrl )
         {
-            if ( str2bool( paramSilent ) !== true )
+            if ( Utils.str2bool( paramSilent ) !== true )
             {
                 Log.debug( `/api`, chalk.yellow( `[health]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `No api-key passed to health check` ) );
@@ -1583,7 +1589,7 @@ async function serveHealthCheck( req, res )
             'Content-Type': 'application/json'
         });
 
-        if ( str2bool( paramSilent ) !== true )
+        if ( Utils.str2bool( paramSilent ) !== true )
         {
             Log.ok( `/api`, chalk.yellow( `[health]` ), chalk.white( `✅` ),
                 chalk.greenBright( `<msg>` ), chalk.gray( `Response` ),
@@ -2137,7 +2143,7 @@ const server = http.createServer( ( req, resp ) =>
         */
 
         const paramSilent = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'silent' );
-        if ( str2bool( paramSilent ) !== true )
+        if ( Utils.str2bool( paramSilent ) !== true )
         {
             Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
                 chalk.blueBright( `<msg>` ), chalk.gray( `New request` ),
@@ -2345,7 +2351,7 @@ const server = http.createServer( ( req, resp ) =>
             // do not show log if query is `uptime`, since uptime runs every 1 second.
             // do not show logs if query has striggered `silent?=true` in url
 
-            if ( str2bool( paramSilent ) !== true )
+            if ( Utils.str2bool( paramSilent ) !== true )
             {
                 Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),
