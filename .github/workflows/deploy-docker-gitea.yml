@@ -607,6 +607,8 @@ jobs:
               with:
                   version: latest
                   driver-opts: 'image=moby/buildkit:latest'
+                  driver: docker
+                  buildkitd-flags: --allow-insecure-entitlement
                   install: true
                   use: true
 
