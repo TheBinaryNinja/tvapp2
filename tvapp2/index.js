@@ -2463,7 +2463,14 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
             chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
             chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
 
-            if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+        if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+        {
+            const paramSilent = new URL( req.url, `http://${ req.headers.host }` ).searchParams.get( 'silent' );
+
+            // do not show log if query is `uptime`, since uptime runs every 1 second.
+            // do not show logs if query has striggered `silent?=true` in url
+
+            if ( Utils.str2bool( paramSilent ) !== true )
             {
                 Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),
@@ -2471,10 +2478,11 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                     chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                     chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
                     chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
-
-                await serveHealthCheck( req, resp );
-                return;
             }
+
+            await serveHealthCheck( req, resp );
+            return;
+        }
 
         /*
             General Template & .html / .css / .js
