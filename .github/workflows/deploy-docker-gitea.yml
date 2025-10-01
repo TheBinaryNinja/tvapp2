@@ -822,6 +822,7 @@ jobs:
               with:
                   allow: |
                       network.host
+                      security.insecure
                   network: host
                   context: .
                   file: Dockerfile
@@ -895,6 +896,7 @@ jobs:
               with:
                   allow: |
                       network.host
+                      security.insecure
                   network: host
                   context: .
                   file: Dockerfile
