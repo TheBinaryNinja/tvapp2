@@ -28,6 +28,11 @@ import * as crons from 'cron';
 */
 
 import { fileURLToPath } from 'url';
+
+/*
+    Initialize classes
+*/
+
 const cache = new Map();
 
 /*
@@ -35,10 +40,11 @@ const cache = new Map();
 */
 
 const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
-const __filename = fileURLToPath( import.meta.url ); // get resolved path to file
-const __dirname = path.dirname( __filename ); // get name of directory
+const __filename = fileURLToPath( import.meta.url );            // get resolved path to file
+const __dirname = path.dirname( __filename );                   // get name of directory
+
 /*
-const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
+    const gitHash = child.execSync( 'git rev-parse HEAD' ).toString().trim();
 */
 
 /*
@@ -83,7 +89,7 @@ let FILE_XML_MODIFIED = 0;
 let FILE_GZP_MODIFIED = 0;
 
 /*
-    Define > Environment Variables || Defaults
+    Define › Environment Variables || Defaults
 */
 
 const envAppRelease = process.env.RELEASE || 'stable';
@@ -112,7 +118,7 @@ let serverOs = 'Unknown';
 let serverStartup = 0;
 
 /*
-    Define > Externals
+    Define › Externals
 */
 
 const extURL = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/urls.txt`;
@@ -120,7 +126,7 @@ const extXML = `${ envUrlRepo }/XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
 const extM3U = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
 
 /*
-    Define > Defaults
+    Define › Defaults
 */
 
 let urls = [];
@@ -132,12 +138,12 @@ const USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/201
 
     using any of the following subdomains / subpaths will trigger the download for that specific file
 
-    @example    http://127.0.0.1:4124/gzip
-                http://127.0.0.1:4124/gz
-                http://127.0.0.1:4124/playlist
-                http://127.0.0.1:4124/key
-                http://127.0.0.1:4124/channel?url=https://thetvapp.to/tv/bbc-america-live-stream/
-                http://127.0.0.1:4124/api/health
+    @example        http://127.0.0.1:4124/gzip
+                    http://127.0.0.1:4124/gz
+                    http://127.0.0.1:4124/playlist
+                    http://127.0.0.1:4124/key
+                    http://127.0.0.1:4124/channel?url=https://thetvapp.to/tv/bbc-america-live-stream/
+                    http://127.0.0.1:4124/api/health
 */
 
 const subdomainGZP = [ 'gzip', 'gz' ];
@@ -417,90 +423,94 @@ const clientIp = ( req ) =>
         if try 2 fails with the opposite protocol; domain is considered down
 */
 
-async function serviceCheck( service, uri )
+async function hostCheck( service, uri )
 {
     /* try 1 */
-
     try
     {
         const resp = await fetch( uri );
 
-        /* try 1 > domain down */
+        /* try 1 › domain down */
         if ( resp.status !== 200 )
         {
-            Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ) );
-            return;
+            Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Try: Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ) );
+            return false;
         }
 
-        /* try 1 > domain up */
-        Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uri }` ) );
+        /* try 1 › domain up */
+        Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Domain Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uri }` ) );
+        return true;
     }
     catch ( err )
     {
         /*
-            try 2 > http
+            try 2 › https
         */
 
         if ( /^https:\/\//i.test( uri ) )
         {
             const uriRetry = uri.replace( /^https:\/\//ig, 'http://' );
-            Log.info( `ping`, chalk.yellow( `[response]` ), chalk.white( `⚠️` ), chalk.yellowBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service via SSL; trying http protocol` ), chalk.yellowBright( `<service>` ), chalk.gray( `${ service }` ), chalk.yellowBright( `<uriAttempt1>` ), chalk.gray( `${ uri }` ), chalk.redBright( `(failed)` ), chalk.yellowBright( `<uriAttempt2>` ), chalk.gray( `${ uriRetry }` ), chalk.blueBright( `(pending)` ) );
+            Log.info( `ping`, chalk.yellow( `[response]` ), chalk.white( `⚠️` ), chalk.yellowBright( `<msg>` ), chalk.gray( `Try: Failed via HTTPS; trying HTTP protocol` ), chalk.yellowBright( `<service>` ), chalk.gray( `${ service }` ), chalk.yellowBright( `<uriAttempt1>` ), chalk.gray( `${ uri }` ), chalk.redBright( `(failed)` ), chalk.yellowBright( `<uriAttempt2>` ), chalk.gray( `${ uriRetry }` ), chalk.blueBright( `(pending)` ) );
 
             try
             {
                 const resp = await fetch( uriRetry );
 
-                /* try 2 > http > domain down */
+                /* try 2 › https › domain down */
                 if ( resp.status !== 200 )
                 {
-                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
-                    return;
+                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Try: Domain Offline; failed to communicate with domain, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                    return false;
                 }
 
-                /* try 2 > http > domain up */
-                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                /* try 2 › https › domain up */
+                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Domain Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                return true;
             }
             catch ( err )
             {
-                /* try 2 > http > domain not exist */
-                Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, address does not exist` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ), chalk.redBright( `<message>` ), chalk.gray( `${ err }` ) );
+                /* try 2 › https › domain not exist */
+                Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Try: Domain Offline; failed to communicate with domain, address does not exist` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ), chalk.redBright( `<message>` ), chalk.gray( `${ err }` ) );
+                return false;
             }
         }
 
         /*
-            try 2 > https
+            try 2 › http
         */
 
         else if ( /^http:\/\//i.test( uri ) )
         {
             const uriRetry = uri.replace( /^http:\/\//ig, 'https://' );
-            Log.info( `ping`, chalk.yellow( `[response]` ), chalk.white( `⚠️` ), chalk.yellowBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service via SSL; trying https protocol` ), chalk.yellowBright( `<service>` ), chalk.gray( `${ service }` ), chalk.yellowBright( `<uriAttempt1>` ), chalk.gray( `${ uri }` ), chalk.redBright( `(failed)` ), chalk.yellowBright( `<uriAttempt2>` ), chalk.gray( `${ uriRetry }` ), chalk.blueBright( `(pending)` ) );
+            Log.info( `ping`, chalk.yellow( `[response]` ), chalk.white( `⚠️` ), chalk.yellowBright( `<msg>` ), chalk.gray( `Try: Failed via HTTP; trying HTTPS protocol` ), chalk.yellowBright( `<service>` ), chalk.gray( `${ service }` ), chalk.yellowBright( `<uriAttempt1>` ), chalk.gray( `${ uri }` ), chalk.redBright( `(failed)` ), chalk.yellowBright( `<uriAttempt2>` ), chalk.gray( `${ uriRetry }` ), chalk.blueBright( `(pending)` ) );
 
             try
             {
                 const resp = await fetch( uriRetry );
 
-                /* try 2 > https > domain down */
+                /* try 2 › http › domain down */
                 if ( resp.status !== 200 )
                 {
-                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
-                    return;
+                    Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Domain Offline; failed to communicate with domain, possibly down` ), chalk.redBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                    return false;
                 }
 
-                /* try 2 > https > domain up */
-                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Service Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                /* try 2 › http › domain up */
+                Log.ok( `ping`, chalk.yellow( `[response]` ), chalk.white( `✅` ), chalk.greenBright( `<msg>` ), chalk.gray( `Domain Online` ), chalk.greenBright( `<code>` ), chalk.gray( `${ resp.status }` ), chalk.greenBright( `<service>` ), chalk.gray( `${ service }` ), chalk.greenBright( `<address>` ), chalk.gray( `${ uriRetry }` ) );
+                return true;
             }
             catch ( err )
             {
-                /* try 2 > https > domain not exist */
-                Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Service Offline; failed to communicate with service, address does not exist` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ), chalk.redBright( `<message>` ), chalk.gray( `${ err }` ) );
+                /* try 2 › http › domain not exist */
+                Log.error( `ping`, chalk.redBright( `[response]` ), chalk.white( `❌` ), chalk.redBright( `<msg>` ), chalk.gray( `Domain Offline; failed to communicate with domain, address does not exist` ), chalk.redBright( `<service>` ), chalk.gray( `${ service }` ), chalk.redBright( `<address>` ), chalk.gray( `${ uri }` ), chalk.redBright( `<message>` ), chalk.gray( `${ err }` ) );
+                return false;
             }
         }
     }
 }
 
 /*
-    Func > Download File
+    Func › Download File
 
     @arg        str url                         https://git.binaryninja.net/binaryninja/tvapp2-externals/raw/branch/main/urls.txt
     @arg        str filePath                    H:\Repos\github\BinaryNinja\tvapp2\tvapp2\urls.txt
@@ -581,10 +591,10 @@ function getFileModified( filename )
     Takes the total number of bytes in a file's size and converts it into
     a human readable format.
 
-    @arg        str filename                    filename to get size in bytes for
-    @arg        bool si                         divides the bytes of a file by 1000 instead of 2024
-    @arg        int decimal                     specifies the decimal point
-    @ret        str                             111.9 KB
+    @arg        str     filename            filename to get size in bytes for
+    @arg        bool    si                  divides the bytes of a file by 1000 instead of 2024
+    @arg        int     decimal             specifies the decimal point
+    @ret        str                         111.9 KB
 
 */
 
@@ -2130,7 +2140,7 @@ const server = http.createServer( ( req, resp ) =>
         if ( str2bool( paramSilent ) !== true )
         {
             Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
-                chalk.blueBright( `<msg>` ), chalk.gray( `Request started` ),
+                chalk.blueBright( `<msg>` ), chalk.gray( `New request` ),
                 chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
                 chalk.blueBright( `<request.url>` ), chalk.gray( `${ req.url }` ),
                 chalk.blueBright( `<reqUrl>` ), chalk.gray( `${ reqUrl }` ),
@@ -2544,11 +2554,7 @@ const server = http.createServer( ( req, resp ) =>
         check service status that we depend on
     */
 
-    serviceCheck( 'TVPass.org', 'https://tvpass.org' );
-    serviceCheck( 'TheTVApp.to', 'https://thetvapp.to' );
-    serviceCheck( 'MoveOnJoy.com', 'http://moveonjoy.com' );
-    serviceCheck( 'Daddylive.dad', 'https://daddylive.dad' );
-    serviceCheck( 'Newkso.ru', 'https://zekonew.newkso.ru/zeko' );
+    hosts.forEach( ( host ) => hostCheck( host.name, host.url ) );
 
     /*
         start web server
