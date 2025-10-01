@@ -160,6 +160,19 @@ const envIpGateway = fs.existsSync( fileIpGateway ) ? fs.readFileSync( fileIpGat
 const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileIpContainer, 'utf8' ) : `0.0.0.0`;
 
 /*
+    Hosts
+*/
+
+const hosts =
+[
+    { name: 'TVPass.org', url: 'https://tvpass.org' },
+    { name: 'TheTVApp.to', url: 'https://thetvapp.to' },
+    { name: 'MoveOnJoy.com', url: 'http://moveonjoy.com' },
+    { name: 'Daddylive.dad', url: 'https://daddylivestream.com' },
+    { name: 'git.binaryninja.com', url: envUrlRepo }
+];
+
+/*
     Get Server OS
 
     attempts to get the OS of a server a few different ways; and not just show "Linux".
@@ -630,7 +643,35 @@ async function getFile( url, filePath )
             chalk.blueBright( `<src>` ), chalk.gray( `${ url }` ),
             chalk.blueBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
 
-        await downloadFile( url, filePath );
+        const ok = await hostCheck( 'git.binaryninja.com', `${ envUrlRepo }` );
+
+        if ( ok )
+        {
+            try
+            {
+                await downloadFile( url, filePath );
+                return true;
+            }
+            catch ( err )
+            {
+                Log.error( `file`, chalk.redBright( `[download]` ), chalk.white( `❌` ),
+                    chalk.redBright( `<msg>` ), chalk.gray( `Download attempt failed after service check succeeded` ),
+                    chalk.redBright( `<error>` ), chalk.gray( `${ err.message }` ),
+                    chalk.redBright( `<src>` ), chalk.gray( `${ url }` ),
+                    chalk.redBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
+
+                return false;
+            }
+        }
+        else
+        {
+            Log.info( `file`, chalk.yellow( `[download]` ), chalk.white( `ℹ️` ),
+                chalk.yellowBright( `<msg>` ), chalk.gray( `Skipping download because service is offline; using existing local file` ),
+                chalk.yellowBright( `<url>` ), chalk.gray( `${ url }` ),
+                chalk.yellowBright( `<dest>` ), chalk.gray( `${ filePath }` ) );
+
+            return false;
+        }
     }
     catch ( err )
     {
