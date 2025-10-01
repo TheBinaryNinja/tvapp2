@@ -584,7 +584,11 @@ jobs:
                   driver: docker
                   buildkitd-flags: --allow-insecure-entitlement network.host
 
-            - name: Configure Docker daemon to allow insecure registry
+            # #
+            #   Required to fix insecure SSL error with docker buildx
+            # #
+
+            - name: '⚙️ Configure Docker daemon to allow insecure registry'
               run: |
                   echo "Configuring daemon to treat ${REGISTRY_HOST} as insecure"
                   sudo mkdir -p /etc/docker
@@ -599,7 +603,11 @@ jobs:
               env:
                   REGISTRY_HOST: git.binaryninja.net
 
-            - name: Check Docker Daemon Configuration
+            # #
+            #   Make sure change in docker daemon config successful
+            # #
+
+            - name: '⚙️ Check Docker Daemon Configuration'
               run: cat /etc/docker/daemon.json
 
             # #
@@ -842,7 +850,6 @@ jobs:
               with:
                   allow: |
                       network.host
-                      security.insecure
                   network: host
                   context: .
                   file: Dockerfile
@@ -916,7 +923,6 @@ jobs:
               with:
                   allow: |
                       network.host
-                      security.insecure
                   network: host
                   context: .
                   file: Dockerfile
