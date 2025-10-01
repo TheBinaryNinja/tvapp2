@@ -583,7 +583,8 @@ jobs:
                   driver-opts: |
                     image=moby/buildkit:latest
                     network=host
-                    --insecure-registry=git.binaryninja.net
+                    env.BUILDKIT_INSECURE_REGISTRY=git.binaryninja.net
+                    env.BUILDKIT_TLS_INSECURE=1
                   install: true
                   use: true
 
