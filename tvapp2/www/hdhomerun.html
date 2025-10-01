@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
     <head>
-        <title><%= appName %> - v<%= appVersion %></title>
+        <title><%= appName %> | HDHomeRun Tuner | v<%= appVersion %></title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="robots" content="noindex, nofollow">
@@ -37,20 +37,8 @@
                     <div class="col">
                         <div class="introduction-body">
                             <div class="desc">
-                                This page displays your most recent copies of the <code><%= fileM3U %></code> playlist and <code><%= fileXML %></code>
-                                EPG guide data. Right-click each file, select <span class="accent">Copy Link</span> and paste the URLs within an IPTV
-                                app such as Jellyfin. The <code><%= fileXML %></code> and <code><%= fileGZP %></code> have identical guide data,
-                                however the <code><%= fileGZP %></code> is compressed and will import into your IPTV application much faster.
-
-                                <br />
-
-                                <div class="badges">
-                                    <img src="https://img.shields.io/github/v/tag/TheBinaryNinja/tvapp2?logo=GitHub&label=Version&color=ba5225">
-                                    <img src="https://img.shields.io/github/downloads/TheBinaryNinja/tvapp2/total?logo=github&logoColor=FFFFFF&label=Downloads&color=376892">
-                                    <img src="https://img.shields.io/github/repo-size/TheBinaryNinja/tvapp2?logo=github&label=Size&color=59702a">
-                                    <img src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fgithub.com%2Faetherinox%2Fbackage%2Fraw%2Findex%2FTheBinaryNinja%2Ftvapp2%2Ftvapp2.xml&query=%2Fxml%2Fdownloads&label=Pulls&logo=github&color=de1f5e">
-                                    <img src="https://img.shields.io/github/last-commit/TheBinaryNinja/tvapp2?logo=conventionalcommits&logoColor=FFFFFF&label=Last%20Commit&color=313131">
-                                </div>
+                                <div class="about" style="font-size: 13px;"><code>HDHomeRun</code> is a network-attached digital television tuner box, produced by the company SiliconDust USA, Inc. Self-hosted multimedia applications such as Jellyfin allow for you to add IPTV channels either using a <code>M3U8 tuner</code>, or also with the option of specifying a <code>HDHomeRun</code> tuner.</div>
+                                <div class="about" style="font-size: 13px;">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner settings are provided below:</div>
                             </div>
                         </div>
                     </div>
@@ -59,21 +47,14 @@
 
             <!-- Header Fontawesome Icons -->
             <div class="container main-container">
-                <table id="list" class="table table-dark table-striped">
+                <table id="list" class="table table-dark table-striped" style="width:60%; margin: 0 auto;">
                     <thead>
                         <tr class="d-none d-md-table-row">
-                            <td class="icon cell-icon"></td>
                             <th class="file cell-file">
-                                File Name
+                                Property
                             </th>
                             <th class="link cell-link">
-                                Download
-                            </th>
-                            <th class="size cell-size">
-                                Size
-                            </th>
-                            <th class="date cell-size">
-                                Date
+                                Value
                             </th>
                             <th class="desc cell-desc">
                                 Description
@@ -82,49 +63,67 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="icon cell-icon">
-                                <svg class="svg-inline--fa fa-file-lines fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-lines" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
-                                    <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"></path>
-                                </svg>
-                                <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                FriendlyName
                             </td>
-                            <td class="file cell-file">
-                                <a id="m3u-name" target="_blank" data-bs-toggle="tooltip" title="IPTV channel list"></a>
-                            </td>
-                            <td class="link cell-link"><a id="m3u-link" target="_blank"></a></td>
-                            <td class="size cell-size"><span id="m3u-size"></span></td>
-                            <td class="date cell-date"><span id="m3u-date"></span></td>
-                            <td class="desc cell-desc">M3U playlist which lists all channels, their associated group, and logo.</td>
+                            <td class="link cell-link"><%= friendlyName %></td>
+                            <td class="desc cell-desc">Name of tuner</td>
                         </tr>
                         <tr>
-                            <td class="icon cell-icon">
-                                <svg class="svg-inline--fa fa-file-xml fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-xml" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
-                                    <path fill="currentColor" d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V304H176c-35.3 0-64 28.7-64 64V512H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128zM192 368c0 7.3 2.2 14.4 6.2 20.4l9.8 14.7 9.8-14.7c4-6.1 6.2-13.2 6.2-20.4c0-8.8 7.2-16 16-16s16 7.2 16 16c0 13.6-4 26.9-11.6 38.2L227.2 432l17.2 25.8C252 469.1 256 482.4 256 496c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-7.3-2.2-14.4-6.2-20.4L208 460.8l-9.8 14.7c-4 6.1-6.2 13.2-6.2 20.4c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-13.6 4-26.9 11.6-38.2L188.8 432l-17.2-25.8C164 394.9 160 381.6 160 368c0-8.8 7.2-16 16-16s16 7.2 16 16zM448 496V368c0-8.8 7.2-16 16-16s16 7.2 16 16V480h16c8.8 0 16 7.2 16 16s-7.2 16-16 16H464c-8.8 0-16-7.2-16-16zM299.7 352.6c6.9-1.9 14.3 1 18 7.2L352 416.9l34.3-57.1c3.7-6.2 11.1-9.1 18-7.2s11.7 8.2 11.7 15.4V496c0 8.8-7.2 16-16 16s-16-7.2-16-16V425.8l-18.3 30.5c-2.9 4.8-8.1 7.8-13.7 7.8s-10.8-2.9-13.7-7.8L320 425.8V496c0 8.8-7.2 16-16 16s-16-7.2-16-16V368c0-7.2 4.8-13.5 11.7-15.4z"></path>
-                                </svg>
-                                <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                ModelNumber
                             </td>
-                            <td class="file cell-file">
-                                <a id="xml-name" target="_blank" data-bs-toggle="tooltip" title="Uncompressed TV guide data"></a>
-                            </td>
-                            <td class="link cell-link"><a id="xml-link" target="_blank"></a></td>
-                            <td class="size cell-size"><span id="xml-size"></span></td>
-                            <td class="date cell-date"><span id="xml-date"></span></td>
-                            <td class="desc cell-desc">XML / EPG guide data <code>(uncompressed)</code></td>
+                            <td class="link cell-link"><%= modelNumber %></td>
+                            <td class="desc cell-desc">Virtual tuner model number</td>
                         </tr>
                         <tr>
-                            <td class="icon cell-icon">
-                                <svg class="svg-inline--fa fa-file-zipper fa-fw" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-zipper" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg="">
-                                    <path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM96 48c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16zm-6.3 71.8c3.7-14 16.4-23.8 30.9-23.8h14.8c14.5 0 27.2 9.7 30.9 23.8l23.5 88.2c1.4 5.4 2.1 10.9 2.1 16.4c0 35.2-28.8 63.7-64 63.7s-64-28.5-64-63.7c0-5.5 .7-11.1 2.1-16.4l23.5-88.2zM112 336c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H112z"></path>
-                                </svg>
-                                <!-- <i class="fa fa-fw fa-solid fa-file-lines" aria-hidden="true"></i> -->
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                FirmwareName
                             </td>
-                            <td class="file cell-gzp">
-                                <a id="gzp-name" target="_blank" data-bs-toggle="tooltip" title="Compressed TV guide data"></a>
+                            <td class="link cell-link"><%= firmwareName %></td>
+                            <td class="desc cell-desc">Firmware name for tuner</td>
+                        </tr>
+                        <tr>
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                FirmwareVersion
                             </td>
-                            <td class="link cell-link"><a id="gzp-link" target="_blank"></a></td>
-                            <td class="size cell-size"><span id="gzp-size"></span></td>
-                            <td class="date cell-date"><span id="gzp-date"></span></td>
-                            <td class="desc cell-desc">XML / EPG guide data <code>(compressed)</code></td>
+                            <td class="link cell-link"><%= firmwareVersion %></td>
+                            <td class="desc cell-desc">Firmware version running on tuner</td>
+                        </tr>
+                        <tr>
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                DeviceID
+                            </td>
+                            <td class="link cell-link"><%= deviceId %></td>
+                            <td class="desc cell-desc">Tuner device id</td>
+                        </tr>
+                        <tr>
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                TunerCount
+                            </td>
+                            <td class="link cell-link">0 / 10</td>
+                            <td class="desc cell-desc">Number of connection slots to view IPTV</td>
+                        </tr>
+                        <tr>
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                BaseURL
+                            </td>
+                            <td class="link cell-link"><a href="0.0.0.0:6077" id="m3u-link" target="_blank">0.0.0.0:6077</a></td>
+                            <td class="desc cell-desc">Base URL where HDHomeRun is hosted</td>
+                        </tr>
+                        <tr>
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                LineupURL
+                            </td>
+                            <td class="link cell-link"><a href="0.0.0.0:6077/lineup.jsom" id="m3u-link" target="_blank">0.0.0.0:6077/lineup.json</a></td>
+                            <td class="desc cell-desc">URL to IPTV channel & guide lineups</td>
+                        </tr>
+                        <tr>
+                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                                Uptime
+                            </td>
+                            <td class="link cell-link">12 minutes, 23 seconds</td>
+                            <td class="desc cell-desc">Duration that tuner has been online</td>
                         </tr>
                     </tbody>
                 </table>
@@ -138,7 +137,7 @@
                 <div id="ntfy-firewall" class="ntfy-parent indicator-warning sticky-bottom"></div>
                 <div id="ntfy-localhost" class="ntfy-parent indicator-danger sticky-bottom"></div>
             </div>
-
+    
             <div class="sub">
                 <div class="container">
                     <div class="col text-center text-muted text-small text-nowrap">
@@ -211,77 +210,9 @@
             const urlM3U = urlBase + '/playlist';
             const urlXML = urlBase + '/epg';
             const urlGZP = urlBase + '/gzip';
-
-            document.getElementById('m3u-name').textContent = '<%= fileM3U %>';
-            document.getElementById('m3u-name').href = urlM3U;
-            document.getElementById('m3u-link').textContent = urlM3U;
-            document.getElementById('m3u-link').href = urlM3U;
-            document.getElementById('m3u-size').textContent = '<%= sizeM3U %>';
-            document.getElementById('m3u-date').textContent = '<%= dateM3U %>';
-
-            document.getElementById('xml-name').textContent = '<%= fileXML %>';
-            document.getElementById('xml-name').href = urlXML;
-            document.getElementById('xml-link').textContent = urlXML;
-            document.getElementById('xml-link').href = urlXML;
-            document.getElementById('xml-size').textContent = '<%= sizeXML %>';
-            document.getElementById('xml-date').textContent = '<%= dateXML %>';
-
-            document.getElementById('gzp-name').textContent = '<%= fileGZP %>';
-            document.getElementById('gzp-name').href = urlGZP;
-            document.getElementById('gzp-link').textContent = urlGZP;
-            document.getElementById('gzp-link').href = urlGZP;
-            document.getElementById('gzp-size').textContent = '<%= sizeGZP %>';
-            document.getElementById('gzp-date').textContent = '<%= dateGZP %>';
         </script>
 
         <script>
-
-            /*
-            this is test code. enable the "Show Toast" button and then uncomment this code.
-
-            document.getElementById("btnTestToasts").onclick = function()
-            {
-                var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-                var toastList = toastElList.map(function(toastEl)
-                {
-                    return new bootstrap.Toast(toastEl)
-                });
-
-                toastList.forEach(toast => toast.show());
-                console.log(toastList);
-            };
-            */
-
-            var tooltipList = [].slice.call( document.querySelectorAll( '[data-bs-toggle="tooltip"]' ) )
-            var tooltipList = tooltipList.map( function ( el )
-            {
-                return new bootstrap.Tooltip(el,
-                {
-                    placement: "bottom",
-                    trigger: "hover",
-                    html: true
-                });
-            })
-
-            /*
-                Helper > Get Multiple Elements by ID
-            */
-
-            function getElementsById( ids )
-            {
-                const idList = ids.split(" ");
-                let results = [], item;
-                for ( let i = 0; i < idList.length; i++ )
-                {
-                    item = document.getElementById( idList[ i ] );
-                    if (item)
-                    {
-                        results.push( item );
-                    }
-                }
-
-                return( results );
-            }
 
             /*
                 Document Ready
@@ -452,55 +383,6 @@
                     {
                         runHealthCheck();
                     }, parseInt(timerHealthRun));
-                }).responseText;
-            }
-
-            function runUptime()
-            {
-                const toastTypeClass = [];
-                toastTypeClass[ 'DEFAULT' ]     = 'text-bg-primary';
-                toastTypeClass[ 'UNHEALTHY' ]   = 'text-bg-warning';
-                toastTypeClass[ 'HEALTHY' ]     = 'text-bg-success';
-                toastTypeClass[ 'ERROR' ]       = 'text-bg-danger';
-
-                $.ajax(
-                {
-                    url: 'api/health',
-                    type: 'GET',
-                    data: {
-                        query: 'uptime',
-                        silent: true
-                    },
-                    success: function( data )
-                    {
-                        const status = data.message;
-                        const code = data.code;
-                        const uptimeShort = data.uptimeShort;
-                        const uptimeLong = data.uptimeLong;
-                        if ( status )
-                        {
-                            $('a#uptime').text(`${ uptimeShort }`);
-
-                            const tooltip = bootstrap.Tooltip.getInstance('#uptime') // Returns a Bootstrap tooltip instance
-                            tooltip.setContent( { '.tooltip-inner': `App started ${ uptimeLong }` } )
-                        }
-                    },
-                    error: function( data )
-                    {
-                        const toastClass = toastTypeClass['ERROR'];
-                        const toastElm = document.getElementById('tvapp2Toast');
-                        toastElm.classList.add(toastClass);
-
-                        $('.toast #toast-title').html(`Could not get uptime from api`);
-                        $('.toast #toast-message').html(`Failed to communicate with the api. Try restarting the docker container to restore connection.`);
-                        $('#tvapp2Toast').toast('show');
-                    }
-                }).always(function()
-                {
-                    setTimeout(function()
-                    {
-                        runUptime();
-                    }, parseInt(timerUptime));
                 }).responseText;
             }
 
