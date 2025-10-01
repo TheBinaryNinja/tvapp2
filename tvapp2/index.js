@@ -112,6 +112,7 @@ const envApiKey = process.env.API_KEY || null;
 const envWebIP = process.env.WEB_IP || '0.0.0.0';
 const envWebPort = process.env.WEB_PORT || `4124`;
 const envWebFolder = process.env.WEB_FOLDER || 'www';
+const envHdhrPort = process.env.HDHR_PORT || `6077`;
 const envWebEncoding = process.env.WEB_ENCODING || 'deflate, br';
 const envProxyHeader = process.env.WEB_PROXY_HEADER || 'x-forwarded-for';
 const envHealthTimer = process.env.HEALTH_TIMER || 600000;
@@ -2356,8 +2357,8 @@ const server = http.createServer( ( req, resp ) =>
                         FirmwareVersion: Tuner.FirmwareVersion,
                         DeviceID: Tuner.GetDeviceId(),
                         TunerCount: `10`,
-                        BaseURL: `${ envIpContainer }:6077`,
-                        LineupURL: `${ envIpContainer }:6077/lineup.jsom`,
+                        BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
+                        LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
                         client: clientIp( req ),
                         message: 'Connected to HDHomeRun server',
                         status: 'healthy',
@@ -2587,8 +2588,8 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                         FirmwareVersion: Tuner.FirmwareVersion,
                         DeviceID: Tuner.GetDeviceId(),
                         TunerCount: `10`,
-                        BaseURL: `${ envIpContainer }:6077`,
-                        LineupURL: `${ envIpContainer }:6077/lineup.jsom`,
+                        BaseURL: `${ envIpContainer }:${ envHdhrPort }`,
+                        LineupURL: `${ envIpContainer }:${ envHdhrPort }/lineup.json`,
                         client: clientIp( req ),
                         message: 'Connected to HDHomeRun server',
                         status: 'healthy',
@@ -2712,12 +2713,12 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
             chalk.blueBright( `<release>` ), chalk.gray( ` ${ envAppRelease } ` ) );
     });
 
-    serverHdHomeRun.listen( 6077, envWebIP, () =>
+    serverHdHomeRun.listen( `${ envHdhrPort }`, envWebIP, () =>
     {
         Log.ok( `core`, chalk.yellow( `[initiate]` ), chalk.white( `✅` ),
             chalk.blueBright( `<msg>` ), chalk.gray( `Starting HDHomeRun server on` ),
-            chalk.blueBright( `<ipPublic>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:6077 ` ),
-            chalk.blueBright( `<ipDocker>` ), chalk.whiteBright.bgBlack( ` ${ envIpContainer }:6077 ` ) );
+            chalk.blueBright( `<ipPublic>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:${ envHdhrPort } ` ),
+            chalk.blueBright( `<ipDocker>` ), chalk.whiteBright.bgBlack( ` ${ envIpContainer }:${ envHdhrPort } ` ) );
     });
 })();
 
