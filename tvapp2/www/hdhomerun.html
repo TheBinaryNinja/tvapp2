@@ -101,28 +101,28 @@
                             <td class="file cell-file" style="color: #919191;font-weight: 400;">
                                 TunerCount
                             </td>
-                            <td class="link cell-link">0 / 10</td>
+                            <td class="link cell-link"><%= slotsConnected %> / <%= slotsMax %></td>
                             <td class="desc cell-desc">Number of connection slots to view IPTV</td>
                         </tr>
                         <tr>
                             <td class="file cell-file" style="color: #919191;font-weight: 400;">
                                 BaseURL
                             </td>
-                            <td class="link cell-link"><a href="0.0.0.0:6077" id="m3u-link" target="_blank">0.0.0.0:6077</a></td>
+                            <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>" id="m3u-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %></a></td>
                             <td class="desc cell-desc">Base URL where HDHomeRun is hosted</td>
                         </tr>
                         <tr>
                             <td class="file cell-file" style="color: #919191;font-weight: 400;">
                                 LineupURL
                             </td>
-                            <td class="link cell-link"><a href="0.0.0.0:6077/lineup.jsom" id="m3u-link" target="_blank">0.0.0.0:6077/lineup.json</a></td>
+                            <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>/lineup.json" id="m3u-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %>/lineup.json</a></td>
                             <td class="desc cell-desc">URL to IPTV channel & guide lineups</td>
                         </tr>
                         <tr>
                             <td class="file cell-file" style="color: #919191;font-weight: 400;">
                                 Uptime
                             </td>
-                            <td class="link cell-link">12 minutes, 23 seconds</td>
+                            <td class="link cell-link"><%= appUptimeFull %></td>
                             <td class="desc cell-desc">Duration that tuner has been online</td>
                         </tr>
                     </tbody>

@@ -2488,7 +2488,11 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                 modelNumber: tunerInstance.ModelNumber,
                 firmwareName: tunerInstance.FirmwareName,
                 firmwareVersion: tunerInstance.FirmwareVersion,
+                slotsConnected: tunerInstance.SlotsConnected,
+                slotsMax: tunerInstance.SlotsMax,
                 deviceId: tunerInstance.GetDeviceId( ),
+                hdhrIp: `${ envIpContainer }`,
+                hdhrPort: `${ envHdhrPort }`,
 
                 healthTimer: envHealthTimer,
                 appRelease: envAppRelease,
@@ -2501,6 +2505,7 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                 appGitHashLong: envGitSHA1,
                 appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
                 appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                appUptimeFull: timeAgo.format( Date.now() - process.uptime() * 1000 ),
                 appStartup: Math.round( serverStartup ) / 1000,
                 serverOs: serverOs
             }, ( err, data ) =>

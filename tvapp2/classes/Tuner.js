@@ -52,6 +52,8 @@ class Tuner
         this.ModelNumber = `HDHR5-4US`;
         this.FirmwareName = `hdhomerun5_atsc`;
         this.FirmwareVersion = `0.9.15.00-RC04`;
+        this.SlotsConnected = 0;
+        this.SlotsMax = 10;
         this.DeviceId = deviceId || Storage.Get( 'deviceId' );
     }
 
@@ -193,7 +195,7 @@ class Tuner
             const deviceId = await tuner.GetDeviceId( );
     */
 
-    async GetDeviceId( )
+    GetDeviceId( )
     {
         Log.verbose( `func`, chalk.yellow( `[executed]` ), chalk.white( `📣` ), chalk.blueBright( `<name>` ), chalk.gray( `${ Utils.getFuncName( ) }` ) );
 
