@@ -295,25 +295,56 @@ http:
                           - "*.domain.lan"
 
         # #
-        #   @container          TVApp2
-        #   @desc               utomatic M3U playlist and XML guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
+        #   @container          TVApp2 › Main
+        #   @desc               automatic M3U playlist and XML guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
         #   @url                https://github.com/TheBinaryNinja/tvapp2
         #
-        #   remove / comment out the authentik line if you do not plan to use authentik:
-        #       - authentik@file
+        #                       remove / comment out the authentik line if you do not plan to use authentik:
+        #                           - authentik@file
         # #
 
-        tvapp2-http:
-            service: "tvapp2"
+        tvapp2-server-http:
+            service: "tvapp2-server"
             rule: "Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)"
             entryPoints:
                 - http
             middlewares:
                 - https-redirect@file
 
-        tvapp2-https:
-            service: "tvapp2"
+        tvapp2-server-https:
+            service: "tvapp2-server"
             rule: "Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`)"
+            entryPoints:
+                - https
+            middlewares:
+                - redirect-www@file
+                - authentik@file
+            tls:
+                certResolver: cloudflare
+                domains:
+                    - main: "domain.lan"
+                      sans:
+                          - "*.domain.lan"
+        # #
+        #   @container          TVApp2 › HDHomeRun
+        #   @desc               automatic M3U playlist and XML guide updater for TheTvApp, TVPass, and MoveOnJoy utilized within your IPTV client.
+        #   @url                https://github.com/TheBinaryNinja/tvapp2
+        #
+        #                       remove / comment out the authentik line if you do not plan to use authentik:
+        #                           - authentik@file
+        # #
+
+        tvapp2-hdhr-http:
+            service: "tvapp2-hdhr"
+            rule: "Host(`hdhr.localhost`) || Host(`hdhr.domain.lan`)"
+            entryPoints:
+                - http
+            middlewares:
+                - https-redirect@file
+
+        tvapp2-hdhr-https:
+            service: "tvapp2-hdhr"
+            rule: "Host(`hdhr.localhost`) || Host(`hdhr.domain.lan`)"
             entryPoints:
                 - https
             middlewares:
@@ -351,7 +382,12 @@ http:
                 servers:
                     - url: "http://plex:32400"
 
-        tvapp2:
+        tvapp2-server:
+            loadBalancer:
+                servers:
+                    - url: "http://tvapp2:4124"
+
+        tvapp2-hdhr:
             loadBalancer:
                 servers:
                     - url: "http://tvapp2:4124"

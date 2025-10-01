@@ -25,7 +25,7 @@
 services:
 
     # #
-    #   Service › TVApp2 › Traefik Labels
+    #   Service › TVApp2
     # #
 
     tvapp2:
@@ -55,7 +55,7 @@ services:
           - traefik.enable=true
 
           # #
-          #   Scope > http
+          #   Routers › Web Interface › http
           # #
 
           - traefik.http.routers.tvapp2-http.rule=Host(`tvapp2.localhost`) || Host(`tvapp2.domain.lan`) || Host(`www.tvapp2.domain.lan`) || Host(`${SERVICE_IP}`)
@@ -65,7 +65,7 @@ services:
           - traefik.http.routers.tvapp2-http.middlewares=https-redirect@file
 
           # #
-          #   Scope > https
+          #   Routers › Web Interface › https
           #
           #   remove the authentik@file line if you do not wish to use Authentik or middleware
           #       - traefik.http.routers.tvapp2-https.middlewares=authentik@file
@@ -82,8 +82,26 @@ services:
           - traefik.http.routers.tvapp2-https.middlewares=authentik@file
 
           # #
-          #   Load Balancer
+          #   Routers › HDHomeRun
           # #
 
-          - traefik.http.services.tvapp2.loadbalancer.server.port=http
-          - traefik.http.services.tvapp2.loadbalancer.server.scheme=4124
+          - traefik.http.routers.hdhr-https.rule=Host(`hdhr.domain.lan`)
+          - traefik.http.routers.hdhr-https.service=hdhr
+          - traefik.http.routers.hdhr-https.entrypoints=https
+          - traefik.http.routers.hdhr-https.priority=1
+          - traefik.http.routers.hdhr-https.tls=true
+          - traefik.http.routers.hdhr-https.tls.certresolver=cloudflare
+
+          # #
+          #   Services › Main Web Interface
+          # #
+
+          - traefik.http.services.tvapp2.loadbalancer.server.port=4124
+          - traefik.http.services.tvapp2.loadbalancer.server.scheme=http
+
+          # #
+          #   Services › HDHomeRun Server (optional)
+          # #
+
+          - traefik.http.services.hdhr.loadbalancer.server.port=6077
+          - traefik.http.services.hdhr.loadbalancer.server.scheme=http
