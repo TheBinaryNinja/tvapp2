@@ -70,19 +70,20 @@ const __dirname = path.dirname( __filename );                   // get name of d
 chalk.level = 3;
 
 /*
-
+    timeAgo
 */
 
 TimeAgo.addDefaultLocale( en );
 const timeAgo = new TimeAgo( );
 
 /*
-    Define > General
+    Define › General
 
     @note       if you change `envWebFolder`; ensure you re-name the folder where the
                 website assets are stored.
 */
 
+let FILE_CFG;
 let FILE_URL;
 let FILE_M3U;
 let FILE_XML;
@@ -328,6 +329,7 @@ if ( process.pkg )
         chalk.blueBright( `<msg>` ), chalk.gray( `Starting server utilizing process.execPath` ) );
 
     const basePath = path.dirname( process.execPath );
+    FILE_CFG = path.join( basePath, envWebFolder, `config.json` );
     FILE_URL = path.join( basePath, envWebFolder, `${ envFileURL }` );
     FILE_M3U = path.join( basePath, envWebFolder, `${ envFileM3U }` );
     FILE_XML = path.join( basePath, envWebFolder, `${ envFileXML }` );
@@ -339,6 +341,7 @@ else
     Log.info( `core`, chalk.yellow( `[initiate]` ), chalk.white( `ℹ️` ),
         chalk.blueBright( `<msg>` ), chalk.gray( `Starting server utilizing processed locals` ) );
 
+    FILE_CFG = path.resolve( __dirname, envWebFolder, `config.json` );
     FILE_URL = path.resolve( __dirname, envWebFolder, `${ envFileURL }` );
     FILE_M3U = path.resolve( __dirname, envWebFolder, `${ envFileM3U }` );
     FILE_XML = path.resolve( __dirname, envWebFolder, `${ envFileXML }` );
@@ -346,7 +349,7 @@ else
 }
 
 /*
-    helper > sleep
+    helper › sleep
 */
 
 function sleep( ms )
@@ -358,45 +361,7 @@ function sleep( ms )
 }
 
 /*
-    Semaphore > Declare
-
-    allows multiple threads to work with the same shared resources
-*/
-
-class Semaphore
-{
-    constructor( max )
-    {
-        this.max = max;
-        this.queue = [];
-        this.active = 0;
-    }
-
-    async acquire()
-    {
-        if ( this.active < this.max )
-        {
-            this.active++;
-            return;
-        }
-
-        return new Promise( ( resolve ) => this.queue.push( resolve ) );
-    }
-
-    release()
-    {
-        this.active--;
-        if ( this.queue.length > 0 )
-        {
-            const resolve = this.queue.shift();
-            this.active++;
-            resolve();
-        }
-    }
-}
-
-/*
-    Semaphore > Initialize
+    Semaphore › Initialize
 
     @arg        int threads_max
 */
@@ -2484,6 +2449,275 @@ const server = http.createServer( ( req, resp ) =>
                 {
                     Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
                         chalk.yellowBright( `<msg>` ), chalk.gray( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
+
+                    const Tuner = new Tuner();
+                    const hdHomeRun =
+                    {
+                        FriendlyName: Tuner.FriendlyName,
+                        ModelNumber: Tuner.ModelNumber,
+                        FirmwareName: Tuner.FirmwareName,
+                        FirmwareVersion: Tuner.FirmwareVersion,
+                        DeviceID: Tuner.GetDeviceId(),
+                        TunerCount: `10`,
+                        BaseURL: `${ envIpContainer }:6077`,
+                        LineupURL: `${ envIpContainer }:6077/lineup.jsom`,
+                        client: clientIp( req ),
+                        message: 'Connected to HDHomeRun server',
+                        status: 'healthy',
+                        code: 200,
+                        uptime: Math.round( process.uptime() ),
+                        uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                        uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
+                        timestamp: Date.now()
+                    };
+
+                    resp.writeHead( hdHomeRun.code, {
+                        'Content-Type': 'application/json'
+                    });
+                }
+
+                const statusCheck =
+                {
+                    ip: envIpContainer,
+                    gateway: envIpGateway,
+                    client: clientIp( req ),
+                    message: 'Page not found',
+                    status: 'healthy',
+                    ref: req.url,
+                    method: method || 'GET',
+                    code: 404,
+                    uptime: Math.round( process.uptime() ),
+                    uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                    uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
+                    timestamp: Date.now()
+                };
+
+                resp.writeHead( statusCheck.code, {
+                    'Content-Type': 'application/json'
+                });
+
+                Log.error( `http`, chalk.redBright( `[requests]` ), chalk.white( `❌` ),
+                    chalk.redBright( `<msg>` ), chalk.gray( `${ statusCheck.message }` ),
+                    chalk.redBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                    chalk.redBright( `<code>` ), chalk.gray( `${ statusCheck.code }` ),
+                    chalk.redBright( `<error>` ), chalk.gray( `${ err }` ),
+                    chalk.redBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.redBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+                resp.end( JSON.stringify( statusCheck ) );
+            }
+        });
+    };
+    handleRequest().catch( ( err ) =>
+    {
+        resp.writeHead( 500, {
+            'Content-Type': 'text/plain'
+        });
+
+        Log.error( `http`, chalk.redBright( `[requests]` ), chalk.white( `❌` ),
+            chalk.redBright( `<msg>` ), chalk.gray( `Cannot handle request` ),
+            chalk.redBright( `<code>` ), chalk.gray( `500` ),
+            chalk.redBright( `<error>` ), chalk.gray( `${ err }` ) );
+
+        resp.end( 'Internal Server Error' );
+    });
+});
+
+/*
+    Server > HDHomeRun
+
+    this server will serve up the HDHomeRun lineup.json for people wishing to
+    see the IPTV streams using the HDHomeRun tuner.
+*/
+
+const serverHdHomeRun = http.createServer( ( req, resp ) =>
+{
+    const method = req.method || 'GET';
+    let reqUrl = req.url;
+    if ( reqUrl === '/' )
+        reqUrl = 'hdhomerun.html';
+
+    /*
+        Remove leading forward slash
+    */
+
+    const loadFile = reqUrl.replace( /^\/+/, '' );
+
+    const handleRequest = async() =>
+    {
+        /*
+            Define the different routes.
+            Place the template system last. Getting TVApp data should take priority.
+
+            subdomainM3U        array []
+            loadFile            channel?url=https%3A%2F%2Ftvpass.org%2Fchannel%2Fabc-wabc-new-york-ny%2F
+        */
+
+        Log.debug( `hdjr`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Request sent to HDHomeRun` ),
+            chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+            chalk.blueBright( `<request.url>` ), chalk.gray( `${ req.url }` ),
+            chalk.blueBright( `<reqUrl>` ), chalk.gray( `${ reqUrl }` ),
+            chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+            chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+            if ( subdomainHealth.some( ( urlKeyword ) => loadFile.startsWith( urlKeyword ) ) && method === 'GET' )
+            {
+                Log.info( `http`, chalk.yellow( `[requests]` ), chalk.white( `ℹ️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Requesting to access health api` ),
+                    chalk.blueBright( `<type>` ), chalk.gray( `api/health` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                    chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+                await serveHealthCheck( req, resp );
+                return;
+            }
+
+        /*
+            General Template & .html / .css / .js
+            read the loaded asset file
+        */
+
+        const Tuner = new Tuner();
+        ejs.renderFile( `./${ envWebFolder }/${ loadFile }`,
+            {
+                friendlyName: Tuner.FriendlyName,
+                modelNumber: Tuner.ModelNumber,
+                firmwareName: Tuner.FirmwareName,
+                firmwareVersion: Tuner.FirmwareVersion,
+                deviceId: Tuner.GetDeviceId( ),
+
+                healthTimer: envHealthTimer,
+                appRelease: envAppRelease,
+                appName: name,
+                appVersion: version,
+                appUrlGithub: repository.url.substr( 0, repository.url.lastIndexOf( '.' ) ),
+                appUrlDiscord: discord.url,
+                appUrlDocs: docs.url,
+                appGitHashShort: envGitSHA1.substring( 0, 9 ),
+                appGitHashLong: envGitSHA1
+            }, ( err, data ) =>
+        {
+            if ( !err )
+            {
+                Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Request accepted by ejs` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                    chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+                /*
+                    This allows us to serve all files locally: css, js, etc.
+                    the file loaded is dependent on what comes to the right of the period.
+                */
+
+                const fileExt = loadFile.lastIndexOf( '.' );
+                const fileMime = fileExt === -1
+                                ? 'text/plain'
+                                : {
+                                    '.html' : 'text/html',
+                                    '.htm' : 'text/html',
+                                    '.ico' : 'image/x-icon',
+                                    '.jpg' : 'image/jpeg',
+                                    '.png' : 'image/png',
+                                    '.gif' : 'image/gif',
+                                    '.css' : 'text/css',
+                                    '.scss' : 'text/x-sass',
+                                    '.gz' : 'application/gzip',
+                                    '.js' : 'text/javascript',
+                                    '.txt' : 'text/plain',
+                                    '.xml' : 'application/xml',
+                                    '.json' : 'application/json',
+                                    '.m3u' : 'text/plain',
+                                    '.m3u8' : 'text/plain'
+                                    }[loadFile.substring( fileExt )];
+
+                /*
+                    ejs is only for templates; if we want to load an binary data (like images); we must use fs.readFile
+                */
+
+                if ( fileMime !== 'text/html' )
+                    data = fs.readFileSync( `./${ envWebFolder }/${ loadFile }` );
+
+                resp.setHeader( 'Content-type', fileMime );
+                resp.end( data );
+
+                /*
+                    silence logs if loading css or js files; otherwise they'll spam console each time you load
+                    a page by the client.
+                */
+
+                if ( fileMime === 'text/html' || fileMime === 'application/xml' || fileMime === 'application/json' )
+                {
+                    Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
+                        chalk.greenBright( `<msg>` ), chalk.gray( `Request to load file` ),
+                        chalk.greenBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.greenBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                        chalk.greenBright( `<mime>` ), chalk.gray( `${ fileMime }` ),
+                        chalk.greenBright( `<method>` ), chalk.gray( `${ method }` ) );
+                }
+                else
+                {
+                    Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                        chalk.blueBright( `<msg>` ), chalk.gray( `Request to load file` ),
+                        chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                        chalk.blueBright( `<mime>` ), chalk.gray( `${ fileMime }` ),
+                        chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+                }
+            }
+            else
+            {
+                Log.debug( `http`, chalk.yellow( `[requests]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Request rejected by ejs` ),
+                    chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                    chalk.blueBright( `<error>` ), chalk.gray( `${ err }` ),
+                    chalk.blueBright( `<file>` ), chalk.gray( `${ loadFile }` ),
+                    chalk.blueBright( `<method>` ), chalk.gray( `${ method }` ) );
+
+                if ( loadFile === 'discovery.json' )
+                {
+                    Log.notice( `http`, chalk.yellowBright( `[notice]` ), chalk.white( `📌` ),
+                        chalk.yellowBright( `<msg>` ), chalk.gray( `If you are attempting to load TVApp2 using an HDHomeRun tuner, please switch to the` ), chalk.yellowBright( `M3U Tuner` ) );
+
+                    const Tuner = new Tuner();
+                    const hdHomeRun =
+                    {
+                        FriendlyName: Tuner.FriendlyName,
+                        ModelNumber: Tuner.ModelNumber,
+                        FirmwareName: Tuner.FirmwareName,
+                        FirmwareVersion: Tuner.FirmwareVersion,
+                        DeviceID: Tuner.GetDeviceId(),
+                        TunerCount: `10`,
+                        BaseURL: `${ envIpContainer }:6077`,
+                        LineupURL: `${ envIpContainer }:6077/lineup.jsom`,
+                        client: clientIp( req ),
+                        message: 'Connected to HDHomeRun server',
+                        status: 'healthy',
+                        code: 200,
+                        uptime: Math.round( process.uptime() ),
+                        uptimeShort: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                        uptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
+                        timestamp: Date.now()
+                    };
+
+                    resp.writeHead( hdHomeRun.code, {
+                        'Content-Type': 'application/json'
+                    });
+
+                    Log.ok( `http`, chalk.yellow( `[requests]` ), chalk.white( `✅` ),
+                        chalk.blueBright( `<msg>` ), chalk.gray( `Established connection to HDHomeRun` ),
+                        chalk.blueBright( `<client>` ), chalk.gray( `${ clientIp( req ) }` ),
+                        chalk.blueBright( `<friendlyName>` ), chalk.gray( `${ hdHomeRun.FriendlyName }` ),
+                        chalk.blueBright( `<modelNumber>` ), chalk.gray( `${ hdHomeRun.ModelNumber }` ),
+                        chalk.blueBright( `<deviceID>` ), chalk.gray( `${ hdHomeRun.DeviceID }` ),
+                        chalk.blueBright( `<tunerCount>` ), chalk.gray( `${ hdHomeRun.TunerCount }` ),
+                        chalk.blueBright( `<urlBase>` ), chalk.whiteBright.bgBlack( ` ${ hdHomeRun.BaseURL } ` ),
+                        chalk.blueBright( `<urlLineup>` ), chalk.whiteBright.bgBlack( ` ${ hdHomeRun.LineupURL } ` ) );
+
+                    resp.end( JSON.stringify( hdHomeRun ) );
+                    return;
                 }
 
                 const statusCheck =
@@ -2554,6 +2788,8 @@ const server = http.createServer( ( req, resp ) =>
         initialize
     */
 
+    await new Storage( envWebFolder, FILE_CFG ).Initialize();
+    await new Tuner( Storage.Get( 'deviceId' ) ).Initialize();
     await initialize();
 
     /*
@@ -2577,6 +2813,14 @@ const server = http.createServer( ( req, resp ) =>
             chalk.blueBright( `<msg>` ), chalk.gray( `Running TVApp2 version` ),
             chalk.blueBright( `<version>` ), chalk.gray( ` ${ version } ` ),
             chalk.blueBright( `<release>` ), chalk.gray( ` ${ envAppRelease } ` ) );
+    });
+
+    serverHdHomeRun.listen( 6077, envWebIP, () =>
+    {
+        Log.ok( `core`, chalk.yellow( `[initiate]` ), chalk.white( `✅` ),
+            chalk.blueBright( `<msg>` ), chalk.gray( `Starting HDHomeRun server on` ),
+            chalk.blueBright( `<ipPublic>` ), chalk.whiteBright.bgBlack( ` ${ envWebIP }:6077 ` ),
+            chalk.blueBright( `<ipDocker>` ), chalk.whiteBright.bgBlack( ` ${ envIpContainer }:6077 ` ) );
     });
 })();
 
