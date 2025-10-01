@@ -581,6 +581,23 @@ jobs:
               with:
                   version: latest
                   driver-opts: 'image=moby/buildkit:latest'
+                  driver: docker
+                  buildkitd-flags: --allow-insecure-entitlement network.host
+
+            - name: Configure Docker daemon to allow insecure registry
+              run: |
+                  echo "Configuring daemon to treat ${REGISTRY_HOST} as insecure"
+                  sudo mkdir -p /etc/docker
+                  # create or merge daemon.json - keep it simple for CI
+                  sudo tee /etc/docker/daemon.json > /dev/null <<'JSON'
+                  {
+                    "insecure-registries": ["git.binaryninja.net:443"]
+                  }
+                  JSON
+                  # restart docker so daemon picks up the change
+                  sudo systemctl restart docker
+              env:
+                  REGISTRY_HOST: git.binaryninja.net
 
             # #
             #   Release › Gitea › Registry Login › Amd64
