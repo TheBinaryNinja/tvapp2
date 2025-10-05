@@ -223,7 +223,7 @@ export default
             '@stylistic/no-whitespace-before-property': ['error'],
             '@stylistic/object-curly-spacing': ['error', 'always'],
             '@stylistic/quote-props': ['error', 'as-needed'],
-            '@stylistic/quotes': ['error', 'single', { allowTemplateLiterals: true }],
+            '@stylistic/quotes': ['error', 'single', { allowTemplateLiterals: 'always' }],
             '@stylistic/semi': ['error', 'always'],
             '@stylistic/space-infix-ops': ['error'],
             '@stylistic/template-curly-spacing': ['error', 'always'],

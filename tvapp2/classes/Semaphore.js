@@ -42,5 +42,6 @@ class Semaphore
     @usage          import Log from './classes/Log.js';
 */
 
+// eslint-disable-next-line no-restricted-syntax
 export default Semaphore;
 

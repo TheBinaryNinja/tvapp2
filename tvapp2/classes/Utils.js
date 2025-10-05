@@ -1,6 +1,5 @@
 class Utils
 {
-
     /*
         Returns the name of the function that this function was called from.
         used for Log.verbose
@@ -8,7 +7,7 @@ class Utils
 
     static getFuncName()
     {
-        return (new Error()).stack.match(/at (\S+)/g)[1].slice(3);
+        return ( new Error() ).stack.match( /at (\S+)/g )[1].slice( 3 );
     }
 
     /*
@@ -18,7 +17,7 @@ class Utils
 
     static getConstructorName()
     {
-        return (new Error()).stack.match(/new\s+(\w+)/g)[0];
+        return ( new Error() ).stack.match( /new\s+(\w+)/g )[0];
     }
 
     /*
@@ -42,7 +41,7 @@ class Utils
         }
         else return Boolean( str );
     }
-
 }
 
+// eslint-disable-next-line no-restricted-syntax
 export default Utils;

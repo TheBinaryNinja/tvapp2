@@ -130,13 +130,13 @@ class CLib
 
     encodeToHexBase64( str )
     {
-        const hex = [...str].map( char =>
+        const hex = [...str].map( ( char ) =>
         {
-            const code = char.charCodeAt(0).toString(16);
-            return code.padStart(2, '0');
-        }).join('');
+            const code = char.charCodeAt( 0 ).toString( 16 );
+            return code.padStart( 2, '0' );
+        }).join( '' );
 
-        const base64 = btoa(hex);
+        const base64 = btoa( hex );
         return base64;
     }
 
@@ -152,10 +152,10 @@ class CLib
 
     decodeFromHexBase64( base64Str )
     {
-        const hex = atob(base64Str);
-        const chars = hex.match(/.{1,2}/g); // every 2 hex chars = 1 byte
+        const hex = atob( base64Str );
+        const chars = hex.match( /.{1,2}/g ); // every 2 hex chars = 1 byte
 
-        return chars.map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+        return chars.map( ( byte ) => String.fromCharCode( parseInt( byte, 16 ) ) ).join( '' );
     }
 }
 
@@ -165,4 +165,5 @@ class CLib
     @usage          import CLib from './classes/CLib.js';
 */
 
+// eslint-disable-next-line no-restricted-syntax
 export default CLib;

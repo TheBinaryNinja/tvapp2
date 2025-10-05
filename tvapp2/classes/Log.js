@@ -117,4 +117,5 @@ class Log
     @usage          import Log from './classes/Log.js';
 */
 
+// eslint-disable-next-line no-restricted-syntax
 export default Log;
