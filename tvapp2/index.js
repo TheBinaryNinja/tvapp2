@@ -185,7 +185,7 @@ const hosts =
     { name: 'TheTVApp.to', url: 'https://thetvapp.to' },
     { name: 'MoveOnJoy.com', url: 'http://moveonjoy.com' },
     { name: 'Daddylive.dad', url: 'https://daddylivestream.com' },
-    { name: 'git.binaryninja.com', url: envUrlRepo }
+    { name: 'git.binaryninja.net', url: envUrlRepo }
 ];
 
 /*
