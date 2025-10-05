@@ -1,6 +1,6 @@
 {
     "name": "tvapp2",
-    "version": "1.5.6",
+    "version": "1.5.7",
     "description": "This package allows you to generate M3U playlists and EPG guides from various online IPTV services.",
     "author": "BinaryNinja",
     "license": "MIT",
@@ -86,9 +86,9 @@
     },
     "devDependencies": {
         "@aetherinox/noxenv": "^1.1.1",
-        "@types/uuid": "^10.0.0",
+        "@types/uuid": "^11.0.0",
         "all-contributors-cli": "^6.26.1",
-        "uuid": "^11.1.0",
+        "uuid": "^13.0.0",
         "env-cmd": "^10.1.0",
         "eslint": "^9.28.0",
         "eslint-plugin-chai-friendly": "^1.1.0",
