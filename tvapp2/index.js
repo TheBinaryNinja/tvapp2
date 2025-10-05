@@ -1570,7 +1570,8 @@ async function serveM3U( res, req )
                     chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
 
                 return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
-            })
+            });
+            /*
             .replace( /(https?:\/\/fl\d+\.moveonjoy\.com[^\s]*)/g, ( fullUrl ) =>
             {
                 const urlRewrite = fullUrl.replace( /fl\d+\.moveonjoy\.com/, 'fl25.moveonjoy.com' );
@@ -1582,6 +1583,7 @@ async function serveM3U( res, req )
 
                 return `${ urlRewrite }`;
             });
+            */
 
             res.writeHead( 200, {
                 'Content-Type': 'application/x-mpegURL',
