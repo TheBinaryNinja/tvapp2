@@ -103,6 +103,7 @@ let FILE_GZP_MODIFIED = 0;
 
 const envAppRelease = process.env.RELEASE || 'stable';
 const envUrlRepo = process.env.URL_REPO || 'https://git.binaryninja.net/binaryninja';
+const envXmlEpg = process.env.URL_EPG || 'https://epg.binaryninja.net/XMLTV-EPG'; 
 const envStreamQuality = process.env.STREAM_QUALITY || 'hd';
 const envFileURL = process.env.FILE_URL || 'urls.txt';
 const envFileM3U = process.env.FILE_M3U || 'playlist.m3u8';
@@ -132,7 +133,7 @@ let serverStartup = 0;
 */
 
 const extURL = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/urls.txt`;
-const extXML = `${ envUrlRepo }/XMLTV-EPG/raw/branch/main/xmltv.1.xml`;
+const extXML = `${ envXmlEpg }/xmltv.1.xml`;
 const extM3U = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
 
 /*
