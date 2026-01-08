@@ -181,8 +181,8 @@ jobs:
     job-labels-create:
         name: >-
             🎫 Labels › Verify Existing
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         steps:
 
@@ -360,8 +360,8 @@ jobs:
     job-issues-nolabel:
         name: >-
             🎫 Labels › Assign Missing
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 4
         needs: job-labels-create
         steps:
@@ -961,8 +961,8 @@ jobs:
     job-issues-stale:
         name: >-
             💤 Scan › Check Stale
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         needs:
             - job-labels-create
@@ -1005,8 +1005,8 @@ jobs:
     job-issues-lock:
         name: >-
             🔒 Scan › Lock Inactive
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         needs:
             - job-labels-create

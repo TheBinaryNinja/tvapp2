@@ -165,8 +165,8 @@ jobs:
     job-labels-create:
         name: >-
             🎫 Labels › Verify Existing
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         steps:
 
@@ -335,8 +335,8 @@ jobs:
             🏷️ Labels › Assign
         needs:
             - job-labels-create
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         permissions:
             contents: 'read'
@@ -1191,8 +1191,8 @@ jobs:
             🏷️ Labels › Phrase Search
         needs:
             - job-labels-create
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         permissions:
             contents: 'read'
@@ -1280,8 +1280,8 @@ jobs:
     job-assign-assignees:
         name: >-
             ✍️ Issue › Assignees
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 5
         needs: [ job-assign-labels ]
       # disable

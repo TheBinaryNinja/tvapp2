@@ -193,8 +193,8 @@ jobs:
     issues-labels-create:
         name: >-
             🎫 Labels › Create
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 3
         permissions:
             contents: 'read'

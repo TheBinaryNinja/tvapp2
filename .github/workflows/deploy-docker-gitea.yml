@@ -850,6 +850,9 @@ jobs:
               uses: docker/build-push-action@v6
               if: ( github.event_name == 'workflow_dispatch' && inputs.DRY_RUN == false ) || ( github.event_name == 'push' )
               with:
+                  allow: |
+                      network.host
+                  network: host
                   context: .
                   file: Dockerfile
                   platforms: linux/amd64
