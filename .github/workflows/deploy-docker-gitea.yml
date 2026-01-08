@@ -194,8 +194,8 @@ jobs:
     job-docker-release-tags-create:
         name: >-
             📦 Release › Create Tag
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 4
         outputs:
             package_version: ${{ steps.task_initialize_package_getversion.outputs.PACKAGE_VERSION }}
@@ -386,8 +386,8 @@ jobs:
     job-docker-release-gitea:
         name: >-
             📦 Release › Gitea
-      # runs-on: ubuntu-latest
-        runs-on: apollo-x64
+        runs-on: ubuntu-latest
+      # runs-on: apollo-x64
         timeout-minutes: 10
         needs: [ job-docker-release-tags-create ]
         permissions:
