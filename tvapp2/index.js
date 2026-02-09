@@ -133,8 +133,8 @@ let serverStartup = 0;
 */
 
 const extURL = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/urls.txt`;
-const extXML = `${ envXmlEpg }/xmltv.1.xml`;
-const extM3U = `${ envXmlEpg }/formatted.dat`;
+const extXML = `${ envXmlEpg }/xmltv_v2.0.0.xml`;
+const extM3U = `${ envXmlEpg }/formatted_v2.0.0.dat`;
 //const extM3U = `${ envUrlRepo }/tvapp2-externals/raw/branch/main/formatted.dat`;
 
 /*
