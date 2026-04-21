@@ -427,7 +427,7 @@ jobs:
 
             - name: '📄 Cache README.md'
               id: task_release_gh_readme_cache
-              uses: actions/github-script@v7
+              uses: actions/github-script@v9
               with:
                 github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
                 script: |
@@ -886,7 +886,7 @@ jobs:
 
             - name: '📄 Cache README.md'
               id: task_release_dh_readme_cache
-              uses: actions/github-script@v7
+              uses: actions/github-script@v9
               with:
                 github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
                 script: |
@@ -1332,7 +1332,7 @@ jobs:
 
             - name: '📄 Cache README.md'
               id: task_release_gi_readme_cache
-              uses: actions/github-script@v7
+              uses: actions/github-script@v9
               with:
                 github-token: ${{ secrets.ORG_BINARYNINJA_TOKEN_CL }}
                 script: |
