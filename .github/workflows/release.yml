@@ -166,7 +166,7 @@ jobs:
 
             - name: '☑️ Checkout'
               id: task_initialize_checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
@@ -229,7 +229,7 @@ jobs:
 
             - name: '☑️ Checkout'
               id: task_release_checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
