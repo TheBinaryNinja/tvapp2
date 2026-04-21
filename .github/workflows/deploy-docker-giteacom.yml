@@ -200,7 +200,7 @@ jobs:
 
             - name: '✅ Checkout'
               id: task_release_tags_checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
@@ -273,7 +273,7 @@ jobs:
 
             - name: '✅ Checkout'
               id: task_release_gh_checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             # #
             #   Release › Gitea › Get Timestamp
@@ -540,7 +540,7 @@ jobs:
 
             - name: '✅ Checkout'
               id: task_release_gh_checkout
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             # #
             #   Release › Gitea › Get Timestamp
