@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tvapp2-worker",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-25",
+  "assets": {
+    "directory": "./tvapp2/www",
+    "binding": "ASSETS"
+  }
+}
