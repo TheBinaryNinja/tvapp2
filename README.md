@@ -113,7 +113,7 @@
 
 ## About
 
-**TVApp2** is a docker image which allows you to download M3U playlist and EPG guide data which can be plugged into your IPTV applications such as Jellyfin, Plex, and Emby. It is a revision of the original app by dtankdempse which is no longer available. This app fetches data for:
+**TVApp2** can run as either a Docker container **or** a Cloudflare Worker (no Docker required). It allows you to download M3U playlist and EPG guide data which can be plugged into your IPTV applications such as Jellyfin, Plex, and Emby. It is a revision of the original app by dtankdempse which is no longer available. This app fetches data for:
 
 - TheTvApp
 - TVPass
@@ -157,6 +157,12 @@ Then deploy:
 npx wrangler deploy
 ```
 
+For local Cloudflare-only development (no Docker):
+
+```bash
+npx wrangler dev
+```
+
 #### 2) Configure Worker Variables
 
 Set these optional Worker variables (recommended):
@@ -181,6 +187,7 @@ npx wrangler secret put EPG_GZ_URL
 
 These routes are available on your Worker domain:
 
+- `GET /healthz`
 - `GET /playlist`
 - `GET /playlist.m3u`
 - `GET /playlist.m3u8`
@@ -215,6 +222,7 @@ After deploy, verify each endpoint:
 Quick checks:
 
 ```bash
+curl -I https://your-worker.workers.dev/healthz
 curl -I https://your-worker.workers.dev/playlist.m3u
 curl -I https://your-worker.workers.dev/epg.xml
 curl -I "https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz"

@@ -38,6 +38,22 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
+    if (request.method === "OPTIONS") {
+      return new Response(null, {
+        status: 204,
+        headers: new Headers(CORS_HEADERS),
+      });
+    }
+
+    if (url.pathname === "/healthz") {
+      return withCors(
+        new Response("ok", {
+          status: 200,
+          headers: { "content-type": "text/plain; charset=utf-8" },
+        }),
+      );
+    }
+
     if (isPlaylistRoute(url.pathname)) {
       return handleNamedProxyRoute(request, env, "PLAYLIST_URL", "application/vnd.apple.mpegurl; charset=utf-8", "/playlist.m3u8");
     }
@@ -133,18 +149,11 @@ async function fetchAssetFallback(
 }
 
 async function handleProxy(request: Request): Promise<Response> {
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: new Headers(CORS_HEADERS),
-    });
-  }
-
-  if (request.method !== "GET") {
+  if (request.method !== "GET" && request.method !== "HEAD") {
     return withCors(
       new Response("Method Not Allowed", {
         status: 405,
-        headers: { Allow: "GET, OPTIONS" },
+        headers: { Allow: "GET, HEAD, OPTIONS" },
       }),
     );
   }
@@ -171,7 +180,6 @@ async function handleProxy(request: Request): Promise<Response> {
     Accept: "*/*",
     "Accept-Encoding": "identity",
     "Accept-Language": "en-US,en;q=0.9",
-    Connection: "keep-alive",
   });
 
   for (const headerName of FORWARDED_HEADERS) {
