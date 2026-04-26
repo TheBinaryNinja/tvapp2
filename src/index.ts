@@ -28,10 +28,10 @@ const STRIP_RESPONSE_HEADERS = [
   "transfer-encoding",
 ] as const;
 
-const DEFAULT_UPSTREAMS: Record<NamedRouteKey, string> = {
+const DEFAULT_UPSTREAMS: Partial<Record<NamedRouteKey, string>> = {
   PLAYLIST_URL: "https://epg.binaryninja.net/XMLTV-EPG/formatted_v2.0.0.dat",
   EPG_URL: "https://epg.binaryninja.net/XMLTV-EPG/xmltv_v2.0.0.xml",
-  EPG_GZ_URL: "https://epg.binaryninja.net/XMLTV-EPG/xmltv_v2.0.0.xml.gz",
+  // EPG_GZ_URL removed: default URL returns 404. Users can provide via env var or ?url= query param.
 };
 
 export default {

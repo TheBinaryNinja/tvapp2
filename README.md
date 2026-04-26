@@ -163,7 +163,7 @@ Set these optional Worker variables (recommended):
 
 - `PLAYLIST_URL` → upstream M3U / M3U8 URL
 - `EPG_URL` → upstream XMLTV URL (typically `.xml`)
-- `EPG_GZ_URL` → upstream compressed XMLTV URL (typically `.xml.gz`)
+- `EPG_GZ_URL` → upstream compressed XMLTV URL (typically `.xml.gz`) - **no default**, must be configured if needed
 
 You can set them with Wrangler:
 
@@ -193,6 +193,7 @@ Examples:
 ```txt
 https://your-worker.workers.dev/playlist.m3u
 https://your-worker.workers.dev/epg.xml
+https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz
 ```
 
 Override upstream per request (if needed):
@@ -200,6 +201,7 @@ Override upstream per request (if needed):
 ```txt
 https://your-worker.workers.dev/playlist.m3u?url=https://example.com/playlist.m3u8
 https://your-worker.workers.dev/epg.xml?url=https://example.com/xmltv.xml
+https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz
 ```
 
 #### 4) Verify Outputs
@@ -208,14 +210,14 @@ After deploy, verify each endpoint:
 
 - `playlist.m3u` should start with `#EXTM3U`
 - `epg.xml` should start with XML content (for example `<?xml`)
-- `epg.xml.gz` should download as gzip content
+- `epg.xml.gz` should download as gzip content (requires `?url=` parameter or `EPG_GZ_URL` env var)
 
 Quick checks:
 
 ```bash
 curl -I https://your-worker.workers.dev/playlist.m3u
 curl -I https://your-worker.workers.dev/epg.xml
-curl -I https://your-worker.workers.dev/epg.xml.gz
+curl -I "https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz"
 ```
 
 You should see valid `Content-Type` headers (M3U / XML / GZIP).
