@@ -481,8 +481,9 @@
                         {
                             $('a#uptime').text(`${ uptimeShort }`);
 
-                            const tooltip = bootstrap.Tooltip.getInstance('#uptime') // Returns a Bootstrap tooltip instance
-                            tooltip.setContent( { '.tooltip-inner': `App started ${ uptimeLong }` } )
+                            const uptimeAnchor = document.getElementById('uptime');
+                            const tooltip = bootstrap.Tooltip.getOrCreateInstance( uptimeAnchor );
+                            tooltip.setContent( { '.tooltip-inner': `App started ${ uptimeLong }` } );
                         }
                     },
                     error: function( data )

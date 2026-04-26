@@ -28,20 +28,26 @@ const STRIP_RESPONSE_HEADERS = [
   "transfer-encoding",
 ] as const;
 
+const DEFAULT_UPSTREAMS: Record<NamedRouteKey, string> = {
+  PLAYLIST_URL: "https://epg.binaryninja.net/XMLTV-EPG/formatted_v2.0.0.dat",
+  EPG_URL: "https://epg.binaryninja.net/XMLTV-EPG/xmltv_v2.0.0.xml",
+  EPG_GZ_URL: "https://epg.binaryninja.net/XMLTV-EPG/xmltv_v2.0.0.xml.gz",
+};
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     if (isPlaylistRoute(url.pathname)) {
-      return handleNamedProxyRoute(request, env, "PLAYLIST_URL", "application/vnd.apple.mpegurl; charset=utf-8");
+      return handleNamedProxyRoute(request, env, "PLAYLIST_URL", "application/vnd.apple.mpegurl; charset=utf-8", "/playlist.m3u8");
     }
 
     if (isEpgRoute(url.pathname)) {
-      return handleNamedProxyRoute(request, env, "EPG_URL", "application/xml; charset=utf-8");
+      return handleNamedProxyRoute(request, env, "EPG_URL", "application/xml; charset=utf-8", "/xmltv.xml");
     }
 
     if (isEpgGzipRoute(url.pathname)) {
-      return handleNamedProxyRoute(request, env, "EPG_GZ_URL", "application/gzip");
+      return handleNamedProxyRoute(request, env, "EPG_GZ_URL", "application/gzip", "/xmltv.xml.gz");
     }
 
     if (url.pathname === "/proxy") {
@@ -59,11 +65,17 @@ async function handleNamedProxyRoute(
   env: Env,
   envKey: NamedRouteKey,
   forcedContentType: string,
+  assetFallbackPath: string,
 ): Promise<Response> {
   const requestUrl = new URL(request.url);
-  const resolvedUpstreamUrl = resolveUpstreamUrl(requestUrl, env[envKey]);
+  const resolvedUpstreamUrl = resolveUpstreamUrl(requestUrl, env[envKey], envKey);
 
   if (!resolvedUpstreamUrl) {
+    const staticAssetResponse = await fetchAssetFallback(request, env, assetFallbackPath, forcedContentType);
+    if (staticAssetResponse) {
+      return staticAssetResponse;
+    }
+
     return withCors(
       new Response(
         `Missing upstream URL. Provide ?url=https://... or set ${envKey} in Worker vars.`,
@@ -87,6 +99,35 @@ async function handleNamedProxyRoute(
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
+    headers,
+  });
+}
+
+async function fetchAssetFallback(
+  request: Request,
+  env: Env,
+  assetPath: string,
+  forcedContentType: string,
+): Promise<Response | null> {
+  const requestUrl = new URL(request.url);
+  const assetUrl = new URL(assetPath, requestUrl.origin);
+  const assetRequest = new Request(assetUrl.toString(), {
+    method: "GET",
+    headers: request.headers,
+  });
+  const assetResponse = await env.ASSETS.fetch(assetRequest);
+
+  if (!assetResponse.ok) {
+    return null;
+  }
+
+  const headers = new Headers(assetResponse.headers);
+  applyCors(headers);
+  headers.set("content-type", forcedContentType);
+
+  return new Response(assetResponse.body, {
+    status: assetResponse.status,
+    statusText: assetResponse.statusText,
     headers,
   });
 }
@@ -203,7 +244,7 @@ function rewritePlaylist(playlist: string, upstreamUrl: URL, origin: string): st
     .join("\n");
 }
 
-function resolveUpstreamUrl(requestUrl: URL, envValue?: string): string | null {
+function resolveUpstreamUrl(requestUrl: URL, envValue: string | undefined, envKey: NamedRouteKey): string | null {
   const queryUrl = requestUrl.searchParams.get("url");
   if (queryUrl) {
     return queryUrl;
@@ -213,7 +254,7 @@ function resolveUpstreamUrl(requestUrl: URL, envValue?: string): string | null {
     return envValue.trim();
   }
 
-  return null;
+  return DEFAULT_UPSTREAMS[envKey] ?? null;
 }
 
 function isPlaylistRoute(pathname: string): boolean {
