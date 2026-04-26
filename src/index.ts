@@ -4,6 +4,9 @@ interface Fetcher {
 
 export interface Env {
   ASSETS: Fetcher;
+  PLAYLIST_URL?: string;
+  EPG_URL?: string;
+  EPG_GZ_URL?: string;
 }
 
 const CORS_HEADERS: Record<string, string> = {
@@ -29,6 +32,18 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
+    if (isPlaylistRoute(url.pathname)) {
+      return handleNamedProxyRoute(request, env, "PLAYLIST_URL", "application/vnd.apple.mpegurl; charset=utf-8");
+    }
+
+    if (isEpgRoute(url.pathname)) {
+      return handleNamedProxyRoute(request, env, "EPG_URL", "application/xml; charset=utf-8");
+    }
+
+    if (isEpgGzipRoute(url.pathname)) {
+      return handleNamedProxyRoute(request, env, "EPG_GZ_URL", "application/gzip");
+    }
+
     if (url.pathname === "/proxy") {
       return handleProxy(request);
     }
@@ -36,6 +51,45 @@ export default {
     return env.ASSETS.fetch(request);
   },
 };
+
+type NamedRouteKey = "PLAYLIST_URL" | "EPG_URL" | "EPG_GZ_URL";
+
+async function handleNamedProxyRoute(
+  request: Request,
+  env: Env,
+  envKey: NamedRouteKey,
+  forcedContentType: string,
+): Promise<Response> {
+  const requestUrl = new URL(request.url);
+  const resolvedUpstreamUrl = resolveUpstreamUrl(requestUrl, env[envKey]);
+
+  if (!resolvedUpstreamUrl) {
+    return withCors(
+      new Response(
+        `Missing upstream URL. Provide ?url=https://... or set ${envKey} in Worker vars.`,
+        { status: 400 },
+      ),
+    );
+  }
+
+  const proxiedUrl = new URL("/proxy", requestUrl.origin);
+  proxiedUrl.searchParams.set("url", resolvedUpstreamUrl);
+
+  const proxyRequest = new Request(proxiedUrl.toString(), {
+    method: request.method,
+    headers: request.headers,
+  });
+
+  const response = await handleProxy(proxyRequest);
+  const headers = new Headers(response.headers);
+  headers.set("content-type", forcedContentType);
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
 
 async function handleProxy(request: Request): Promise<Response> {
   if (request.method === "OPTIONS") {
@@ -147,6 +201,33 @@ function rewritePlaylist(playlist: string, upstreamUrl: URL, origin: string): st
       return line.replace(trimmed, proxied);
     })
     .join("\n");
+}
+
+function resolveUpstreamUrl(requestUrl: URL, envValue?: string): string | null {
+  const queryUrl = requestUrl.searchParams.get("url");
+  if (queryUrl) {
+    return queryUrl;
+  }
+
+  if (envValue && envValue.trim()) {
+    return envValue.trim();
+  }
+
+  return null;
+}
+
+function isPlaylistRoute(pathname: string): boolean {
+  const normalized = pathname.toLowerCase();
+  return normalized === "/playlist" || normalized === "/playlist.m3u" || normalized === "/playlist.m3u8";
+}
+
+function isEpgRoute(pathname: string): boolean {
+  const normalized = pathname.toLowerCase();
+  return normalized === "/epg" || normalized === "/epg.xml";
+}
+
+function isEpgGzipRoute(pathname: string): boolean {
+  return pathname.toLowerCase() === "/epg.xml.gz";
 }
 
 function isRelativeUri(value: string): boolean {
