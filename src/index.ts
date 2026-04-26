@@ -14,10 +14,15 @@ const CORS_HEADERS: Record<string, string> = {
 
 const FORWARDED_HEADERS = [
   "accept",
-  "accept-encoding",
   "range",
   "user-agent",
   "referer",
+] as const;
+
+const STRIP_RESPONSE_HEADERS = [
+  "content-encoding",
+  "content-length",
+  "transfer-encoding",
 ] as const;
 
 export default {
@@ -69,6 +74,7 @@ async function handleProxy(request: Request): Promise<Response> {
 
   const upstreamHeaders = new Headers({
     Accept: "*/*",
+    "Accept-Encoding": "identity",
     "Accept-Language": "en-US,en;q=0.9",
     Connection: "keep-alive",
   });
@@ -95,7 +101,14 @@ async function handleProxy(request: Request): Promise<Response> {
   applyCors(headers);
 
   const contentType = headers.get("content-type")?.toLowerCase() ?? "";
-  const isHls = contentType.includes("m3u8") || upstreamUrl.pathname.toLowerCase().endsWith(".m3u8");
+  const pathname = upstreamUrl.pathname.toLowerCase();
+  const isHls =
+    pathname.endsWith(".m3u") ||
+    pathname.endsWith(".m3u8") ||
+    contentType.includes("mpegurl") ||
+    contentType.includes("application/x-mpegurl");
+
+  sanitizeResponseHeaders(headers);
 
   if (!isHls) {
     return new Response(upstreamResponse.body, {
@@ -208,4 +221,10 @@ function withCors(response: Response): Response {
     statusText: response.statusText,
     headers,
   });
+}
+
+function sanitizeResponseHeaders(headers: Headers): void {
+  for (const header of STRIP_RESPONSE_HEADERS) {
+    headers.delete(header);
+  }
 }
