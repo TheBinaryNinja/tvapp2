@@ -28,6 +28,12 @@ const STRIP_RESPONSE_HEADERS = [
   "transfer-encoding",
 ] as const;
 
+const DEFAULT_UPSTREAMS: Partial<Record<NamedRouteKey, string>> = {
+  PLAYLIST_URL: "https://epg.binaryninja.net/XMLTV-EPG/formatted_v2.0.0.dat",
+  EPG_URL: "https://epg.binaryninja.net/XMLTV-EPG/xmltv_v2.0.0.xml",
+  // EPG_GZ_URL removed: default URL returns 404. Users can provide via env var or ?url= query param.
+};
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -62,7 +68,7 @@ async function handleNamedProxyRoute(
   assetFallbackPath: string,
 ): Promise<Response> {
   const requestUrl = new URL(request.url);
-  const resolvedUpstreamUrl = resolveUpstreamUrl(requestUrl, env[envKey]);
+  const resolvedUpstreamUrl = resolveUpstreamUrl(requestUrl, env[envKey], envKey);
 
   if (!resolvedUpstreamUrl) {
     const staticAssetResponse = await fetchAssetFallback(request, env, assetFallbackPath, forcedContentType);
@@ -238,7 +244,7 @@ function rewritePlaylist(playlist: string, upstreamUrl: URL, origin: string): st
     .join("\n");
 }
 
-function resolveUpstreamUrl(requestUrl: URL, envValue?: string): string | null {
+function resolveUpstreamUrl(requestUrl: URL, envValue: string | undefined, envKey: NamedRouteKey): string | null {
   const queryUrl = requestUrl.searchParams.get("url");
   if (queryUrl) {
     return queryUrl;
@@ -248,7 +254,7 @@ function resolveUpstreamUrl(requestUrl: URL, envValue?: string): string | null {
     return envValue.trim();
   }
 
-  return null;
+  return DEFAULT_UPSTREAMS[envKey] ?? null;
 }
 
 function isPlaylistRoute(pathname: string): boolean {
