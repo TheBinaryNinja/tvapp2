@@ -33,15 +33,15 @@ export default {
     const url = new URL(request.url);
 
     if (isPlaylistRoute(url.pathname)) {
-      return handleNamedProxyRoute(request, env, "PLAYLIST_URL", "application/vnd.apple.mpegurl; charset=utf-8");
+      return handleNamedProxyRoute(request, env, "PLAYLIST_URL", "application/vnd.apple.mpegurl; charset=utf-8", "/playlist.m3u8");
     }
 
     if (isEpgRoute(url.pathname)) {
-      return handleNamedProxyRoute(request, env, "EPG_URL", "application/xml; charset=utf-8");
+      return handleNamedProxyRoute(request, env, "EPG_URL", "application/xml; charset=utf-8", "/xmltv.xml");
     }
 
     if (isEpgGzipRoute(url.pathname)) {
-      return handleNamedProxyRoute(request, env, "EPG_GZ_URL", "application/gzip");
+      return handleNamedProxyRoute(request, env, "EPG_GZ_URL", "application/gzip", "/xmltv.xml.gz");
     }
 
     if (url.pathname === "/proxy") {
@@ -59,11 +59,17 @@ async function handleNamedProxyRoute(
   env: Env,
   envKey: NamedRouteKey,
   forcedContentType: string,
+  assetFallbackPath: string,
 ): Promise<Response> {
   const requestUrl = new URL(request.url);
   const resolvedUpstreamUrl = resolveUpstreamUrl(requestUrl, env[envKey]);
 
   if (!resolvedUpstreamUrl) {
+    const staticAssetResponse = await fetchAssetFallback(request, env, assetFallbackPath, forcedContentType);
+    if (staticAssetResponse) {
+      return staticAssetResponse;
+    }
+
     return withCors(
       new Response(
         `Missing upstream URL. Provide ?url=https://... or set ${envKey} in Worker vars.`,
@@ -87,6 +93,35 @@ async function handleNamedProxyRoute(
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
+    headers,
+  });
+}
+
+async function fetchAssetFallback(
+  request: Request,
+  env: Env,
+  assetPath: string,
+  forcedContentType: string,
+): Promise<Response | null> {
+  const requestUrl = new URL(request.url);
+  const assetUrl = new URL(assetPath, requestUrl.origin);
+  const assetRequest = new Request(assetUrl.toString(), {
+    method: "GET",
+    headers: request.headers,
+  });
+  const assetResponse = await env.ASSETS.fetch(assetRequest);
+
+  if (!assetResponse.ok) {
+    return null;
+  }
+
+  const headers = new Headers(assetResponse.headers);
+  applyCors(headers);
+  headers.set("content-type", forcedContentType);
+
+  return new Response(assetResponse.body, {
+    status: assetResponse.status,
+    statusText: assetResponse.statusText,
     headers,
   });
 }
