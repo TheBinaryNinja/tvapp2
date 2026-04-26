@@ -173,7 +173,9 @@ npx wrangler secret put EPG_URL
 npx wrangler secret put EPG_GZ_URL
 ```
 
-> If you do not set vars, you can still pass `?url=` on each request.
+> If you do not set vars, you can still pass `?url=` on each request.  
+> If you also omit `?url=`, the Worker now tries static asset fallbacks:
+> `/playlist.m3u8`, `/xmltv.xml`, and `/xmltv.xml.gz`.
 
 #### 3) Use IPTV-Friendly Endpoints
 
