@@ -48,8 +48,8 @@
                     <div class="col">
                         <div class="introduction-body">
                             <div class="desc">
-                                <div class="about" class="about about-small"><code>HDHomeRun</code> is a network-attached digital television tuner box, produced by the company SiliconDust USA, Inc. Self-hosted multimedia applications such as Jellyfin allow for you to add IPTV channels either using a <code>M3U8 tuner</code>, or also with the option of specifying a <code>HDHomeRun</code> tuner.</div>
-                                <div class="about" class="about about-small">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner settings are provided below:</div>
+                                <div class="about about-small"><code>HDHomeRun</code> is a network-attached digital television tuner box, produced by the company SiliconDust USA, Inc. Self-hosted multimedia applications such as Jellyfin allow for you to add IPTV channels either using a <code>M3U8 tuner</code>, or also with the option of specifying a <code>HDHomeRun</code> tuner.</div>
+                                <div class="about about-small">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner settings are provided below:</div>
                             </div>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                             <td class="file cell-file property-label">
                                 LineupURL
                             </td>
-                            <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>/lineup.json" id="m3u-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %>/lineup.json</a></td>
+                            <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>/lineup.json" id="lineup-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %>/lineup.json</a></td>
                             <td class="desc cell-desc">URL to IPTV channel & guide lineups</td>
                         </tr>
                         <tr>
@@ -492,7 +492,7 @@
 
                         globalThis["setTimeout"]( () =>
                         {
-                            document.getElementById('ntfy-restart').classList.remove('d-none')
+                            document.getElementById('ntfy-restart').classList.remove('d-none', 'fade-out-hidden')
                             const dimmer = document.getElementById('dimmer');
                             dimmer.classList.remove('dimmer-in');
                             dimmer.classList.add('dimmer-out');

@@ -561,7 +561,7 @@
 
                         globalThis["setTimeout"]( () =>
                         {
-                            document.getElementById('ntfy-restart').classList.remove('d-none')
+                            document.getElementById('ntfy-restart').classList.remove('d-none', 'fade-out-hidden')
                             const dimmer = document.getElementById('dimmer');
                             dimmer.classList.remove('dimmer-in');
                             dimmer.classList.add('dimmer-out');
