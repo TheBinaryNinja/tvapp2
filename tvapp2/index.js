@@ -1570,15 +1570,13 @@ async function serveM3U( res, req )
         const host = req.headers.host;
         const baseUrl = `${ protocol }://${ host }`;
         const formattedContent = fs.readFileSync( FILE_M3U, 'utf-8' );
-        const lines = formattedContent.split( /\r?\n/ );
-
-        for ( let i = 0;i < lines.length;i++ )
-        {
-            const trimmedLine = lines[i].trim();
-            if ( /^https?:\/\/\S+$/i.test( trimmedLine ) )
+        const updatedContent = formattedContent
+            .replace( /^(https?:\/\/\S+)$/gm, ( fullUrl ) =>
             {
-                const tokenizedUrl = await getTokenizedUrl( trimmedLine, req );
-                const rewrittenUrl = tokenizedUrl || `${ baseUrl }/channel?url=${ encodeURIComponent( trimmedLine ) }`;
+                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting source URL to local channel endpoint` ),
+                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
+                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
 
                 Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting source URL to stream URL` ),
