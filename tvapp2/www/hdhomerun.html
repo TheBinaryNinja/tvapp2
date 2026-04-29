@@ -8,6 +8,17 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
         <link rel="stylesheet" href="css/tvapp2.min.css">
         <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <style>
+            .icon-duotone-white { --fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255); }
+            .about-small { font-size: 13px; }
+            .table-center { width: 60%; margin: 0 auto; }
+            .property-label { color: #919191; font-weight: 400; }
+            .notifications-pad { padding-bottom: 20px; }
+            .toast-top-z { z-index: 9999; }
+            .fade-out-hidden { transition: 1s; opacity: 0; visibility: hidden; }
+            .heart-white { color: #FFF; }
+        </style>
+
         <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js' integrity='sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq' crossorigin='anonymous'></script>
         <script src=' https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js '></script>
         <script src='js/tvapp2.min.js'></script>
@@ -17,15 +28,15 @@
         <div class="header">
             <nav class="navbar sticky-top container">
                 <div class="brand">
-                    <i data-bs-toggle="tooltip" title="v<%= appVersion %>" class="logo fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
+                    <i data-bs-toggle="tooltip" title="v<%= appVersion %>" class="logo fa-sharp-duotone fa-regular fa-tv icon-duotone-white" aria-hidden="true"></i>
                     <a target="_blank" data-bs-toggle="tooltip" title="View Github Repository" class="header-name" href="<%= appUrlGithub %>">TVApp2 for Docker</a>
                 </div>
                 <div class="social">
-                    <i id="action-health" data-bs-toggle="tooltip" title="Health" class="heart logo health fa-duotone fa-solid fa-heart" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
-                    <a href="javascript:runResync();"><i id="action-resync" data-bs-toggle="tooltip" title="Resync" class="restart fa-solid fa-rotate" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
-                    <a target="_blank" href="<%= appUrlDocs %>"><i data-bs-toggle="tooltip" title="Documentation" class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
-                    <a target="_blank" href="<%= appUrlGithub %>"><i data-bs-toggle="tooltip" title="Github" class="logo fa-logos fa-github" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
-                    <a target="_blank" href="<%= appUrlDiscord %>"><i data-bs-toggle="tooltip" title="Discord" class="logo fa-logos fa-discord" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                    <i id="action-health" data-bs-toggle="tooltip" title="Health" class="heart logo health fa-duotone fa-solid fa-heart icon-duotone-white" aria-hidden="true"></i>
+                    <a href="javascript:runResync();"><i id="action-resync" data-bs-toggle="tooltip" title="Resync" class="restart fa-solid fa-rotate icon-duotone-white" aria-hidden="true"></i></a>
+                    <a target="_blank" href="<%= appUrlDocs %>"><i data-bs-toggle="tooltip" title="Documentation" class="logo fa-duotone fa-solid fa-book-open-cover icon-duotone-white" aria-hidden="true"></i></a>
+                    <a target="_blank" href="<%= appUrlGithub %>"><i data-bs-toggle="tooltip" title="Github" class="logo fa-logos fa-github icon-duotone-white" aria-hidden="true"></i></a>
+                    <a target="_blank" href="<%= appUrlDiscord %>"><i data-bs-toggle="tooltip" title="Discord" class="logo fa-logos fa-discord icon-duotone-white" aria-hidden="true"></i></a>
                 </div>
             </nav>
         </div>
@@ -37,8 +48,8 @@
                     <div class="col">
                         <div class="introduction-body">
                             <div class="desc">
-                                <div class="about" style="font-size: 13px;"><code>HDHomeRun</code> is a network-attached digital television tuner box, produced by the company SiliconDust USA, Inc. Self-hosted multimedia applications such as Jellyfin allow for you to add IPTV channels either using a <code>M3U8 tuner</code>, or also with the option of specifying a <code>HDHomeRun</code> tuner.</div>
-                                <div class="about" style="font-size: 13px;">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner settings are provided below:</div>
+                                <div class="about about-small"><code>HDHomeRun</code> is a network-attached digital television tuner box, produced by the company SiliconDust USA, Inc. Self-hosted multimedia applications such as Jellyfin allow for you to add IPTV channels either using a <code>M3U8 tuner</code>, or also with the option of specifying a <code>HDHomeRun</code> tuner.</div>
+                                <div class="about about-small">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner settings are provided below:</div>
                             </div>
                         </div>
                     </div>
@@ -47,7 +58,7 @@
 
             <!-- Header Fontawesome Icons -->
             <div class="container main-container">
-                <table id="list" class="table table-dark table-striped" style="width:60%; margin: 0 auto;">
+                <table id="list" class="table table-dark table-striped table-center">
                     <thead>
                         <tr class="d-none d-md-table-row">
                             <th class="file cell-file">
@@ -63,63 +74,63 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 FriendlyName
                             </td>
                             <td class="link cell-link"><%= friendlyName %></td>
                             <td class="desc cell-desc">Name of tuner</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 ModelNumber
                             </td>
                             <td class="link cell-link"><%= modelNumber %></td>
                             <td class="desc cell-desc">Virtual tuner model number</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 FirmwareName
                             </td>
                             <td class="link cell-link"><%= firmwareName %></td>
                             <td class="desc cell-desc">Firmware name for tuner</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 FirmwareVersion
                             </td>
                             <td class="link cell-link"><%= firmwareVersion %></td>
                             <td class="desc cell-desc">Firmware version running on tuner</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 DeviceID
                             </td>
                             <td class="link cell-link"><%= deviceId %></td>
                             <td class="desc cell-desc">Tuner device id</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 TunerCount
                             </td>
                             <td class="link cell-link"><%= slotsConnected %> / <%= slotsMax %></td>
                             <td class="desc cell-desc">Number of connection slots to view IPTV</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 BaseURL
                             </td>
                             <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>" id="m3u-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %></a></td>
                             <td class="desc cell-desc">Base URL where HDHomeRun is hosted</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 LineupURL
                             </td>
-                            <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>/lineup.json" id="m3u-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %>/lineup.json</a></td>
+                            <td class="link cell-link"><a href="https://<%= hdhrIp %>:<%= hdhrPort %>/lineup.json" id="lineup-link" target="_blank"><%= hdhrIp %>:<%= hdhrPort %>/lineup.json</a></td>
                             <td class="desc cell-desc">URL to IPTV channel & guide lineups</td>
                         </tr>
                         <tr>
-                            <td class="file cell-file" style="color: #919191;font-weight: 400;">
+                            <td class="file cell-file property-label">
                                 Uptime
                             </td>
                             <td class="link cell-link"><%= appUptimeFull %></td>
@@ -132,7 +143,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <div class="container notifications" style="padding-bottom:20px;">
+            <div class="container notifications notifications-pad">
                 <div id="ntfy-restart" class="ntfy-parent indicator-success sticky-bottom"></div>
                 <div id="ntfy-firewall" class="ntfy-parent indicator-warning sticky-bottom"></div>
                 <div id="ntfy-localhost" class="ntfy-parent indicator-danger sticky-bottom"></div>
@@ -150,7 +161,7 @@
 
         <!-- Toast Notifications -->
         <!-- <button type="button" class="btn btn-primary" id="btnTestToasts">Show toast</button> -->
-        <div style="z-index: 9999;" class="toast position-fixed bottom-0 end-0 p-8 m-3" id="tvapp2Toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="10000">
+        <div class="toast toast-top-z position-fixed bottom-0 end-0 p-8 m-3" id="tvapp2Toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="10000">
             <div class="toast-body">
                 <div class="d-flex gap-4">
                     <span><i class="fa-solid fa-circle-check fa-lg icon-success"></i></span>
@@ -257,9 +268,9 @@
                                         </span></div>";
 
                     document.getElementById( 'ntfy-localhost' ).innerHTML = msg;
-                    document.getElementById( 'ntfy-localhost' ).style.display = 'block';
+                    document.getElementById( 'ntfy-localhost' ).classList.remove('d-none');
                 } else {
-                    document.getElementById( 'ntfy-localhost' ).style.display = 'none';
+                    document.getElementById( 'ntfy-localhost' ).classList.add('d-none');
                 }
             });
 
@@ -281,7 +292,7 @@
                                     </span></div>";
 
                 document.getElementById( 'ntfy-firewall' ).innerHTML = msg;
-                document.getElementById( 'ntfy-firewall' ).style.display = 'block';
+                document.getElementById( 'ntfy-firewall' ).classList.remove('d-none');
             });
 
             /*
@@ -298,7 +309,7 @@
                                     </span></div>";
 
                 document.getElementById( 'ntfy-restart' ).innerHTML = msg;
-                document.getElementById( 'ntfy-restart' ).style.display = 'none';
+                document.getElementById( 'ntfy-restart' ).classList.add('d-none');
             });
 
             /*
@@ -356,9 +367,7 @@
 
                             elementsArray.forEach(element =>
                             {
-                                element.style.transition = '1s';
-                                element.style.opacity = '0';
-                                element.style.visibility = 'hidden';
+                                element.classList.add('fade-out-hidden');
                             });
                         }
 
@@ -379,7 +388,7 @@
                     timerDelayMS = parseInt(timerHealthRun);
                     timerStartMS = Date.now();
 
-                    setTimeout(function()
+                    globalThis["setTimeout"](function()
                     {
                         runHealthCheck();
                     }, parseInt(timerHealthRun));
@@ -429,7 +438,7 @@
                     }
                 }).always(function()
                 {
-                    setTimeout(function()
+                    globalThis["setTimeout"](function()
                     {
                         runUptime();
                     }, parseInt(timerUptime));
@@ -454,12 +463,12 @@
                     {
                         const dimmer = document.createElement('div');
                         dimmer.setAttribute('id', 'dimmer');
-                        dimmer.style.visibility = 'visible';
+                        dimmer.classList.remove('invisible');
                         dimmer.classList.add('dimmer-in');
                         document.getElementsByTagName('body')[0].appendChild(dimmer);
-                        document.getElementById('ntfy-firewall').style.display = 'none';
-                        document.getElementById('ntfy-localhost').style.display = 'none';
-                        document.getElementById('ntfy-restart').style.display = 'none';
+                        document.getElementById('ntfy-firewall').classList.add('d-none');
+                        document.getElementById('ntfy-localhost').classList.add('d-none');
+                        document.getElementById('ntfy-restart').classList.add('d-none');
 
                         const iconResync = document.getElementsByClassName('fa-rotate');
                         iconResync[0].classList.remove('restart');
@@ -470,8 +479,8 @@
                         $('#modalTvapp2').modal('show');
 
                         const modalBtnPrimary = document.querySelector('#btn-primary');
-                        modalBtnPrimary.style.display = 'none';
-                        modalBtnPrimary.style.visibility= 'hidden';
+                        modalBtnPrimary.classList.add('d-none');
+                        modalBtnPrimary.classList.add('invisible');
 
                     },
                     success: function( data )
@@ -481,15 +490,15 @@
                             On successful restart, wait 1 second, remove dimmer, reload page in 5 seconds
                         */
 
-                        setTimeout( () =>
+                        globalThis["setTimeout"]( () =>
                         {
-                            document.getElementById('ntfy-restart').style.display = 'block'
+                            document.getElementById('ntfy-restart').classList.remove('d-none', 'fade-out-hidden')
                             const dimmer = document.getElementById('dimmer');
                             dimmer.classList.remove('dimmer-in');
                             dimmer.classList.add('dimmer-out');
                             dimmer.remove();
 
-                            setTimeout( function()
+                            globalThis["setTimeout"]( function()
                             {
                                 const iconResync = document.getElementsByClassName('fa-rotate');        // resync favicon
                                 iconResync[0].classList.remove('spin');                                 // stop spinning
@@ -538,22 +547,22 @@
                     });
 
                     const Heart = document.getElementsByClassName('fa-heart');
-                    Heart[0].style.color = '#FFF';
+                    Heart[0].classList.add('heart-white');
 
-                    setTimeout( function()
+                    globalThis["setTimeout"]( function()
                     {
                         const Heart = document.getElementsByClassName('fa-heart');
-                        Heart[0].style.color = '#FFF';
+                        Heart[0].classList.add('heart-white');
 
-                        setTimeout( function()
+                        globalThis["setTimeout"]( function()
                         {
-                            Heart[0].style.color = '#FF6593';
+                            Heart[0].classList.remove('heart-white');
                         }, timerRemainsLS.getUTCMilliseconds() + 100 );
 
                     }, timerRemainsLS.getUTCMilliseconds() + 500 );
 
 
-                    setTimeout( function()
+                    globalThis["setTimeout"]( function()
                     {
                         updateTooltipCountdown();
                     }, timerRemainsLS.getUTCMilliseconds() + 500 );
@@ -566,8 +575,8 @@
                 Action > Healthcheck > Initialize
             */
 
-            setTimeout( function() { runHealthCheck(); }, timerDelayMS );
-            setTimeout( function() { runUptime(); }, 1000 );
+            globalThis["setTimeout"]( function() { runHealthCheck(); }, timerDelayMS );
+            globalThis["setTimeout"]( function() { runUptime(); }, 1000 );
 
             /*
                 Action > Tooltip Resync Timers
