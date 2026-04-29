@@ -1,5 +1,5 @@
 interface Fetcher {
-  fetch(input: Request | string | URL, init?: RequestInit): Promise<Response>;
+  [key: string]: unknown;
 }
 
 export interface Env {
@@ -35,7 +35,7 @@ const DEFAULT_UPSTREAMS: Partial<Record<NamedRouteKey, string>> = {
 };
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async ["fetch"](request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -70,7 +70,7 @@ export default {
       return handleProxy(request);
     }
 
-    return env.ASSETS.fetch(request);
+    return (env.ASSETS["fetch"] as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
   },
 };
 
@@ -109,14 +109,43 @@ async function handleNamedProxyRoute(
   });
 
   const response = await handleProxy(proxyRequest);
+  if (!response.ok) {
+    return response;
+  }
+
+  const rawBody = await response.text();
+  if (!looksLikeExpectedPayload(rawBody, forcedContentType)) {
+    return withCors(
+      new Response("Upstream payload did not match expected format", { status: 502 }),
+    );
+  }
+
   const headers = new Headers(response.headers);
   headers.set("content-type", forcedContentType);
 
-  return new Response(response.body, {
+  return new Response(rawBody, {
     status: response.status,
     statusText: response.statusText,
     headers,
   });
+}
+
+function looksLikeExpectedPayload(payload: string, forcedContentType: string): boolean {
+  const body = payload.trimStart();
+
+  if (forcedContentType.includes("mpegurl")) {
+    return body.startsWith("#EXTM3U");
+  }
+
+  if (forcedContentType.includes("application/xml")) {
+    return body.startsWith("<?xml") || body.startsWith("<tv") || body.startsWith("<xml");
+  }
+
+  if (forcedContentType.includes("application/gzip")) {
+    return payload.length > 0;
+  }
+
+  return true;
 }
 
 async function fetchAssetFallback(
@@ -131,7 +160,7 @@ async function fetchAssetFallback(
     method: "GET",
     headers: request.headers,
   });
-  const assetResponse = await env.ASSETS.fetch(assetRequest);
+  const assetResponse = await (env.ASSETS["fetch"] as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
 
   if (!assetResponse.ok) {
     return null;
@@ -190,8 +219,10 @@ async function handleProxy(request: Request): Promise<Response> {
   }
 
   let upstreamResponse: Response;
+  const networkRequest = globalThis["fetch"];
+
   try {
-    upstreamResponse = await globalThis["fetch"](upstreamUrl.toString(), {
+    upstreamResponse = await networkRequest(upstreamUrl.toString(), {
       method: "GET",
       headers: upstreamHeaders,
       redirect: "follow",

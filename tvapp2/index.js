@@ -174,8 +174,26 @@ const subdomainRestart = [ 'api/restart', 'api/sync', 'api/resync' ];
 
 const fileIpGateway = '/var/run/s6/container_environment/IP_GATEWAY';
 const fileIpContainer = '/var/run/s6/container_environment/IP_CONTAINER';
-const envIpGateway = fs.existsSync( fileIpGateway ) ? fs.readFileSync( fileIpGateway, 'utf8' ) : `0.0.0.0`;
-const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileIpContainer, 'utf8' ) : `0.0.0.0`;
+
+function detectPrimaryIPv4()
+{
+    const interfaces = os.networkInterfaces();
+    for ( const entries of Object.values( interfaces ) )
+    {
+        if ( !entries ) continue;
+        for ( const entry of entries )
+        {
+            if ( entry && entry.family === 'IPv4' && entry.internal === false )
+                return entry.address;
+        }
+    }
+
+    return '127.0.0.1';
+}
+
+const fallbackHostIp = detectPrimaryIPv4();
+const envIpGateway = fs.existsSync( fileIpGateway ) ? fs.readFileSync( fileIpGateway, 'utf8' ).trim() : fallbackHostIp;
+const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileIpContainer, 'utf8' ).trim() : fallbackHostIp;
 
 /*
     Hosts

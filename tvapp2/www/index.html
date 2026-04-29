@@ -219,9 +219,10 @@
             })
 
             const urlBase = window.location.origin;
-            const urlM3U = urlBase + '/playlist';
-            const urlXML = urlBase + '/epg';
-            const urlGZP = urlBase + '/gzip';
+            const appBasePath = window.location.pathname.replace(/[^/]*$/, '');
+            const urlM3U = new URL(`${ appBasePath }playlist`, window.location.origin).href;
+            const urlXML = new URL(`${ appBasePath }epg`, window.location.origin).href;
+            const urlGZP = new URL(`${ appBasePath }gzip`, window.location.origin).href;
 
             document.getElementById('m3u-name').textContent = '<%= fileM3U %>';
             document.getElementById('m3u-name').href = urlM3U;
@@ -407,7 +408,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'healthcheck',
@@ -448,7 +449,7 @@
                         toastElm.classList.add(toastClass);
 
                         $('.toast #toast-title').html(`Could not connect to health check api`);
-                        $('.toast #toast-message').html(`Failed to communicate with health check api. Try restarting the docker container to restore connection.`);
+                        $('.toast #toast-message').html(`Failed to communicate with health check api. Try restarting TVApp2 to restore connection.`);
                         $('#tvapp2Toast').toast('show');
 
                     }
@@ -474,7 +475,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'uptime',
@@ -502,7 +503,7 @@
                         toastElm.classList.add(toastClass);
 
                         $('.toast #toast-title').html(`Could not get uptime from api`);
-                        $('.toast #toast-message').html(`Failed to communicate with the api. Try restarting the docker container to restore connection.`);
+                        $('.toast #toast-message').html(`Failed to communicate with the api. Try restarting TVApp2 to restore connection.`);
                         $('#tvapp2Toast').toast('show');
                     }
                 }).always(function()
@@ -543,7 +544,7 @@
                         iconResync[0].classList.remove('restart');
                         iconResync[0].classList.add('spin');
 
-                        $('.modal-content .modal-body').html('<small>The M3U and EPG data will now be re-downloaded and synced with your TVApp2 container. Afterward, this page will be refreshed automatically.</small><br /><br /><small>Please wait...</small>')
+                        $('.modal-content .modal-body').html('<small>The M3U and EPG data will now be re-downloaded and synced with your TVApp2 instance. Afterward, this page will be refreshed automatically.</small><br /><br /><small>Please wait...</small>')
                         $('.modal-content .modal-title').html('Resyncing Data')
                         $('#modalTvapp2').modal('show');
 
