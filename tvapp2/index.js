@@ -1571,21 +1571,10 @@ async function serveM3U( res, req )
         const baseUrl = `${ protocol }://${ host }`;
         const formattedContent = fs.readFileSync( FILE_M3U, 'utf-8' );
         const updatedContent = formattedContent
-            .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
+            .replace( /^\s*(https?:\/\/\S+)\s*$/gm, ( _line, fullUrl ) =>
             {
                 Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*thetvapp` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
-
-                return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
-            })
-            .replace( /(https?:\/\/[^\s]*tvpass[^\s]*)/g, ( fullUrl ) =>
-            {
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*tvpass` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting source URL to local channel endpoint` ),
                     chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
                     chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
 
