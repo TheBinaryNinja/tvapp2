@@ -339,7 +339,7 @@
 
                 $.ajax(
                 {
-                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
+                    url: new URL('/api/health', window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'healthcheck',
@@ -406,7 +406,7 @@
 
                 $.ajax(
                 {
-                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
+                    url: new URL('/api/health', window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'uptime',
@@ -454,7 +454,7 @@
             {
                 $.ajax(
                 {
-                    url: 'api/restart',
+                    url: new URL('/api/restart', window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'sync',
