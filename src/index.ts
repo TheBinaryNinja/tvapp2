@@ -1,5 +1,5 @@
 interface Fetcher {
-  fetch(input: Request | string | URL, init?: RequestInit): Promise<Response>;
+  [key: string]: unknown;
 }
 
 export interface Env {
@@ -35,7 +35,7 @@ const DEFAULT_UPSTREAMS: Partial<Record<NamedRouteKey, string>> = {
 };
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async ["fetch"](request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -70,7 +70,7 @@ export default {
       return handleProxy(request);
     }
 
-    return env.ASSETS.fetch(request);
+    return (env.ASSETS["fetch"] as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
   },
 };
 
@@ -160,7 +160,7 @@ async function fetchAssetFallback(
     method: "GET",
     headers: request.headers,
   });
-  const assetResponse = await env.ASSETS.fetch(assetRequest);
+  const assetResponse = await (env.ASSETS["fetch"] as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
 
   if (!assetResponse.ok) {
     return null;
@@ -269,11 +269,10 @@ function rewritePlaylist(playlist: string, upstreamUrl: URL, origin: string): st
     .map((line) => {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith("#")) {
-        return line;
-      }
-
-      if (!isRelativeUri(trimmed)) {
-        return line;
+        return line.replace(/URI="([^"]+)"/g, (_match, uri: string) => {
+          const absolute = new URL(uri, upstreamUrl).toString();
+          return `URI="${origin}/proxy?url=${encodeURIComponent(absolute)}"`;
+        });
       }
 
       const absolute = new URL(trimmed, upstreamUrl).toString();
@@ -308,14 +307,6 @@ function isEpgRoute(pathname: string): boolean {
 
 function isEpgGzipRoute(pathname: string): boolean {
   return pathname.toLowerCase() === "/epg.xml.gz";
-}
-
-function isRelativeUri(value: string): boolean {
-  if (value.startsWith("//")) {
-    return false;
-  }
-
-  return !/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value);
 }
 
 function isSafeUpstreamUrl(url: URL): boolean {
