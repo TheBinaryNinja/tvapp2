@@ -109,14 +109,43 @@ async function handleNamedProxyRoute(
   });
 
   const response = await handleProxy(proxyRequest);
+  if (!response.ok) {
+    return response;
+  }
+
+  const rawBody = await response.text();
+  if (!looksLikeExpectedPayload(rawBody, forcedContentType)) {
+    return withCors(
+      new Response("Upstream payload did not match expected format", { status: 502 }),
+    );
+  }
+
   const headers = new Headers(response.headers);
   headers.set("content-type", forcedContentType);
 
-  return new Response(response.body, {
+  return new Response(rawBody, {
     status: response.status,
     statusText: response.statusText,
     headers,
   });
+}
+
+function looksLikeExpectedPayload(payload: string, forcedContentType: string): boolean {
+  const body = payload.trimStart();
+
+  if (forcedContentType.includes("mpegurl")) {
+    return body.startsWith("#EXTM3U");
+  }
+
+  if (forcedContentType.includes("application/xml")) {
+    return body.startsWith("<?xml") || body.startsWith("<tv") || body.startsWith("<xml");
+  }
+
+  if (forcedContentType.includes("application/gzip")) {
+    return payload.length > 0;
+  }
+
+  return true;
 }
 
 async function fetchAssetFallback(
