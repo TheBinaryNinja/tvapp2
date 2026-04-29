@@ -1303,7 +1303,7 @@ async function serveM3UPlaylist( req, res )
             res.writeHead( 200,
             {
                 'Content-Type': 'application/vnd.apple.mpegurl',
-                'Content-Disposition': 'inline; filename="' + envFileM3U
+                'Content-Disposition': `inline; filename="${ envFileM3U }"`
             });
 
             Log.debug( `plst`, chalk.yellow( `[response]` ), chalk.white( `⚙️` ),
@@ -1375,7 +1375,7 @@ async function serveM3UPlaylist( req, res )
 
         res.writeHead( 200, {
             'Content-Type': 'application/vnd.apple.mpegurl',
-            'Content-Disposition': 'inline; filename="' + envFileM3U
+            'Content-Disposition': `inline; filename="${ envFileM3U }"`
         });
 
         Log.ok( `plst`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
@@ -1571,21 +1571,10 @@ async function serveM3U( res, req )
         const baseUrl = `${ protocol }://${ host }`;
         const formattedContent = fs.readFileSync( FILE_M3U, 'utf-8' );
         const updatedContent = formattedContent
-            .replace( /(https?:\/\/[^\s]*thetvapp[^\s]*)/g, ( fullUrl ) =>
+            .replace( /^\s*(https?:\/\/\S+)\s*$/gm, ( _line, fullUrl ) =>
             {
                 Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*thetvapp` ),
-                    chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
-                    chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
-
-                return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
-            })
-            .replace( /(https?:\/\/[^\s]*tvpass[^\s]*)/g, ( fullUrl ) =>
-            {
-                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
-                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting url for keyword` ),
-                    chalk.blueBright( `<keyword>` ), chalk.gray( `*tvpass` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting source URL to local channel endpoint` ),
                     chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
                     chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
 
@@ -1607,7 +1596,7 @@ async function serveM3U( res, req )
 
             res.writeHead( 200, {
                 'Content-Type': 'application/x-mpegURL',
-                'Content-Disposition': 'inline; filename="' + envFileM3U
+                'Content-Disposition': `inline; filename="${ envFileM3U }"`
             });
 
         Log.ok( `.m3u`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
@@ -1674,7 +1663,7 @@ async function serveXML( res, req )
 
         res.writeHead( 200, {
             'Content-Type': 'application/xml',
-            'Content-Disposition': 'inline; filename="' + envFileXML
+            'Content-Disposition': `inline; filename="${ envFileXML }"`
         });
 
         Log.ok( `.xml`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
@@ -1741,7 +1730,7 @@ async function serveGZP( res, req )
 
         res.writeHead( 200, {
             'Content-Type': 'application/gzip',
-            'Content-Disposition': 'inline; filename="' + envFileGZP
+            'Content-Disposition': `inline; filename="${ envFileGZP }"`
         });
 
         Log.ok( `.gzp`, chalk.yellow( `[response]` ), chalk.white( `✅` ),
