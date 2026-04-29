@@ -219,9 +219,9 @@
             })
 
             const urlBase = window.location.origin;
-            const urlM3U = urlBase + '/playlist';
-            const urlXML = urlBase + '/epg';
-            const urlGZP = urlBase + '/gzip';
+            const urlM3U = urlBase + '/playlist.m3u8';
+            const urlXML = urlBase + '/epg.xml';
+            const urlGZP = urlBase + '/gzip.xml.gz';
 
             document.getElementById('m3u-name').textContent = '<%= fileM3U %>';
             document.getElementById('m3u-name').href = urlM3U;
@@ -407,7 +407,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: window.location.origin + '/api/health',
                     type: 'GET',
                     data: {
                         query: 'healthcheck',
@@ -474,7 +474,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: window.location.origin + '/api/health',
                     type: 'GET',
                     data: {
                         query: 'uptime',
