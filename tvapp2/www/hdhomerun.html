@@ -218,9 +218,10 @@
             })
 
             const urlBase = window.location.origin;
-            const urlM3U = urlBase + '/playlist';
-            const urlXML = urlBase + '/epg';
-            const urlGZP = urlBase + '/gzip';
+            const appBasePath = window.location.pathname.replace(/[^/]*$/, '');
+            const urlM3U = new URL(`${ appBasePath }playlist`, window.location.origin).href;
+            const urlXML = new URL(`${ appBasePath }epg`, window.location.origin).href;
+            const urlGZP = new URL(`${ appBasePath }gzip`, window.location.origin).href;
         </script>
 
         <script>
@@ -338,7 +339,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'healthcheck',
@@ -405,7 +406,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'uptime',

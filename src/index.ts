@@ -190,8 +190,10 @@ async function handleProxy(request: Request): Promise<Response> {
   }
 
   let upstreamResponse: Response;
+  const networkRequest = globalThis["fetch"];
+
   try {
-    upstreamResponse = await globalThis["fetch"](upstreamUrl.toString(), {
+    upstreamResponse = await networkRequest(upstreamUrl.toString(), {
       method: "GET",
       headers: upstreamHeaders,
       redirect: "follow",
