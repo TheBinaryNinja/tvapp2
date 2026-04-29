@@ -269,11 +269,10 @@ function rewritePlaylist(playlist: string, upstreamUrl: URL, origin: string): st
     .map((line) => {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith("#")) {
-        return line;
-      }
-
-      if (!isRelativeUri(trimmed)) {
-        return line;
+        return line.replace(/URI="([^"]+)"/g, (_match, uri: string) => {
+          const absolute = new URL(uri, upstreamUrl).toString();
+          return `URI="${origin}/proxy?url=${encodeURIComponent(absolute)}"`;
+        });
       }
 
       const absolute = new URL(trimmed, upstreamUrl).toString();
@@ -308,14 +307,6 @@ function isEpgRoute(pathname: string): boolean {
 
 function isEpgGzipRoute(pathname: string): boolean {
   return pathname.toLowerCase() === "/epg.xml.gz";
-}
-
-function isRelativeUri(value: string): boolean {
-  if (value.startsWith("//")) {
-    return false;
-  }
-
-  return !/^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value);
 }
 
 function isSafeUpstreamUrl(url: URL): boolean {
