@@ -1578,8 +1578,16 @@ async function serveM3U( res, req )
                     chalk.blueBright( `<from>` ), chalk.gray( `${ fullUrl }` ),
                     chalk.blueBright( `<to>` ), chalk.gray( `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }` ) );
 
-                return `${ baseUrl }/channel?url=${ encodeURIComponent( fullUrl ) }`;
-            });
+                Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
+                    chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting source URL to stream URL` ),
+                    chalk.blueBright( `<from>` ), chalk.gray( `${ trimmedLine }` ),
+                    chalk.blueBright( `<to>` ), chalk.gray( `${ rewrittenUrl }` ) );
+
+                lines[i] = rewrittenUrl;
+            }
+        }
+
+        const updatedContent = lines.join( '\n' );
             /*
             .replace( /(https?:\/\/fl\d+\.moveonjoy\.com[^\s]*)/g, ( fullUrl ) =>
             {
