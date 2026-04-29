@@ -191,7 +191,7 @@ async function handleProxy(request: Request): Promise<Response> {
 
   let upstreamResponse: Response;
   try {
-    upstreamResponse = await fetch(upstreamUrl.toString(), {
+    upstreamResponse = await globalThis["fetch"](upstreamUrl.toString(), {
       method: "GET",
       headers: upstreamHeaders,
       redirect: "follow",
