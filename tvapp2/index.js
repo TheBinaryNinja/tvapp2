@@ -1571,7 +1571,7 @@ async function serveM3U( res, req )
         const baseUrl = `${ protocol }://${ host }`;
         const formattedContent = fs.readFileSync( FILE_M3U, 'utf-8' );
         const updatedContent = formattedContent
-            .replace( /^\s*(https?:\/\/\S+)\s*$/gm, ( _line, fullUrl ) =>
+            .replace( /^(https?:\/\/\S+)$/gm, ( fullUrl ) =>
             {
                 Log.debug( `.m3u`, chalk.yellow( `[rewriter]` ), chalk.white( `⚙️` ),
                     chalk.blueBright( `<msg>` ), chalk.gray( `Rewriting source URL to local channel endpoint` ),
