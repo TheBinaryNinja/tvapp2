@@ -219,8 +219,7 @@
             })
 
             const urlBase = window.location.origin;
-            const pathname = window.location.pathname;
-            const appBasePath = pathname.slice(0, pathname.lastIndexOf('/') + 1);
+            const appBasePath = window.location.pathname.replace(/[^/]*$/, '');
             const urlM3U = new URL(`${ appBasePath }playlist`, window.location.origin).href;
             const urlXML = new URL(`${ appBasePath }epg`, window.location.origin).href;
             const urlGZP = new URL(`${ appBasePath }gzip`, window.location.origin).href;
