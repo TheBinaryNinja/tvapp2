@@ -49,7 +49,7 @@
                         <div class="introduction-body">
                             <div class="desc">
                                 <div class="about about-small"><code>HDHomeRun</code> is a network-attached digital television tuner box, produced by the company SiliconDust USA, Inc. Self-hosted multimedia applications such as Jellyfin allow for you to add IPTV channels either using a <code>M3U8 tuner</code>, or also with the option of specifying a <code>HDHomeRun</code> tuner.</div>
-                                <div class="about about-small">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner settings are provided below:</div>
+                                <div class="about about-small">The TVApp2 app allows you to host your own HDHomeRun tuner, and then utilize this tuner within apps like Jellyfin in order to stream IPTV using the integrated server. Your HDHomeRun tuner details are provided below:</div>
                             </div>
                         </div>
                     </div>
@@ -288,7 +288,7 @@
                                         <a href='https://youtu.be/zOZWlTplrcA?si=nGXrHKU4sAQsy18e&t=18 target='_blank'>Windows</a> \
                                         or \
                                         <a href='https://youtu.be/7c_V_3nWWbA?si=Hkd_II9myn-AkNnS&t=12' target='_blank'>Linux</a> \
-                                        OS firewall settings. This action enables devices such as Firestick or Android to connect \
+                                        OS firewall configuration. This action enables devices such as Firestick or Android to connect \
                                         to the server and request the playlist through the proxy. \
                                     </span></div>";
 
@@ -339,7 +339,7 @@
 
                 $.ajax(
                 {
-                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
+                    url: new URL('/api/health', window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'healthcheck',
@@ -406,7 +406,7 @@
 
                 $.ajax(
                 {
-                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
+                    url: new URL('/api/health', window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'uptime',
@@ -454,7 +454,7 @@
             {
                 $.ajax(
                 {
-                    url: 'api/restart',
+                    url: new URL('/api/restart', window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'sync',
