@@ -192,8 +192,8 @@ function detectPrimaryIPv4()
 }
 
 const fallbackHostIp = detectPrimaryIPv4();
-const envIpGateway = fs.existsSync( fileIpGateway ) ? fs.readFileSync( fileIpGateway, 'utf8' ).trim() : fallbackHostIp;
-const envIpContainer = fs.existsSync( fileIpContainer ) ? fs.readFileSync( fileIpContainer, 'utf8' ).trim() : fallbackHostIp;
+const envIpGateway = fs.existsSync( fileIpGateway ) ? (fs.readFileSync( fileIpGateway, 'utf8' ).trim() || fallbackHostIp) : fallbackHostIp;
+const envIpContainer = fs.existsSync( fileIpContainer ) ? (fs.readFileSync( fileIpContainer, 'utf8' ).trim() || fallbackHostIp) : fallbackHostIp;
 
 /*
     Hosts

@@ -113,8 +113,10 @@ async function handleNamedProxyRoute(
     return response;
   }
 
-  const rawBody = await response.text();
-  if (!looksLikeExpectedPayload(rawBody, forcedContentType)) {
+  const rawBody = await response.arrayBuffer();
+  const bodyBytes = new Uint8Array(rawBody);
+
+  if (!looksLikeExpectedPayload(bodyBytes, forcedContentType, request.method)) {
     return withCors(
       new Response("Upstream payload did not match expected format", { status: 502 }),
     );
@@ -123,15 +125,24 @@ async function handleNamedProxyRoute(
   const headers = new Headers(response.headers);
   headers.set("content-type", forcedContentType);
 
-  return new Response(rawBody, {
+  return new Response(bodyBytes, {
     status: response.status,
     statusText: response.statusText,
     headers,
   });
 }
 
-function looksLikeExpectedPayload(payload: string, forcedContentType: string): boolean {
-  const body = payload.trimStart();
+function looksLikeExpectedPayload(payload: Uint8Array, forcedContentType: string, method?: string): boolean {
+  if (method === "HEAD") {
+    return true;
+  }
+
+  if (forcedContentType.includes("application/gzip")) {
+    return payload.length > 0;
+  }
+
+  const decoder = new TextDecoder("utf-8");
+  const body = decoder.decode(payload).trimStart();
 
   if (forcedContentType.includes("mpegurl")) {
     return body.startsWith("#EXTM3U");
@@ -139,10 +150,6 @@ function looksLikeExpectedPayload(payload: string, forcedContentType: string): b
 
   if (forcedContentType.includes("application/xml")) {
     return body.startsWith("<?xml") || body.startsWith("<tv") || body.startsWith("<xml");
-  }
-
-  if (forcedContentType.includes("application/gzip")) {
-    return payload.length > 0;
   }
 
   return true;
