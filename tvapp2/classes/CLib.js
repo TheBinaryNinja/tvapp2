@@ -154,8 +154,8 @@ class CLib
     {
         const hex = atob( base64Str );
         const chars = hex.match( /.{1,2}/g ); // every 2 hex chars = 1 byte
-
-        return chars.map( ( byte ) => String.fromCharCode( parseInt( byte, 16 ) ) ).join( '' );
+        const bytes = new Uint8Array( chars.map( ( h ) => parseInt( h, 16 ) ) );
+        return new TextDecoder().decode( bytes );
     }
 }
 
