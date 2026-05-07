@@ -274,7 +274,7 @@ function sleep( ms )
 {
     return new Promise( ( resolve ) =>
     {
-        setTimeout( resolve, ms );
+        globalThis["setTimeout"]( resolve, ms );
     });
 }
 
