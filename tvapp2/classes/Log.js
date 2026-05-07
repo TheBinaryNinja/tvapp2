@@ -52,7 +52,16 @@ chalk.level = 3;
 */
 
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
-const { name } = JSON.parse( fs.readFileSync( './package.json' ) );
+let packageName = 'app';
+try
+{
+    const pkg = JSON.parse( fs.readFileSync( './package.json', 'utf8' ) );
+    packageName = pkg.name || 'app';
+}
+catch ( e )
+{
+    // ignore - use default name
+}
 
 /*
     Class > Log
@@ -69,45 +78,43 @@ class Log
     static verbose( ...msg )
     {
         if ( LOG_LEVEL >= 6 )
-            console.debug( chalk.white.bgBlack.blackBright.bold( ` ${ name } ` ), chalk.white( `⚙️` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
+            console.debug( chalk.white.bgBlack.blackBright.bold( ` ${ packageName } ` ), chalk.white( `⚙️` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
     static debug( ...msg )
     {
-        if ( LOG_LEVEL >= 7 )
-            console.trace( chalk.white.bgMagenta.bold( ` ${ name } ` ), chalk.white( `⚙️` ), this.now(), chalk.magentaBright( msg.join( ' ' ) ) );
-        else if ( LOG_LEVEL >= 5 )
-            console.debug( chalk.white.bgGray.bold( ` ${ name } ` ), chalk.white( `⚙️` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
+        if ( LOG_LEVEL >= 5 )
+            console.debug( chalk.white.bgGray.bold( ` ${ packageName } ` ), chalk.white( `⚙️` ), this.now(), chalk.gray( msg.join( ' ' ) ) );
     }
 
     static info( ...msg )
     {
         if ( LOG_LEVEL >= 4 )
-            console.info( chalk.white.bgBlueBright.bold( ` ${ name } ` ), chalk.white( `ℹ️` ), this.now(), chalk.blueBright( msg.join( ' ' ) ) );
+            console.info( chalk.white.bgBlueBright.bold( ` ${ packageName } ` ), chalk.white( `ℹ️` ), this.now(), chalk.blueBright( msg.join( ' ' ) ) );
     }
 
     static ok( ...msg )
     {
         if ( LOG_LEVEL >= 4 )
-            console.log( chalk.white.bgGreen.bold( ` ${ name } ` ), chalk.white( `✅` ), this.now(), chalk.greenBright( msg.join( ' ' ) ) );
+            console.log( chalk.white.bgGreen.bold( ` ${ packageName } ` ), chalk.white( `✅` ), this.now(), chalk.greenBright( msg.join( ' ' ) ) );
     }
 
     static notice( ...msg )
     {
         if ( LOG_LEVEL >= 3 )
-            console.log( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `📌` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
+            console.log( chalk.white.bgYellow.bold( ` ${ packageName } ` ), chalk.white( `📌` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
     }
 
     static warn( ...msg )
     {
         if ( LOG_LEVEL >= 2 )
-            console.warn( chalk.white.bgYellow.bold( ` ${ name } ` ), chalk.white( `⚠️` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
+            console.warn( chalk.white.bgYellow.bold( ` ${ packageName } ` ), chalk.white( `⚠️` ), this.now(), chalk.yellowBright( msg.join( ' ' ) ) );
     }
 
     static error( ...msg )
     {
         if ( LOG_LEVEL >= 1 )
-            console.error( chalk.white.bgRedBright.bold( ` ${ name } ` ), chalk.white( `❌` ), this.now(), chalk.redBright( msg.join( ' ' ) ) );
+            console.error( chalk.white.bgRedBright.bold( ` ${ packageName } ` ), chalk.white( `❌` ), this.now(), chalk.redBright( msg.join( ' ' ) ) );
     }
 }
 
