@@ -20,7 +20,7 @@
         - node root.js generate        generates uuid / guid and shows all env vars in console
         - node root.js uuid            returns root uuid
         - node root.js guid            returns root guid
-        - node root.js versiom         returns version of root
+        - node root.js version         returns version of root
 
     can be called with the following root commands:
         - npm run root
