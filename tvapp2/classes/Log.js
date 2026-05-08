@@ -28,7 +28,8 @@
         1                   Error
 */
 
-import fs from 'fs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 import chalk from 'chalk';
 
 /*
@@ -55,7 +56,7 @@ const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 let packageName = 'app';
 try
 {
-    const pkg = JSON.parse( fs.readFileSync( './package.json', 'utf8' ) );
+    const pkg = JSON.parse( require('fs').readFileSync( './package.json', 'utf8' ) );
     packageName = pkg.name || 'app';
 }
 catch ( e )

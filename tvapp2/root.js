@@ -31,23 +31,24 @@
         - npm run env-version
 */
 
-import fs from 'fs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 import { v5 as uuidv5 } from 'uuid';
 
 /*
 *    declarations › package.json
 */
 
-const { version, repository } = JSON.parse(fs.readFileSync('package.json'))
-const args = process.argv.slice(2, process.argv.length)
-const action = args[0]
+const { version, repository } = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
+const args = process.argv.slice(2, process.argv.length);
+const action = args[0];
 // const a       = args[ 1 ];
 // const b       = args[ 2 ];
 
 if (action === 'guid') {
     console.log(`${process.env.GUID}`)
 } else if (action === 'setup') {
-    fs.writeFileSync('.env', '', (err) => {
+    require('fs').writeFileSync('.env', '', (err) => {
         if (err) {
             console.error(err)
         } else {
@@ -68,7 +69,7 @@ UUID=${buildUuid}
     console.log(buildGuid)
     console.log(buildUuid)
 
-    fs.writeFileSync('.env', ids, (err) => {
+    require('fs').writeFileSync('.env', ids, (err) => {
         if (err) {
             console.error(`Could not write env vars: ${err}`)
         } else {
