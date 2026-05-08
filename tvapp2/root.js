@@ -40,7 +40,7 @@ import { v5 as uuidv5 } from 'uuid';
 */
 
 const { version, repository } = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
-const args = process.argv.slice(2, process.argv.length);
+const args = typeof process !== 'undefined' && process.argv ? process.argv.slice(2, process.argv.length) : [];
 const action = args[0];
 // const a       = args[ 1 ];
 // const b       = args[ 2 ];
@@ -48,13 +48,12 @@ const action = args[0];
 if (action === 'guid') {
     console.log(`${process.env.GUID}`)
 } else if (action === 'setup') {
-    require('fs').writeFileSync('.env', '', (err) => {
-        if (err) {
-            console.error(err)
-        } else {
-            console.log(`Wrote to .env successfully`)
-        }
-    })
+    try {
+        require('fs').writeFileSync('.env', '')
+        console.log(`Wrote to .env successfully`)
+    } catch (err) {
+        console.error('Error writing .env:', err)
+    }
 } else if (action === 'generate') {
     const buildGuid = uuidv5(`${repository.url}`, uuidv5.URL)
     const buildUuid = uuidv5(version, buildGuid)
@@ -69,17 +68,18 @@ UUID=${buildUuid}
     console.log(buildGuid)
     console.log(buildUuid)
 
-    require('fs').writeFileSync('.env', ids, (err) => {
-        if (err) {
-            console.error(`Could not write env vars: ${err}`)
-        } else {
-            console.log(`Wrote env vars to .env`)
-        }
-    })
+    try {
+        require('fs').writeFileSync('.env', ids)
+        console.log(`Wrote env vars to .env`)
+    } catch (err) {
+        console.error('Error writing .env:', err)
+    }
 } else if (action === 'uuid') {
     console.log(`${process.env.UUID}`)
 } else {
     console.log(version)
 }
 
-process.exit(0)
+if (typeof process !== 'undefined' && typeof process.exit === 'function') {
+    process.exit(0)
+}
