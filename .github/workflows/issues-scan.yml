@@ -707,7 +707,11 @@ jobs:
                           "index.js",
                           "gistr.js",
                           "Docs/",
-                          "tests/"
+                          "tests/",
+                          "tvapp2/classes/",
+                          "tvapp2/root.js",
+                          "wrangler.jsonc",
+                          "src/"
                       ];
 
                       for ( const file of files_Array )
