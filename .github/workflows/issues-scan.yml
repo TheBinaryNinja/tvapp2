@@ -711,7 +711,8 @@ jobs:
                           "tvapp2/classes/",
                           "tvapp2/root.js",
                           "wrangler.jsonc",
-                          "src/"
+                          "src/",
+                          ".html"
                       ];
 
                       for ( const file of files_Array )
