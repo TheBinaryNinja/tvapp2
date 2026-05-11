@@ -710,6 +710,7 @@ jobs:
                           "tests/",
                           "tvapp2/classes/",
                           "tvapp2/root.js",
+                          "tvapp2/www/",
                           "wrangler.jsonc",
                           "src/"
                       ];
