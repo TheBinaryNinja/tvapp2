@@ -43,6 +43,7 @@ import { v5 as uuidv5 } from 'uuid';
 const isNode = process?.release?.name === 'node';
 let version = '0.0.0';
 let repository = { url: '' };
+let packageReadError = null;
 
 if ( isNode )
 {
@@ -54,7 +55,7 @@ if ( isNode )
     }
     catch ( e )
     {
-        // ignore - use default values
+        packageReadError = e;
     }
 }
 
@@ -78,12 +79,19 @@ if (action === 'guid') {
         console.error(`'setup' action not available in non-Node.js environment`)
     }
 } else if (action === 'generate') {
+    if ( isNode && packageReadError )
+    {
+        console.error( `Unable to read package.json in Node.js environment: ${ packageReadError.message }` );
+        process.exit( 1 );
+    }
+
     // Fail fast if using placeholder values in non-Node environment
     if ( !isNode && ( repository.url === '' || version === '0.0.0' ) )
     {
         console.error( `'generate' action requires running in Node.js to read package.json for version and repository URL` );
+        process.exit( 1 );
     }
-    else
+
     {
         const buildGuid = uuidv5( `${repository.url}`, uuidv5.URL );
         const buildUuid = uuidv5( version, buildGuid );

@@ -64,7 +64,7 @@ const isCapacitor = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatfo
 const isNode = process?.release?.name === 'node';
 
 // Only attempt to read package.json in Node.js environment (not available in mobile runtimes)
-if ( isNode )
+if ( isNode && !isReactNative && !isCapacitor )
 {
     try
     {
