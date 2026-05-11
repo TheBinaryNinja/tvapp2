@@ -219,7 +219,7 @@ async function handleProxy(request: Request): Promise<Response> {
   }
 
   let upstreamResponse: Response;
-  const networkRequest = globalThis["fetch"];
+  const networkRequest = globalThis.fetch;
 
   try {
     upstreamResponse = await networkRequest(upstreamUrl.toString(), {
