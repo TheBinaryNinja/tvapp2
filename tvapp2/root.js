@@ -40,7 +40,7 @@ import { v5 as uuidv5 } from 'uuid';
 */
 
 // Only use fs in Node.js environment (not available in mobile runtimes)
-const isNode = typeof process !== 'undefined' && process.release?.name === 'node';
+const isNode = process?.release?.name === 'node';
 let version = '0.0.0';
 let repository = { url: '' };
 
@@ -78,26 +78,41 @@ if (action === 'guid') {
         console.error(`'setup' action not available in non-Node.js environment`)
     }
 } else if (action === 'generate') {
-    const buildGuid = uuidv5(`${repository.url}`, uuidv5.URL)
-    const buildUuid = uuidv5(version, buildGuid)
+    // Fail fast if using placeholder values in non-Node environment
+    if ( !isNode && ( repository.url === '' || version === '0.0.0' ) )
+    {
+        console.error( `'generate' action requires running in Node.js to read package.json for version and repository URL` );
+    }
+    else
+    {
+        const buildGuid = uuidv5( `${repository.url}`, uuidv5.URL );
+        const buildUuid = uuidv5( version, buildGuid );
 
-    const ids = `
+        const ids = `
 VERSION=${version}
 GUID=${buildGuid}
 UUID=${buildUuid}
 `
 
-    console.log(version)
-    console.log(buildGuid)
-    console.log(buildUuid)
+        console.log( version );
+        console.log( buildGuid );
+        console.log( buildUuid );
 
-    if ( isNode )
-    {
-        try {
-            require('fs').writeFileSync('.env', ids)
-            console.log(`Wrote env vars to .env`)
-        } catch (err) {
-            console.error('Error writing .env:', err)
+        if ( isNode )
+        {
+            try
+            {
+                require( 'fs' ).writeFileSync( '.env', ids );
+                console.log( `Wrote env vars to .env` );
+            }
+            catch ( err )
+            {
+                console.error( 'Error writing .env:', err );
+            }
+        }
+        else
+        {
+            console.warn( `.env file not written - 'generate' action requires Node.js environment` );
         }
     }
 } else if (action === 'uuid') {

@@ -55,13 +55,21 @@ chalk.level = 3;
 
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 let packageName = 'app';
+// Framework-specific detection for mobile runtimes
+// React Native: navigator.product === 'ReactNative'
+// Capacitor: Capacitor.isNativePlatform() or Capacitor.getPlatform()
+// Fall back to Node.js check via process?.release?.name
+const isReactNative = typeof navigator !== 'undefined' && navigator.product === 'ReactNative';
+const isCapacitor = typeof Capacitor !== 'undefined' && Capacitor.isNativePlatform?.();
+const isNode = process?.release?.name === 'node';
+
 // Only attempt to read package.json in Node.js environment (not available in mobile runtimes)
-if ( typeof process !== 'undefined' && process.release?.name === 'node' )
+if ( isNode )
 {
     try
     {
         const fs = require( 'fs' );
-        const pkg = JSON.parse( fs.readFileSync( './package.json', 'utf8' ) );
+        const pkg = JSON.parse( fs.readFileSync( 'package.json', 'utf8' ) );
         packageName = pkg.name || 'app';
     }
     catch ( e )
