@@ -712,6 +712,8 @@ jobs:
                           "tvapp2/root.js",
                           "tvapp2/www/",
                           "wrangler.jsonc",
+                          "tvapp2/index.js",
+                          "tvapp2/classes/Storage.js",
                           "src/"
                       ];
 
