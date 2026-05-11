@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tvapp",
+  "name": "tvapp2",
   "main": "src/index.ts",
   "compatibility_date": "2026-04-25",
   "assets": {
