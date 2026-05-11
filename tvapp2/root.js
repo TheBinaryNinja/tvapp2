@@ -39,7 +39,25 @@ import { v5 as uuidv5 } from 'uuid';
 *    declarations › package.json
 */
 
-const { version, repository } = JSON.parse(require('fs').readFileSync('package.json', 'utf8'));
+// Only use fs in Node.js environment (not available in mobile runtimes)
+const isNode = typeof process !== 'undefined' && process.release?.name === 'node';
+let version = '0.0.0';
+let repository = { url: '' };
+
+if ( isNode )
+{
+    try
+    {
+        const pkg = JSON.parse( require( 'fs' ).readFileSync( 'package.json', 'utf8' ) );
+        version = pkg.version;
+        repository = pkg.repository || { url: '' };
+    }
+    catch ( e )
+    {
+        // ignore - use default values
+    }
+}
+
 const args = typeof process !== 'undefined' && process.argv ? process.argv.slice(2, process.argv.length) : [];
 const action = args[0];
 // const a       = args[ 1 ];
@@ -48,11 +66,16 @@ const action = args[0];
 if (action === 'guid') {
     console.log(`${process.env.GUID}`)
 } else if (action === 'setup') {
-    try {
-        require('fs').writeFileSync('.env', '')
-        console.log(`Wrote to .env successfully`)
-    } catch (err) {
-        console.error('Error writing .env:', err)
+    if ( isNode )
+    {
+        try {
+            require('fs').writeFileSync('.env', '')
+            console.log(`Wrote to .env successfully`)
+        } catch (err) {
+            console.error('Error writing .env:', err)
+        }
+    } else {
+        console.error(`'setup' action not available in non-Node.js environment`)
     }
 } else if (action === 'generate') {
     const buildGuid = uuidv5(`${repository.url}`, uuidv5.URL)
@@ -68,11 +91,14 @@ UUID=${buildUuid}
     console.log(buildGuid)
     console.log(buildUuid)
 
-    try {
-        require('fs').writeFileSync('.env', ids)
-        console.log(`Wrote env vars to .env`)
-    } catch (err) {
-        console.error('Error writing .env:', err)
+    if ( isNode )
+    {
+        try {
+            require('fs').writeFileSync('.env', ids)
+            console.log(`Wrote env vars to .env`)
+        } catch (err) {
+            console.error('Error writing .env:', err)
+        }
     }
 } else if (action === 'uuid') {
     console.log(`${process.env.UUID}`)

@@ -55,14 +55,19 @@ chalk.level = 3;
 
 const LOG_LEVEL = process.env.LOG_LEVEL || 4;
 let packageName = 'app';
-try
+// Only attempt to read package.json in Node.js environment (not available in mobile runtimes)
+if ( typeof process !== 'undefined' && process.release?.name === 'node' )
 {
-    const pkg = JSON.parse( require( 'fs' ).readFileSync( './package.json', 'utf8' ) );
-    packageName = pkg.name || 'app';
-}
-catch ( e )
-{
-    // ignore - use default name
+    try
+    {
+        const fs = require( 'fs' );
+        const pkg = JSON.parse( fs.readFileSync( './package.json', 'utf8' ) );
+        packageName = pkg.name || 'app';
+    }
+    catch ( e )
+    {
+        // ignore - use default name
+    }
 }
 
 /*
