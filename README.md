@@ -39,6 +39,11 @@
 <br />
 
 - [About](#about)
+  - [Cloudflare Workers Setup](#cloudflare-workers-setup)
+    - [1) Deploy the Worker](#1-deploy-the-worker)
+    - [2) Configure Worker Variables](#2-configure-worker-variables)
+    - [3) Use IPTV-Friendly Endpoints](#3-use-iptv-friendly-endpoints)
+    - [4) Verify Outputs](#4-verify-outputs)
   - [Quick Install](#quick-install)
     - [Registry URLs](#registry-urls)
     - [Environment Variables](#environment-variables)
@@ -108,7 +113,7 @@
 
 ## About
 
-**TVApp2** is a docker image which allows you to download M3U playlist and EPG guide data which can be plugged into your IPTV applications such as Jellyfin, Plex, and Emby. It is a revision of the original app by dtankdempse which is no longer available. This app fetches data for:
+**TVApp2** can run as either a Docker container **or** a Cloudflare Worker (no Docker required). It allows you to download M3U playlist and EPG guide data which can be plugged into your IPTV applications such as Jellyfin, Plex, and Emby. It is a revision of the original app by dtankdempse which is no longer available. This app fetches data for:
 
 - TheTvApp
 - TVPass
@@ -122,6 +127,108 @@ This project contains several repositories which all share the same code; use th
 - [🔀 dockerhub:thebinaryninja/tvapp2](https://hub.docker.com/r/thebinaryninja/tvapp2)
 - [🔀 github:thebinaryninja/tvapp2](https://github.com/thebinaryninja/tvapp2)
 - [🔀 gitea:git.binaryninja.net/binaryninja/tvapp2](https://git.binaryninja.net/binaryninja/tvapp2)
+
+<br />
+<br />
+
+### Cloudflare Workers Setup
+
+The Cloudflare Worker entrypoint is `src/index.ts` and can serve static web assets plus proxy M3U / EPG sources.
+
+#### 1) Deploy the Worker
+
+Use the included `wrangler.jsonc`:
+
+```jsonc
+{
+  "name": "tvapp2",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-25",
+  "assets": {
+    "directory": "./tvapp2/www",
+    "binding": "ASSETS"
+  }
+}
+```
+
+Then deploy:
+
+```bash
+npx wrangler deploy
+```
+
+For local Cloudflare-only development (no Docker):
+
+```bash
+npx wrangler dev
+```
+
+#### 2) Configure Worker Variables
+
+Set these optional Worker variables (recommended):
+
+- `PLAYLIST_URL` → upstream M3U / M3U8 URL
+- `EPG_URL` → upstream XMLTV URL (typically `.xml`)
+- `EPG_GZ_URL` → upstream compressed XMLTV URL (typically `.xml.gz`) - **no default**, must be configured if needed
+
+You can set them with Wrangler:
+
+```bash
+npx wrangler secret put PLAYLIST_URL
+npx wrangler secret put EPG_URL
+npx wrangler secret put EPG_GZ_URL
+```
+
+> If you do not set vars, you can still pass `?url=` on each request.  
+> If you also omit `?url=`, the Worker now tries static asset fallbacks:
+> `/playlist.m3u8`, `/xmltv.xml`, and `/xmltv.xml.gz`.
+
+#### 3) Use IPTV-Friendly Endpoints
+
+These routes are available on your Worker domain:
+
+- `GET /healthz`
+- `GET /playlist`
+- `GET /playlist.m3u`
+- `GET /playlist.m3u8`
+- `GET /epg`
+- `GET /epg.xml`
+- `GET /epg.xml.gz`
+
+Examples:
+
+```txt
+https://your-worker.workers.dev/playlist.m3u
+https://your-worker.workers.dev/epg.xml
+https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz
+```
+
+Override upstream per request (if needed):
+
+```txt
+https://your-worker.workers.dev/playlist.m3u?url=https://example.com/playlist.m3u8
+https://your-worker.workers.dev/epg.xml?url=https://example.com/xmltv.xml
+https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz
+```
+
+#### 4) Verify Outputs
+
+After deploy, verify each endpoint:
+
+- `playlist.m3u` should start with `#EXTM3U`
+- `epg.xml` should start with XML content (for example `<?xml`)
+- `epg.xml.gz` should download as gzip content (requires `?url=` parameter or `EPG_GZ_URL` env var)
+
+Quick checks:
+
+```bash
+curl -I https://your-worker.workers.dev/healthz
+curl -I https://your-worker.workers.dev/playlist.m3u
+curl -I https://your-worker.workers.dev/epg.xml
+curl -I "https://your-worker.workers.dev/epg.xml.gz?url=https://example.com/xmltv.xml.gz"
+```
+
+You should see valid `Content-Type` headers (M3U / XML / GZIP).
 
 <br />
 <br />

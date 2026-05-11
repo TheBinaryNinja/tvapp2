@@ -8,6 +8,17 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
         <link rel="stylesheet" href="css/tvapp2.min.css">
         <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <style>
+            .icon-duotone-white { --fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255); }
+            .about-small { font-size: 13px; }
+            .table-center { width: 60%; margin: 0 auto; }
+            .property-label { color: #919191; font-weight: 400; }
+            .notifications-pad { padding-bottom: 20px; }
+            .toast-top-z { z-index: 9999; }
+            .fade-out-hidden { transition: 1s; opacity: 0; visibility: hidden; }
+            .heart-white { color: #FFF; }
+        </style>
+
         <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js' integrity='sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq' crossorigin='anonymous'></script>
         <script src=' https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js '></script>
         <script src='js/tvapp2.min.js'></script>
@@ -17,15 +28,15 @@
         <div class="header">
             <nav class="navbar sticky-top container">
                 <div class="brand">
-                    <i data-bs-toggle="tooltip" title="v<%= appVersion %>" class="logo fa-sharp-duotone fa-regular fa-tv" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
+                    <i data-bs-toggle="tooltip" title="v<%= appVersion %>" class="logo fa-sharp-duotone fa-regular fa-tv icon-duotone-white" aria-hidden="true"></i>
                     <a target="_blank" data-bs-toggle="tooltip" title="View Github Repository" class="header-name" href="<%= appUrlGithub %>">TVApp2 for Docker</a>
                 </div>
                 <div class="social">
-                    <i id="action-health" data-bs-toggle="tooltip" title="Health" class="heart logo health fa-duotone fa-solid fa-heart" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i>
-                    <a href="javascript:runResync();"><i id="action-resync" data-bs-toggle="tooltip" title="Resync" class="restart fa-solid fa-rotate" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
-                    <a target="_blank" href="<%= appUrlDocs %>"><i data-bs-toggle="tooltip" title="Documentation" class="logo fa-duotone fa-solid fa-book-open-cover" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
-                    <a target="_blank" href="<%= appUrlGithub %>"><i data-bs-toggle="tooltip" title="Github" class="logo fa-logos fa-github" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
-                    <a target="_blank" href="<%= appUrlDiscord %>"><i data-bs-toggle="tooltip" title="Discord" class="logo fa-logos fa-discord" style="--fa-primary-color: rgb(255, 255, 255); --fa-secondary-color: rgb(255, 255, 255);" aria-hidden="true"></i></a>
+                    <i id="action-health" data-bs-toggle="tooltip" title="Health" class="heart logo health fa-duotone fa-solid fa-heart icon-duotone-white" aria-hidden="true"></i>
+                    <a href="javascript:runResync();"><i id="action-resync" data-bs-toggle="tooltip" title="Resync" class="restart fa-solid fa-rotate icon-duotone-white" aria-hidden="true"></i></a>
+                    <a target="_blank" href="<%= appUrlDocs %>"><i data-bs-toggle="tooltip" title="Documentation" class="logo fa-duotone fa-solid fa-book-open-cover icon-duotone-white" aria-hidden="true"></i></a>
+                    <a target="_blank" href="<%= appUrlGithub %>"><i data-bs-toggle="tooltip" title="Github" class="logo fa-logos fa-github icon-duotone-white" aria-hidden="true"></i></a>
+                    <a target="_blank" href="<%= appUrlDiscord %>"><i data-bs-toggle="tooltip" title="Discord" class="logo fa-logos fa-discord icon-duotone-white" aria-hidden="true"></i></a>
                 </div>
             </nav>
         </div>
@@ -133,7 +144,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <div class="container notifications" style="padding-bottom:20px;">
+            <div class="container notifications notifications-pad">
                 <div id="ntfy-restart" class="ntfy-parent indicator-success sticky-bottom"></div>
                 <div id="ntfy-firewall" class="ntfy-parent indicator-warning sticky-bottom"></div>
                 <div id="ntfy-localhost" class="ntfy-parent indicator-danger sticky-bottom"></div>
@@ -151,7 +162,7 @@
 
         <!-- Toast Notifications -->
         <!-- <button type="button" class="btn btn-primary" id="btnTestToasts">Show toast</button> -->
-        <div style="z-index: 9999;" class="toast position-fixed bottom-0 end-0 p-8 m-3" id="tvapp2Toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="10000">
+        <div class="toast toast-top-z position-fixed bottom-0 end-0 p-8 m-3" id="tvapp2Toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="10000">
             <div class="toast-body">
                 <div class="d-flex gap-4">
                     <span><i class="fa-solid fa-circle-check fa-lg icon-success"></i></span>
@@ -208,9 +219,10 @@
             })
 
             const urlBase = window.location.origin;
-            const urlM3U = urlBase + '/playlist';
-            const urlXML = urlBase + '/epg';
-            const urlGZP = urlBase + '/gzip';
+            const appBasePath = window.location.pathname.replace(/[^/]*$/, '');
+            const urlM3U = new URL(`${ appBasePath }playlist`, window.location.origin).href;
+            const urlXML = new URL(`${ appBasePath }epg`, window.location.origin).href;
+            const urlGZP = new URL(`${ appBasePath }gzip`, window.location.origin).href;
 
             document.getElementById('m3u-name').textContent = '<%= fileM3U %>';
             document.getElementById('m3u-name').href = urlM3U;
@@ -326,9 +338,9 @@
                                         </span></div>";
 
                     document.getElementById( 'ntfy-localhost' ).innerHTML = msg;
-                    document.getElementById( 'ntfy-localhost' ).style.display = 'block';
+                    document.getElementById( 'ntfy-localhost' ).classList.remove('d-none');
                 } else {
-                    document.getElementById( 'ntfy-localhost' ).style.display = 'none';
+                    document.getElementById( 'ntfy-localhost' ).classList.add('d-none');
                 }
             });
 
@@ -350,7 +362,7 @@
                                     </span></div>";
 
                 document.getElementById( 'ntfy-firewall' ).innerHTML = msg;
-                document.getElementById( 'ntfy-firewall' ).style.display = 'block';
+                document.getElementById( 'ntfy-firewall' ).classList.remove('d-none');
             });
 
             /*
@@ -367,7 +379,7 @@
                                     </span></div>";
 
                 document.getElementById( 'ntfy-restart' ).innerHTML = msg;
-                document.getElementById( 'ntfy-restart' ).style.display = 'none';
+                document.getElementById( 'ntfy-restart' ).classList.add('d-none');
             });
 
             /*
@@ -396,7 +408,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'healthcheck',
@@ -425,9 +437,7 @@
 
                             elementsArray.forEach(element =>
                             {
-                                element.style.transition = '1s';
-                                element.style.opacity = '0';
-                                element.style.visibility = 'hidden';
+                                element.classList.add('fade-out-hidden');
                             });
                         }
 
@@ -439,7 +449,7 @@
                         toastElm.classList.add(toastClass);
 
                         $('.toast #toast-title').html(`Could not connect to health check api`);
-                        $('.toast #toast-message').html(`Failed to communicate with health check api. Try restarting the docker container to restore connection.`);
+                        $('.toast #toast-message').html(`Failed to communicate with health check api. Try restarting TVApp2 to restore connection.`);
                         $('#tvapp2Toast').toast('show');
 
                     }
@@ -448,7 +458,7 @@
                     timerDelayMS = parseInt(timerHealthRun);
                     timerStartMS = Date.now();
 
-                    setTimeout(function()
+                    globalThis["setTimeout"](function()
                     {
                         runHealthCheck();
                     }, parseInt(timerHealthRun));
@@ -465,7 +475,7 @@
 
                 $.ajax(
                 {
-                    url: 'api/health',
+                    url: new URL(`${ appBasePath }api/health`, window.location.origin).href,
                     type: 'GET',
                     data: {
                         query: 'uptime',
@@ -481,8 +491,9 @@
                         {
                             $('a#uptime').text(`${ uptimeShort }`);
 
-                            const tooltip = bootstrap.Tooltip.getInstance('#uptime') // Returns a Bootstrap tooltip instance
-                            tooltip.setContent( { '.tooltip-inner': `App started ${ uptimeLong }` } )
+                            const uptimeAnchor = document.getElementById('uptime');
+                            const tooltip = bootstrap.Tooltip.getOrCreateInstance( uptimeAnchor );
+                            tooltip.setContent( { '.tooltip-inner': `App started ${ uptimeLong }` } );
                         }
                     },
                     error: function( data )
@@ -492,12 +503,12 @@
                         toastElm.classList.add(toastClass);
 
                         $('.toast #toast-title').html(`Could not get uptime from api`);
-                        $('.toast #toast-message').html(`Failed to communicate with the api. Try restarting the docker container to restore connection.`);
+                        $('.toast #toast-message').html(`Failed to communicate with the api. Try restarting TVApp2 to restore connection.`);
                         $('#tvapp2Toast').toast('show');
                     }
                 }).always(function()
                 {
-                    setTimeout(function()
+                    globalThis["setTimeout"](function()
                     {
                         runUptime();
                     }, parseInt(timerUptime));
@@ -522,24 +533,24 @@
                     {
                         const dimmer = document.createElement('div');
                         dimmer.setAttribute('id', 'dimmer');
-                        dimmer.style.visibility = 'visible';
+                        dimmer.classList.remove('invisible');
                         dimmer.classList.add('dimmer-in');
                         document.getElementsByTagName('body')[0].appendChild(dimmer);
-                        document.getElementById('ntfy-firewall').style.display = 'none';
-                        document.getElementById('ntfy-localhost').style.display = 'none';
-                        document.getElementById('ntfy-restart').style.display = 'none';
+                        document.getElementById('ntfy-firewall').classList.add('d-none');
+                        document.getElementById('ntfy-localhost').classList.add('d-none');
+                        document.getElementById('ntfy-restart').classList.add('d-none');
 
                         const iconResync = document.getElementsByClassName('fa-rotate');
                         iconResync[0].classList.remove('restart');
                         iconResync[0].classList.add('spin');
 
-                        $('.modal-content .modal-body').html('<small>The M3U and EPG data will now be re-downloaded and synced with your TVApp2 container. Afterward, this page will be refreshed automatically.</small><br /><br /><small>Please wait...</small>')
+                        $('.modal-content .modal-body').html('<small>The M3U and EPG data will now be re-downloaded and synced with your TVApp2 instance. Afterward, this page will be refreshed automatically.</small><br /><br /><small>Please wait...</small>')
                         $('.modal-content .modal-title').html('Resyncing Data')
                         $('#modalTvapp2').modal('show');
 
                         const modalBtnPrimary = document.querySelector('#btn-primary');
-                        modalBtnPrimary.style.display = 'none';
-                        modalBtnPrimary.style.visibility= 'hidden';
+                        modalBtnPrimary.classList.add('d-none');
+                        modalBtnPrimary.classList.add('invisible');
 
                     },
                     success: function( data )
@@ -549,15 +560,15 @@
                             On successful restart, wait 1 second, remove dimmer, reload page in 5 seconds
                         */
 
-                        setTimeout( () =>
+                        globalThis["setTimeout"]( () =>
                         {
-                            document.getElementById('ntfy-restart').style.display = 'block'
+                            document.getElementById('ntfy-restart').classList.remove('d-none', 'fade-out-hidden')
                             const dimmer = document.getElementById('dimmer');
                             dimmer.classList.remove('dimmer-in');
                             dimmer.classList.add('dimmer-out');
                             dimmer.remove();
 
-                            setTimeout( function()
+                            globalThis["setTimeout"]( function()
                             {
                                 const iconResync = document.getElementsByClassName('fa-rotate');        // resync favicon
                                 iconResync[0].classList.remove('spin');                                 // stop spinning
@@ -606,22 +617,22 @@
                     });
 
                     const Heart = document.getElementsByClassName('fa-heart');
-                    Heart[0].style.color = '#FFF';
+                    Heart[0].classList.add('heart-white');
 
-                    setTimeout( function()
+                    globalThis["setTimeout"]( function()
                     {
                         const Heart = document.getElementsByClassName('fa-heart');
-                        Heart[0].style.color = '#FFF';
+                        Heart[0].classList.add('heart-white');
 
-                        setTimeout( function()
+                        globalThis["setTimeout"]( function()
                         {
-                            Heart[0].style.color = '#FF6593';
+                            Heart[0].classList.remove('heart-white');
                         }, timerRemainsLS.getUTCMilliseconds() + 100 );
 
                     }, timerRemainsLS.getUTCMilliseconds() + 500 );
 
 
-                    setTimeout( function()
+                    globalThis["setTimeout"]( function()
                     {
                         updateTooltipCountdown();
                     }, timerRemainsLS.getUTCMilliseconds() + 500 );
@@ -634,8 +645,8 @@
                 Action > Healthcheck > Initialize
             */
 
-            setTimeout( function() { runHealthCheck(); }, timerDelayMS );
-            setTimeout( function() { runUptime(); }, 1000 );
+            globalThis["setTimeout"]( function() { runHealthCheck(); }, timerDelayMS );
+            globalThis["setTimeout"]( function() { runUptime(); }, 1000 );
 
             /*
                 Action > Tooltip Resync Timers

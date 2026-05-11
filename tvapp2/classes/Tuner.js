@@ -110,7 +110,7 @@ class Tuner
     {
         Log.verbose( `func`, chalk.yellow( `[executed]` ), chalk.white( `📣` ), chalk.blueBright( `<name>` ), chalk.gray( `${ Utils.getFuncName( ) }` ) );
 
-        const verifiedId = await new Tuner( ).VerifyDeviceId( this.DeviceId );
+        const verifiedId = await this.VerifyDeviceId( this.DeviceId );
 
         if ( await this.IsDeviceIdValid( verifiedId ) )
         {
@@ -320,7 +320,7 @@ class Tuner
             const isValid = await tuner.IsDeviceIdValid( );
     */
 
-    async IsDeviceIdValid( )
+    async IsDeviceIdValid( deviceIdToCheck )
     {
         Log.verbose( `func`, chalk.yellow( `[executed]` ), chalk.white( `📣` ), chalk.blueBright( `<name>` ), chalk.gray( `${ Utils.getFuncName( ) }` ) );
 
@@ -329,7 +329,7 @@ class Tuner
         */
 
         const hexDigits = new Set( '0123456789ABCDEFabcdef' );
-        const deviceId = this.DeviceId;
+        const deviceId = deviceIdToCheck || this.DeviceId;
 
         /*
             Check if device ID is exactly 8 characters
