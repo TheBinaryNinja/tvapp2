@@ -35,7 +35,7 @@ const DEFAULT_UPSTREAMS: Partial<Record<NamedRouteKey, string>> = {
 };
 
 export default {
-  async ["fetch"](request: Request, env: Env): Promise<Response> {
+  async fetchHandler(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -70,7 +70,7 @@ export default {
       return handleProxy(request);
     }
 
-    return (env.ASSETS["fetch"] as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
+    return (getAssetsFetcher(env) as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
   },
 };
 
@@ -160,7 +160,7 @@ async function fetchAssetFallback(
     method: "GET",
     headers: request.headers,
   });
-  const assetResponse = await (env.ASSETS["fetch"] as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
+  const assetResponse = await (getAssetsFetcher(env) as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
 
   if (!assetResponse.ok) {
     return null;
