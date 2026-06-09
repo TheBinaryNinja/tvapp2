@@ -46,22 +46,22 @@
             "url": "https://github.com/EuropaServ"
         }
     ],
-      "scripts": {
-          "start": "node index.js",
-          "start:debug": "noxenv LOG_LEVEL=6 node index.js",
-          "docker:buildx:amd64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate --tag tvapp2:$npm_config_version-amd64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --pull .",
-          "docker:buildx:arm64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --build-arg ARCH=arm64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate --tag tvapp2:$npm_config_version-arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/arm64 --output type=docker --allow network.host --network host --no-cache --pull .",
-          "contrib:add": "all-contributors add",
-          "contrib:generate": "all-contributors generate",
-          "root": "node root.js",
-          "root:generate": "node root.js generate",
-          "env:root": "npx --quiet env-cmd --no-override node root.js",
-          "env:uuid": "npx --quiet env-cmd --no-override node root.js uuid",
-          "env:guid": "npx --quiet env-cmd --no-override node root.js guid",
-          "env:version": "node -p require('./package.json').version;",
-          "lint": "npx eslint",
-          "build": "echo 'No build step required for Node.js app'",
-          "test": "node smoke-test.js"
+    "scripts": {
+        "start": "node index.js",
+        "start:debug": "noxenv LOG_LEVEL=6 node index.js",
+        "docker:buildx:amd64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --build-arg ARCH=amd64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate --tag tvapp2:$npm_config_version-amd64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/amd64 --output type=docker --allow network.host --network host --no-cache --pull .",
+        "docker:buildx:arm64": "docker buildx create --driver docker-container --name container --bootstrap --use && docker buildx build --build-arg ARCH=arm64 --build-arg VERSION=$npm_config_version --build-arg BUILDDATE=$npm_config_builddate --tag tvapp2:$npm_config_version-arm64 --attest type=provenance,disabled=true --attest type=sbom,disabled=true --file Dockerfile --platform linux/arm64 --output type=docker --allow network.host --network host --no-cache --pull .",
+        "contrib:add": "all-contributors add",
+        "contrib:generate": "all-contributors generate",
+        "root": "node root.js",
+        "root:generate": "node root.js generate",
+        "env:root": "npx --quiet env-cmd --no-override node root.js",
+        "env:uuid": "npx --quiet env-cmd --no-override node root.js uuid",
+        "env:guid": "npx --quiet env-cmd --no-override node root.js guid",
+        "env:version": "node -p require('./package.json').version;",
+        "lint": "npx eslint",
+        "build": "echo \"No build step required for Node.js app\"",
+        "test": "node smoke-test.js"
     },
     "keywords": [
         "nodejs",
@@ -119,5 +119,5 @@
         "www/favicon.ico",
         "www/css/tvapp2.min.css",
         "www/js/tvapp2.min.js"
-  ]
+    ]
 }

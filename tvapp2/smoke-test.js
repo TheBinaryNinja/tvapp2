@@ -3,7 +3,7 @@ import http from 'http';
 
 const server = spawn( 'node', ['index.js'], {
   stdio: 'inherit',
-  env: { ...process.env, LOG_LEVEL: '1' } // Error level to reduce noise
+  env: { ...process.env, LOG_LEVEL: '1' }
 });
 
 const timeout = setTimeout( () =>

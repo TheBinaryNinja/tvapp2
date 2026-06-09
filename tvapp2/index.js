@@ -47,7 +47,7 @@ const decoded = clib.decodeFromHexBase64( `${ encoded }` );
     Import package.json values
 */
 
-const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( path.resolve( path.dirname( fileURLToPath( import.meta.url ) ), 'package.json' ) ) );
+const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( new URL( './package.json', import.meta.url ) ) );
 const __filename = fileURLToPath( import.meta.url );            // get resolved path to file
 const __dirname = path.dirname( __filename );                   // get name of directory
 
@@ -251,6 +251,7 @@ if ( process.pkg )
     FILE_URL = path.join( basePath, envWebFolder, `${ envFileURL }` );
     FILE_M3U = path.join( basePath, envWebFolder, `${ envFileM3U }` );
     FILE_XML = path.join( basePath, envWebFolder, `${ envFileXML }` );
+
     FILE_GZP = path.join( basePath, envWebFolder, `${ envFileGZP }` );
 }
 else

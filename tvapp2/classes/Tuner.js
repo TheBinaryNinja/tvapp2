@@ -170,7 +170,7 @@ class Tuner
         const chars = '0123456789ABCDEF';
         let randomHex = '';
 
-        // generate 6 random hexadecimal chars
+        // generate 4 random hexadecimal chars
         for ( let i = 0;i < 6;i++ )
         {
             randomHex += chars[Math.floor( Math.random( ) * chars.length )];
