@@ -170,13 +170,13 @@ class Tuner
         const chars = '0123456789ABCDEF';
         let randomHex = '';
 
-        // generate 4 random hexadecimal chars
-        for ( let i = 0;i < 4;i++ )
+        // generate 6 random hexadecimal chars
+        for ( let i = 0;i < 6;i++ )
         {
             randomHex += chars[Math.floor( Math.random( ) * chars.length )];
         }
 
-        const baseId =  '105' + randomHex + '0';
+        const baseId = '10' + randomHex;
         return this.FormatDeviceId( baseId );
     }
 

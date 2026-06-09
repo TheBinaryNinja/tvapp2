@@ -70,7 +70,7 @@ export default {
       return handleProxy(request);
     }
 
-    return (getAssetsFetcher(env) as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
+    return (env.ASSETS.fetch as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
   },
 };
 
@@ -160,7 +160,7 @@ async function fetchAssetFallback(
     method: "GET",
     headers: request.headers,
   });
-  const assetResponse = await (getAssetsFetcher(env) as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
+  const assetResponse = await (env.ASSETS.fetch as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
 
   if (!assetResponse.ok) {
     return null;

@@ -59,7 +59,9 @@
           "env:uuid": "npx --quiet env-cmd --no-override node root.js uuid",
           "env:guid": "npx --quiet env-cmd --no-override node root.js guid",
           "env:version": "node -p require('./package.json').version;",
-          "lint": "npx eslint"
+          "lint": "npx eslint",
+          "build": "echo 'No build step required for Node.js app'",
+          "test": "node smoke-test.js"
     },
     "keywords": [
         "nodejs",
