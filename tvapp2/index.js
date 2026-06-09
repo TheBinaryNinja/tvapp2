@@ -47,7 +47,7 @@ const decoded = clib.decodeFromHexBase64( `${ encoded }` );
     Import package.json values
 */
 
-const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( './package.json' ) );
+const { name, author, version, repository, discord, docs } = JSON.parse( fs.readFileSync( new URL( './package.json', import.meta.url ) ) );
 const __filename = fileURLToPath( import.meta.url );            // get resolved path to file
 const __dirname = path.dirname( __filename );                   // get name of directory
 
@@ -251,7 +251,7 @@ if ( process.pkg )
     FILE_URL = path.join( basePath, envWebFolder, `${ envFileURL }` );
     FILE_M3U = path.join( basePath, envWebFolder, `${ envFileM3U }` );
     FILE_XML = path.join( basePath, envWebFolder, `${ envFileXML }` );
-    FILE_XML.length;
+
     FILE_GZP = path.join( basePath, envWebFolder, `${ envFileGZP }` );
 }
 else
@@ -2278,7 +2278,7 @@ const server = http.createServer( ( req, resp ) =>
                 appGitHashShort: envGitSHA1.substring( 0, 9 ),
                 appGitHashLong: envGitSHA1,
                 appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
-                appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 appStartup: Math.round( serverStartup ) / 1000,
                 serverOs: serverOs
             }, ( err, data ) =>
@@ -2527,7 +2527,7 @@ const serverHdHomeRun = http.createServer( ( req, resp ) =>
                 appGitHashShort: envGitSHA1.substring( 0, 9 ),
                 appGitHashLong: envGitSHA1,
                 appUptimeShort: timeAgo.format( Date.now() - Math.round( process.uptime() ) * 1000, 'twitter' ),
-                appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'twitter' ),
+                appUptimeLong: timeAgo.format( Date.now() - process.uptime() * 1000, 'round' ),
                 appUptimeFull: timeAgo.format( Date.now() - process.uptime() * 1000 ),
                 appStartup: Math.round( serverStartup ) / 1000,
                 serverOs: serverOs

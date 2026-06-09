@@ -1,5 +1,5 @@
 interface Fetcher {
-  [key: string]: unknown;
+  fetch(input: Request | string | URL, init?: RequestInit): Promise<Response>;
 }
 
 export interface Env {
@@ -70,7 +70,7 @@ export default {
       return handleProxy(request);
     }
 
-    return (getAssetsFetcher(env) as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(request);
+    return env.ASSETS.fetch(request);
   },
 };
 
@@ -160,7 +160,7 @@ async function fetchAssetFallback(
     method: "GET",
     headers: request.headers,
   });
-  const assetResponse = await (getAssetsFetcher(env) as (input: Request | string | URL, init?: RequestInit) => Promise<Response>)(assetRequest);
+  const assetResponse = await env.ASSETS.fetch(assetRequest);
 
   if (!assetResponse.ok) {
     return null;

@@ -1,0 +1,1957 @@
+#EXTM3U url-tvg="https://localhost/xmltv.xml"
+
+#EXTINF:-1 tvg-id="111871.571ACC.tvapp2" tvg-name="ACC Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/acc-network-us.png" group-title="Sports",ACC Network (TVApp)
+https://thetvapp.to/tv/acc-network-live-stream/
+
+#EXTINF:-1 tvg-id="10035.181AETV.tvapp2" tvg-name="AE (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/a-and-e-us.png" group-title="Entertainment",AE (TVApp)
+https://thetvapp.to/tv/ae-live-stream/
+
+#EXTINF:-1 tvg-id="10021.231AMC.tvapp2" tvg-name="AMC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/amc-us.png" group-title="Entertainment",AMC (TVApp)
+https://thetvapp.to/tv/amc-live-stream/
+
+#EXTINF:-1 tvg-id="18284.287AHC.tvapp2" tvg-name="American Heroes (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/american-heroes-channel-us.png" group-title="Entertainment",American Heroes (TVApp)
+https://thetvapp.to/tv/american-heroes-channel-live-stream/
+
+#EXTINF:-1 tvg-id="16331.130APL.tvapp2" tvg-name="Animal Planet (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/animal-planet-us.png" group-title="Entertainment",Animal Planet (TVApp)
+https://thetvapp.to/tv/animal-planet-live-stream/
+
+#EXTINF:-1 tvg-id="18332.189BBCA.tvapp2" tvg-name="BBC America (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bbc-america-us.png" group-title="News",BBC America (TVApp)
+https://thetvapp.to/tv/bbc-america-live-stream/
+
+#EXTINF:-1 tvg-id="89542.107BBCWDNA.tvapp2" tvg-name="BBC World News (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/international/bbc-world-news-int.png" group-title="News",BBC World News (TVApp)
+https://thetvapp.to/tv/bbc-world-news-hd-live-stream/
+
+#EXTINF:-1 tvg-id="10051.270BET.tvapp2" tvg-name="BET (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-us.png" group-title="Entertainment",BET (TVApp)
+https://thetvapp.to/tv/bet-live-stream/
+
+#EXTINF:-1 tvg-id="14897.220BHER.tvapp2" tvg-name="BET Her (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-her-us.png" group-title="Entertainment",BET Her (TVApp)
+https://thetvapp.to/tv/bet-her-live-stream/
+
+#EXTINF:-1 tvg-id="96884.85BIG10V.tvapp2" tvg-name="Big Ten Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/big-ten-network-us.png" group-title="Sports",Big Ten Network (TVApp)
+https://thetvapp.to/tv/big-ten-network-live-stream/
+
+#EXTINF:-1 tvg-id="71799.605BLOOMHD.tvapp2" tvg-name="Bloomberg (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bloomberg-live-events-us.png" group-title="News",Bloomberg (TVApp)
+https://thetvapp.to/tv/bloomberg-tv-live-stream/
+
+#EXTINF:-1 tvg-id="21883.298BOOM.tvapp2" tvg-name="Boomerang (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/boomerang-us.png" group-title="Kids",Boomerang (TVApp)
+https://thetvapp.to/tv/boomerang-live-stream/
+
+#EXTINF:-1 tvg-id="10057.185BRAVO.tvapp2" tvg-name="BRAVO (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bravo-us.png" group-title="Entertainment",BRAVO (TVApp)
+https://thetvapp.to/tv/bravo-live-stream/
+
+#EXTINF:-1 tvg-id="68344.606CSPANHD.tvapp2" tvg-name="C-SPAN (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/c-span-1-us.png" group-title="News",C-SPAN (TVApp)
+https://thetvapp.to/tv/cspan-live-stream/
+
+#EXTINF:-1 tvg-id="68334.607CSPN2HD.tvapp2" tvg-name="C-SPAN2 (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/c-span-2-us.png" group-title="News",C-SPAN2 (TVApp)
+https://thetvapp.to/tv/cspan-2-live-stream/
+
+#EXTINF:-1 tvg-id="12131.257TOON.tvapp2" tvg-name="Cartoon Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cartoon-network-us.png" group-title="Kids",Cartoon Network (TVApp)
+https://thetvapp.to/tv/cartoon-network-live-stream/
+
+#EXTINF:-1 tvg-id="16365.221CBSSN.tvapp2" tvg-name="CBS Sports (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-sports-us.png" group-title="Sports",CBS Sports (TVApp)
+https://thetvapp.to/tv/cbs-sports-network-live-stream/
+
+#EXTINF:-1 tvg-id="10120.515MAX.tvapp2" tvg-name="Cinemax (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-us.png" group-title="Premium",Cinemax (TVApp)
+https://thetvapp.to/tv/cinemax-live-stream/
+
+#EXTINF:-1 tvg-id="10121.517CINEHIT.tvapp2" tvg-name="Cinemax MoreMAX (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-hits-us.png" group-title="Premium",Cinemax MoreMAX (TVApp)
+https://thetvapp.to/tv/moremax-live-stream/
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Cinemax MovieMAX (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-moviemax-us.png" group-title="Premium",Cinemax MovieMAX (TVApp)
+https://thetvapp.to/tv/moviemax-live-stream/
+
+#EXTINF:-1 tvg-id="10138.327CMTV.tvapp2" tvg-name="CMT (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cmt-us.png" group-title="Entertainment",CMT (TVApp)
+https://thetvapp.to/tv/cmt-live-stream/
+
+#EXTINF:-1 tvg-id="10139.355CNBC.tvapp2" tvg-name="CNBC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-news-flat-us.png" group-title="News",CNBC (TVApp)
+https://thetvapp.to/tv/cnbc-live-stream/
+
+#EXTINF:-1 tvg-id="10142.202CNN.tvapp2" tvg-name="CNN (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cnn-us.png" group-title="News",CNN (TVApp)
+https://thetvapp.to/tv/cnn-live-stream/
+
+#EXTINF:-1 tvg-id="62420.249CCHD.tvapp2" tvg-name="Comedy Central (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/comedy-central-us.png" group-title="Entertainment",Comedy Central (TVApp)
+https://thetvapp.to/tv/comedy-central-live-stream/
+
+#EXTINF:-1 tvg-id="30156.232COOK.tvapp2" tvg-name="Cooking Channel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cooking-channel-us.png" group-title="Entertainment",Cooking Channel (TVApp)
+https://thetvapp.to/tv/cooking-channel-live-stream/
+
+#EXTINF:-1 tvg-id="61469.571CINHD.tvapp2" tvg-name="Crime Investigation (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/crime-and-investigation-us.png" group-title="Entertainment",Crime Investigation (TVApp)
+https://thetvapp.to/tv/crime-investigation-hd-live-stream/
+
+#EXTINF:-1 tvg-id="16617.286DEST.tvapp2" tvg-name="Destination America (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/destination-america-us.png" group-title="Entertainment",Destination America (TVApp)
+https://thetvapp.to/tv/destination-america-live-stream/
+
+#EXTINF:-1 tvg-id="11150.278DSC.tvapp2" tvg-name="Discovery (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-channel-us.png" group-title="Entertainment",Discovery (TVApp)
+https://thetvapp.to/tv/discovery-live-stream/
+
+#EXTINF:-1 tvg-id="16618.294DFC.tvapp2" tvg-name="Discovery Family (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-family-us.png" group-title="Entertainment",Discovery Family (TVApp)
+https://thetvapp.to/tv/discovery-family-channel-live-stream/
+
+#EXTINF:-1 tvg-id="16125.261DLC.tvapp2" tvg-name="Discovery Life (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-life-us.png" group-title="Entertainment",Discovery Life (TVApp)
+https://thetvapp.to/tv/discovery-life-live-stream/
+
+#EXTINF:-1 tvg-id="10171.290DISN.tvapp2" tvg-name="Disney (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-channel-us.png" group-title="Kids",Disney (TVApp)
+https://thetvapp.to/tv/disney-channel-east-live-stream/
+
+#EXTINF:-1 tvg-id="74796.289DJCH.tvapp2" tvg-name="Disney Junior (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-jr-us.png" group-title="Kids",Disney Junior (TVApp)
+https://thetvapp.to/tv/disney-junior-live-stream/
+
+#EXTINF:-1 tvg-id="18279.292DXD.tvapp2" tvg-name="Disney XD (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-xd-us.png" group-title="Kids",Disney XD (TVApp)
+https://thetvapp.to/tv/disney-xd-live-stream/
+
+#EXTINF:-1 tvg-id="10989.236E.tvapp2" tvg-name="E! (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/e-entertainment-us.png" group-title="Entertainment",E! (TVApp)
+https://thetvapp.to/tv/e-live-stream/
+
+#EXTINF:-1 tvg-id="10179.206ESPN.tvapp2" tvg-name="ESPN (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-us.png" group-title="Sports",ESPN (TVApp)
+https://thetvapp.to/tv/espn-live-stream/
+
+#EXTINF:-1 tvg-id="16485.207ESPNEWS.tvapp2" tvg-name="ESPN News (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espnews-us.png" group-title="Sports",ESPN News (TVApp)
+https://thetvapp.to/tv/espnews-live-stream/
+
+#EXTINF:-1 tvg-id="45654.208ESPNU.tvapp2" tvg-name="ESPN-U (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-u-us.png" group-title="Sports",ESPN-U (TVApp)
+https://thetvapp.to/tv/espnu-live-stream/
+
+#EXTINF:-1 tvg-id="12444.209ESPN2.tvapp2" tvg-name="ESPN2 (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-2-us.png" group-title="Sports",ESPN2 (TVApp)
+https://thetvapp.to/tv/espn2-live-stream/
+
+#EXTINF:-1 tvg-id="12574.231FOOD.tvapp2" tvg-name="Food Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/food-network-us.png" group-title="Entertainment",Food Network (TVApp)
+https://thetvapp.to/tv/food-network-live-stream/
+
+#EXTINF:-1 tvg-id="58649.359FBN.tvapp2" tvg-name="Fox Business (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-business-us.png" group-title="News",Fox Business (TVApp)
+https://thetvapp.to/tv/fox-business-network-live-stream/
+
+#EXTINF:-1 tvg-id="16374.360FNC.tvapp2" tvg-name="FOX News (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-news-us.png" group-title="News",FOX News (TVApp)
+https://thetvapp.to/tv/fox-news-channel-live-stream/
+
+#EXTINF:-1 tvg-id="10093.311FREEFRM.tvapp2" tvg-name="Freeform (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/freeform-us.png" group-title="Entertainment",Freeform (TVApp)
+https://thetvapp.to/tv/freeform-live-stream/
+
+#EXTINF:-1 tvg-id="82541.219FS1.tvapp2" tvg-name="FS1 (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-sports-1-us.png" group-title="Sports",FS1 (TVApp)
+https://thetvapp.to/tv/fox-sports-1-live-stream/
+
+#EXTINF:-1 tvg-id="33178.618FS2.tvapp2" tvg-name="FS2 (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-sports-2-us.png" group-title="Sports",FS2 (TVApp)
+https://thetvapp.to/tv/fox-sports-2-live-stream/
+
+#EXTINF:-1 tvg-id="59116.339FUSEHD.tvapp2" tvg-name="Fuse (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fuse-us.png" group-title="Entertainment",Fuse (TVApp)
+https://thetvapp.to/tv/fuse-hd-live-stream/
+
+#EXTINF:-1 tvg-id="14321.248FX.tvapp2" tvg-name="FX (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fx-us.png" group-title="Entertainment",FX (TVApp)
+https://thetvapp.to/tv/fx-live-stream/
+
+#EXTINF:-1 tvg-id="14988.258FXM.tvapp2" tvg-name="FX Movie (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fxm-movie-channel-us.png" group-title="Entertainment",FX Movie (TVApp)
+https://thetvapp.to/tv/fx-movie-live-stream/
+
+#EXTINF:-1 tvg-id="17927.259FXX.tvapp2" tvg-name="FXX (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fxx-us.png" group-title="Entertainment",FXX (TVApp)
+https://thetvapp.to/tv/fxx-live-stream/
+
+#EXTINF:-1 tvg-id="16834.266FYISD.tvapp2" tvg-name="FYI (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fyi-us.png" group-title="Entertainment",FYI (TVApp)
+https://thetvapp.to/tv/fyi-live-stream/
+
+#EXTINF:-1 tvg-id="14899.218GOLF.tvapp2" tvg-name="Golf Channel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-golf-us.png" group-title="Sports",Golf Channel (TVApp)
+https://thetvapp.to/tv/golf-channel-live-stream/
+
+#EXTINF:-1 tvg-id="11221.312HALL.tvapp2" tvg-name="Hallmark (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-channel-us.png" group-title="Entertainment",Hallmark (TVApp)
+https://thetvapp.to/tv/hallmark-live-stream/
+
+#EXTINF:-1 tvg-id="105723.564HFM.tvapp2" tvg-name="Hallmark Drama (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-tv-us.png" group-title="Entertainment",Hallmark Drama (TVApp)
+https://thetvapp.to/tv/hallmark-drama-hd-live-stream/
+
+#EXTINF:-1 tvg-id="46710.565HMYSHD.tvapp2" tvg-name="Hallmark Mysteries (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-family-us.png" group-title="Entertainment",Hallmark Mystery (TVApp)
+https://thetvapp.to/tv/hallmark-movies-mysteries-hd-live-stream/
+
+#EXTINF:-1 tvg-id="10240.501HBO.tvapp2" tvg-name="HBO (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-us.png" group-title="Premium",HBO (TVApp)
+https://thetvapp.to/tv/hbo-east-live-stream/
+
+#EXTINF:-1 tvg-id="59839.506HBOCHD.tvapp2" tvg-name="HBO Comedy (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-comedy-us.png" group-title="Premium",HBO Comedy (TVApp)
+https://thetvapp.to/tv/hbo-comedy-hd-live-stream/
+
+#EXTINF:-1 tvg-id="10243.503HBODRMA.tvapp2" tvg-name="HBO Drama (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-drama-us.png" group-title="Premium",HBO Drama (TVApp)
+https://thetvapp.to/tv/hbo-signature-live-stream/
+
+#EXTINF:-1 tvg-id="10241.502HBOHTS.tvapp2" tvg-name="HBO Hits (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-hits-us.png" group-title="Premium",HBO Hits (TVApp)
+https://thetvapp.to/tv/hbo-2-east-live-stream/
+
+#EXTINF:-1 tvg-id="59845.509HBOMVHD.tvapp2" tvg-name="HBO Movies (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-movies-us.png" group-title="Premium",HBO Movies (TVApp)
+https://thetvapp.to/tv/hbo-zone-hd-live-stream/
+
+#EXTINF:-1 tvg-id="14902.229HGTV.tvapp2" tvg-name="HGTV (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hgtv-us.png" group-title="Entertainment",HGTV (TVApp)
+https://thetvapp.to/tv/hgtv-live-stream/
+
+#EXTINF:-1 tvg-id="14771.269HISTORY.tvapp2" tvg-name="History (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/history-channel-us.png" group-title="Entertainment",History (TVApp)
+https://thetvapp.to/tv/history-live-stream/
+
+#EXTINF:-1 tvg-id="10145.204HLN.tvapp2" tvg-name="HLN (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hln-us.png" group-title="Entertainment",HLN (TVApp)
+https://thetvapp.to/tv/hln-live-stream/
+
+#EXTINF:-1 tvg-id="16615.285ID.tvapp2" tvg-name="ID (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/investigation-discovery-us.png" group-title="Entertainment",ID (TVApp)
+https://thetvapp.to/tv/investigation-discovery-live-stream/
+
+#EXTINF:-1 tvg-id="14873.333IFC.tvapp2" tvg-name="IFC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ifc-us.png" group-title="Entertainment",IFC (TVApp)
+https://thetvapp.to/tv/ifc-live-stream/
+
+#EXTINF:-1 tvg-id="76894.305IONDHD.tvapp2" tvg-name="ION (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ion-television-us.png" group-title="Entertainment",ION (TVApp)
+https://thetvapp.to/tv/ion-television-east-hd-live-stream/
+
+#EXTINF:-1 tvg-id="10918.252LIFE.tvapp2" tvg-name="Lifetime (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/lifetime-us.png" group-title="Entertainment",Lifetime (TVApp)
+https://thetvapp.to/tv/lifetime-live-stream/
+
+#EXTINF:-1 tvg-id="18480.253LMN.tvapp2" tvg-name="Lifetime Movie Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/lifetime-movies-us.png" group-title="Entertainment",Lifetime Movies (TVApp)
+https://thetvapp.to/tv/lmn-live-stream/
+
+#EXTINF:-1 tvg-id="46762.272LOGO.tvapp2" tvg-name="Logo (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/logo-us.png" group-title="Entertainment",Logo (TVApp)
+https://thetvapp.to/tv/logo-live-stream/
+
+#EXTINF:-1 tvg-id="44316.177DITV177.tvapp2" tvg-name="MeTV Toons (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/me-tv-toons-us.png" group-title="Entertainment",MeTV Toons (TVApp)
+https://thetvapp.to/tv/metv-toons-live-stream/
+
+#EXTINF:-1 tvg-id="62079.213MLBN.tvapp2" tvg-name="MLB Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mlb-network-us.png" group-title="Sports",MLB Network (TVApp)
+https://thetvapp.to/tv/mlb-network-live-stream/
+
+#EXTINF:-1 tvg-id="31046.281MTHD.tvapp2" tvg-name="MotorTrend (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/motor-trend-us.png" group-title="Entertainment",MotorTrend (TVApp)
+https://thetvapp.to/tv/motortrend-hd-live-stream/
+
+#EXTINF:-1 tvg-id="16300.356MSNOW.tvapp2" tvg-name="MSNBC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-news-flat-us.png" group-title="News",MSNBC (TVApp)
+https://thetvapp.to/tv/msnbc-live-stream/
+
+#EXTINF:-1 tvg-id="10986.331MTV.tvapp2" tvg-name="MTV (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-us.png" group-title="Entertainment",MTV (TVApp)
+https://thetvapp.to/tv/mtv-live-stream/
+
+#EXTINF:-1 tvg-id="24959.276NGC.tvapp2" tvg-name="National Geographic (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/national-geographic-us.png" group-title="Entertainment",National Geographic (TVApp)
+https://thetvapp.to/tv/national-geographic-live-stream/
+
+#EXTINF:-1 tvg-id="66804.283NGWILD.tvapp2" tvg-name="National Geographic Wild (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nat-geo-wild-us.png" group-title="Entertainment",National Geographic Wild (TVApp)
+https://thetvapp.to/tv/nat-geo-wild-live-stream/
+
+#EXTINF:-1 tvg-id="32281.216NBATV.tvapp2" tvg-name="NBA Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Sports",NBA Network (TVApp)
+https://thetvapp.to/tv/nba-tv-live-stream/
+
+#EXTINF:-1 tvg-id="87925.349NEWSMX.tvapp2" tvg-name="NewsMax (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/newsmax-tv-us.png" group-title="News",NewsMax (TVApp)
+https://thetvapp.to/tv/newsmax-tv/
+
+#EXTINF:-1 tvg-id="34710.212NFLNET.tvapp2" tvg-name="NFL Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-network-us.png" group-title="Sports",NFL Network (TVApp)
+https://thetvapp.to/tv/nfl-network-live-stream/
+
+#EXTINF:-1 tvg-id="65025.211NFLNRZD.tvapp2" tvg-name="NFL Red Zone (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-red-zone-us.png" group-title="Sports",NFL Red Zone (TVApp)
+https://thetvapp.to/tv/nfl-red-zone/
+
+#EXTINF:-1 tvg-id="58570.215NHLNET.tvapp2" tvg-name="NHL Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Sports",NHL Network (TVApp)
+https://thetvapp.to/tv/nhl-network-live-stream/
+
+#EXTINF:-1 tvg-id="19211.301NICJR.tvapp2" tvg-name="Nick Jr (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-jr-us.png" group-title="Kids",Nick Jr (TVApp)
+https://thetvapp.to/tv/nick-jr-live-stream/
+
+#EXTINF:-1 tvg-id="11006.299NIK.tvapp2" tvg-name="Nickelodeon (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nickelodeon-us.png" group-title="Kids",Nickelodeon (TVApp)
+https://thetvapp.to/tv/nickelodeon-east-live-stream/
+
+#EXTINF:-1 tvg-id="30420.302NIKTON.tvapp2" tvg-name="Nicktoons (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-toons-us.png" group-title="Kids",Nicktoons (TVApp)
+https://thetvapp.to/tv/nicktoons-live-stream/
+
+#EXTINF:-1 tvg-id="20453.7.1WABCDT.tvapp2" tvg-name="NY New York ABC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",NY New York ABC (TVApp)
+https://thetvapp.to/tv/wabc-new-york-abc-east-live-stream/
+
+#EXTINF:-1 tvg-id="11331.2WCBS.tvapp2" tvg-name="NY New York CBS (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",NY New York CBS (TVApp)
+https://thetvapp.to/tv/wcbs-new-york-cbs-east-live-stream/
+
+#EXTINF:-1 tvg-id="9200002881" tvg-name="NY New York CW (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cw-us.png" group-title="Locals",NY New York CW (TVApp)
+https://thetvapp.to/tv/the-cw-live-stream/
+
+#EXTINF:-1 tvg-id="20360.505WNYWDT.tvapp2" tvg-name="NY New York FOX (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",NY New York FOX (TVApp)
+https://thetvapp.to/tv/wnyw-new-york-fox-east-live-stream/
+
+#EXTINF:-1 tvg-id="20459.504WNBCDT.tvapp2" tvg-name="NY New York NBC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",NY New York NBC (TVApp)
+https://thetvapp.to/tv/wnbc-new-york-nbc-east-live-stream/
+
+#EXTINF:-1 tvg-id="11715.13WNET.tvapp2" tvg-name="NY New York PBS (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/pbs-us.png" group-title="Locals",NY New York PBS (TVApp)
+https://thetvapp.to/tv/pbs-13-wnet-new-york-live-stream/
+
+#EXTINF:-1 tvg-id="70387.279OWN.tvapp2" tvg-name="Oprah Winfrey Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/oprah-winfrey-network-us.png" group-title="Entertainment",Oprah Winfrey Network (TVApp)
+https://thetvapp.to/tv/own-live-stream/
+
+#EXTINF:-1 tvg-id="14776.606OUTD.tvapp2" tvg-name="Outdoor Channel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/outdoor-channel-us.png" group-title="Entertainment",Outdoor Channel (TVApp)
+https://thetvapp.to/tv/outdoor-channel-live-stream/
+
+#EXTINF:-1 tvg-id="21484.144OXYGEN.tvapp2" tvg-name="Oxygen (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/oxygen-us.png" group-title="Entertainment",Oxygen (TVApp)
+https://thetvapp.to/tv/oxygen-true-crime-live-stream/
+
+#EXTINF:-1 tvg-id="52199.238REELZ.tvapp2" tvg-name="ReelzChannel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/reelz-us.png" group-title="Entertainment",ReelzChannel (TVApp)
+https://thetvapp.to/tv/reelzchannel-live-stream/
+
+#EXTINF:-1 tvg-id="57390.284SCIHD.tvapp2" tvg-name="Science (TVApp)" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/7/7c/Science_2016_%28full_version%29.svg/revision/latest?cb=20180616040702" group-title="Entertainment",Science (TVApp)
+https://thetvapp.to/tv/science-live-stream/
+
+#EXTINF:-1 tvg-id="89535.611SEC.tvapp2" tvg-name="SEC Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sec-network-hz-us.png" group-title="Sports",SEC Network (TVApp)
+https://thetvapp.to/tv/sec-network-live-stream/
+
+#EXTINF:-1 tvg-id="11115.545PARSHO.tvapp2" tvg-name="Showtime (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-us.png" group-title="Premium",Showtime (TVApp)
+https://thetvapp.to/tv/showtime-e-live-stream/
+
+#EXTINF:-1 tvg-id="11116.547SHO2.tvapp2" tvg-name="Showtime 2 (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-2-us.png" group-title="Premium",Showtime 2 (TVApp)
+https://thetvapp.to/tv/showtime-2-live-stream/
+
+#EXTINF:-1 tvg-id="12719.525STARZ.tvapp2" tvg-name="STARZ (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-us.png" group-title="Premium",STARZ (TVApp)
+https://thetvapp.to/tv/starz-east-live-stream/
+
+#EXTINF:-1 tvg-id="16108.239SUNDANC.tvapp2" tvg-name="SundanceTV (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sundance-tv-us.png" group-title="Premium",SundanceTV (TVApp)
+https://thetvapp.to/tv/sundancetv-hd-live-stream/
+
+#EXTINF:-1 tvg-id="11097.244SYFY.tvapp2" tvg-name="SYFY (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/syfy-us.png" group-title="Entertainment",SYFY (TVApp)
+https://thetvapp.to/tv/syfy-live-stream/
+
+#EXTINF:-1 tvg-id="11867.247TBS.tvapp2" tvg-name="TBS (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tbs-us.png" group-title="Entertainment",TBS (TVApp)
+https://thetvapp.to/tv/tbs-live-stream/
+
+#EXTINF:-1 tvg-id="12852.256TCM.tvapp2" tvg-name="TCM (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tcm-us.png" group-title="Entertainment",TCM (TVApp)
+https://thetvapp.to/tv/tcm-live-stream/
+
+#EXTINF:-1 tvg-id="59036.303TNCK.tvapp2" tvg-name="Teen Nick (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/teen-nick-us.png" group-title="Kids",Teen Nick (TVApp)
+https://thetvapp.to/tv/teennick-live-stream/
+
+#EXTINF:-1 tvg-id="telemundo-eastern-feed" tvg-name="Telemundo (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/telemundo-us.png" group-title="Entertainment",Telemundo (TVApp)
+https://thetvapp.to/tv/telemundo-east-live-stream/
+
+#EXTINF:-1 tvg-id="33395.217TENNIS.tvapp2" tvg-name="Tennis Channel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tennis-channel-hz-us.png" group-title="Sports",Tennis Channel (TVApp)
+https://thetvapp.to/tv/tennis-channel-live-stream/
+
+#EXTINF:-1 tvg-id="11158.280TLC.tvapp2" tvg-name="TLC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tlc-us.png" group-title="Entertainment",TLC (TVApp)
+https://thetvapp.to/tv/tlc-live-stream/
+
+#EXTINF:-1 tvg-id="11160.553TMC.tvapp2" tvg-name="TMC (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/the-movie-channel-us.png" group-title="Entertainment",TMC (TVApp)
+https://thetvapp.to/tv/the-movie-channel-east-live-stream/
+
+#EXTINF:-1 tvg-id="11164.245TNT.tvapp2" tvg-name="TNT (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tnt-us.png" group-title="Entertainment",TNT (TVApp)
+https://thetvapp.to/tv/tnt-live-stream/
+
+#EXTINF:-1 tvg-id="11180.277TRAV.tvapp2" tvg-name="Travel Channel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/travel-channel-us.png" group-title="Entertainment",Travel Channel (TVApp)
+https://thetvapp.to/tv/travel-channel-live-stream/
+
+#EXTINF:-1 tvg-id="10153.246TRUTV.tvapp2" tvg-name="truTV (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tru-tv-us.png" group-title="Entertainment",truTV (TVApp)
+https://thetvapp.to/tv/trutv-live-stream/
+
+#EXTINF:-1 tvg-id="61960.328TVONEHD.tvapp2" tvg-name="TV One (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/one-tv-us.png" group-title="Entertainment",TV One (TVApp)
+https://thetvapp.to/tv/tv-one-hd-live-stream/
+
+#EXTINF:-1 tvg-id="159817.295METOONS.tvapp2" tvg-name="Universal Kids (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/universal-kids-us.png" group-title="Kids",Universal Kids (TVApp)
+https://thetvapp.to/tv/universal-kids-live-stream/
+
+#EXTINF:-1 tvg-id="11118.402UNI.tvapp2" tvg-name="Univision (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/univision-us.png" group-title="Entertainment",Univision (TVApp)
+https://thetvapp.to/tv/univision-east-live-stream/
+
+#EXTINF:-1 tvg-id="11207.242USA.tvapp2" tvg-name="USA Network (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/usa-us.png" group-title="Entertainment",USA Network (TVApp)
+https://thetvapp.to/tv/usa-network-live-stream/
+
+#EXTINF:-1 tvg-id="11218.335VH1.tvapp2" tvg-name="VH1 (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/vh1-us.png" group-title="Entertainment",VH1 (TVApp)
+https://thetvapp.to/tv/vh1-live-stream/
+
+#EXTINF:-1 tvg-id="18822.271VICE.tvapp2" tvg-name="VICE (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/vice-us.png" group-title="News",VICE (TVApp)
+https://thetvapp.to/tv/vice-live-stream/
+
+#EXTINF:-1 tvg-id="16409.149WE.tvapp2" tvg-name="WE (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/we-tv-us.png" group-title="Entertainment",WE (TVApp)
+https://thetvapp.to/tv/we-tv-live-stream/
+
+#EXTINF:-1 tvg-id="11187.362WEATH.tvapp2" tvg-name="Weather Channel (TVApp)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/weather-channel-us.png" group-title="News",Weather Channel (TVApp)
+https://thetvapp.to/tv/the-weather-channel-live-stream/
+
+#EXTINF:-1 tvg-id="111871.571ACC.tvapp2" tvg-name="ACC Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/acc-network-us.png" group-title="Sports",ACC Network (TVPass)
+https://tvpass.org/channel/acc-network/
+
+#EXTINF:-1 tvg-id="10035.181AETV.tvapp2" tvg-name="AE (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/a-and-e-us.png" group-title="Entertainment",AE (TVPass)
+https://tvpass.org/channel/ae-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="altitude-sports-denver" tvg-name="Altitude Sports Denver (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/altitude-sports-us.png" group-title="Sports",Altitude Sports Denver (TVPass)
+https://tvpass.org/channel/altitude-sports-denver/
+
+#EXTINF:-1 tvg-id="10021.231AMC.tvapp2" tvg-name="AMC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/amc-us.png" group-title="Entertainment",AMC (TVPass)
+https://tvpass.org/channel/amc-eastern-feed/
+
+#EXTINF:-1 tvg-id="18284.287AHC.tvapp2" tvg-name="American Heroes (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/american-heroes-channel-us.png" group-title="Entertainment",American Heroes (TVPass)
+https://tvpass.org/channel/american-heroes-channel/
+
+#EXTINF:-1 tvg-id="16331.130APL.tvapp2" tvg-name="Animal Planet (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/animal-planet-us.png" group-title="Entertainment",Animal Planet (TVPass)
+https://tvpass.org/channel/animal-planet-us-east/
+
+#EXTINF:-1 tvg-id="18332.189BBCA.tvapp2" tvg-name="BBC America (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bbc-america-us.png" group-title="News",BBC America (TVPass)
+https://tvpass.org/channel/bbc-america-east/
+
+#EXTINF:-1 tvg-id="89542.107BBCWDNA.tvapp2" tvg-name="BBC World News (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bbc-america-us.png" group-title="News",BBC World News (TVPass)
+https://tvpass.org/channel/bbc-news-north-america-hd/
+
+#EXTINF:-1 tvg-id="10051.270BET.tvapp2" tvg-name="BET (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-us.png" group-title="Entertainment",BET (TVPass)
+https://tvpass.org/channel/bet-eastern-feed/
+
+#EXTINF:-1 tvg-id="14897.220BHER.tvapp2" tvg-name="BET Her (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-her-us.png" group-title="Entertainment",BET Her (TVPass)
+https://tvpass.org/channel/bet-her/
+
+#EXTINF:-1 tvg-id="96884.85BIG10V.tvapp2" tvg-name="Big Ten Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/big-ten-network-us.png" group-title="Sports",Big Ten Network (TVPass)
+https://tvpass.org/channel/big-ten-network/
+
+#EXTINF:-1 tvg-id="71799.605BLOOMHD.tvapp2" tvg-name="Bloomberg (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bloomberg-live-events-us.png" group-title="News",Bloomberg (TVPass)
+https://tvpass.org/channel/bloomberg-tv-usa/
+
+#EXTINF:-1 tvg-id="21883.298BOOM.tvapp2" tvg-name="Boomerang (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/boomerang-us.png" group-title="Kids",Boomerang (TVPass)
+https://tvpass.org/channel/boomerang/
+
+#EXTINF:-1 tvg-id="10057.185BRAVO.tvapp2" tvg-name="BRAVO (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bravo-us.png" group-title="Entertainment",BRAVO (TVPass)
+https://tvpass.org/channel/bravo-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="68344.606CSPANHD.tvapp2" tvg-name="C-SPAN (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/c-span-1-us.png" group-title="News",C-SPAN (TVPass)
+https://tvpass.org/channel/cspan/
+
+#EXTINF:-1 tvg-id="68334.607CSPN2HD.tvapp2" tvg-name="C-SPAN2 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/c-span-2-us.png" group-title="News",C-SPAN2 (TVPass)
+https://tvpass.org/channel/cspan-2/
+
+#EXTINF:-1 tvg-id="19570.7.1KABCDT.tvapp2" tvg-name="CA Los Angeles ABC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",CA Los Angeles ABC (TVPass)
+https://tvpass.org/channel/abc-kabc-los-angeles-ca/
+
+#EXTINF:-1 tvg-id="19567.2.1KCBSDT.tvapp2" tvg-name="CA Los Angeles CBS (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",CA Los Angeles CBS (TVPass)
+https://tvpass.org/channel/cbs-kcbs-los-angeles-ca/
+
+#EXTINF:-1 tvg-id="20450.11.1KTTVDT.tvapp2" tvg-name="CA Los Angeles FOX (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",CA Los Angeles FOX (TVPass)
+https://tvpass.org/channel/fox-kttv-los-angeles-ca/
+
+#EXTINF:-1 tvg-id="19568.4.1KNBCDT.tvapp2" tvg-name="CA Los Angeles NBC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",CA Los Angeles NBC (TVPass)
+https://tvpass.org/channel/nbc-knbc-los-angeles-ca/
+
+#EXTINF:-1 tvg-id="73496.8.2KFMBDT2.tvapp2" tvg-name="CA San Diego CW (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cw-us.png" group-title="Locals",CA San Diego CW (TVPass)
+https://tvpass.org/channel/cw-kfmbtv2-san-diego-ca/
+
+#EXTINF:-1 tvg-id="12131.257TOON.tvapp2" tvg-name="Cartoon Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cartoon-network-us.png" group-title="Kids",Cartoon Network (TVPass)
+https://tvpass.org/channel/cartoon-network-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="16365.221CBSSN.tvapp2" tvg-name="CBS Sports (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-sports-us.png" group-title="Sports",CBS Sports (TVPass)
+https://tvpass.org/channel/cbs-sports-network-usa/
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Chicago Sports Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbcsn-chicago-hz-us.png" group-title="Sports",Chicago Sports Network (TVPass)
+https://tvpass.org/channel/chicago-sports-network/
+
+#EXTINF:-1 tvg-id="10120.515MAX.tvapp2" tvg-name="Cinemax (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-us.png" group-title="Premium",Cinemax (TVPass)
+https://tvpass.org/channel/cinemax-eastern-feed/
+
+#EXTINF:-1 tvg-id="10121.517CINEHIT.tvapp2" tvg-name="Cinemax MoreMAX (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-hits-us.png" group-title="Premium",Cinemax MoreMAX (TVPass)
+https://tvpass.org/channel/moremax-eastern/
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Cinemax MovieMAX (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-moviemax-us.png" group-title="Premium",Cinemax MovieMAX (TVPass)
+https://tvpass.org/channel/moviemax-max-6-east/
+
+#EXTINF:-1 tvg-id="10138.327CMTV.tvapp2" tvg-name="CMT (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cmt-us.png" group-title="Entertainment",CMT (TVPass)
+https://tvpass.org/channel/cmt-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="10139.355CNBC.tvapp2" tvg-name="CNBC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-news-flat-us.png" group-title="News",CNBC (TVPass)
+https://tvpass.org/channel/cnbc-usa/
+
+#EXTINF:-1 tvg-id="10142.202CNN.tvapp2" tvg-name="CNN (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cnn-us.png" group-title="News",CNN (TVPass)
+https://tvpass.org/channel/cnn-us/
+
+#EXTINF:-1 tvg-id="62420.249CCHD.tvapp2" tvg-name="Comedy Central (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/comedy-central-us.png" group-title="Entertainment",Comedy Central (TVPass)
+https://tvpass.org/channel/comedy-central-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="30156.232COOK.tvapp2" tvg-name="Cooking Channel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cooking-channel-us.png" group-title="Entertainment",Cooking Channel (TVPass)
+https://tvpass.org/channel/the-cooking-channel/
+
+#EXTINF:-1 tvg-id="61469.571CINHD.tvapp2" tvg-name="Crime + Investigation (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/crime-and-investigation-us.png" group-title="Entertainment",Crime + Investigation (TVPass)
+https://tvpass.org/channel/crime-investigation-network-usa-hd/
+
+#EXTINF:-1 tvg-id="32744.50.1WDCWDT.tvapp2" tvg-name="DC Washington CW (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cw-us.png" group-title="Locals",DC Washington CW (TVPass)
+https://tvpass.org/channel/cw-wdcw-district-of-columbia/
+
+#EXTINF:-1 tvg-id="16617.286DEST.tvapp2" tvg-name="Destination America (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/destination-america-us.png" group-title="Entertainment",Destination America (TVPass)
+https://tvpass.org/channel/destination-america/
+
+#EXTINF:-1 tvg-id="11150.278DSC.tvapp2" tvg-name="Discovery (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-channel-us.png" group-title="Entertainment",Discovery (TVPass)
+https://tvpass.org/channel/discovery-channel-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="16618.294DFC.tvapp2" tvg-name="Discovery Family (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-family-us.png" group-title="Entertainment",Discovery Family (TVPass)
+https://tvpass.org/channel/discovery-family-channel/
+
+#EXTINF:-1 tvg-id="16125.261DLC.tvapp2" tvg-name="Discovery Life (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-life-us.png" group-title="Entertainment",Discovery Life (TVPass)
+https://tvpass.org/channel/discovery-life-channel/
+
+#EXTINF:-1 tvg-id="10171.290DISN.tvapp2" tvg-name="Disney (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-channel-us.png" group-title="Kids",Disney (TVPass)
+https://tvpass.org/channel/disney-eastern-feed/
+
+#EXTINF:-1 tvg-id="74796.289DJCH.tvapp2" tvg-name="Disney Jr. (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-jr-us.png" group-title="Kids",Disney Jr. (TVPass)
+https://tvpass.org/channel/disney-junior-usa-east/
+
+#EXTINF:-1 tvg-id="18279.292DXD.tvapp2" tvg-name="Disney XD (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-xd-us.png" group-title="Kids",Disney XD (TVPass)
+https://tvpass.org/channel/disney-xd-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="10989.236E.tvapp2" tvg-name="E! (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/e-entertainment-us.png" group-title="Entertainment",E! (TVPass)
+https://tvpass.org/channel/e-entertainment-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="10179.206ESPN.tvapp2" tvg-name="ESPN (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-us.png" group-title="Sports",ESPN (TVPass)
+https://tvpass.org/channel/espn/
+
+#EXTINF:-1 tvg-id="espn-deportes" tvg-name="ESPN Deportes (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-deportes-us.png" group-title="Sports",ESPN Deportes (TVPass)
+https://tvpass.org/channel/espn-deportes/
+
+#EXTINF:-1 tvg-id="16485.207ESPNEWS.tvapp2" tvg-name="ESPN News (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espnews-us.png" group-title="Sports",ESPN News (TVPass)
+https://tvpass.org/channel/espn-news/
+
+#EXTINF:-1 tvg-id="45654.208ESPNU.tvapp2" tvg-name="ESPN-U (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-u-us.png" group-title="Sports",ESPN-U (TVPass)
+https://tvpass.org/channel/espn-u/
+
+#EXTINF:-1 tvg-id="12444.209ESPN2.tvapp2" tvg-name="ESPN2 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-2-us.png" group-title="Sports",ESPN2 (TVPass)
+https://tvpass.org/channel/espn2/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-detroit-hd" tvg-name="Fanduel Sports Detroit (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Detroit (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-detroit-hd/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-florida" tvg-name="Fanduel Sports Florida (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Florida (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-florida/
+
+#EXTINF:-1 tvg-id="fanduel-sports-southeast-georgia" tvg-name="Fanduel Sports Georgia (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Georgia (TVPass)
+https://tvpass.org/channel/fanduel-sports-southeast-georgia/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-great-lakes" tvg-name="Fanduel Sports Great Lakes (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Great Lakes (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-great-lakes/
+
+#EXTINF:-1 tvg-id="fanduel-sports-indiana" tvg-name="Fanduel Sports Indiana (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Indiana (TVPass)
+https://tvpass.org/channel/fanduel-sports-indiana/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-san-diego" tvg-name="Fanduel Sports Network San Diego (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Network San Diego (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-san-diego/
+
+#EXTINF:-1 tvg-id="fanduel-sports-southeast-north-carolina" tvg-name="Fanduel Sports North Carolina (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports North Carolina (TVPass)
+https://tvpass.org/channel/fanduel-sports-southeast-north-carolina/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-ohio-cleveland" tvg-name="Fanduel Sports Ohio Cleveland (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Ohio Cleveland (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-ohio-cleveland/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-oklahoma" tvg-name="Fanduel Sports Oklahoma (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Oklahoma (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-oklahoma/
+
+#EXTINF:-1 tvg-id="fanduel-sports-southeast-south-carolina" tvg-name="Fanduel Sports South Carolina (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports South Carolina (TVPass)
+https://tvpass.org/channel/fanduel-sports-southeast-south-carolina/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-south-carolinas" tvg-name="Fanduel Sports South Carolinas (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports South Carolinas (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-south-carolinas/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-socal" tvg-name="Fanduel Sports Southern California (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Southern California (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-socal/
+
+#EXTINF:-1 tvg-id="fanduel-sports-southeast-tennessee-nashville" tvg-name="Fanduel Sports Tennessee Nashville (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Tennessee Nashville (TVPass)
+https://tvpass.org/channel/fanduel-sports-southeast-tennessee-nashville/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-wisconsin" tvg-name="Fanduel Sports Wisconsin (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Wisconsin (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-wisconsin/
+
+#EXTINF:-1 tvg-id="fanduel-sports-tennessee-east" tvg-name="Fanduel Sports+ East (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports+ East (TVPass)
+https://tvpass.org/channel/fanduel-sports-tennessee-east/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-north" tvg-name="Fanduel Sports+ North (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports+ North (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-north/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-south-tennessee-usa" tvg-name="Fanduel Sports+ South (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports+ South (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-south-tennessee-usa/
+
+#EXTINF:-1 tvg-id="bally-sports-sun" tvg-name="Fanduel Sports+ Sun (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports+ Sun (TVPass)
+https://tvpass.org/channel/fanduel-sports-sun/
+
+#EXTINF:-1 tvg-id="fanduel-sports-network-west" tvg-name="Fanduel Sports+ West (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports+ West (TVPass)
+https://tvpass.org/channel/fanduel-sports-network-west/
+
+#EXTINF:-1 tvg-id="12574.231FOOD.tvapp2" tvg-name="Food Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/food-network-us.png" group-title="Entertainment",Food Network (TVPass)
+https://tvpass.org/channel/food-network-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="58649.359FBN.tvapp2" tvg-name="Fox Business (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-business-us.png" group-title="News",Fox Business (TVPass)
+https://tvpass.org/channel/fox-business/
+
+#EXTINF:-1 tvg-id="16374.360FNC.tvapp2" tvg-name="Fox News (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-news-us.png" group-title="News",Fox News (TVPass)
+https://tvpass.org/channel/fox-news/
+
+#EXTINF:-1 tvg-id="10093.311FREEFRM.tvapp2" tvg-name="Freeform (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/freeform-us.png" group-title="Entertainment",Freeform (TVPass)
+https://tvpass.org/channel/freeform-east-feed/
+
+#EXTINF:-1 tvg-id="82541.219FS1.tvapp2" tvg-name="FS1 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-sports-1-us.png" group-title="Sports",FS1 (TVPass)
+https://tvpass.org/channel/fox-sports-1/
+
+#EXTINF:-1 tvg-id="33178.618FS2.tvapp2" tvg-name="FS2 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-sports-2-us.png" group-title="Sports",FS2 (TVPass)
+https://tvpass.org/channel/fox-sports-2/
+
+#EXTINF:-1 tvg-id="59116.339FUSEHD.tvapp2" tvg-name="FUSE (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fuse-us.png" group-title="Entertainment",FUSE (TVPass)
+https://tvpass.org/channel/fuse-tv-eastern-feed/
+
+#EXTINF:-1 tvg-id="14321.248FX.tvapp2" tvg-name="FX (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fx-us.png" group-title="Entertainment",FX (TVPass)
+https://tvpass.org/channel/fx-networks-east-coast/
+
+#EXTINF:-1 tvg-id="14988.258FXM.tvapp2" tvg-name="FX Movie (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fxm-movie-channel-us.png" group-title="Entertainment",FX Movie (TVPass)
+https://tvpass.org/channel/fx-movie-channel/
+
+#EXTINF:-1 tvg-id="17927.259FXX.tvapp2" tvg-name="FXX (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fxx-us.png" group-title="Entertainment",FXX (TVPass)
+https://tvpass.org/channel/fxx-usa-eastern/
+
+#EXTINF:-1 tvg-id="16834.266FYISD.tvapp2" tvg-name="FYI (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fyi-us.png" group-title="Entertainment",FYI (TVPass)
+https://tvpass.org/channel/fyi-usa-eastern/
+
+#EXTINF:-1 tvg-id="game-show-network-east" tvg-name="Game Show Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/game-show-network-us.png" group-title="Entertainment",Game Show Network (TVPass)
+https://tvpass.org/channel/game-show-network-east/
+
+#EXTINF:-1 tvg-id="14899.218GOLF.tvapp2" tvg-name="Golf Channel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-golf-us.png" group-title="Sports",Golf Channel (TVPass)
+https://tvpass.org/channel/golf-channel-usa/
+
+#EXTINF:-1 tvg-id="11221.312HALL.tvapp2" tvg-name="Hallmark (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-channel-us.png" group-title="Entertainment",Hallmark (TVPass)
+https://tvpass.org/channel/hallmark-eastern-feed/
+
+#EXTINF:-1 tvg-id="105723.564HFM.tvapp2" tvg-name="Hallmark Family (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-family-us.png" group-title="Entertainment",Hallmark Family (TVPass)
+https://tvpass.org/channel/hallmark-family-hd/
+
+#EXTINF:-1 tvg-id="46710.565HMYSHD.tvapp2" tvg-name="Hallmark Mystery (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-mystery-us.png" group-title="Entertainment",Hallmark Mystery (TVPass)
+https://tvpass.org/channel/hallmark-mystery-eastern-hd/
+
+#EXTINF:-1 tvg-id="10240.501HBO.tvapp2" tvg-name="HBO (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-us.png" group-title="Premium",HBO (TVPass)
+https://tvpass.org/channel/hbo-eastern-feed/
+
+#EXTINF:-1 tvg-id="59839.506HBOCHD.tvapp2" tvg-name="HBO Comedy (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-comedy-us.png" group-title="Premium",HBO Comedy (TVPass)
+https://tvpass.org/channel/hbo-comedy-hd-east/
+
+#EXTINF:-1 tvg-id="10243.503HBODRMA.tvapp2" tvg-name="HBO Drama (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-drama-us.png" group-title="Premium",HBO Drama (TVPass)
+https://tvpass.org/channel/hbo-signature-hbo-3-eastern/
+
+#EXTINF:-1 tvg-id="10241.502HBOHTS.tvapp2" tvg-name="HBO Hits (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-hits-us.png" group-title="Premium",HBO Hits (TVPass)
+https://tvpass.org/channel/hbo-2-eastern-feed/
+
+#EXTINF:-1 tvg-id="59845.509HBOMVHD.tvapp2" tvg-name="HBO Movies (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-movies-us.png" group-title="Premium",HBO Movies (TVPass)
+https://tvpass.org/channel/hbo-zone-hd-east/
+
+#EXTINF:-1 tvg-id="14902.229HGTV.tvapp2" tvg-name="HGTV (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hgtv-us.png" group-title="Entertainment",HGTV (TVPass)
+https://tvpass.org/channel/hgtv-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="14771.269HISTORY.tvapp2" tvg-name="History (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/history-channel-us.png" group-title="Entertainment",History (TVPass)
+https://tvpass.org/channel/history-channel-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="10145.204HLN.tvapp2" tvg-name="HLN (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hln-us.png" group-title="Entertainment",HLN (TVPass)
+https://tvpass.org/channel/hln/
+
+#EXTINF:-1 tvg-id="16615.285ID.tvapp2" tvg-name="ID (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/investigation-discovery-us.png" group-title="Entertainment",ID (TVPass)
+https://tvpass.org/channel/investigation-discovery-usa-eastern/
+
+#EXTINF:-1 tvg-id="14873.333IFC.tvapp2" tvg-name="IFC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ifc-us.png" group-title="Entertainment",IFC (TVPass)
+https://tvpass.org/channel/independent-film-channel-us/
+
+#EXTINF:-1 tvg-id="76894.305IONDHD.tvapp2" tvg-name="ION (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ion-television-us.png" group-title="Entertainment",ION (TVPass)
+https://tvpass.org/channel/ion-eastern-feed/
+
+#EXTINF:-1 tvg-id="10918.252LIFE.tvapp2" tvg-name="Lifetime (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/lifetime-us.png" group-title="Entertainment",Lifetime (TVPass)
+https://tvpass.org/channel/lifetime-network-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="18480.253LMN.tvapp2" tvg-name="Lifetime Movies (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/lifetime-movies-us.png" group-title="Entertainment",Lifetime Movies (TVPass)
+https://tvpass.org/channel/lifetime-movies-east/
+
+#EXTINF:-1 tvg-id="46762.272LOGO.tvapp2" tvg-name="LOGO (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/logo-us.png" group-title="Entertainment",LOGO (TVPass)
+https://tvpass.org/channel/logo-east/
+
+#EXTINF:-1 tvg-id="marquee-sports-network" tvg-name="Marquee Sports Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/marquee-sports-network-us.png" group-title="Sports",Marquee Sports Network (TVPass)
+https://tvpass.org/channel/marquee-sports-network/
+
+#EXTINF:-1 tvg-id="44316.177DITV177.tvapp2" tvg-name="MeTV (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/me-tv-us.png" group-title="Entertainment",MeTV (TVPass)
+https://tvpass.org/channel/metv-wjlp-new-jerseynew-york/
+
+#EXTINF:-1 tvg-id="metv-toons-wjlp2-new-jersey" tvg-name="MeTV Toon (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/me-tv-us.png" group-title="Kids",MeTV Toon (TVPass)
+https://tvpass.org/channel/metv-toons-wjlp2-new-jersey/
+
+#EXTINF:-1 tvg-id="midatlantic-sports-network" tvg-name="Midatlantic Sports Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/masn-us.png" group-title="Sports",Midatlantic Sports Network (TVPass)
+https://tvpass.org/channel/midatlantic-sports-network/
+
+#EXTINF:-1 tvg-id="62079.213MLBN.tvapp2" tvg-name="MLB Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mlb-network-us.png" group-title="Sports",MLB Network (TVPass)
+https://tvpass.org/channel/mlb-network/
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Monumental Sports Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/monumental-sports-network-us.png" group-title="Sports",Monumental Sports Network (TVPass)
+https://tvpass.org/channel/monumental-sports-network/
+
+#EXTINF:-1 tvg-id="31046.281MTHD.tvapp2" tvg-name="Motortrend (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/motor-trend-us.png" group-title="Entertainment",Motortrend (TVPass)
+https://tvpass.org/channel/motor-trend-hd/
+
+#EXTINF:-1 tvg-id="10979.78MSG.tvapp2" tvg-name="MSG (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/msg-us.png" group-title="Entertainment",MSG (TVPass)
+https://tvpass.org/channel/msg-madison-square-gardens/
+
+#EXTINF:-1 tvg-id="10979.78MSG.tvapp2" tvg-name="MSG Plus (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/msg-us.png" group-title="Entertainment",MSG Plus (TVPass)
+https://tvpass.org/channel/msg-plus/
+
+#EXTINF:-1 tvg-id="16300.356MSNOW.tvapp2" tvg-name="MSNBC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-news-flat-us.png" group-title="News",MSNBC (TVPass)
+https://tvpass.org/channel/msnbc-usa/
+
+#EXTINF:-1 tvg-id="10986.331MTV.tvapp2" tvg-name="MTV (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-us.png" group-title="Entertainment",MTV (TVPass)
+https://tvpass.org/channel/mtv-usa-eastern-feed/
+
+#EXTINF:-1 tvg-id="16361.332MTV2.tvapp2" tvg-name="MTV2 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-2-us.png" group-title="Entertainment",MTV2 (TVPass)
+https://tvpass.org/channel/mtv-2-east/
+
+#EXTINF:-1 tvg-id="24959.276NGC.tvapp2" tvg-name="National Geographic (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/national-geographic-us.png" group-title="Entertainment",National Geographic (TVPass)
+https://tvpass.org/channel/national-geographic-us-eastern/
+
+#EXTINF:-1 tvg-id="66804.283NGWILD.tvapp2" tvg-name="National Geographic Wild (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nat-geo-wild-us.png" group-title="Entertainment",National Geographic Wild (TVPass)
+https://tvpass.org/channel/national-geographic-wild/
+
+#EXTINF:-1 tvg-id="32281.216NBATV.tvapp2" tvg-name="NBA Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Sports",NBA Network (TVPass)
+https://tvpass.org/channel/nba-tv-usa/
+
+#EXTINF:-1 tvg-id="nbc-sports-bay-area" tvg-name="NBC Sports Bay Area (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-sports-us.png" group-title="Sports",NBC Sports Bay Area (TVPass)
+https://tvpass.org/channel/nbc-sports-bay-area/
+
+#EXTINF:-1 tvg-id="nbc-sports-boston" tvg-name="NBC Sports Boston (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-sports-us.png" group-title="Sports",NBC Sports Boston (TVPass)
+https://tvpass.org/channel/nbc-sports-boston/
+
+#EXTINF:-1 tvg-id="nbc-sports-california" tvg-name="NBC Sports California (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-sports-us.png" group-title="Sports",NBC Sports California (TVPass)
+https://tvpass.org/channel/nbc-sports-california/
+
+#EXTINF:-1 tvg-id="nbc-sports-philadelphia" tvg-name="NBC Sports Philadelphia (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-sports-us.png" group-title="Sports",NBC Sports Philadelphia (TVPass)
+https://tvpass.org/channel/nbc-sports-philadelphia/
+
+#EXTINF:-1 tvg-id="new-england-sports-network" tvg-name="New England Sports Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nesn-us.png" group-title="Sports",New England Sports Network (TVPass)
+https://tvpass.org/channel/new-england-sports-network/
+
+#EXTINF:-1 tvg-id="87925.349NEWSMX.tvapp2" tvg-name="NewsMax (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/newsmax-tv-us.png" group-title="News",NewsMax (TVPass)
+https://tvpass.org/channel/newsmax-tv/
+
+#EXTINF:-1 tvg-id="34710.212NFLNET.tvapp2" tvg-name="NFL Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-network-us.png" group-title="Sports",NFL Network (TVPass)
+https://tvpass.org/channel/nfl-network/
+
+#EXTINF:-1 tvg-id="65025.211NFLNRZD.tvapp2" tvg-name="NFL RedZone (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-red-zone-us.png" group-title="Sports",NFL RedZone (TVPass)
+https://tvpass.org/channel/nfl-redzone/
+
+#EXTINF:-1 tvg-id="58570.215NHLNET.tvapp2" tvg-name="NHL Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Sports",NHL Network (TVPass)
+https://tvpass.org/channel/nhl-network-usa/
+
+#EXTINF:-1 tvg-id="19211.301NICJR.tvapp2" tvg-name="Nick Jr (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-jr-us.png" group-title="Kids",Nick Jr (TVPass)
+https://tvpass.org/channel/nick-jr-east/
+
+#EXTINF:-1 tvg-id="11006.299NIK.tvapp2" tvg-name="Nickelodeon (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nickelodeon-us.png" group-title="Kids",Nickelodeon (TVPass)
+https://tvpass.org/channel/nickelodeon-usa-east-feed/
+
+#EXTINF:-1 tvg-id="30420.302NIKTON.tvapp2" tvg-name="Nicktoons (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-toons-us.png" group-title="Kids",Nicktoons (TVPass)
+https://tvpass.org/channel/nicktoons-east/
+
+#EXTINF:-1 tvg-id="20453.7.1WABCDT.tvapp2" tvg-name="NY New York ABC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",NY New York ABC (TVPass)
+https://tvpass.org/channel/abc-wabc-new-york-ny/
+
+#EXTINF:-1 tvg-id="11331.2WCBS.tvapp2" tvg-name="NY New York CBS (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",NY New York CBS (TVPass)
+https://tvpass.org/channel/cbs-wcbs-new-york-ny/
+
+#EXTINF:-1 tvg-id="20360.505WNYWDT.tvapp2" tvg-name="NY New York FOX (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",NY New York FOX (TVPass)
+https://tvpass.org/channel/fox-wnyw-new-york-ny/
+
+#EXTINF:-1 tvg-id="20459.504WNBCDT.tvapp2" tvg-name="NY New York NBC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",NY New York NBC (TVPass)
+https://tvpass.org/channel/nbc-wnbc-new-york-ny/
+
+#EXTINF:-1 tvg-id="11715.13WNET.tvapp2" tvg-name="NY New York PBS (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/pbs-us.png" group-title="Locals",NY New York PBS (TVPass)
+https://tvpass.org/channel/pbs-wnet-new-york-ny/
+
+#EXTINF:-1 tvg-id="70387.279OWN.tvapp2" tvg-name="Oprah Winfrey Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/oprah-winfrey-network-us.png" group-title="Entertainment",Oprah Winfrey Network (TVPass)
+https://tvpass.org/channel/oprah-winfrey-network-usa-eastern/
+
+#EXTINF:-1 tvg-id="14776.606OUTD.tvapp2" tvg-name="Outdoor Channel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/outdoor-channel-us.png" group-title="Entertainment",Outdoor Channel (TVPass)
+https://tvpass.org/channel/outdoor-channel-us/
+
+#EXTINF:-1 tvg-id="21484.144OXYGEN.tvapp2" tvg-name="Oxygen (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/oxygen-us.png" group-title="Entertainment",Oxygen (TVPass)
+https://tvpass.org/channel/oxygen-eastern-feed/
+
+#EXTINF:-1 tvg-id="52199.238REELZ.tvapp2" tvg-name="ReelzChannel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/reelz-us.png" group-title="Entertainment",ReelzChannel (TVPass)
+https://tvpass.org/channel/reelzchannel/
+
+#EXTINF:-1 tvg-id="57390.284SCIHD.tvapp2" tvg-name="Science (TVPass)" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/7/7c/Science_2016_%28full_version%29.svg/revision/latest?cb=20180616040702" group-title="Entertainment",Science (TVPass)
+https://tvpass.org/channel/science/
+
+#EXTINF:-1 tvg-id="89535.611SEC.tvapp2" tvg-name="SEC Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sec-network-hz-us.png" group-title="Sports",SEC Network (TVPass)
+https://tvpass.org/channel/sec-network/
+
+#EXTINF:-1 tvg-id="11115.545PARSHO.tvapp2" tvg-name="Showtime (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-us.png" group-title="Premium",Showtime (TVPass)
+https://tvpass.org/channel/paramount-with-showtime-eastern-feed/
+
+#EXTINF:-1 tvg-id="11116.547SHO2.tvapp2" tvg-name="Showtime 2 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-2-us.png" group-title="Premium",Showtime 2 (TVPass)
+https://tvpass.org/channel/showtime-2-eastern/
+
+#EXTINF:-1 tvg-id="49603.77SNY.tvapp2" tvg-name="SNY Sportsnet (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sny-us.png" group-title="Sports",SNY Sportsnet (TVPass)
+https://tvpass.org/channel/sny-sportsnet-new-york-comcast/
+
+#EXTINF:-1 tvg-id="space-city-home-network" tvg-name="Space City Home Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/space-city-home-network-us.png" group-title="Entertainment",Space City Home Network (TVPass)
+https://tvpass.org/channel/space-city-home-network/
+
+#EXTINF:-1 tvg-id="sportsnet-east" tvg-name="Spectrum Sportsnet (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet (TVPass)
+https://tvpass.org/channel/sportsnet-east/
+
+#EXTINF:-1 tvg-id="sportsnet-360" tvg-name="Spectrum Sportsnet 360 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet 360 (TVPass)
+https://tvpass.org/channel/sportsnet-360/
+
+#EXTINF:-1 tvg-id="spectrum-sportsnet-la" tvg-name="Spectrum SportsNet LA (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum SportsNet LA (TVPass)
+https://tvpass.org/channel/spectrum-sportsnet-la/
+
+#EXTINF:-1 tvg-id="spectrum-sportsnet" tvg-name="Spectrum Sportsnet Lakers (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet Lakers (TVPass)
+https://tvpass.org/channel/spectrum-sportsnet/
+
+#EXTINF:-1 tvg-id="sportsnet-one" tvg-name="Spectrum Sportsnet One (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet One (TVPass)
+https://tvpass.org/channel/sportsnet-one/
+
+#EXTINF:-1 tvg-id="sportsnet-ontario" tvg-name="Spectrum Sportsnet Ontario (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet Ontario (TVPass)
+https://tvpass.org/channel/sportsnet-ontario/
+
+#EXTINF:-1 tvg-id="sportsnet-pacific" tvg-name="Spectrum Sportsnet Pacific (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet Pacific (TVPass)
+https://tvpass.org/channel/sportsnet-pacific/
+
+#EXTINF:-1 tvg-id="sportsnet-pittsburgh" tvg-name="Spectrum Sportsnet Pittsburgh (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet Pittsburgh (TVPass)
+https://tvpass.org/channel/sportsnet-pittsburgh/
+
+#EXTINF:-1 tvg-id="sportsnet-west" tvg-name="Spectrum Sportsnet West (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/spectrum-sportsnet-us.png" group-title="Sports",Spectrum Sportsnet West (TVPass)
+https://tvpass.org/channel/sportsnet-west/
+
+#EXTINF:-1 tvg-id="12719.525STARZ.tvapp2" tvg-name="STARZ (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-us.png" group-title="Premium",STARZ (TVPass)
+https://tvpass.org/channel/starz-eastern/
+
+#EXTINF:-1 tvg-id="16108.239SUNDANC.tvapp2" tvg-name="SundanceTV (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sundance-tv-us.png" group-title="Premium",SundanceTV (TVPass)
+https://tvpass.org/channel/sundancetv-usa-east/
+
+#EXTINF:-1 tvg-id="11097.244SYFY.tvapp2" tvg-name="Syfy (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/syfy-us.png" group-title="Entertainment",Syfy (TVPass)
+https://tvpass.org/channel/syfy-eastern-feed/
+
+#EXTINF:-1 tvg-id="11867.247TBS.tvapp2" tvg-name="TBS (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tbs-us.png" group-title="Entertainment",TBS (TVPass)
+https://tvpass.org/channel/tbs-east/
+
+#EXTINF:-1 tvg-id="wpix-new-york-superstation" tvg-name="TBS (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tbs-us.png" group-title="Entertainment",TBS (TVPass)
+https://tvpass.org/channel/wpix-new-york-superstation/
+
+#EXTINF:-1 tvg-id="12852.256TCM.tvapp2" tvg-name="TCM (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tcm-us.png" group-title="Entertainment",TCM (TVPass)
+https://tvpass.org/channel/turner-classic-movies-usa/
+
+#EXTINF:-1 tvg-id="59036.303TNCK.tvapp2" tvg-name="Teen Nick (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/teen-nick-us.png" group-title="Kids",Teen Nick (TVPass)
+https://tvpass.org/channel/teennick-eastern/
+
+#EXTINF:-1 tvg-id="telemundo-eastern-feed" tvg-name="Telemundo (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/telemundo-us.png" group-title="Entertainment",Telemundo (TVPass)
+https://tvpass.org/channel/telemundo-eastern-feed/
+
+#EXTINF:-1 tvg-id="33395.217TENNIS.tvapp2" tvg-name="Tennis Channel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tennis-channel-hz-us.png" group-title="Sports",Tennis Channel (TVPass)
+https://tvpass.org/channel/the-tennis-channel/
+
+#EXTINF:-1 tvg-id="11158.280TLC.tvapp2" tvg-name="TLC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tlc-us.png" group-title="Entertainment",TLC (TVPass)
+https://tvpass.org/channel/tlc-usa-eastern/
+
+#EXTINF:-1 tvg-id="11160.553TMC.tvapp2" tvg-name="TMC (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/the-movie-channel-us.png" group-title="Entertainment",TMC (TVPass)
+https://tvpass.org/channel/tmc-us-eastern-feed/
+
+#EXTINF:-1 tvg-id="11164.245TNT.tvapp2" tvg-name="TNT (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tnt-us.png" group-title="Entertainment",TNT (TVPass)
+https://tvpass.org/channel/tnt-eastern-feed/
+
+#EXTINF:-1 tvg-id="11180.277TRAV.tvapp2" tvg-name="Travel Channel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/travel-channel-us.png" group-title="Entertainment",Travel Channel (TVPass)
+https://tvpass.org/channel/travel-us-east/
+
+#EXTINF:-1 tvg-id="10153.246TRUTV.tvapp2" tvg-name="truTV (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tru-tv-us.png" group-title="Entertainment",truTV (TVPass)
+https://tvpass.org/channel/trutv-usa-eastern/
+
+#EXTINF:-1 tvg-id="tsn1" tvg-name="TSN1 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-1-ca.png" group-title="Sports",TSN1 (TVPass)
+https://tvpass.org/channel/tsn1/
+
+#EXTINF:-1 tvg-id="tsn2" tvg-name="TSN2 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-2-ca.png" group-title="Sports",TSN2 (TVPass)
+https://tvpass.org/channel/tsn2/
+
+#EXTINF:-1 tvg-id="tsn3" tvg-name="TSN3 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-3-ca.png" group-title="Sports",TSN3 (TVPass)
+https://tvpass.org/channel/tsn3/
+
+#EXTINF:-1 tvg-id="tsn4" tvg-name="TSN4 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-4-ca.png" group-title="Sports",TSN4 (TVPass)
+https://tvpass.org/channel/tsn4/
+
+#EXTINF:-1 tvg-id="tsn5" tvg-name="TSN5 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-5-ca.png" group-title="Sports",TSN5 (TVPass)
+https://tvpass.org/channel/tsn5/
+
+#EXTINF:-1 tvg-id="16123.241TVLAND.tvapp2" tvg-name="TV Land (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tv-land-us.png" group-title="Entertainment",TV Land (TVPass)
+https://tvpass.org/channel/tv-land-eastern/
+
+#EXTINF:-1 tvg-id="61960.328TVONEHD.tvapp2" tvg-name="TV One (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/one-tv-us.png" group-title="Entertainment",TV One (TVPass)
+https://tvpass.org/channel/tv-one/
+
+#EXTINF:-1 tvg-id="159817.295METOONS.tvapp2" tvg-name="Universo (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/universal-kids-us.png" group-title="Locals",Universo (TVPass)
+https://tvpass.org/channel/universal-kids/
+
+#EXTINF:-1 tvg-id="11118.402UNI.tvapp2" tvg-name="Univision (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/univision-us.png" group-title="Entertainment",Univision (TVPass)
+https://tvpass.org/channel/univision-eastern-feed/
+
+#EXTINF:-1 tvg-id="11207.242USA.tvapp2" tvg-name="USA Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/usa-us.png" group-title="Entertainment",USA Network (TVPass)
+https://tvpass.org/channel/usa-network-east-feed/
+
+#EXTINF:-1 tvg-id="11218.335VH1.tvapp2" tvg-name="VH1 (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/vh1-us.png" group-title="Entertainment",VH1 (TVPass)
+https://tvpass.org/channel/vh1-eastern-feed/
+
+#EXTINF:-1 tvg-id="18822.271VICE.tvapp2" tvg-name="VICE (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/vice-us.png" group-title="News",VICE (TVPass)
+https://tvpass.org/channel/vice/
+
+#EXTINF:-1 tvg-id="16409.149WE.tvapp2" tvg-name="WE (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/we-tv-us.png" group-title="Entertainment",WE (TVPass)
+https://tvpass.org/channel/we-womens-entertainment-eastern/
+
+#EXTINF:-1 tvg-id="11187.362WEATH.tvapp2" tvg-name="Weather Channel (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/weather-channel-us.png" group-title="News",Weather Channel (TVPass)
+https://tvpass.org/channel/the-weather-channel/
+
+#EXTINF:-1 tvg-id="30017.76YES.tvapp2" tvg-name="YES Network (TVPass)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/yes-network-us.png" group-title="Entertainment",YES Network (TVPass)
+https://tvpass.org/channel/yes-network/
+
+#EXTINF:-1 tvg-id="11259.7WABC.tvapp2" tvg-name="ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",ABC (MOJ)
+http://fl1.moveonjoy.com/ABC_EAST/index.m3u8
+
+#EXTINF:-1 tvg-id="111871.571ACC.tvapp2" tvg-name="ACC Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/acc-network-us.png" group-title="Sports",ACC Network (MOJ)
+http://fl1.moveonjoy.com/ACC_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="72135.58.1WBMALD.tvapp2" tvg-name="AL Birmingham ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",AL Birmingham ABC (MOJ)
+http://fl1.moveonjoy.com/AL_BIRMINGHAM_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="43008.13.1WVTMDT.tvapp2" tvg-name="AL Birmingham NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",AL Birmingham NBC (MOJ)
+http://fl1.moveonjoy.com/AL_Birmingham_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="32691.3.1WEARDT.tvapp2" tvg-name="AL Mobile ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",AL Mobile ABC (MOJ)
+http://fl1.moveonjoy.com/AL_MOBILE_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="31071.5.1WKRGDT.tvapp2" tvg-name="AL Mobile CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",AL Mobile CBS (MOJ)
+http://fl1.moveonjoy.com/AL_MOBILE_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="25101.10.1WALADT.tvapp2" tvg-name="AL Mobile FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",AL Mobile FOX (MOJ)
+http://fl1.moveonjoy.com/AL_MOBILE_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="10021.231AMC.tvapp2" tvg-name="AMC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/amc-us.png" group-title="Entertainment",AMC (MOJ)
+http://fl1.moveonjoy.com/AMC_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="18284.287AHC.tvapp2" tvg-name="American Heroes (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/american-heroes-channel-us.png" group-title="Entertainment",American Heroes (MOJ)
+http://fl1.moveonjoy.com/American_Heroes_Channel/index.m3u8
+
+#EXTINF:-1 tvg-id="16331.130APL.tvapp2" tvg-name="Animal Planet (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/animal-planet-us.png" group-title="Entertainment",Animal Planet (MOJ)
+http://fl2.moveonjoy.com/Animal_Planet/index.m3u8
+
+#EXTINF:-1 tvg-id="16372.1789ANTEN.tvapp2" tvg-name="Antenna TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/antenna-us.png" group-title="Entertainment",Antenna TV (MOJ)
+http://fl41.moveonjoy.com/Antenna_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="76126.272ASPRE.tvapp2" tvg-name="Aspire (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/aspire-tv-us.png" group-title="Entertainment",Aspire (MOJ)
+http://fl41.moveonjoy.com/Aspire/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="AXS TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/axs-tv-us.png" group-title="Entertainment",AXS TV (MOJ)
+http://fl2.moveonjoy.com/Axs_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="32484.13.1KOLDDT.tvapp2" tvg-name="AZ Tucson CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",AZ Tucson CBS (MOJ)
+http://fl1.moveonjoy.com/AZ_TUCSON_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="18332.189BBCA.tvapp2" tvg-name="BBC America (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bbc-america-us.png" group-title="News",BBC America (MOJ)
+http://fl2.moveonjoy.com/BBC_AMERICA/index.m3u8
+
+#EXTINF:-1 tvg-id="89542.107BBCWDNA.tvapp2" tvg-name="BBC World News (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/international/bbc-world-news-int.png" group-title="News",BBC World News (MOJ)
+http://fl1.moveonjoy.com/BBC_WORLD_NEWS/index.m3u8
+
+#EXTINF:-1 tvg-id="76950.596BEIN1HD.tvapp2" tvg-name="beIN Sports (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bein-sports-us.png" group-title="Sports",beIN Sports (MOJ)
+http://fl1.moveonjoy.com/BEIN_SPORTS/index.m3u8
+
+#EXTINF:-1 tvg-id="10051.270BET.tvapp2" tvg-name="BET (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-us.png" group-title="Entertainment",BET (MOJ)
+http://fl51.moveonjoy.com/BET/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="BET Gospel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-gospel-us.png" group-title="Entertainment",BET Gospel (MOJ)
+http://fl1.moveonjoy.com/BET_GOSPEL/index.m3u8
+
+#EXTINF:-1 tvg-id="14897.220BHER.tvapp2" tvg-name="BET Her (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-her-us.png" group-title="Entertainment",BET Her (MOJ)
+http://fl1.moveonjoy.com/BET_HER/index.m3u8
+
+#EXTINF:-1 tvg-id="30419.213BETJ.tvapp2" tvg-name="BET Jams (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-jams-us.png" group-title="Entertainment",BET Jams (MOJ)
+http://fl2.moveonjoy.com/BET_Jams/index.m3u8
+
+#EXTINF:-1 tvg-id="18718.219BETSOUL.tvapp2" tvg-name="BET Soul (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bet-soul-us.png" group-title="Entertainment",BET Soul (MOJ)
+http://fl1.moveonjoy.com/BET_SOUL/index.m3u8
+
+#EXTINF:-1 tvg-id="96884.85BIG10V.tvapp2" tvg-name="Big Ten Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/big-ten-network-us.png" group-title="Sports",Big Ten Network (MOJ)
+http://fl7.moveonjoy.com/BIG_TEN_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="71799.605BLOOMHD.tvapp2" tvg-name="Bloomberg (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bloomberg-live-events-us.png" group-title="News",Bloomberg (MOJ)
+http://fl51.moveonjoy.com/BLOOMBERG/index.m3u8
+
+#EXTINF:-1 tvg-id="21883.298BOOM.tvapp2" tvg-name="Boomerang (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/boomerang-us.png" group-title="Kids",Boomerang (MOJ)
+http://fl7.moveonjoy.com/BOOMERANG/index.m3u8
+
+#EXTINF:-1 tvg-id="73067.82BOUNCE.tvapp2" tvg-name="Bounce (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bounce-us.png" group-title="Entertainment",Bounce (MOJ)
+http://fl51.moveonjoy.com/BOUNCE_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="10057.185BRAVO.tvapp2" tvg-name="BRAVO (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/bravo-us.png" group-title="Entertainment",BRAVO (MOJ)
+http://fl7.moveonjoy.com/BRAVO/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Buzzr (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/buzzr-us.png" group-title="Entertainment",Buzzr (MOJ)
+http://fl41.moveonjoy.com/Buzzr/index.m3u8
+
+#EXTINF:-1 tvg-id="68344.606CSPANHD.tvapp2" tvg-name="C-SPAN (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/c-span-1-us.png" group-title="News",C-SPAN (MOJ)
+http://fl7.moveonjoy.com/C-SPAN/index.m3u8
+
+#EXTINF:-1 tvg-id="35358.29.1KBAKDT.tvapp2" tvg-name="CA Bakersfield CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",CA Bakersfield CBS (MOJ)
+http://fl1.moveonjoy.com/CA_BAKERSFIELD_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="24027.24.1KSEEDT.tvapp2" tvg-name="CA Fresno NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",CA Fresno NBC (MOJ)
+http://fl1.moveonjoy.com/CA_FRESNO_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="19570.7.1KABCDT.tvapp2" tvg-name="CA Los Angeles ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",CA Los Angeles ABC (MOJ)
+http://fl1.moveonjoy.com/CA_LOS_ANGELES_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="19567.2.1KCBSDT.tvapp2" tvg-name="CA Los Angeles CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",CA Los Angeles CBS (MOJ)
+http://fl1.moveonjoy.com/CA_Los_Angeles_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="12131.257TOON.tvapp2" tvg-name="Cartoon Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cartoon-network-us.png" group-title="Kids",Cartoon Network (MOJ)
+http://fl2.moveonjoy.com/CARTOON_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="CBS News (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-news-us.png" group-title="News",CBS News (MOJ)
+http://fl1.moveonjoy.com/CBS_News/index.m3u8
+
+#EXTINF:-1 tvg-id="16365.221CBSSN.tvapp2" tvg-name="CBS Sports (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-sports-us.png" group-title="Sports",CBS Sports (MOJ)
+http://fl1.moveonjoy.com/CBS_SPORTS_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="101103.614CHEDSTR.tvapp2" tvg-name="Cheddar Business (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cheddar-news-us.png" group-title="News",Cheddar Business (MOJ)
+http://fl1.moveonjoy.com/CHEDDAR_BUSINESS/index.m3u8
+
+#EXTINF:-1 tvg-id="10120.515MAX.tvapp2" tvg-name="Cinemax (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-us.png" group-title="Premium",Cinemax (MOJ)
+http://fl2.moveonjoy.com/CINEMAX_EAST/index.m3u8
+
+#EXTINF:-1 tvg-id="110289.341CLEOHD.tvapp2" tvg-name="Cleo TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cleo-tv-us.png" group-title="Entertainment",Cleo TV (MOJ)
+http://fl41.moveonjoy.com/Cleo_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="10138.327CMTV.tvapp2" tvg-name="CMT (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cmt-us.png" group-title="Entertainment",CMT (MOJ)
+http://fl2.moveonjoy.com/CMT/index.m3u8
+
+#EXTINF:-1 tvg-id="10139.355CNBC.tvapp2" tvg-name="CNBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-news-flat-us.png" group-title="News",CNBC (MOJ)
+http://fl31.moveonjoy.com/CNBC/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="CNBC World (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-news-flat-us.png" group-title="News",CNBC World (MOJ)
+http://fl1.moveonjoy.com/CNBC_World/index.m3u8
+
+#EXTINF:-1 tvg-id="10142.202CNN.tvapp2" tvg-name="CNN (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cnn-us.png" group-title="News",CNN (MOJ)
+http://fl2.moveonjoy.com/CNN/index.m3u8
+
+#EXTINF:-1 tvg-id="10146.105CNNI.tvapp2" tvg-name="CNN International (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/international/cnn-international-int.png" group-title="News",CNN International (MOJ)
+http://fl1.moveonjoy.com/CNN_INTERNATIONAL/index.m3u8
+
+#EXTINF:-1 tvg-id="21297.4.1KCNCDT.tvapp2" tvg-name="CO Colorado CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",CO Colorado CBS (MOJ)
+http://fl1.moveonjoy.com/CO_DENVER_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="42629.13.1KRDODT.tvapp2" tvg-name="CO Colorado Springs ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",CO Colorado Springs ABC (MOJ)
+http://fl1.moveonjoy.com/CO_Colorado_Springs_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="35366.11.1KKTVDT.tvapp2" tvg-name="CO Colorado Springs CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",CO Colorado Springs CBS (MOJ)
+http://fl1.moveonjoy.com/CO_Colorado_Springs_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="21319.31.1KDVRDT.tvapp2" tvg-name="CO Denver FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",CO Denver FOX (MOJ)
+http://fl1.moveonjoy.com/CO_Denver_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="21298.9.1KUSADT.tvapp2" tvg-name="CO Denver NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",CO Denver NBC (MOJ)
+http://fl1.moveonjoy.com/CO_Denver_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="62420.249CCHD.tvapp2" tvg-name="Comedy Central (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/comedy-central-us.png" group-title="Entertainment",Comedy Central (MOJ)
+http://fl2.moveonjoy.com/Comedy_Central/index.m3u8
+
+#EXTINF:-1 tvg-id="82470.382CMDTVHD.tvapp2" tvg-name="Comedy TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/comedy-tv-us.png" group-title="Entertainment",Comedy TV (MOJ)
+http://fl1.moveonjoy.com/Comedy_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="97051.459COMET.tvapp2" tvg-name="COMET (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/comet-us.png" group-title="Entertainment",COMET (MOJ)
+http://fl2.moveonjoy.com/COMET/index.m3u8
+
+#EXTINF:-1 tvg-id="30156.232COOK.tvapp2" tvg-name="Cooking (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cooking-channel-us.png" group-title="Entertainment",Cooking (MOJ)
+http://fl2.moveonjoy.com/COOKING_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="55347.485WPXNDT4.tvapp2" tvg-name="Court TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/court-tv-us.png" group-title="Entertainment",Court TV (MOJ)
+http://fl2.moveonjoy.com/COURT_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Cowboy Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cowboy-channel-us.png" group-title="Entertainment",Cowboy Channel (MOJ)
+http://fl1.moveonjoy.com/Cowboy_Channel/index.m3u8
+
+#EXTINF:-1 tvg-id="44936.460WNBCDT2.tvapp2" tvg-name="COZI TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cozi-tv-us.png" group-title="Entertainment",COZI TV (MOJ)
+http://fl2.moveonjoy.com/COZI_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="113720.308DTV308.tvapp2" tvg-name="CRAVE 1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/crave-1-ca.png" group-title="Entertainment",CRAVE 1 (MOJ)
+http://fl7.moveonjoy.com/CRAVE_1/index.m3u8
+
+#EXTINF:-1 tvg-id="113720.308DTV308.tvapp2" tvg-name="CRAVE 2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/crave-2-ca.png" group-title="Entertainment",CRAVE 2 (MOJ)
+http://fl2.moveonjoy.com/CRAVE_2/index.m3u8
+
+#EXTINF:-1 tvg-id="113720.308DTV308.tvapp2" tvg-name="CRAVE 3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/crave-3-ca.png" group-title="Entertainment",CRAVE 3 (MOJ)
+http://fl7.moveonjoy.com/CRAVE_3/index.m3u8
+
+#EXTINF:-1 tvg-id="113720.308DTV308.tvapp2" tvg-name="CRAVE 4 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/crave-4-ca.png" group-title="Entertainment",CRAVE 4 (MOJ)
+http://fl2.moveonjoy.com/CRAVE_4/index.m3u8
+
+#EXTINF:-1 tvg-id="61469.571CINHD.tvapp2" tvg-name="Crime + Investigation (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/crime-and-investigation-us.png" group-title="Entertainment",Crime + Investigation (MOJ)
+http://fl41.moveonjoy.com/Crime_and_Investigation_Network/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Curiosity Stream (MOJ)" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/refs/heads/main/misc/vod/curiosity-vod-us.png" group-title="Entertainment",Curiosity Stream (MOJ)
+http://fl1.moveonjoy.com/Curiosity_Stream/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="CVM Caribbean (MOJ)" tvg-logo="" group-title="Entertainment",CVM Caribbean (MOJ)
+http://fl1.moveonjoy.com/CVM_TV_CARIBBEAN/index.m3u8
+
+#EXTINF:-1 tvg-id="20367.5.1WTTGDT.tvapp2" tvg-name="DC Washington FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",DC Washington FOX (MOJ)
+http://fl1.moveonjoy.com/DC_WASHINGTON_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19578.4.1WRCDT.tvapp2" tvg-name="DC Washington NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",DC Washington NBC (MOJ)
+http://fl1.moveonjoy.com/DC_WASHINGTON_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="16617.286DEST.tvapp2" tvg-name="Destination America (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/destination-america-us.png" group-title="Entertainment",Destination America (MOJ)
+http://fl41.moveonjoy.com/Destination_America/index.m3u8
+
+#EXTINF:-1 tvg-id="11150.278DSC.tvapp2" tvg-name="Discovery Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-channel-us.png" group-title="Entertainment",Discovery (MOJ)
+http://fl31.moveonjoy.com/Discovery_Channel/index.m3u8
+
+#EXTINF:-1 tvg-id="16618.294DFC.tvapp2" tvg-name="Discovery Family (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-family-us.png" group-title="Entertainment",Discovery Family (MOJ)
+http://fl31.moveonjoy.com/DISCOVERY_FAMILY_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="16125.261DLC.tvapp2" tvg-name="Discovery Life (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-life-us.png" group-title="Entertainment",Discovery Life (MOJ)
+http://fl31.moveonjoy.com/DISCOVERY_LIFE/index.m3u8
+
+#EXTINF:-1 tvg-id="16616.284SCIENCE.tvapp2" tvg-name="Discovery Science (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/discovery-science-us.png" group-title="Entertainment",Discovery Science (MOJ)
+http://fl41.moveonjoy.com/Discovery_Science/index.m3u8
+
+#EXTINF:-1 tvg-id="10171.290DISN.tvapp2" tvg-name="Disney (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-channel-us.png" group-title="Kids",Disney (MOJ)
+http://fl41.moveonjoy.com/DISNEY/index.m3u8
+
+#EXTINF:-1 tvg-id="74796.289DJCH.tvapp2" tvg-name="Disney Jr (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-jr-us.png" group-title="Kids",Disney Jr (MOJ)
+http://fl2.moveonjoy.com/DISNEY_JR/index.m3u8
+
+#EXTINF:-1 tvg-id="18279.292DXD.tvapp2" tvg-name="Disney XD (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/disney-xd-us.png" group-title="Kids",Disney XD (MOJ)
+http://fl7.moveonjoy.com/DISNEY_XD/index.m3u8
+
+#EXTINF:-1 tvg-id="10989.236E.tvapp2" tvg-name="E! (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/e-entertainment-us.png" group-title="Entertainment",E! (MOJ)
+http://fl2.moveonjoy.com/E_ENTERTAINMENT_TELEVISION/index.m3u8
+
+#EXTINF:-1 tvg-id="16485.207ESPNEWS.tvapp2" tvg-name="ESPN News (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espnews-us.png" group-title="Sports",ESPN News (MOJ)
+http://fl31.moveonjoy.com/ESPN_NEWS/index.m3u8
+
+#EXTINF:-1 tvg-id="45654.208ESPNU.tvapp2" tvg-name="ESPN-U (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-u-us.png" group-title="Sports",ESPN-U (MOJ)
+http://fl41.moveonjoy.com/ESPN_U/index.m3u8
+
+#EXTINF:-1 tvg-id="12444.209ESPN2.tvapp2" tvg-name="ESPN2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/espn-2-us.png" group-title="Sports",ESPN2 (MOJ)
+http://fl2.moveonjoy.com/ESPN_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Fanduel Sports Arizona (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports Arizona (MOJ)
+http://fl1.moveonjoy.com/BALLY_SPORTS_ARIZONA/index.m3u8
+
+#EXTINF:-1 tvg-id="21345.602FDUELTV.tvapp2" tvg-name="FanDuel TV+ (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",FanDuel TV+ (MOJ)
+http://fl41.moveonjoy.com/PAC_12/index.m3u8
+
+#EXTINF:-1 tvg-id="51960.20.1WCJBDT.tvapp2" tvg-name="FL Gainesville ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",FL Gainesville ABC (MOJ)
+http://fl1.moveonjoy.com/FL_GAINESVILLE_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="102370.28.3WGFLDT3.tvapp2" tvg-name="FL Gainesville NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",FL Gainesville NBC (MOJ)
+http://fl1.moveonjoy.com/FL_Gainesville_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="31224.25.1WJXXDT.tvapp2" tvg-name="FL Jacksonville ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",FL Jacksonville ABC (MOJ)
+http://fl1.moveonjoy.com/FL_JACKSONVILLE_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="33485.47.1WJAXDT.tvapp2" tvg-name="FL Jacksonville CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",FL Jacksonville CBS (MOJ)
+http://fl1.moveonjoy.com/FL_JACKSONVILLE_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="33487.30.1WFOXDT.tvapp2" tvg-name="FL Jacksonville FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FL Jacksonville FOX (MOJ)
+http://fl1.moveonjoy.com/FL_Jacksonville_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="25029.12.1WTLVDT.tvapp2" tvg-name="FL Jacksonville NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",FL Jacksonville NBC (MOJ)
+http://fl1.moveonjoy.com/FL_Jacksonville_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="61999.7.2WSVNDT2.tvapp2" tvg-name="FL Miami ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",FL Miami ABC (MOJ)
+http://fl1.moveonjoy.com/FL_MIAMI_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="21218.4.1WFORDT.tvapp2" tvg-name="FL Miami CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",FL Miami CBS (MOJ)
+http://fl1.moveonjoy.com/FL_Miami_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="21220.7.1WSVNDT.tvapp2" tvg-name="FL Miami FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FL Miami FOX (MOJ)
+http://fl1.moveonjoy.com/FL_Miami_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="21219.6.1WTVJDT.tvapp2" tvg-name="FL Miami NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",FL Miami NBC (MOJ)
+http://fl1.moveonjoy.com/FL_Miami_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="20491.9.1WFTVDT.tvapp2" tvg-name="FL Orlando ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",FL Orlando ABC (MOJ)
+http://fl1.moveonjoy.com/FL_ORLANDO_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="21299.6.1WKMGDT.tvapp2" tvg-name="FL Orlando CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",FL Orlando CBS (MOJ)
+http://fl1.moveonjoy.com/FL_ORLANDO_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="26588.18.1WKCFDT.tvapp2" tvg-name="FL Orlando CW (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cw-us.png" group-title="Locals",FL Orlando CW (MOJ)
+http://fl1.moveonjoy.com/CW_ORLANDO/index.m3u8
+
+#EXTINF:-1 tvg-id="21221.35.1WOFLDT.tvapp2" tvg-name="FL Orlando FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FL Orlando FOX (MOJ)
+http://fl1.moveonjoy.com/FL_ORLANDO_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="32590.12.1WPECDT.tvapp2" tvg-name="FL Palm Beach CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",FL Palm Beach CBS (MOJ)
+http://fl1.moveonjoy.com/FL_West_Palm_Beach_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="30438.29.1WFLXDT.tvapp2" tvg-name="FL Palm Beach FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FL Palm Beach FOX (MOJ)
+http://fl2.moveonjoy.com/FL_West_Palm_Beach_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="43832.27.1WTXLDT.tvapp2" tvg-name="FL Tallahassee ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",FL Tallahassee ABC (MOJ)
+http://fl1.moveonjoy.com/FL_Tallahassee_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="36063.40.1WTWCDT.tvapp2" tvg-name="FL Tallahassee NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",FL Tallahassee NBC (MOJ)
+http://fl1.moveonjoy.com/FL_Tallahassee_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="21224.28.1WFTSDT.tvapp2" tvg-name="FL Tampa ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",FL Tampa ABC (MOJ)
+http://fl1.moveonjoy.com/FL_Tampa_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="20495.10.1WTSPDT.tvapp2" tvg-name="FL Tampa CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",FL Tampa CBS (MOJ)
+http://fl2.moveonjoy.com/FL_TAMPA_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="36145.38.1WTTADT.tvapp2" tvg-name="FL Tampa CW (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cw-us.png" group-title="Locals",FL Tampa CW (MOJ)
+http://fl1.moveonjoy.com/FL_Tampa_CW44/index.m3u8
+
+#EXTINF:-1 tvg-id="21223.13.1WTVTDT.tvapp2" tvg-name="FL Tampa Fox (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FL Tampa Fox (MOJ)
+http://fl2.moveonjoy.com/FL_Tampa_Fox/index.m3u8
+
+#EXTINF:-1 tvg-id="21222.8.1WFLADT.tvapp2" tvg-name="FL Tampa NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",FL Tampa NBC (MOJ)
+http://fl2.moveonjoy.com/FL_Tampa_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="34580.5.1WPTVDT.tvapp2" tvg-name="FL West Palm NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",FL West Palm NBC (MOJ)
+http://fl1.moveonjoy.com/FL_West_Palm_Beach_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="12574.231FOOD.tvapp2" tvg-name="Food Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/food-network-us.png" group-title="Entertainment",Food Network (MOJ)
+http://fl41.moveonjoy.com/FOOD_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="20360.505WNYWDT.tvapp2" tvg-name="FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FOX (MOJ)
+http://fl1.moveonjoy.com/FOX_EAST/index.m3u8
+
+#EXTINF:-1 tvg-id="58649.359FBN.tvapp2" tvg-name="FOX Business (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-business-us.png" group-title="News",FOX Business (MOJ)
+http://fl1.moveonjoy.com/FOX_Business_Network/index.m3u8
+
+#EXTINF:-1 tvg-id="16374.360FNC.tvapp2" tvg-name="FOX News (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-news-us.png" group-title="News",FOX News (MOJ)
+http://fl1.moveonjoy.com/FOX_NEWS_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="FOX Soul (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",FOX Soul (MOJ)
+http://fl7.moveonjoy.com/FOX_SOUL/index.m3u8
+
+#EXTINF:-1 tvg-id="10093.311FREEFRM.tvapp2" tvg-name="Freeform (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/freeform-us.png" group-title="Entertainment",Freeform (MOJ)
+http://fl7.moveonjoy.com/FREE_FORM/index.m3u8
+
+#EXTINF:-1 tvg-id="82541.219FS1.tvapp2" tvg-name="FS1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-sports-1-us.png" group-title="Sports",FS1 (MOJ)
+http://fl7.moveonjoy.com/FOX_Sports_1/index.m3u8
+
+#EXTINF:-1 tvg-id="33178.618FS2.tvapp2" tvg-name="FS2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-sports-2-us.png" group-title="Sports",FS2 (MOJ)
+http://fl1.moveonjoy.com/USA_FS2/index.m3u8
+
+#EXTINF:-1 tvg-id="59116.339FUSEHD.tvapp2" tvg-name="Fuse (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fuse-us.png" group-title="Entertainment",Fuse (MOJ)
+http://fl7.moveonjoy.com/FUSE/index.m3u8
+
+#EXTINF:-1 tvg-id="14321.248FX.tvapp2" tvg-name="FX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fx-us.png" group-title="Entertainment",FX (MOJ)
+http://fl2.moveonjoy.com/FX/index.m3u8
+
+#EXTINF:-1 tvg-id="14988.258FXM.tvapp2" tvg-name="FXM (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fxm-movie-channel-us.png" group-title="Entertainment",FXM (MOJ)
+http://fl2.moveonjoy.com/FX_MOVIE/index.m3u8
+
+#EXTINF:-1 tvg-id="17927.259FXX.tvapp2" tvg-name="FXX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fxx-us.png" group-title="Entertainment",FXX (MOJ)
+http://fl2.moveonjoy.com/FXX/index.m3u8
+
+#EXTINF:-1 tvg-id="16834.266FYISD.tvapp2" tvg-name="FYI (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fyi-us.png" group-title="Entertainment",FYI (MOJ)
+http://fl31.moveonjoy.com/FYI/index.m3u8
+
+#EXTINF:-1 tvg-id="32793.69.1WUPADT.tvapp2" tvg-name="GA Atlanta CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",GA Atlanta CBS (MOJ)
+http://fl7.moveonjoy.com/GA_ATLANTA_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="20430.5.1WAGADT.tvapp2" tvg-name="GA Atlanta FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",GA Atlanta FOX (MOJ)
+http://fl1.moveonjoy.com/GA_Atlanta_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19587.11.1WXIADT.tvapp2" tvg-name="GA Atlanta NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",GA Atlanta NBC (MOJ)
+http://fl1.moveonjoy.com/GA_ATLANTA_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="24026.12.1WRDWDT.tvapp2" tvg-name="GA Augusta CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",GA Augusta CBS (MOJ)
+http://fl1.moveonjoy.com/GA_AUGUSTA_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="32580.13.1WMAZDT.tvapp2" tvg-name="GA Macon CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",GA Macon CBS (MOJ)
+http://fl1.moveonjoy.com/GA_MACON_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="34575.41.1WMGTDT.tvapp2" tvg-name="GA Macon NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",GA Macon NBC (MOJ)
+http://fl1.moveonjoy.com/GA_MACON_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="30616.11.1WTOCDT.tvapp2" tvg-name="GA Savannah CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",GA Savannah CBS (MOJ)
+http://fl1.moveonjoy.com/GA_SAVANNAH_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="43734.3.1WSAVDT.tvapp2" tvg-name="GA Savannah NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",GA Savannah NBC (MOJ)
+http://fl1.moveonjoy.com/GA_SAVANNAH_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="82563.83GET.tvapp2" tvg-name="getTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/get-tv-us.png" group-title="Entertainment",getTV (MOJ)
+http://fl31.moveonjoy.com/GET_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Global (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/gol-tv-us.png" group-title="Entertainment",Global (MOJ)
+http://fl1.moveonjoy.com/CA_GLOBAL/index.m3u8
+
+#EXTINF:-1 tvg-id="14899.218GOLF.tvapp2" tvg-name="Golf Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-golf-us.png" group-title="Sports",Golf Channel (MOJ)
+http://fl41.moveonjoy.com/GOLF/index.m3u8
+
+#EXTINF:-1 tvg-id="32161.468GOLTV.tvapp2" tvg-name="GOLTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/gol-tv-us.png" group-title="Entertainment",GOLTV (MOJ)
+http://fl1.moveonjoy.com/USA_GOLTV/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Great American Family (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/great-american-family-us.png" group-title="Entertainment",Great American Family (MOJ)
+http://fl41.moveonjoy.com/Great_American_Country/index.m3u8
+
+#EXTINF:-1 tvg-id="89922.81GRIT.tvapp2" tvg-name="GRIT TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/grit-us.png" group-title="Entertainment",GRIT TV (MOJ)
+http://fl31.moveonjoy.com/GRIT_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="11221.312HALL.tvapp2" tvg-name="Hallmark Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-channel-us.png" group-title="Entertainment",Hallmark Channel (MOJ)
+http://fl2.moveonjoy.com/HALLMARK_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="105723.564HFM.tvapp2" tvg-name="Hallmark Family (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-tv-us.png" group-title="Entertainment",Hallmark Family (MOJ)
+http://fl2.moveonjoy.com/HALLMARK_DRAMA/index.m3u8
+
+#EXTINF:-1 tvg-id="46710.565HMYSHD.tvapp2" tvg-name="Hallmark Mystery (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hallmark-mystery-us.png" group-title="Entertainment",Hallmark Mystery (MOJ)
+http://fl2.moveonjoy.com/HALLMARK_MOVIES_MYSTERIES/index.m3u8
+
+#EXTINF:-1 tvg-id="10240.501HBO.tvapp2" tvg-name="HBO (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-us.png" group-title="Premium",HBO (MOJ)
+http://fl2.moveonjoy.com/HBO/index.m3u8
+
+#EXTINF:-1 tvg-id="59839.506HBOCHD.tvapp2" tvg-name="HBO Comedy (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-comedy-us.png" group-title="Premium",HBO Comedy (MOJ)
+http://fl31.moveonjoy.com/HBO_COMEDY/index.m3u8
+
+#EXTINF:-1 tvg-id="10242.505HBOHTP.tvapp2" tvg-name="HBO Family (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-family-us.png" group-title="Premium",HBO Family (MOJ)
+http://fl31.moveonjoy.com/HBO_FAMILY/index.m3u8
+
+#EXTINF:-1 tvg-id="10241.502HBOHTS.tvapp2" tvg-name="HBO Hits (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-hits-us.png" group-title="Premium",HBO Hits (MOJ)
+http://fl31.moveonjoy.com/HBO_2/index.m3u8
+
+#EXTINF:-1 tvg-id="59845.509HBOMVHD.tvapp2" tvg-name="HBO Movies (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hbo-movies-us.png" group-title="Premium",HBO Movies (MOJ)
+http://fl31.moveonjoy.com/HBO_ZONE/index.m3u8
+
+#EXTINF:-1 tvg-id="14902.229HGTV.tvapp2" tvg-name="HGTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hgtv-us.png" group-title="Entertainment",HGTV (MOJ)
+http://fl41.moveonjoy.com/HGTV/index.m3u8
+
+#EXTINF:-1 tvg-id="14771.269HISTORY.tvapp2" tvg-name="History (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/history-channel-us.png" group-title="Entertainment",History (MOJ)
+http://fl7.moveonjoy.com/history_channel/index.m3u8
+
+#EXTINF:-1 tvg-id="10145.204HLN.tvapp2" tvg-name="HLN (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hln-us.png" group-title="Entertainment",HLN (MOJ)
+http://fl7.moveonjoy.com/HLN/index.m3u8
+
+#EXTINF:-1 tvg-id="10269.70HSN.tvapp2" tvg-name="HSN (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/hsn-us.png" group-title="Entertainment",HSN (MOJ)
+http://fl7.moveonjoy.com/HSN/index.m3u8
+
+#EXTINF:-1 tvg-id="33716.2.1KGANDT.tvapp2" tvg-name="IA Cedar Rapids CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",IA Cedar Rapids CBS (MOJ)
+http://fl1.moveonjoy.com/IA_CEDAR_RAPIDS_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="16615.285ID.tvapp2" tvg-name="ID (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/investigation-discovery-us.png" group-title="Entertainment",ID (MOJ)
+http://fl7.moveonjoy.com/INVESTIGATION_DISCOVERY/index.m3u8
+
+#EXTINF:-1 tvg-id="20456.7.1WLSDT.tvapp2" tvg-name="IL Chicago ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",IL Chicago ABC (MOJ)
+http://fl1.moveonjoy.com/IL_CHICAGO_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="20454.2.1WBBMDT.tvapp2" tvg-name="IL Chicago CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",IL Chicago CBS (MOJ)
+http://fl1.moveonjoy.com/IL_Chicago_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="20361.32.1WFLDDT.tvapp2" tvg-name="IL Chicago FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",IL Chicago FOX (MOJ)
+http://fl1.moveonjoy.com/IL_Chicago_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="20452.5.1WMAQDT.tvapp2" tvg-name="IL Chicago NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",IL Chicago NBC (MOJ)
+http://fl1.moveonjoy.com/IL_Chicago_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="35237.21.2WPTADT2.tvapp2" tvg-name="IN Fort Wayne NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",IN Fort Wayne NBC (MOJ)
+http://fl1.moveonjoy.com/IN_Fort_Wayne_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="21229.59.1WXINDT.tvapp2" tvg-name="IN Indianapolis FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",IN Indianapolis FOX (MOJ)
+http://fl1.moveonjoy.com/IN_Indianapolis_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19593.13.1WTHRDT.tvapp2" tvg-name="IN Indianapolis NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",IN Indianapolis NBC (MOJ)
+http://fl1.moveonjoy.com/IN_Indianapolis_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="11066.364INSP.tvapp2" tvg-name="INSP (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/insp-us.png" group-title="Entertainment",INSP (MOJ)
+http://fl1.moveonjoy.com/INSP/index.m3u8
+
+#EXTINF:-1 tvg-id="76894.305IONDHD.tvapp2" tvg-name="ION (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ion-television-us.png" group-title="Entertainment",ION (MOJ)
+http://fl7.moveonjoy.com/ION_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="76894.305IONDHD.tvapp2" tvg-name="ION Plus (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ion-plus-us.png" group-title="Entertainment",ION Plus (MOJ)
+http://fl41.moveonjoy.com/ION_Plus/index.m3u8
+
+#EXTINF:-1 tvg-id="30468.27.1WKYTDT.tvapp2" tvg-name="KY Lexington CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",KY Lexington CBS (MOJ)
+http://fl1.moveonjoy.com/KY_Lexington_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="33144.32.1WLKYDT.tvapp2" tvg-name="KY Louisville CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",KY Louisville CBS (MOJ)
+http://fl1.moveonjoy.com/KY_LOUISVILLE_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="32824.41.1WDRBDT.tvapp2" tvg-name="KY Louisville FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",KY Louisville FOX (MOJ)
+http://fl1.moveonjoy.com/KY_Louisville_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="34520.9.1WAFBDT.tvapp2" tvg-name="LA Baton Rouge CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",LA Baton Rouge CBS (MOJ)
+http://fl1.moveonjoy.com/LA_BATON_ROUGE_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="44232.44.1WGMBDT.tvapp2" tvg-name="LA Baton Rouge FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",LA Baton Rouge FOX (MOJ)
+http://fl1.moveonjoy.com/LA_BATON_ROUGE_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="10918.252LIFE.tvapp2" tvg-name="Lifetime (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/lifetime-us.png" group-title="Entertainment",Lifetime (MOJ)
+http://fl41.moveonjoy.com/LIFETIME/index.m3u8
+
+#EXTINF:-1 tvg-id="18480.253LMN.tvapp2" tvg-name="Lifetime Movies (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/lifetime-movies-us.png" group-title="Entertainment",Lifetime Movies (MOJ)
+http://fl1.moveonjoy.com/LIFETIME_MOVIE_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Love Nature (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/" group-title="Entertainment",Love Nature (MOJ)
+http://fl1.moveonjoy.com/LOVE_NATURE/index.m3u8
+
+#EXTINF:-1 tvg-id="19596.5.1WCVBDT.tvapp2" tvg-name="MA Boston ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",MA Boston ABC (MOJ)
+http://fl1.moveonjoy.com/MA_BOSTON_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="20431.4.1WBZDT.tvapp2" tvg-name="MA Boston CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",MA Boston CBS (MOJ)
+http://fl1.moveonjoy.com/MA_BOSTON_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="20362.25.1WFXTDT.tvapp2" tvg-name="MA Boston FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",MA Boston FOX (MOJ)
+http://fl1.moveonjoy.com/MA_BOSTON_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="59619.33.1WSHMLD.tvapp2" tvg-name="MA Springfield CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",MA Springfield CBS (MOJ)
+http://fl1.moveonjoy.com/MA_SPRINGFIELD_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="32503.22.1WWLPDT.tvapp2" tvg-name="MA Springfield NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",MA Springfield NBC (MOJ)
+http://fl1.moveonjoy.com/MA_SPRINGFIELD_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="18544.230MAGN.tvapp2" tvg-name="Magnolia (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/magnolia-network-us.png" group-title="Entertainment",Magnolia (MOJ)
+http://fl51.moveonjoy.com/DIY/index.m3u8
+
+#EXTINF:-1 tvg-id="marquee-sports-network" tvg-name="Marquee Sports Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/marquee-sports-network-us.png" group-title="Sports",Marquee Sports Network (MOJ)
+http://fl31.moveonjoy.com/MARQUEE_SPORTS_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="61036.810RACERHD.tvapp2" tvg-name="MAVTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/" group-title="Entertainment",MAVTV (MOJ)
+http://fl1.moveonjoy.com/MAV_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="44316.177DITV177.tvapp2" tvg-name="MeTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/me-tv-us.png" group-title="Entertainment",MeTV (MOJ)
+http://fl2.moveonjoy.com/ME_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="65687.558MGMHD.tvapp2" tvg-name="MGM+ (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mgm-plus-us.png" group-title="Premium",MGM+ (MOJ)
+http://fl31.moveonjoy.com/EPIX/index.m3u8
+
+#EXTINF:-1 tvg-id="65687.558MGMHD.tvapp2" tvg-name="MGM+ Drive-In (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mgm-plus-drive-in-us.png" group-title="Premium",MGM+ Drive-In (MOJ)
+http://fl31.moveonjoy.com/EPIX_DRIVE_IN/index.m3u8
+
+#EXTINF:-1 tvg-id="67929.559MGMHTH.tvapp2" tvg-name="MGM+ Hits (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mgm-plus-hits-us.png" group-title="Premium",MGM+ Hits (MOJ)
+http://fl31.moveonjoy.com/EPIX_HITS/index.m3u8
+
+#EXTINF:-1 tvg-id="74073.560MGMMRHD.tvapp2" tvg-name="MGM+ Marquee (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mgm-plus-marquee-us.png" group-title="Premium",MGM+ Marquee (MOJ)
+http://fl31.moveonjoy.com/EPIX_2/index.m3u8
+
+#EXTINF:-1 tvg-id="20376.62.1WWJDT.tvapp2" tvg-name="MI Detroit CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",MI Detroit CBS (MOJ)
+http://fl1.moveonjoy.com/MI_Detroit_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="19600.2.1WJBKDT.tvapp2" tvg-name="MI Detroit FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",MI Detroit FOX (MOJ)
+http://fl1.moveonjoy.com/MI_Detroit_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="20359.4.1WDIVDT.tvapp2" tvg-name="MI Detroit NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",MI Detroit NBC (MOJ)
+http://fl1.moveonjoy.com/MI_Detroit_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="48999.126MILH.tvapp2" tvg-name="Military History (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/military-history-us.png" group-title="Entertainment",Military History (MOJ)
+http://fl31.moveonjoy.com/Military_History/index.m3u8
+
+#EXTINF:-1 tvg-id="62079.213MLBN.tvapp2" tvg-name="MLB Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mlb-network-us.png" group-title="Sports",MLB Network (MOJ)
+http://fl31.moveonjoy.com/MLB_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="31046.281MTHD.tvapp2" tvg-name="MotorTrend (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/motor-trend-us.png" group-title="Entertainment",MotorTrend (MOJ)
+http://fl7.moveonjoy.com/MOTOR_TREND/index.m3u8
+
+#EXTINF:-1 tvg-id="10979.78MSG.tvapp2" tvg-name="MSG (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/msg-us.png" group-title="Entertainment",MSG (MOJ)
+http://fl2.moveonjoy.com/MSG/index.m3u8
+
+#EXTINF:-1 tvg-id="10986.331MTV.tvapp2" tvg-name="MTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-us.png" group-title="Entertainment",MTV (MOJ)
+http://fl1.moveonjoy.com/MTV/index.m3u8
+
+#EXTINF:-1 tvg-id="22561.336MTVCLAS.tvapp2" tvg-name="MTV Classic (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-classic-us.png" group-title="Entertainment",MTV Classic (MOJ)
+http://fl2.moveonjoy.com/MTV_CLASSIC/index.m3u8
+
+#EXTINF:-1 tvg-id="49141.572MTVLIVE.tvapp2" tvg-name="MTV Live (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-live-us.png" group-title="Entertainment",MTV Live (MOJ)
+http://fl2.moveonjoy.com/MTV_LIVE/index.m3u8
+
+#EXTINF:-1 tvg-id="16361.332MTV2.tvapp2" tvg-name="MTV2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-2-us.png" group-title="Entertainment",MTV2 (MOJ)
+http://fl2.moveonjoy.com/MTV_2/index.m3u8
+
+#EXTINF:-1 tvg-id="44228.212MTVU.tvapp2" tvg-name="MTVU (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mtv-u-us.png" group-title="Entertainment",MTVU (MOJ)
+http://fl1.moveonjoy.com/MTV_U/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="MUCH (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/" group-title="Entertainment",MUCH (MOJ)
+http://fl7.moveonjoy.com/MUCH/index.m3u8
+
+#EXTINF:-1 tvg-id="24959.276NGC.tvapp2" tvg-name="National Geographic (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/national-geographic-us.png" group-title="Entertainment",National Geographic (MOJ)
+http://fl31.moveonjoy.com/National_Geographic/index.m3u8
+
+#EXTINF:-1 tvg-id="66804.283NGWILD.tvapp2" tvg-name="National Geographic Wild (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nat-geo-wild-us.png" group-title="Entertainment",National Geographic Wild (MOJ)
+http://fl31.moveonjoy.com/Nat_Geo_Wild/index.m3u8
+
+#EXTINF:-1 tvg-id="32281.216NBATV.tvapp2" tvg-name="NBA Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Sports",NBA Network (MOJ)
+http://fl51.moveonjoy.com/NBA_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="65913.4.1K04QPD.tvapp2" tvg-name="NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",NBC (MOJ)
+http://fl2.moveonjoy.com/NBC_EAST/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBC Sports Boston (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-sports-us.png" group-title="Sports",NBC Sports Boston (MOJ)
+http://fl1.moveonjoy.com/NBC_SPORTS_BOSTON/index.m3u8
+
+#EXTINF:-1 tvg-id="91096.307NEWSNTN.tvapp2" tvg-name="NewsNation (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/news-nation-us.png" group-title="News",NewsNation (MOJ)
+http://fl31.moveonjoy.com/NEWS_NATION/index.m3u8
+
+#EXTINF:-1 tvg-id="34710.212NFLNET.tvapp2" tvg-name="NFL Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-network-us.png" group-title="Sports",NFL Network (MOJ)
+http://fl1.moveonjoy.com/NFL_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="65025.211NFLNRZD.tvapp2" tvg-name="NFL RedZone (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-red-zone-us.png" group-title="Sports",NFL RedZone (MOJ)
+http://fl51.moveonjoy.com/NFL_RedZone/index.m3u8
+
+#EXTINF:-1 tvg-id="58570.215NHLNET.tvapp2" tvg-name="NHL Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Sports",NHL Network (MOJ)
+http://fl1.moveonjoy.com/NHL_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="19211.301NICJR.tvapp2" tvg-name="Nick Jr (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-jr-us.png" group-title="Kids",Nick Jr (MOJ)
+http://fl1.moveonjoy.com/NICK_JR/index.m3u8
+
+#EXTINF:-1 tvg-id="11006.299NIK.tvapp2" tvg-name="Nick Music (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-music-us.png" group-title="Kids",Nick Music (MOJ)
+http://fl1.moveonjoy.com/NICK_MUSIC/index.m3u8
+
+#EXTINF:-1 tvg-id="11006.299NIK.tvapp2" tvg-name="Nickelodeon (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nickelodeon-us.png" group-title="Kids",Nickelodeon (MOJ)
+http://fl31.moveonjoy.com/NICKELODEON/index.m3u8
+
+#EXTINF:-1 tvg-id="30420.302NIKTON.tvapp2" tvg-name="Nicktoons (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nick-toons-us.png" group-title="Kids",Nicktoons (MOJ)
+http://fl51.moveonjoy.com/NICKTOONS/index.m3u8
+
+#EXTINF:-1 tvg-id="31235.7.1KOATDT.tvapp2" tvg-name="NM Albuquerque ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",NM Albuquerque ABC (MOJ)
+http://fl1.moveonjoy.com/NM_Albuquerque_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="98443.13.2KRQEDT2.tvapp2" tvg-name="NM Albuquerque FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",NM Albuquerque FOX (MOJ)
+http://fl1.moveonjoy.com/NM_Albuquerque_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="30716.4.1KOBDT.tvapp2" tvg-name="NM Albuquerque NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",NM Albuquerque NBC (MOJ)
+http://fl1.moveonjoy.com/NM_Albuquerque_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Nosey (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/" group-title="Entertainment",Nosey (MOJ)
+http://fl1.moveonjoy.com/Newsy/index.m3u8
+
+#EXTINF:-1 tvg-id="32432.5.1KVVUDT.tvapp2" tvg-name="NV Las Vegas FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",NV Las Vegas FOX (MOJ)
+http://fl1.moveonjoy.com/NV_LAS_VEGAS_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="24021.8.1KLASDT.tvapp2" tvg-name="NV Las VEGAS Vegas" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",NV Las VEGAS Vegas
+http://fl1.moveonjoy.com/NV_LAS_VEGAS_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="11331.2WCBS.tvapp2" tvg-name="NY New York CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",NY New York CBS (MOJ)
+http://fl1.moveonjoy.com/NY_NEW_YORK_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="20459.504WNBCDT.tvapp2" tvg-name="NY New York York" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",NY New York York
+http://fl2.moveonjoy.com/NY_New_York_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="20453.7.1WABCDT.tvapp2" tvg-name="NY New YORK York" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",NY New YORK York
+http://fl2.moveonjoy.com/NY_NEW_YORK_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="21101.5.1WEWSDT.tvapp2" tvg-name="OH Cleveland ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",OH Cleveland ABC (MOJ)
+http://fl1.moveonjoy.com/OH_CLEVELAND_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="21660.7.1WHIODT.tvapp2" tvg-name="OH Dayton CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",OH Dayton CBS (MOJ)
+http://fl1.moveonjoy.com/OH_DAYTON_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="34302.8.1KTULDT.tvapp2" tvg-name="OK Tulsa ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",OK Tulsa ABC (MOJ)
+http://fl1.moveonjoy.com/OK_TULSA_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="70387.279OWN.tvapp2" tvg-name="Oprah Winfrey Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/oprah-winfrey-network-us.png" group-title="Entertainment",Oprah Winfrey Network (MOJ)
+http://fl7.moveonjoy.com/OWN/index.m3u8
+
+#EXTINF:-1 tvg-id="14776.606OUTD.tvapp2" tvg-name="Outdoor Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/outdoor-channel-us.png" group-title="Entertainment",Outdoor Channel (MOJ)
+http://fl2.moveonjoy.com/OUTDOOR_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Outside TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/outside-tv-us.png" group-title="Entertainment",Outside TV (MOJ)
+http://fl31.moveonjoy.com/OUTSIDE_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="15807.188OVATION.tvapp2" tvg-name="Ovation (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ovation-us.png" group-title="Entertainment",Ovation (MOJ)
+http://fl41.moveonjoy.com/Ovation/index.m3u8
+
+#EXTINF:-1 tvg-id="21484.144OXYGEN.tvapp2" tvg-name="Oxygen (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/oxygen-us.png" group-title="Entertainment",Oxygen (MOJ)
+http://fl2.moveonjoy.com/OXYGEN/index.m3u8
+
+#EXTINF:-1 tvg-id="19612.6.1WPVIDT.tvapp2" tvg-name="PA Philadelphia ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",PA Philadelphia ABC (MOJ)
+http://fl1.moveonjoy.com/PA_PHILADELPHIA_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="19611.3.1KYWDT.tvapp2" tvg-name="PA Philadelphia CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",PA Philadelphia CBS (MOJ)
+http://fl1.moveonjoy.com/PA_PHILADELPHIA_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="19614.29.1WTXFDT.tvapp2" tvg-name="PA Philadelphia FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",PA Philadelphia FOX (MOJ)
+http://fl1.moveonjoy.com/PA_PHILADELPHIA_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19613.10.1WCAUDT.tvapp2" tvg-name="PA Philadelphia NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",PA Philadelphia NBC (MOJ)
+http://fl1.moveonjoy.com/PA_PHILADELPHIA_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="20369.11.1WPXIDT.tvapp2" tvg-name="PA Pittsburgh NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",PA Pittsburgh NBC (MOJ)
+http://fl1.moveonjoy.com/PA_Pittsburgh_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="11163.54PAR.tvapp2" tvg-name="Paramount Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/paramount-network-us.png" group-title="Entertainment",Paramount Network (MOJ)
+http://fl31.moveonjoy.com/PARAMOUNT_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="16715.194POPSD.tvapp2" tvg-name="Pop TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/pop-us.png" group-title="Entertainment",Pop TV (MOJ)
+http://fl41.moveonjoy.com/Pop_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="11069.150QVC.tvapp2" tvg-name="QVC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/qvc-us.png" group-title="Entertainment",QVC (MOJ)
+http://fl51.moveonjoy.com/QVC/index.m3u8
+
+#EXTINF:-1 tvg-id="52199.238REELZ.tvapp2" tvg-name="ReelzChannel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/reelz-us.png" group-title="Entertainment",ReelzChannel (MOJ)
+http://fl51.moveonjoy.com/REELZ/index.m3u8
+
+#EXTINF:-1 tvg-id="83098.384RVLTHD.tvapp2" tvg-name="Revolt (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/revolt-us.png" group-title="Entertainment",Revolt (MOJ)
+http://fl7.moveonjoy.com/REVOLT/index.m3u8
+
+#EXTINF:-1 tvg-id="89535.611SEC.tvapp2" tvg-name="SEC Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sec-network-hz-us.png" group-title="Sports",SEC Network (MOJ)
+http://fl2.moveonjoy.com/USA_SEC_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="11115.545PARSHO.tvapp2" tvg-name="Showtime (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-us.png" group-title="Premium",Showtime (MOJ)
+http://fl31.moveonjoy.com/SHOWTIME/index.m3u8
+
+#EXTINF:-1 tvg-id="11116.547SHO2.tvapp2" tvg-name="Showtime 2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-2-us.png" group-title="Premium",Showtime 2 (MOJ)
+http://fl41.moveonjoy.com/SHOWTIME_2/index.m3u8
+
+#EXTINF:-1 tvg-id="18086.549SHOWX.tvapp2" tvg-name="Showtime Extreme (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-extreme-us.png" group-title="Premium",Showtime Extreme (MOJ)
+http://fl1.moveonjoy.com/SHOWTIME_EXTREME/index.m3u8
+
+#EXTINF:-1 tvg-id="68342.551NEXTHD.tvapp2" tvg-name="Showtime Next (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-next-us.png" group-title="Premium",Showtime Next (MOJ)
+http://fl7.moveonjoy.com/SHOWTIME_NEXT/index.m3u8
+
+#EXTINF:-1 tvg-id="11115.545PARSHO.tvapp2" tvg-name="Showtime West (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-us.png" group-title="Premium",Showtime West (MOJ)
+http://fl31.moveonjoy.com/SHOWTIME_WEST/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Showtime Women (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/showtime-us.png" group-title="Premium",Showtime Women (MOJ)
+http://fl31.moveonjoy.com/SHOWTIME_WOMEN/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Sky Sports Football (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-kingdom/sky-sports-f1-uk.png" group-title="Sports",Sky Sports Football (MOJ)
+http://fl1.moveonjoy.com/Sky_Sports_F1/index.m3u8
+
+#EXTINF:-1 tvg-id="65799.134SMITH.tvapp2" tvg-name="Smithsonian Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/smithsonian-channel-us.png" group-title="Entertainment",Smithsonian Channel (MOJ)
+http://fl31.moveonjoy.com/SMITHSONIAN_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="49603.77SNY.tvapp2" tvg-name="SNY SportsNet (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sny-us.png" group-title="Sports",SNY SportsNet (MOJ)
+http://fl51.moveonjoy.com/SNY/index.m3u8
+
+#EXTINF:-1 tvg-id="69130.568SONYHD.tvapp2" tvg-name="Sony Movie (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sony-movie-channel-us.png" group-title="Premium",Sony Movie (MOJ)
+http://fl41.moveonjoy.com/Sony_Movie_Channel/index.m3u8
+
+#EXTINF:-1 tvg-id="33930.605SPRTMAN.tvapp2" tvg-name="Sportsman (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sportsman-channel-us.png" group-title="Sports",Sportsman (MOJ)
+http://fl51.moveonjoy.com/SPORTSMAN_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Start TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/start-tv-us.png" group-title="Entertainment",Start TV (MOJ)
+http://fl1.moveonjoy.com/Start_Tv/index.m3u8
+
+#EXTINF:-1 tvg-id="12719.525STARZ.tvapp2" tvg-name="STARZ (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-us.png" group-title="Premium",STARZ (MOJ)
+http://fl51.moveonjoy.com/STARZ/index.m3u8
+
+#EXTINF:-1 tvg-id="57569.528STZCHD.tvapp2" tvg-name="STARZ Comedy (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-comedy-us.png" group-title="Premium",STARZ Comedy (MOJ)
+http://fl51.moveonjoy.com/STARZ_COMEDY/index.m3u8
+
+#EXTINF:-1 tvg-id="16311.529STZE.tvapp2" tvg-name="STARZ Edge (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-edge-us.png" group-title="Premium",STARZ Edge (MOJ)
+http://fl51.moveonjoy.com/STARZ_EDGE/index.m3u8
+
+#EXTINF:-1 tvg-id="14871.541STZENAC.tvapp2" tvg-name="STARZ Encore Action (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-encore-action-us.png" group-title="Premium",STARZ Encore Action (MOJ)
+http://fl51.moveonjoy.com/STARZ_ENCORE_ACTION/index.m3u8
+
+#EXTINF:-1 tvg-id="16311.529STZE.tvapp2" tvg-name="STARZ Encore Classic (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-encore-classic-us.png" group-title="Premium",STARZ Encore Classic (MOJ)
+http://fl51.moveonjoy.com/STARZ_ENCORE_CLASSIC/index.m3u8
+
+#EXTINF:-1 tvg-id="102906.538STZEWSS.tvapp2" tvg-name="STARZ Encore Westerns (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-encore-classic-us.png" group-title="Premium",STARZ Encore Westerns (MOJ)
+http://fl1.moveonjoy.com/STARZ_ENCORE_WESTERNS/index.m3u8
+
+#EXTINF:-1 tvg-id="12719.525STARZ.tvapp2" tvg-name="STARZ West (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/starz-encore-westerns-us.png" group-title="Premium",STARZ West (MOJ)
+http://fl51.moveonjoy.com/STARZ_WEST/index.m3u8
+
+#EXTINF:-1 tvg-id="16108.239SUNDANC.tvapp2" tvg-name="SundanceTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/sundance-tv-us.png" group-title="Premium",SundanceTV (MOJ)
+http://fl2.moveonjoy.com/SUNDANCE/index.m3u8
+
+#EXTINF:-1 tvg-id="11097.244SYFY.tvapp2" tvg-name="SYFY (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/syfy-us.png" group-title="Entertainment",SYFY (MOJ)
+http://fl31.moveonjoy.com/SYFY/index.m3u8
+
+#EXTINF:-1 tvg-id="11867.247TBS.tvapp2" tvg-name="TBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tbs-us.png" group-title="Entertainment",TBS (MOJ)
+http://fl51.moveonjoy.com/TBS/index.m3u8
+
+#EXTINF:-1 tvg-id="12852.256TCM.tvapp2" tvg-name="TCM (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tcm-us.png" group-title="Entertainment",TCM (MOJ)
+http://fl1.moveonjoy.com/TCM/index.m3u8
+
+#EXTINF:-1 tvg-id="59036.303TNCK.tvapp2" tvg-name="Teen Nick (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/teen-nick-us.png" group-title="Kids",Teen Nick (MOJ)
+http://fl1.moveonjoy.com/Teen_Nick/index.m3u8
+
+#EXTINF:-1 tvg-id="33395.217TENNIS.tvapp2" tvg-name="Tennis Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tennis-channel-hz-us.png" group-title="Entertainment",Tennis Channel (MOJ)
+http://fl31.moveonjoy.com/TENNIS_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="11158.280TLC.tvapp2" tvg-name="TLC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tlc-us.png" group-title="Entertainment",TLC (MOJ)
+http://fl2.moveonjoy.com/TLC/index.m3u8
+
+#EXTINF:-1 tvg-id="35718.43.1WTNZDT.tvapp2" tvg-name="TN Knoxville FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TN Knoxville FOX (MOJ)
+http://fl1.moveonjoy.com/TN_Knoxville_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="31654.10.1WBIRDT.tvapp2" tvg-name="TN Knoxville NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",TN Knoxville NBC (MOJ)
+http://fl1.moveonjoy.com/TN_Knoxville_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="30979.13.1WHBQDT.tvapp2" tvg-name="TN Memphis FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TN Memphis FOX (MOJ)
+http://fl1.moveonjoy.com/TN_Memphis_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="29930.5.1WMCDT.tvapp2" tvg-name="TN Memphis NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",TN Memphis NBC (MOJ)
+http://fl1.moveonjoy.com/TN_Memphis_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="20465.2.1WKRNDT.tvapp2" tvg-name="TN Nashville ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",TN Nashville ABC (MOJ)
+http://fl1.moveonjoy.com/TN_NASHVILLE_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="28659.5.1WTVFDT.tvapp2" tvg-name="TN Nashville CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",TN Nashville CBS (MOJ)
+http://fl1.moveonjoy.com/TN_Nashville_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="32507.17.1WZTVDT.tvapp2" tvg-name="TN Nashville FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TN Nashville FOX (MOJ)
+http://fl1.moveonjoy.com/TN_Nashville_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="32685.4.1WSMVDT.tvapp2" tvg-name="TN Nashville NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",TN Nashville NBC (MOJ)
+http://fl1.moveonjoy.com/TN_Nashville_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="11164.245TNT.tvapp2" tvg-name="TNT (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tnt-us.png" group-title="Entertainment",TNT (MOJ)
+http://fl1.moveonjoy.com/TNT/index.m3u8
+
+#EXTINF:-1 tvg-id="11180.277TRAV.tvapp2" tvg-name="Travel Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/travel-channel-us.png" group-title="Entertainment",Travel Channel (MOJ)
+http://fl31.moveonjoy.com/Travel_Channel/index.m3u8
+
+#EXTINF:-1 tvg-id="10153.246TRUTV.tvapp2" tvg-name="truTV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tru-tv-us.png" group-title="Entertainment",truTV (MOJ)
+http://fl1.moveonjoy.com/TRU_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="75176.464TUDNU.tvapp2" tvg-name="TUDN (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tudn-us.png" group-title="Entertainment",TUDN (MOJ)
+http://fl51.moveonjoy.com/TUDN/index.m3u8
+
+#EXTINF:-1 tvg-id="16123.241TVLAND.tvapp2" tvg-name="TV Land (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tv-land-us.png" group-title="Entertainment",TV Land (MOJ)
+http://fl41.moveonjoy.com/TV_LAND/index.m3u8
+
+#EXTINF:-1 tvg-id="61960.328TVONEHD.tvapp2" tvg-name="TV One (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/one-tv-us.png" group-title="Entertainment",TV One (MOJ)
+http://fl7.moveonjoy.com/TV_ONE/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TVG (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/tvg-network-us.png" group-title="Entertainment",TVG (MOJ)
+http://fl1.moveonjoy.com/TVG/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TVJ (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/" group-title="Entertainment",TVJ (MOJ)
+http://fl1.moveonjoy.com/TVJ_CARIBBEAN/index.m3u8
+
+#EXTINF:-1 tvg-id="33585.24.1KVUEDT.tvapp2" tvg-name="TX Austin ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",TX Austin ABC (MOJ)
+http://fl1.moveonjoy.com/TX_Austin_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="31222.7.1KTBCDT.tvapp2" tvg-name="TX Austin FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TX Austin FOX (MOJ)
+http://fl1.moveonjoy.com/TX_AUSTIN_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19626.8.1WFAADT.tvapp2" tvg-name="TX Dallas ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",TX Dallas ABC (MOJ)
+http://fl2.moveonjoy.com/TX_DALLAS_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="20204.11.1KTVTDT.tvapp2" tvg-name="TX Dallas CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",TX Dallas CBS (MOJ)
+http://fl1.moveonjoy.com/TX_Dallas_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="19616.4.1KDFWDT.tvapp2" tvg-name="TX Dallas FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TX Dallas FOX (MOJ)
+http://fl1.moveonjoy.com/TX_Dallas_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19627.5.1KXASDT.tvapp2" tvg-name="TX Dallas NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",TX Dallas NBC (MOJ)
+http://fl1.moveonjoy.com/TX_Dallas_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="21251.13.1KTRKDT.tvapp2" tvg-name="TX Houston ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",TX Houston ABC (MOJ)
+http://fl1.moveonjoy.com/TX_HOUSTON_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="19628.11.1KHOUDT.tvapp2" tvg-name="TX Houston CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",TX Houston CBS (MOJ)
+http://fl1.moveonjoy.com/TX_HOUSTON_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="21252.26.1KRIVDT.tvapp2" tvg-name="TX Houston FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TX Houston FOX (MOJ)
+http://fl1.moveonjoy.com/TX_Houston_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="21250.2.1KPRCDT.tvapp2" tvg-name="TX Houston NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",TX Houston NBC (MOJ)
+http://fl1.moveonjoy.com/TX_Houston_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="35331.29.1KABBDT.tvapp2" tvg-name="TX San Antonio FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",TX San Antonio FOX (MOJ)
+http://fl1.moveonjoy.com/TX_San_Antonio_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="30606.4.1WOAIDT.tvapp2" tvg-name="TX San Antonio NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",TX San Antonio NBC (MOJ)
+http://fl1.moveonjoy.com/TX_San_Antonio_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="UFC Fight Pass (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/ufc-fight-pass-us.png" group-title="Sports",UFC Fight Pass (MOJ)
+http://fl31.moveonjoy.com/UFC/index.m3u8
+
+#EXTINF:-1 tvg-id="44940.238UP.tvapp2" tvg-name="Up TV (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/up-tv-us.png" group-title="Entertainment",Up TV (MOJ)
+http://fl1.moveonjoy.com/Up_Tv/index.m3u8
+
+#EXTINF:-1 tvg-id="11207.242USA.tvapp2" tvg-name="USA Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/usa-us.png" group-title="Entertainment",USA Network (MOJ)
+http://fl1.moveonjoy.com/USA_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="11218.335VH1.tvapp2" tvg-name="VH1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/vh1-us.png" group-title="Entertainment",VH1 (MOJ)
+http://fl2.moveonjoy.com/VH1/index.m3u8
+
+#EXTINF:-1 tvg-id="18822.271VICE.tvapp2" tvg-name="VICE (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/vice-us.png" group-title="News",VICE (MOJ)
+http://fl7.moveonjoy.com/VICELAND/index.m3u8
+
+#EXTINF:-1 tvg-id="16409.149WE.tvapp2" tvg-name="W (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/" group-title="Entertainment",W (MOJ)
+http://fl41.moveonjoy.com/W_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="19629.4.1KOMODT.tvapp2" tvg-name="WA Seattle ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",WA Seattle ABC (MOJ)
+http://fl41.moveonjoy.com/WA_SEATTLE_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="20290.7.1KIRODT.tvapp2" tvg-name="WA Seattle CBS (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cbs-logo-white-us.png" group-title="Locals",WA Seattle CBS (MOJ)
+http://fl1.moveonjoy.com/WA_SEATTLE_CBS/index.m3u8
+
+#EXTINF:-1 tvg-id="21254.13.1KCPQDT.tvapp2" tvg-name="WA Seattle FOX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fox-us.png" group-title="Locals",WA Seattle FOX (MOJ)
+http://fl41.moveonjoy.com/WA_SEATTLE_FOX/index.m3u8
+
+#EXTINF:-1 tvg-id="19630.5.1KINGDT.tvapp2" tvg-name="WA Seattle NBC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nbc-us.png" group-title="Locals",WA Seattle NBC (MOJ)
+http://fl41.moveonjoy.com/WA_SEATTLE_NBC/index.m3u8
+
+#EXTINF:-1 tvg-id="16409.149WE.tvapp2" tvg-name="WE (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/we-tv-us.png" group-title="Entertainment",WE (MOJ)
+http://fl31.moveonjoy.com/WE_TV/index.m3u8
+
+#EXTINF:-1 tvg-id="11187.362WEATH.tvapp2" tvg-name="Weather Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/weather-channel-us.png" group-title="News",Weather Channel (MOJ)
+http://fl1.moveonjoy.com/THE_WEATHER_CHANNEL/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="WGN (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/wgn-america-us.png" group-title="Entertainment",WGN (MOJ)
+http://fl7.moveonjoy.com/WGN/index.m3u8
+
+#EXTINF:-1 tvg-id="19632.27.1WKOWDT.tvapp2" tvg-name="WI Madison ABC (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/abc-us.png" group-title="Locals",WI Madison ABC (MOJ)
+http://fl1.moveonjoy.com/WI_MADISON_ABC/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Willow (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/willow-us.png" group-title="Entertainment",Willow (MOJ)
+http://fl1.moveonjoy.com/WILLOW_CRICKET/index.m3u8
+
+#EXTINF:-1 tvg-id="465358" tvg-name="World Fishing Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/world-fishing-network-us.png" group-title="Entertainment",World Fishing Network (MOJ)
+http://fl41.moveonjoy.com/WORLD_FISHING_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="30017.76YES.tvapp2" tvg-name="YES Network (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/yes-network-us.png" group-title="Entertainment",YES Network (MOJ)
+http://fl31.moveonjoy.com/YES_NETWORK/index.m3u8
+
+#EXTINF:-1 tvg-id="59961.520CINCLHD.tvapp2" tvg-name="Cinemax 5 Star (MOJ)" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/5/5a/5Star_Max_HD_2011.svg/revision/latest?cb=20231007140647" group-title="Premium",Cinemax 5 Star (MOJ)
+http://fl1.moveonjoy.com/USA_5STARMAX/index.m3u8
+
+#EXTINF:-1 tvg-id="10121.517CINEHIT.tvapp2" tvg-name="Cinemax MoreMAX (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-hits-us.png" group-title="Premium",Cinemax MoreMAX (MOJ)
+http://fl1.moveonjoy.com/USA_MOREMAX/index.m3u8
+
+#EXTINF:-1 tvg-id="10120.515MAX.tvapp2" tvg-name="Cinemax West (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/cinemax-us.png" group-title="Premium",Cinemax West (MOJ)
+http://fl1.moveonjoy.com/CINEMAX_WEST/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="Fanduel Sports+ Midwest (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/fanduel-tv-us.png" group-title="Sports",Fanduel Sports+ Midwest (MOJ)
+http://fl7.moveonjoy.com/BALLY_SPORTS_MIDWEST/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="MLB1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mlb-network-us.png" group-title="Live Events",MLB1 (MOJ)
+http://fl1.moveonjoy.com/MLB_1/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="MLB2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mlb-network-us.png" group-title="Live Events",MLB2 (MOJ)
+http://fl1.moveonjoy.com/MLB_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="MLB3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/mlb-network-us.png" group-title="Live Events",MLB3 (MOJ)
+http://fl1.moveonjoy.com/MLB_3/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA1 (MOJ)
+http://fl1.moveonjoy.com/NBA_1/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA10 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA10 (MOJ)
+http://fl1.moveonjoy.com/NBA_10/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA11 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA11 (MOJ)
+http://fl1.moveonjoy.com/NBA_11/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA12 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA12 (MOJ)
+http://fl1.moveonjoy.com/NBA_12/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA13 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA13 (MOJ)
+http://fl1.moveonjoy.com/NBA_13/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA2 (MOJ)
+http://fl1.moveonjoy.com/NBA_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA3 (MOJ)
+http://fl1.moveonjoy.com/NBA_3/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA4 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA4 (MOJ)
+http://fl1.moveonjoy.com/NBA_4/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA5 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA5 (MOJ)
+http://fl1.moveonjoy.com/NBA_5/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA6 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA6 (MOJ)
+http://fl1.moveonjoy.com/NBA_6/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA7 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA7 (MOJ)
+http://fl1.moveonjoy.com/NBA_7/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA8 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA8 (MOJ)
+http://fl1.moveonjoy.com/NBA_8/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NBA9 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nba-tv-us.png" group-title="Live Events",NBA9 (MOJ)
+http://fl1.moveonjoy.com/NBA_9/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL1 (MOJ)
+http://fl1.moveonjoy.com/NFL_1/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL10 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL10 (MOJ)
+http://fl1.moveonjoy.com/NFL_10/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL11 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL11 (MOJ)
+http://fl1.moveonjoy.com/NFL_11/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL12 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL12 (MOJ)
+http://fl1.moveonjoy.com/NFL_12/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL13 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL13 (MOJ)
+http://fl1.moveonjoy.com/NFL_13/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL14 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL14 (MOJ)
+http://fl1.moveonjoy.com/NFL_14/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL15 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL15 (MOJ)
+http://fl1.moveonjoy.com/NFL_15/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL2 (MOJ)
+http://fl1.moveonjoy.com/NFL_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL3 (MOJ)
+http://fl1.moveonjoy.com/NFL_3/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL4 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL4 (MOJ)
+http://fl1.moveonjoy.com/NFL_4/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL5 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL5 (MOJ)
+http://fl1.moveonjoy.com/NFL_5/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL6 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL6 (MOJ)
+http://fl1.moveonjoy.com/NFL_6/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL7 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL7 (MOJ)
+http://fl1.moveonjoy.com/NFL_7/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL8 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL8 (MOJ)
+http://fl1.moveonjoy.com/NFL_8/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NFL9 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nfl-icon-us.png" group-title="Live Events",NFL9 (MOJ)
+http://fl1.moveonjoy.com/NFL_9/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL1 (MOJ)
+http://fl1.moveonjoy.com/NHL_1/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL10 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL10 (MOJ)
+http://fl1.moveonjoy.com/NHL_10/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL11 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL11 (MOJ)
+http://fl1.moveonjoy.com/NHL_11/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL13 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL13 (MOJ)
+http://fl1.moveonjoy.com/NHL_13/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL2 (MOJ)
+http://fl1.moveonjoy.com/NHL_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL3 (MOJ)
+http://fl1.moveonjoy.com/NHL_3/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL4 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL4 (MOJ)
+http://fl1.moveonjoy.com/NHL_4/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL5 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL5 (MOJ)
+http://fl1.moveonjoy.com/NHL_5/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL6 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL6 (MOJ)
+http://fl1.moveonjoy.com/NHL_6/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL7 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL7 (MOJ)
+http://fl1.moveonjoy.com/NHL_7/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL8 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL8 (MOJ)
+http://fl1.moveonjoy.com/NHL_8/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="NHL9 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/nhl-network-us.png" group-title="Live Events",NHL9 (MOJ)
+http://fl1.moveonjoy.com/NHL_9/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="PPV1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/misc/media/pay-per-view-1.png" group-title="Live Events",PPV1 (MOJ)
+http://fl12.moveonjoy.com/PPV_1/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="PPV2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/misc/media/pay-per-view-1.png" group-title="Live Events",PPV2 (MOJ)
+http://fl1.moveonjoy.com/PPV_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="PPV3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/misc/media/pay-per-view-1.png" group-title="Live Events",PPV3 (MOJ)
+http://fl12.moveonjoy.com/PPV_3/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="PPV4 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/misc/media/pay-per-view-1.png" group-title="Live Events",PPV4 (MOJ)
+http://fl1.moveonjoy.com/PPV_4/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="PPV5 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/misc/media/pay-per-view-1.png" group-title="Live Events",PPV5 (MOJ)
+http://fl1.moveonjoy.com/PPV_5/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="PPV6 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/misc/media/pay-per-view-1.png" group-title="Live Events",PPV6 (MOJ)
+http://fl1.moveonjoy.com/PPV_6/index.m3u8
+
+#EXTINF:-1 tvg-id="84542.818PURSTHD.tvapp2" tvg-name="Pursuit Channel (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/united-states/pursuit-us.png" group-title="Entertainment",Pursuit Channel (MOJ)
+http://fl1.moveonjoy.com/Pursuit_Channel/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TSN 1 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-1-ca.png" group-title="Live Events",TSN 1 (MOJ)
+http://fl1.moveonjoy.com/TSN_1/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TSN 2 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-2-ca.png" group-title="Live Events",TSN 2 (MOJ)
+http://fl1.moveonjoy.com/TSN_2/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TSN 3 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-3-ca.png" group-title="Live Events",TSN 3 (MOJ)
+http://fl1.moveonjoy.com/TSN_3/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TSN 4 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-4-ca.png" group-title="Live Events",TSN 4 (MOJ)
+http://fl1.moveonjoy.com/TSN_4/index.m3u8
+
+#EXTINF:-1 tvg-id="dummy_id" tvg-name="TSN 5 (MOJ)" tvg-logo="https://epg.binaryninja.net/XMLTV-EPG/resources/tv-logos/countries/canada/tsn-5-ca.png" group-title="Live Events",TSN 5 (MOJ)
+http://fl1.moveonjoy.com/TSN_5/index.m3u8
