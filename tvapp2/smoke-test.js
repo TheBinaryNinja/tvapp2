@@ -1,6 +1,7 @@
 import { spawn } from 'child_process';
 import http from 'http';
 
+const port = process.env.WEB_PORT || 4124;
 const server = spawn( 'node', ['index.js'], {
   stdio: 'inherit',
   env: { ...process.env, LOG_LEVEL: '1' }
@@ -13,9 +14,26 @@ const timeout = setTimeout( () =>
   process.exit( 1 );
 }, 30000 );
 
+server.on( 'error', ( err ) =>
+{
+    console.error( 'Failed to start server:', err );
+    clearTimeout( timeout );
+    process.exit( 1 );
+});
+
+server.on( 'exit', ( code ) =>
+{
+    if ( code !== null && code !== 0 )
+    {
+        console.error( `Server exited with code ${ code }` );
+        clearTimeout( timeout );
+        process.exit( 1 );
+    }
+});
+
 const checkServer = () =>
 {
-  http.get( 'http://localhost:4124/api/health?silent=true', ( res ) =>
+    http.get( `http://localhost:${ port }/api/health?silent=true`, ( res ) =>
 {
     if ( res.statusCode === 200 )
 {
