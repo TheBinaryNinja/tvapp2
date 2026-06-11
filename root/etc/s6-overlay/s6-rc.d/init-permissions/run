@@ -1,6 +1,0 @@
-#!/usr/bin/with-contenv bash
-# shellcheck shell=bash
-
-# permissions
-aetherxown -R dockerx:dockerx \
-    /config/keys
