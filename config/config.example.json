@@ -1,0 +1,5 @@
+{
+  "mongoUri": "mongodb://MONGO_ROOT_USER:MONGO_ROOT_PASS@mongo:27017/tvapp2?authSource=admin",
+  "port": 3000,
+  "logLevel": "info"
+}
