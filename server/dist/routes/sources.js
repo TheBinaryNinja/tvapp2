@@ -1,4 +1,4 @@
-// Generic source RestAPI, ported from ../d-combine/server.mjs into TVApp2's Express stack. One router
+// Generic source REST API, ported from ../d-combine/server.mjs into TVApp2's Express stack. One router
 // serves every source by iterating the registry — adding a source needs zero route changes.
 //
 //   GET  /api/sources               manifest (drives the SPA; one entry per registered source)
@@ -40,7 +40,7 @@ sourcesRouter.get('/api/sources/:id/status', async (req, res, next) => {
     try {
         const adapter = getSource(req.params.id);
         if (!adapter)
-            return res.status(404).json({ error: `Unknown source: ${req.params.id}` });
+            return res.status(404).json({ error: 'unknown_source' });
         const status = adapter.status ? await adapter.status() : null;
         res.json(status ?? null);
     }
@@ -52,14 +52,14 @@ sourcesRouter.get('/api/sources/:id/status', async (req, res, next) => {
 sourcesRouter.get('/api/sources/:id/metrics', (req, res) => {
     const m = metricsById.get(req.params.id);
     if (!m)
-        return res.status(404).json({ error: `Unknown source: ${req.params.id}` });
+        return res.status(404).json({ error: 'unknown_source' });
     res.json(snapshotOne(m));
 });
 // ── Live sync (refresh channels + Playlist sync metadata from upstream) ───────
 sourcesRouter.post('/api/sources/:id/sync', async (req, res, next) => {
     try {
         if (!getSource(req.params.id))
-            return res.status(404).json({ error: `Unknown source: ${req.params.id}` });
+            return res.status(404).json({ error: 'unknown_source' });
         res.json(await syncLive(req.params.id));
     }
     catch (err) {
@@ -70,7 +70,7 @@ sourcesRouter.post('/api/sources/:id/sync', async (req, res, next) => {
 sourcesRouter.post('/api/sources/:id/reset', async (req, res, next) => {
     try {
         if (!getSource(req.params.id))
-            return res.status(404).json({ error: `Unknown source: ${req.params.id}` });
+            return res.status(404).json({ error: 'unknown_source' });
         res.json(await resetFromBundle(req.params.id));
     }
     catch (err) {
