@@ -1,6 +1,16 @@
+# Sunset project: TVApp2
+
+With the fallout of previous sources TVApp2 development has stopped and the application is being deprecated. **New development work is underway** with a new project.
+
+# New project: masqueradarr
+
+GitHub: [masqueradarr](https://github.com/TheBinaryNinja/masqueradarr) -- beta testing is currently underway with an initial release on the new repo coming soon.
+
+<img src="https://raw.githubusercontent.com/TheBinaryNinja/masqueradarr/refs/heads/main/docs/img/masqueradarr.png">
+
 <div align="center">
-<h6>A self-hosted docker container which allows you to retrieve M3U playlists and EPG guide data from numerous online IPTV services.</h6>
-<h1>♾️ TVApp2 ♾️</h1>
+<h6><s>A self-hosted docker container which allows you to retrieve M3U playlists and EPG guide data from numerous online IPTV services.</s></h6>
+<h1>♾️ <s>TVApp2</s> ♾️</h1>
 </div>
 
 <br />
