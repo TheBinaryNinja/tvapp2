@@ -2,6 +2,12 @@
 
 With the fallout of previous sources TVApp2 development has stopped and the application is being deprecated. **New development work is underway** with a new project.
 
+> ## ⚠️ Unmaintained
+>
+> This repository is being archived and is no longer maintained.
+>
+> See below for information about the new project (`masqueradarr`) which begins a new evolution in the development and maintenance of the core principles of thie project.
+
 # New project: masqueradarr
 
 GitHub: [masqueradarr](https://github.com/TheBinaryNinja/masqueradarr) -- beta testing is currently underway with an initial release on the new repo coming soon.
