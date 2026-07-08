@@ -455,7 +455,7 @@ jobs:
                   ☑️ Run Autocheck
               uses: actions/github-script@v7
               with:
-                  github-token: ${{ secrets.ADMINSERV_TOKEN_CL }}
+                  github-token: ${{ secrets.ADMINSERV_TOKEN_CL || github.token }}
                   script: |
                       console.log('Running Autoscan')
                       console.log(JSON.stringify(context, null, 4));
@@ -707,7 +707,14 @@ jobs:
                           "index.js",
                           "gistr.js",
                           "Docs/",
-                          "tests/"
+                          "tests/",
+                          "tvapp2/classes/",
+                          "tvapp2/root.js",
+                          "tvapp2/www/",
+                          "wrangler.jsonc",
+                          "tvapp2/index.js",
+                          "tvapp2/classes/Storage.js",
+                          "src/"
                       ];
 
                       for ( const file of files_Array )
@@ -1116,11 +1123,11 @@ jobs:
             - name: >-
                 🔔 Send Discord Webhook Message (Success)
               uses: tsickert/discord-webhook@v7.0.0
-              if: success()
+              if: success() && secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS
               with:
                   username: ${{ env.DISCORD_BOT_NAME }}
                   avatar-url: ${{ env.DISCORD_BOT_AVATAR }}
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS }}
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS }}
                   embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: ${{ env.DISCORD_BOT_EMBED_THUMBNAIL }}
@@ -1166,11 +1173,11 @@ jobs:
             - name: >-
                 🔔 Send Discord Webhook Message (Failure)
               uses: tsickert/discord-webhook@v7.0.0
-              if: failure()
+              if: failure() && secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS
               with:
                   username: ${{ env.DISCORD_BOT_NAME }}
                   avatar-url: ${{ env.DISCORD_BOT_AVATAR }}
-                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKfLOWS }}
+                  webhook-url: ${{ secrets.DISCORD_WEBHOOK_CHAN_GITHUB_TVAPP2_WORKFLOWS }}
                   embed-title: "⚙️ ${{ github.workflow_ref }}"
                   embed-url: "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   embed-thumbnail-url: ${{ env.DISCORD_BOT_EMBED_THUMBNAIL }}

@@ -32,14 +32,13 @@ class Utils
             if ([
                 '1', 'true', 'yes', 'y', 't'
                 ].includes( lower ) )
-                str = true;
+                return true;
             if ([
                 '0', 'false', 'no', 'n', 'f'
                 ].includes( lower ) )
-                str = false;
-            return str;
+                return false;
         }
-        else return Boolean( str );
+        return Boolean( str );
     }
 }
 

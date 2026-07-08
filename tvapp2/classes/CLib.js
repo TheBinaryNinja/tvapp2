@@ -130,11 +130,11 @@ class CLib
 
     encodeToHexBase64( str )
     {
-        const hex = [...str].map( ( char ) =>
-        {
-            const code = char.charCodeAt( 0 ).toString( 16 );
-            return code.padStart( 2, '0' );
-        }).join( '' );
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode( str );
+        const hex = [...bytes].map( ( byte ) =>
+            byte.toString( 16 ).padStart( 2, '0' )
+        ).join( '' );
 
         const base64 = btoa( hex );
         return base64;
@@ -154,8 +154,8 @@ class CLib
     {
         const hex = atob( base64Str );
         const chars = hex.match( /.{1,2}/g ); // every 2 hex chars = 1 byte
-
-        return chars.map( ( byte ) => String.fromCharCode( parseInt( byte, 16 ) ) ).join( '' );
+        const bytes = new Uint8Array( chars.map( ( h ) => parseInt( h, 16 ) ) );
+        return new TextDecoder().decode( bytes );
     }
 }
 
